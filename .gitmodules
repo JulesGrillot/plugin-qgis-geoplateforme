@@ -1,0 +1,4 @@
+[submodule "wiki"]
+	path = docs/wiki
+	url = https://gitlab.com/Oslandia/qgis/ign-vectuileur.wiki.git
+	branch = main

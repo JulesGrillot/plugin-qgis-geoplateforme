@@ -61,6 +61,9 @@ test-unit:
 test-qgis:
   stage: 🤞 test
   image: qgis/qgis:release-3_22
+  variables:
+    DISPLAY: ":1"
+    PYTHONPATH: "/usr/share/qgis/python/plugins:/usr/share/qgis/python:."
   only:
     changes:
       - "**/*.py"
@@ -69,6 +72,7 @@ test-qgis:
       - master
   before_script:
     - python3 -m pip install -U -r requirements/testing.txt
+    - Xvfb :1 &
   script:
     - env PYTHONPATH=/usr/share/qgis/python:. pytest tests/qgis
   artifacts:

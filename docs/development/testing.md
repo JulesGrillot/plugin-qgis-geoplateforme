@@ -19,8 +19,8 @@ python -m pip install -U -r requirements/testing.txt
 # run all tests with PyTest and Coverage report
 python -m pytest
 
-# run only unit tests with pytest launcher
-python -m pytest tests/unit
+# run only unit tests with pytest launcher (disabling pytest-qgis)
+python -m pytest -p no:qgis tests/unit
 
 # run only QGIS tests with pytest launcher
 python -m pytest tests/qgis

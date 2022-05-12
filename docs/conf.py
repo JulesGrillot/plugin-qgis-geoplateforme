@@ -134,7 +134,7 @@ ogp_site_url = __about__.__uri_homepage__
 ogp_custom_meta_tags = [
     "<meta name='twitter:card' content='summary_large_image'>",
     f'<meta property="twitter:description" content="{description}" />',
-    f'<meta property="twitter:image" content="{ogp_image}" />',
+    # f'<meta property="twitter:image" content="{ogp_image}" />',
     '<meta property="twitter:site" content="@oslandia" />',
     f'<meta property="twitter:title" content="{project}" />',
 ]

@@ -49,7 +49,7 @@ test-unit:
     - python3 -m pip install -U -r requirements/development.txt
     - python3 -m pip install -U -r requirements/testing.txt
   script:
-    - env PYTHONPATH=/usr/share/qgis/python:. pytest tests/unit
+    - env PYTHONPATH=/usr/share/qgis/python:. pytest -p no:qgis tests/unit
   artifacts:
     when: always
     reports:

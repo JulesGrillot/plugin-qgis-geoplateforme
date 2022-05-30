@@ -183,7 +183,7 @@ font: italic 11pt &quot;Ubuntu Condensed&quot;;
 color: rgb(52, 101, 164);</string>
      </property>
      <property name="text">
-      <string>Vous decouvre le service ? Cliquez ici</string>
+      <string>Vous découvrez le service ? Cliquez ici</string>
      </property>
     </widget>
    </item>

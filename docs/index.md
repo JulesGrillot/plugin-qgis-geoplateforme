@@ -18,11 +18,14 @@ maxdepth: 1
 Installation <usage/installation>
 ```
 
+----
+
 ```{toctree}
 ---
 caption: Contribution guide
 maxdepth: 1
 ---
+Wiki (fr) <https://gitlab.com/Oslandia/qgis/ign-vectuileur/-/wikis/home>
 development/contribute
 development/environment
 development/documentation

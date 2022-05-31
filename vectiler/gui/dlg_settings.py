@@ -12,6 +12,7 @@ from pathlib import Path
 from qgis.gui import QgsOptionsPageWidget, QgsOptionsWidgetFactory
 from qgis.PyQt import uic
 from qgis.PyQt.Qt import QUrl
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QDesktopServices, QIcon
 
 # project
@@ -76,6 +77,12 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
             # global
             debug_mode=self.opt_debug.isChecked(),
             version=__version__,
+            # network and authentication
+            url_geotuileur=self.lne_url_geotuileur.text(),
+            url_service_vt=self.lne_url_service_vt.text(),
+            url_auth=self.lne_url_auth.text(),
+            auth_realm=self.lne_auth_realm.text(),
+            auth_client_id=self.lne_auth_client_id.text(),
         )
 
         # dump new settings into QgsSettings
@@ -95,6 +102,24 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
         self.opt_debug.setChecked(settings.debug_mode)
         self.lbl_version_saved_value.setText(settings.version)
 
+        # network and authentication
+        self.lne_url_geotuileur.setText(settings.url_geotuileur)
+        self.lne_url_service_vt.setText(settings.url_service_vt)
+        self.lne_url_auth.setText(settings.url_auth)
+        self.lne_auth_realm.setText(settings.auth_realm)
+        self.lne_auth_client_id.setText(settings.auth_client_id)
+
+    def tr(self, message: str) -> str:
+        """Get the translation for a string using Qt translation API.
+
+        :param message: string to be translated.
+        :type message: str
+
+        :returns: Translated version of message.
+        :rtype: str
+        """
+        return QCoreApplication.translate(self.__class__.__name__, message)
+
 
 class PlgOptionsFactory(QgsOptionsWidgetFactory):
     """Factory for options widget."""
@@ -110,3 +135,6 @@ class PlgOptionsFactory(QgsOptionsWidgetFactory):
 
     def title(self) -> str:
         return __title__
+
+    def helpId(self) -> str:
+        return __uri_homepage__

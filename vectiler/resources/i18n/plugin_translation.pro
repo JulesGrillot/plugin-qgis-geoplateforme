@@ -1,5 +1,9 @@
-FORMS =
+FORMS = ../../gui/dlg_settings.ui
 
-SOURCES= ../../plugin_main.py
+SOURCES= ../../plugin_main.py \
+    ../../gui/dlg_settings.py \
+    ../../toolbelt/log_handler.py \
+    ../../toolbelt/preferences.py \
+    ../../toolbelt/translator.py
 
-TRANSLATIONS = vectiler_en.ts
+TRANSLATIONS = vectiler_fr.ts

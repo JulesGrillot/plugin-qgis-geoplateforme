@@ -128,4 +128,4 @@ dmypy.json
 # -- CUSTOM ----
 *.zip
 # .vscode/
-.qm
+*.qm

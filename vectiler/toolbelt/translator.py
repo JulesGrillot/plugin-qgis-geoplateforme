@@ -64,15 +64,6 @@ class PlgTranslator:
                 self.qm_filepath = qm
                 break
 
-        if not self.qm_filepath:
-            info_msg = self.tr(
-                "Your selected locale ({}) is not available. "
-                "Please consider to contribute with your own translation :). "
-                "Contact the plugin maintener(s): {}".format(locale, __email__)
-            )
-            self.log(message=str(info_msg), log_level=1, push=False)
-            logger.info(info_msg)
-
     def get_translator(self) -> QTranslator:
         """Load translation file into QTranslator.
 

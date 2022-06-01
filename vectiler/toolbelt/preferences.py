@@ -5,7 +5,7 @@
 """
 
 # standard
-from typing import NamedTuple
+from dataclasses import asdict, dataclass, fields
 
 # PyQGIS
 from qgis.core import QgsSettings
@@ -19,17 +19,31 @@ from vectiler.__about__ import __title__, __version__
 # ##################################
 
 
-class PlgSettingsStructure(NamedTuple):
+@dataclass
+class PlgSettingsStructure:
     """Plugin settings structure and defaults values."""
 
     # global
     debug_mode: bool = False
     version: str = __version__
 
-    defaults = [
-        False,
-        __version__,
-    ]
+    # network and authentication
+    url_geotuileur: str = "https://qlf-portail-gpf-beta.ign.fr/"
+    url_service_vt: str = "https://qlf-vt-gpf-beta.ign.fr/"
+    url_auth: str = "https://iam-ign-qa-ext.cegedim.cloud/"
+    auth_realm: str = "demo"
+    auth_client_id: str = "guichet"
+    qgis_auth_id: str = ""
+
+    @property
+    def url_authentication_token(self) -> str:
+        """Return the URL to get the token from the authentication service."""
+        return f"{self.url_auth}auth/realms/{self.auth_realm}/protocol/openid-connect/token"
+
+    @property
+    def url_authentication_redirect(self) -> str:
+        """Return the URL to redirect to the authentication service."""
+        return f"{self.url_auth}login/check"
 
 
 class PlgOptionsManager:
@@ -41,13 +55,57 @@ class PlgOptionsManager:
         :return: plugin settings
         :rtype: PlgSettingsStructure
         """
+        # get dataclass fields definition
+        settings_fields = fields(PlgSettingsStructure)
+
+        # retrieve settings from QGIS/Qt
         settings = QgsSettings()
         settings.beginGroup(__title__)
 
+        # instanciate new settings object
         options = PlgSettingsStructure(
             # normal
-            debug_mode=settings.value(key="debug_mode", defaultValue=False, type=bool),
-            version=settings.value(key="version", defaultValue=__version__, type=str),
+            settings.value(
+                key=settings_fields[0].name,
+                defaultValue=settings_fields[0].default,
+                type=settings_fields[0].type,
+            ),
+            settings.value(
+                key=settings_fields[1].name,
+                defaultValue=settings_fields[1].default,
+                type=settings_fields[1].type,
+            ),
+            # network and authentication
+            settings.value(
+                key=settings_fields[2].name,
+                defaultValue=settings_fields[2].default,
+                type=settings_fields[2].type,
+            ),
+            settings.value(
+                key=settings_fields[3].name,
+                defaultValue=settings_fields[3].default,
+                type=settings_fields[3].type,
+            ),
+            settings.value(
+                key=settings_fields[4].name,
+                defaultValue=settings_fields[4].default,
+                type=settings_fields[4].type,
+            ),
+            settings.value(
+                key=settings_fields[5].name,
+                defaultValue=settings_fields[5].default,
+                type=settings_fields[5].type,
+            ),
+            settings.value(
+                key=settings_fields[6].name,
+                defaultValue=settings_fields[6].default,
+                type=settings_fields[6].type,
+            ),
+            settings.value(
+                key=settings_fields[7].name,
+                defaultValue=settings_fields[7].default,
+                type=settings_fields[7].type,
+            ),
         )
 
         settings.endGroup()
@@ -135,7 +193,12 @@ class PlgOptionsManager:
         settings = QgsSettings()
         settings.beginGroup(__title__)
 
-        for k, v in plugin_settings_obj._asdict().items():
+        for k, v in asdict(plugin_settings_obj).items():
             cls.set_value_from_key(k, v)
 
         settings.endGroup()
+
+
+if __name__ == "__main__":
+    fi = fields(PlgSettingsStructure)
+    print(fi)

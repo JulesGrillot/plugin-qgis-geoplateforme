@@ -16,6 +16,12 @@ Unreleased
 
 -->
 
+## 0.2.0 - 2022-06-01
+
+- Add connection settings
+- Add a minimal API client to test authentication flow
+- Minor fixes
+
 ## 0.1.0 - 2022-05-11
 
 - First release

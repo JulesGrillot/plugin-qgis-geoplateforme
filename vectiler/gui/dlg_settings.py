@@ -9,10 +9,11 @@ from functools import partial
 from pathlib import Path
 
 # PyQGIS
+from qgis.core import QgsApplication
 from qgis.gui import QgsOptionsPageWidget, QgsOptionsWidgetFactory
 from qgis.PyQt import uic
 from qgis.PyQt.Qt import QUrl
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QByteArray, QCoreApplication
 from qgis.PyQt.QtGui import QDesktopServices, QIcon
 
 # project
@@ -23,6 +24,7 @@ from vectiler.__about__ import (
     __uri_tracker__,
     __version__,
 )
+from vectiler.api.client import NetworkRequestsManager
 from vectiler.toolbelt import PlgLogger, PlgOptionsManager
 from vectiler.toolbelt.preferences import PlgSettingsStructure
 
@@ -46,6 +48,7 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
     def __init__(self, parent):
         super().__init__(parent)
         self.log = PlgLogger().log
+        self.network_requests_manager = NetworkRequestsManager()
         self.plg_settings = PlgOptionsManager()
         self.setupUi(self)
         self.setObjectName("mOptionsPage{}".format(__title__))
@@ -54,6 +57,11 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
         self.lbl_title.setText(f"{__title__} - Version {__version__}")
 
         # customization
+        self.btn_check_connection.pressed.connect(self.check_connection)
+        self.btn_check_connection.setIcon(
+            QIcon(":/images/themes/default/repositoryDisabled.svg")
+        )
+
         self.btn_help.setIcon(QIcon(":/images/themes/default/mActionHelpContents.svg"))
         self.btn_help.pressed.connect(
             partial(QDesktopServices.openUrl, QUrl(__uri_homepage__))
@@ -63,7 +71,7 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
             QIcon(":images/themes/default/console/iconSyntaxErrorConsole.svg")
         )
         self.btn_report.pressed.connect(
-            partial(QDesktopServices.openUrl, QUrl(f"{__uri_tracker__}/new/choose"))
+            partial(QDesktopServices.openUrl, QUrl(f"{__uri_tracker__}new/"))
         )
 
         # load previously saved settings
@@ -83,6 +91,7 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
             url_auth=self.lne_url_auth.text(),
             auth_realm=self.lne_auth_realm.text(),
             auth_client_id=self.lne_auth_client_id.text(),
+            qgis_auth_id=self.cbb_auth_config_select.configId(),
         )
 
         # dump new settings into QgsSettings
@@ -108,6 +117,7 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
         self.lne_url_auth.setText(settings.url_auth)
         self.lne_auth_realm.setText(settings.auth_realm)
         self.lne_auth_client_id.setText(settings.auth_client_id)
+        self.cbb_auth_config_select.setConfigId(settings.qgis_auth_id)
 
     def tr(self, message: str) -> str:
         """Get the translation for a string using Qt translation API.
@@ -119,6 +129,21 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
         :rtype: str
         """
         return QCoreApplication.translate(self.__class__.__name__, message)
+
+    # -- LOGIC
+    def check_connection(self):
+        """Check connection to API."""
+        check = self.network_requests_manager.get_api_token()
+        if not isinstance(check, (dict, QByteArray, bytes)):
+            self.btn_check_connection.setIcon(
+                QIcon(":/images/themes/default/repositoryUnavailable.svg")
+            )
+            self.btn_check_connection.setToolTip(check)
+        else:
+            self.btn_check_connection.setIcon(
+                QIcon(":/images/themes/default/repositoryConnected.svg")
+            )
+            self.btn_check_connection.setToolTip("Connection OK")
 
 
 class PlgOptionsFactory(QgsOptionsWidgetFactory):

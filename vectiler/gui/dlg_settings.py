@@ -139,6 +139,7 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
                 QIcon(":/images/themes/default/repositoryUnavailable.svg")
             )
             self.btn_check_connection.setToolTip(check)
+            return
         else:
             self.btn_check_connection.setIcon(
                 QIcon(":/images/themes/default/repositoryConnected.svg")

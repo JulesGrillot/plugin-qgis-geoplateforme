@@ -5,6 +5,7 @@
 """
 
 # standard
+import json
 from functools import partial
 from pathlib import Path
 
@@ -145,6 +146,17 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
                 QIcon(":/images/themes/default/repositoryConnected.svg")
             )
             self.btn_check_connection.setToolTip("Connection OK")
+
+        # decode token as dict
+        data = json.loads(check.data().decode("utf-8"))
+        if not isinstance(data, dict):
+            self.log(
+                message=f"ERROR - Invalid token data received. Expected dict, not {type(data)}",
+                log_level=2,
+                push=True,
+            )
+        else:
+            self.log(data, log_level=4)
 
 
 class PlgOptionsFactory(QgsOptionsWidgetFactory):

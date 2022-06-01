@@ -33,16 +33,17 @@ class PlgSettingsStructure:
     url_auth: str = "https://iam-ign-qa-ext.cegedim.cloud/"
     auth_realm: str = "demo"
     auth_client_id: str = "guichet"
+    qgis_auth_id: str = ""
 
     @property
     def url_authentication_token(self) -> str:
         """Return the URL to get the token from the authentication service."""
-        return f"{self.url_authentication}auth/realms/{self.url_authentication_realm}/protocol/openid-connect/token"
+        return f"{self.url_auth}auth/realms/{self.auth_realm}/protocol/openid-connect/token"
 
     @property
     def url_authentication_redirect(self) -> str:
         """Return the URL to redirect to the authentication service."""
-        return f"{self.url_authentication}login/check"
+        return f"{self.url_auth}login/check"
 
 
 class PlgOptionsManager:
@@ -99,6 +100,11 @@ class PlgOptionsManager:
                 key=settings_fields[6].name,
                 defaultValue=settings_fields[6].default,
                 type=settings_fields[6].type,
+            ),
+            settings.value(
+                key=settings_fields[7].name,
+                defaultValue=settings_fields[7].default,
+                type=settings_fields[7].type,
             ),
         )
 

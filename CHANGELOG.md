@@ -16,6 +16,10 @@ Unreleased
 
 -->
 
+## 0.2.1 - 2022-06-01
+
+- Fix CI build
+
 ## 0.2.0 - 2022-06-01
 
 - Add connection settings

@@ -1,6 +1,10 @@
 {
     // Editor
     "editor.bracketPairColorization.enabled": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true
+    },
+    "editor.formatOnSave": true,
     "editor.guides.bracketPairs":"active",
     "editor.rulers": [
         88

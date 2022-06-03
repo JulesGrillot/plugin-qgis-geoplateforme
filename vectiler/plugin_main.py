@@ -16,7 +16,6 @@ from qgis.PyQt.QtGui import QDesktopServices, QIcon
 # project
 from vectiler.__about__ import __title__
 from vectiler.gui.wzd_import import wzd_import
-from vectiler.gui.wzd_configuration import wzd_configuration
 from vectiler.gui.dlg_settings import PlgOptionsFactory
 from vectiler.processing import VectilerProvider
 from vectiler.toolbelt import PlgLogger, PlgTranslator
@@ -67,10 +66,6 @@ class VectilerPlugin:
             self.window = wzd_import()
             self.window.show()
             
-        def configuration_data ():
-            self.project = QgsProject.instance()
-            self.window = wzd_configuration()
-            self.window.show()
          
         # -- Actions
         self.action_help = QAction(
@@ -118,11 +113,6 @@ class VectilerPlugin:
         self.window = wzd_import(self.iface.mainWindow())
 
 
-        icon = QIcon(QgsApplication.iconPath("console/iconClassBrowserConsole.svg"))
-        self.btn_config = QPushButton(icon, "Configuration data")
-        self.btn_config.clicked.connect(configuration_data)
-        self.toolbar_import.addWidget(self.btn_config)
-        self.window = wzd_configuration(self.iface.mainWindow())
 
 
     def initProcessing(self):

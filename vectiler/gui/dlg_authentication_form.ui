@@ -52,6 +52,9 @@
      <property name="styleSheet">
       <string notr="true">font: 75 15pt &quot;Ubuntu Condensed&quot;;</string>
      </property>
+     <property name="inputMethodHints">
+      <set>Qt::ImhHiddenText</set>
+     </property>
      <property name="text">
       <string>Nom d'utilisateur ou courriel</string>
      </property>
@@ -139,6 +142,9 @@ color: rgb(52, 101, 164);</string>
        <height>40</height>
       </size>
      </property>
+     <property name="inputMethodHints">
+      <set>Qt::ImhLatinOnly</set>
+     </property>
     </widget>
    </item>
    <item row="2" column="0">
@@ -164,7 +170,7 @@ color: rgb(52, 101, 164);</string>
     </widget>
    </item>
    <item row="7" column="0">
-    <widget class="QCommandLinkButton" name="commandLinkButton">
+    <widget class="QCommandLinkButton" name="clb_url">
      <property name="minimumSize">
       <size>
        <width>100</width>

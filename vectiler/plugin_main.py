@@ -92,7 +92,7 @@ class VectilerPlugin:
         self.btn_autentification.clicked.connect(authentication_form)
         self.toolbar.addWidget(self.btn_autentification)
         self.window = dlg_authentication_form(self.iface.mainWindow())
-
+        
     def initProcessing(self):
         self.provider = VectilerProvider()
         QgsApplication.processingRegistry().addProvider(self.provider)

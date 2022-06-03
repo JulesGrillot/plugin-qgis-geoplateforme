@@ -8,17 +8,21 @@ import sys
 # PyQGIS
 from qgis.core import QgsApplication,QgsProject
 from qgis.gui import QgisInterface
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication,QUrl
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction,QPushButton,QToolBar
 from qgis.utils import showPluginHelp
-
+from qgis.PyQt.QtGui import QDesktopServices, QIcon
 # project
 from vectiler.__about__ import __title__
+from vectiler.gui.wzd_import import wzd_import
+from vectiler.gui.wzd_configuration import wzd_configuration
 from vectiler.gui.dlg_settings import PlgOptionsFactory
 from vectiler.processing import VectilerProvider
 from vectiler.toolbelt import PlgLogger, PlgTranslator
 from vectiler.gui.dlg_authentication_form import dlg_authentication_form
+
+# from vectiler.gui.wzd_import import wzd_import
 
 # ############################################################################
 # ########## Classes ###############
@@ -52,10 +56,20 @@ class VectilerPlugin:
         self.iface.registerOptionsWidgetFactory(self.options_factory)
 
 
-        # function for keep the authentication window open 
+        # functions to keep the windows open 
         def authentication_form ():
             self.project = QgsProject.instance()
             self.window = dlg_authentication_form()
+            self.window.show()
+
+        def import_data ():
+            self.project = QgsProject.instance()
+            self.window = wzd_import()
+            self.window.show()
+            
+        def configuration_data ():
+            self.project = QgsProject.instance()
+            self.window = wzd_configuration()
             self.window.show()
          
         # -- Actions
@@ -81,8 +95,10 @@ class VectilerPlugin:
         # -- Menu
         self.iface.addPluginToMenu(__title__, self.action_settings)
         self.iface.addPluginToMenu(__title__, self.action_help)
-        self.toolbar = QToolBar("authentication form")
-        self.iface.addToolBar(self.toolbar)
+        self.toolbar_auth = QToolBar("authentication form")
+        self.iface.addToolBar(self.toolbar_auth)
+        self.toolbar_import = QToolBar("import data")
+        self.iface.addToolBar(self.toolbar_import)
 
         # -- Processing
         self.initProcessing()
@@ -90,9 +106,25 @@ class VectilerPlugin:
         icon = QIcon(QgsApplication.iconPath("console/iconShowEditorConsole.svg"))
         self.btn_autentification = QPushButton(icon, "Login")
         self.btn_autentification.clicked.connect(authentication_form)
-        self.toolbar.addWidget(self.btn_autentification)
+        self.toolbar_auth.addWidget(self.btn_autentification)
         self.window = dlg_authentication_form(self.iface.mainWindow())
         
+
+
+        icon = QIcon(QgsApplication.iconPath("console/iconSearchEditorConsole.svg"))
+        self.btn_import = QPushButton(icon, "import data")
+        self.btn_import.clicked.connect(import_data)
+        self.toolbar_import.addWidget(self.btn_import)
+        self.window = wzd_import(self.iface.mainWindow())
+
+
+        icon = QIcon(QgsApplication.iconPath("console/iconClassBrowserConsole.svg"))
+        self.btn_config = QPushButton(icon, "Configuration data")
+        self.btn_config.clicked.connect(configuration_data)
+        self.toolbar_import.addWidget(self.btn_config)
+        self.window = wzd_configuration(self.iface.mainWindow())
+
+
     def initProcessing(self):
         self.provider = VectilerProvider()
         QgsApplication.processingRegistry().addProvider(self.provider)
@@ -103,7 +135,8 @@ class VectilerPlugin:
         self.iface.removePluginMenu(__title__, self.action_help)
         self.iface.removePluginMenu(__title__, self.action_settings)
         # remove toolbar :
-        self.toolbar.deleteLater()
+        self.toolbar_auth.deleteLater()
+        self.toolbar_import.deleteLater()
         # -- Clean up preferences panel in QGIS settings
         self.iface.unregisterOptionsWidgetFactory(self.options_factory)
 

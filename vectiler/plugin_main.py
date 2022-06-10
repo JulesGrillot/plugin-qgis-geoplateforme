@@ -19,7 +19,6 @@ from vectiler.gui.wzd_import import wzd_import
 from vectiler.gui.dlg_settings import PlgOptionsFactory
 from vectiler.processing import VectilerProvider
 from vectiler.toolbelt import PlgLogger, PlgTranslator
-from vectiler.gui.dlg_authentication_form import dlg_authentication_form
 
 # from vectiler.gui.wzd_import import wzd_import
 
@@ -56,11 +55,6 @@ class VectilerPlugin:
 
 
         # functions to keep the windows open 
-        def authentication_form ():
-            self.project = QgsProject.instance()
-            self.window = dlg_authentication_form()
-            self.window.show()
-
         def import_data ():
             self.project = QgsProject.instance()
             self.window = wzd_import()
@@ -90,21 +84,11 @@ class VectilerPlugin:
         # -- Menu
         self.iface.addPluginToMenu(__title__, self.action_settings)
         self.iface.addPluginToMenu(__title__, self.action_help)
-        self.toolbar_auth = QToolBar("authentication form")
-        self.iface.addToolBar(self.toolbar_auth)
         self.toolbar_import = QToolBar("import data")
         self.iface.addToolBar(self.toolbar_import)
 
         # -- Processing
         self.initProcessing()
-
-        icon = QIcon(QgsApplication.iconPath("console/iconShowEditorConsole.svg"))
-        self.btn_autentification = QPushButton(icon, "Login")
-        self.btn_autentification.clicked.connect(authentication_form)
-        self.toolbar_auth.addWidget(self.btn_autentification)
-        self.window = dlg_authentication_form(self.iface.mainWindow())
-        
-
 
         icon = QIcon(QgsApplication.iconPath("console/iconSearchEditorConsole.svg"))
         self.btn_import = QPushButton(icon, "import data")
@@ -125,7 +109,6 @@ class VectilerPlugin:
         self.iface.removePluginMenu(__title__, self.action_help)
         self.iface.removePluginMenu(__title__, self.action_settings)
         # remove toolbar :
-        self.toolbar_auth.deleteLater()
         self.toolbar_import.deleteLater()
         # -- Clean up preferences panel in QGIS settings
         self.iface.unregisterOptionsWidgetFactory(self.options_factory)

@@ -10,6 +10,7 @@ from functools import partial
 from pathlib import Path
 
 # PyQGIS
+from PyQt5.QtWidgets import QMessageBox
 from qgis.core import QgsApplication
 from qgis.gui import QgsOptionsPageWidget, QgsOptionsWidgetFactory
 from qgis.PyQt import uic
@@ -78,22 +79,27 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
         # load previously saved settings
         self.load_settings()
 
-    def apply(self):
-        """Called to permanently apply the settings shown in the options page (e.g. \
-        save them to QgsSettings objects). This is usually called when the options \
-        dialog is accepted."""
+    def current_settings(self) -> PlgSettingsStructure:
         new_settings = PlgSettingsStructure(
             # global
             debug_mode=self.opt_debug.isChecked(),
             version=__version__,
             # network and authentication
             url_geotuileur=self.lne_url_geotuileur.text(),
+            url_api_entrepot=self.lne_url_api_entrepot.text(),
             url_service_vt=self.lne_url_service_vt.text(),
             url_auth=self.lne_url_auth.text(),
             auth_realm=self.lne_auth_realm.text(),
             auth_client_id=self.lne_auth_client_id.text(),
             qgis_auth_id=self.cbb_auth_config_select.configId(),
         )
+        return new_settings
+
+    def apply(self):
+        """Called to permanently apply the settings shown in the options page (e.g. \
+        save them to QgsSettings objects). This is usually called when the options \
+        dialog is accepted."""
+        new_settings = self.current_settings()
 
         # dump new settings into QgsSettings
         self.plg_settings.save_from_object(new_settings)
@@ -114,6 +120,7 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
 
         # network and authentication
         self.lne_url_geotuileur.setText(settings.url_geotuileur)
+        self.lne_url_api_entrepot.setText(settings.url_api_entrepot)
         self.lne_url_service_vt.setText(settings.url_service_vt)
         self.lne_url_auth.setText(settings.url_auth)
         self.lne_auth_realm.setText(settings.auth_realm)
@@ -132,9 +139,16 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
         return QCoreApplication.translate(self.__class__.__name__, message)
 
     # -- LOGIC
-    def check_connection(self):
-        """Check connection to API."""
-        check = self.network_requests_manager.get_api_token()
+    def check_connection(self) -> None:
+        """
+        Check connection by getting user information from Entrepot API and update button icon and tooltip
+
+        """
+        # Update requests manager settings with current displayed settings
+        self.network_requests_manager.plg_settings = self.current_settings()
+
+        # Check connection to API by getting user information
+        check = self.network_requests_manager.get_user_info()
         if not isinstance(check, (dict, QByteArray, bytes)):
             self.btn_check_connection.setIcon(
                 QIcon(":/images/themes/default/repositoryUnavailable.svg")
@@ -147,16 +161,19 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
             )
             self.btn_check_connection.setToolTip("Connection OK")
 
-        # decode token as dict
-        data = json.loads(check.data().decode("utf-8"))
-        if not isinstance(data, dict):
-            self.log(
-                message=f"ERROR - Invalid token data received. Expected dict, not {type(data)}",
-                log_level=2,
-                push=True,
-            )
-        else:
-            self.log(data, log_level=4)
+            # decode token as dict
+            data = json.loads(check.data().decode("utf-8"))
+            if not isinstance(data, dict):
+                self.log(
+                    message=f"ERROR - Invalid user data received. Expected dict, not {type(data)}",
+                    log_level=2,
+                    push=True,
+                )
+            else:
+                QMessageBox.information(self,
+                                        self.tr("Welcome"),
+                                        self.tr(f'Welcome {data["first_name"]} {data["last_name"]} !')
+                                        )
 
 
 class PlgOptionsFactory(QgsOptionsWidgetFactory):

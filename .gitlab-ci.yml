@@ -70,6 +70,7 @@ test-qgis:
       - ".gitlab-ci.yml"
     refs:
       - master
+      - merge_requests
   before_script:
     - python3 -m pip install -U -r requirements/testing.txt
     - Xvfb :1 &

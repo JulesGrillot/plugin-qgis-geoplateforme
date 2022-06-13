@@ -29,6 +29,7 @@ class PlgSettingsStructure:
 
     # network and authentication
     url_geotuileur: str = "https://qlf-portail-gpf-beta.ign.fr/"
+    url_api_entrepot: str = "https://plage-geotuileur.cegedim.cloud/"
     url_service_vt: str = "https://qlf-vt-gpf-beta.ign.fr/"
     url_auth: str = "https://iam-ign-qa-ext.cegedim.cloud/"
     auth_realm: str = "demo"
@@ -105,6 +106,11 @@ class PlgOptionsManager:
                 key=settings_fields[7].name,
                 defaultValue=settings_fields[7].default,
                 type=settings_fields[7].type,
+            ),
+            settings.value(
+                key=settings_fields[8].name,
+                defaultValue=settings_fields[8].default,
+                type=settings_fields[8].type,
             ),
         )
 

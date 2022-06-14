@@ -88,9 +88,15 @@ color: rgb(52, 101, 164);</string>
      </widget>
     </item>
     <item>
-     <widget class="QTextEdit" name="lwg_files_summary">
-      <property name="acceptDrops">
-       <bool>false</bool>
+     <widget class="QListWidget" name="lvw_import_data">
+      <property name="tabKeyNavigation">
+       <bool>true</bool>
+      </property>
+      <property name="dragEnabled">
+       <bool>true</bool>
+      </property>
+      <property name="dragDropMode">
+       <enum>QAbstractItemView::DragDrop</enum>
       </property>
      </widget>
     </item>
@@ -162,9 +168,6 @@ color: rgb(52, 101, 164);</string>
     </item>
    </layout>
   </widget>
-  <widget class="QWizardPage" name="qwp3">
-   <layout class="QVBoxLayout" name="verticalLayout"/>
-  </widget>
  </widget>
  <customwidgets>
   <customwidget>
@@ -178,6 +181,12 @@ color: rgb(52, 101, 164);</string>
    <header>qgsprojectionselectionwidget.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>phb_ok</tabstop>
+  <tabstop>lvw_import_data</tabstop>
+  <tabstop>psw_projection</tabstop>
+  <tabstop>lne_data</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

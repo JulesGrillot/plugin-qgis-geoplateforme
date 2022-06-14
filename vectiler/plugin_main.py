@@ -3,24 +3,23 @@
 """
     Main plugin module.
 """
-import os
-import sys
+
 # PyQGIS
-from qgis.core import QgsApplication,QgsProject
+from qgis.core import QgsApplication
 from qgis.gui import QgisInterface
-from qgis.PyQt.QtCore import QCoreApplication,QUrl
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction,QPushButton,QToolBar
 from qgis.utils import showPluginHelp
-from qgis.PyQt.QtGui import QDesktopServices, QIcon
+from qgis.PyQt.QtGui import QIcon
 # project
 from vectiler.__about__ import __title__
-from vectiler.gui.wzd_import import wzd_import
+from vectiler.gui.wzd_import import WzdImport
 from vectiler.gui.dlg_settings import PlgOptionsFactory
 from vectiler.processing import VectilerProvider
 from vectiler.toolbelt import PlgLogger, PlgTranslator
 
-# from vectiler.gui.wzd_import import wzd_import
+
 
 # ############################################################################
 # ########## Classes ###############
@@ -56,8 +55,7 @@ class VectilerPlugin:
 
         # functions to keep the windows open 
         def import_data ():
-            self.project = QgsProject.instance()
-            self.window = wzd_import()
+            self.window = WzdImport()
             self.window.show()
             
          
@@ -94,7 +92,7 @@ class VectilerPlugin:
         self.btn_import = QPushButton(icon, "import data")
         self.btn_import.clicked.connect(import_data)
         self.toolbar_import.addWidget(self.btn_import)
-        self.window = wzd_import(self.iface.mainWindow())
+        self.window = WzdImport(self.iface.mainWindow())
 
 
 

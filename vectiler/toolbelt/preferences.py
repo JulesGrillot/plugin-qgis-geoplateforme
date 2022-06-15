@@ -8,7 +8,11 @@
 from dataclasses import asdict, dataclass, fields
 
 # PyQGIS
-from qgis.core import QgsSettings
+from qgis.core import (
+    QgsSettings,
+    QgsAuthMethodConfig,
+    QgsApplication
+)
 
 # package
 import vectiler.toolbelt.log_handler as log_hdlr
@@ -17,6 +21,8 @@ from vectiler.__about__ import __title__, __version__
 # ############################################################################
 # ########## Classes ###############
 # ##################################
+
+CFG_AUTH_NAME = "vectiler_cfg"
 
 
 @dataclass
@@ -45,6 +51,53 @@ class PlgSettingsStructure:
     def url_authentication_redirect(self) -> str:
         """Return the URL to redirect to the authentication service."""
         return f"{self.url_auth}login/check"
+
+    def create_auth_config(self, username: str, password: str) -> QgsAuthMethodConfig:
+        """
+        Create QgsAuthMethodConfig for OAuth2 authentification
+
+        Args:
+            username: (str) username
+            password: (str) password
+
+        Returns: QgsAuthMethodConfig (warning : config must be added to QgsApplication.authManager() before use
+
+        """
+        newAU = QgsAuthMethodConfig()
+
+        newAU.setId(QgsApplication.authManager().uniqueConfigId())
+        newAU.setName(CFG_AUTH_NAME)
+        newAU.setMethod('OAuth2')
+
+        # Create config map for oauth2config
+        # Integer index match enum defined in QgsAuthOAuth2Config (not available in python binding)
+        configured_map = {"accessMethod": 0,  # QgsAuthOAuth2Config.AccessMethod.Header
+                          "grantFlow": 2,  # QgsAuthOAuth2Config.GrantFlow.ResourceOwner
+                          "configType": 1,  # QgsAuthOAuth2Config.ConfigType.Custom
+                          "tokenUrl": self.url_authentication_token,
+                          "clientId": self.auth_client_id,
+                          "username": username,
+                          "password": password,
+                          "redirectPort": 7070,
+                          "persistToken": False,
+                          "requestTimeout": 30,
+                          "version": 1
+                          }
+
+        # We need to use a string for config_map
+        config_str = str(configured_map)
+
+        # ' not supported by pyqgis, replace by "
+        config_str = config_str.replace("'", '"')
+
+        # replace also boolean str
+        config_str = config_str.replace("False", "false")
+        config_str = config_str.replace("True", "true")
+
+        config_map = {'oauth2config': config_str}
+        newAU.setConfigMap(config_map)
+
+        return newAU
 
 
 class PlgOptionsManager:

@@ -18,7 +18,6 @@ from qgis.PyQt.QtCore import QByteArray, QCoreApplication
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # project
-from vectiler.__about__ import __title__, __version__
 from vectiler.toolbelt.log_handler import PlgLogger
 from vectiler.toolbelt.preferences import PlgOptionsManager
 
@@ -76,7 +75,7 @@ class NetworkRequestsManager:
         """
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req_get = QNetworkRequest(QUrl(f"{self.plg_settings.url_api_entrepot}api/v1/users/me"))
-        resp = self.ntwk_requester_blk.get(req_get)
+        resp = self.ntwk_requester_blk.get(req_get, forceRefresh=True)
 
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:

@@ -3,13 +3,10 @@
 """
     Main plugin module.
 """
-import os
-import sys
 # PyQGIS
 from qgis.core import QgsApplication
 from qgis.gui import QgisInterface
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QPushButton, QToolBar
 from qgis.utils import showPluginHelp
 from qgis.PyQt.QtGui import QIcon
@@ -20,13 +17,6 @@ from vectiler.gui.dlg_settings import PlgOptionsFactory
 from vectiler.processing import VectilerProvider
 from vectiler.toolbelt import PlgLogger, PlgTranslator
 from vectiler.gui.dlg_authentication import AuthenticationDialog
-
-
-
-
-# ############################################################################
-# ########## Classes ###############
-# ##################################
 
 
 class VectilerPlugin:
@@ -57,13 +47,6 @@ class VectilerPlugin:
         # settings page within the QGIS preferences menu
         self.options_factory = PlgOptionsFactory()
         self.iface.registerOptionsWidgetFactory(self.options_factory)
-
-
-        # functions to keep the windows open
-        def import_data ():
-            self.window = WzdImport()
-            self.window.show()
-
 
         # -- Actions
         self.action_help = QAction(
@@ -102,12 +85,8 @@ class VectilerPlugin:
 
         icon = QIcon(QgsApplication.iconPath("console/iconSearchEditorConsole.svg"))
         self.btn_import = QPushButton(icon, "import data")
-        self.btn_import.clicked.connect(import_data)
+        self.btn_import.clicked.connect(self.import_data)
         self.toolbar.addWidget(self.btn_import)
-        self.window = WzdImport(self.iface.mainWindow())
-
-
-
 
     def initProcessing(self):
         self.provider = VectilerProvider()
@@ -129,6 +108,14 @@ class VectilerPlugin:
         # remove actions
         del self.action_settings
         del self.action_help
+
+    def import_data(self):
+        """
+        Open import data Wizard
+
+        """
+        wizard = WzdImport(self.iface.mainWindow())
+        wizard.exec()
 
     def authentication(self):
         """

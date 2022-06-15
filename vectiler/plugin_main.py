@@ -3,8 +3,6 @@
 """
     Main plugin module.
 """
-
-
 # PyQGIS
 from qgis.core import QgsApplication, QgsProject
 from qgis.gui import QgisInterface
@@ -18,6 +16,7 @@ from vectiler.__about__ import __title__
 from vectiler.gui.dlg_authentication import AuthenticationDialog
 from vectiler.gui.dlg_settings import PlgOptionsFactory
 from vectiler.gui.wzd_configuration import WzdConfiguration
+from vectiler.gui.wzd_import import WzdImport
 from vectiler.processing import VectilerProvider
 from vectiler.toolbelt import PlgLogger, PlgTranslator
 
@@ -96,6 +95,9 @@ class VectilerPlugin:
         self.initProcessing()
 
         icon = QIcon(QgsApplication.iconPath("console/iconSearchEditorConsole.svg"))
+        self.btn_import = QPushButton(icon, "import data")
+        self.btn_import.clicked.connect(self.import_data)
+        self.toolbar.addWidget(self.btn_import)
         self.btn_configuration = QPushButton(icon, "configuration data")
         self.btn_configuration.clicked.connect(configuration_data)
         self.toolbar.addWidget(self.btn_configuration)
@@ -121,6 +123,14 @@ class VectilerPlugin:
         # remove actions
         del self.action_settings
         del self.action_help
+
+    def import_data(self):
+        """
+        Open import data Wizard
+
+        """
+        wizard = WzdImport(self.iface.mainWindow())
+        wizard.exec()
 
     def authentication(self):
         """

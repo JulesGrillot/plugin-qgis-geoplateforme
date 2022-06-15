@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>wzd</class>
+ <widget class="QWizard" name="wzd">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>696</width>
+    <height>406</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>350</width>
+    <height>250</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>700</width>
+    <height>600</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>import data</string>
+  </property>
+  <property name="windowOpacity">
+   <double>0.960000000000000</double>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">font: 75 10pt &quot;Ubuntu Condensed&quot;;</string>
+  </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
+  <widget class="QWizardPage" name="qwp1">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QLabel" name="lbl_files_put">
+      <property name="styleSheet">
+       <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+      </property>
+      <property name="text">
+       <string>Récuperez votre fichier de données</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QgsFileWidget" name="flw_files_put">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="inputMethodHints">
+       <set>Qt::ImhLatinOnly</set>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="phb_ok">
+      <property name="text">
+       <string>ok</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="lbl_files_summary">
+      <property name="minimumSize">
+       <size>
+        <width>200</width>
+        <height>10</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>350</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+      </property>
+      <property name="text">
+       <string>Fichiers à importer :</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QListWidget" name="lvw_import_data">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="tabKeyNavigation">
+       <bool>true</bool>
+      </property>
+      <property name="dragEnabled">
+       <bool>false</bool>
+      </property>
+      <property name="dragDropMode">
+       <enum>QAbstractItemView::DragDrop</enum>
+      </property>
+      <property name="defaultDropAction">
+       <enum>Qt::ActionMask</enum>
+      </property>
+      <property name="selectionRectVisible">
+       <bool>false</bool>
+      </property>
+      <property name="currentRow">
+       <number>-1</number>
+      </property>
+      <property name="sortingEnabled">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="qwp2">
+   <layout class="QVBoxLayout" name="verticalLayout_3">
+    <item>
+     <widget class="QLabel" name="lbl_data">
+      <property name="minimumSize">
+       <size>
+        <width>100</width>
+        <height>10</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>350</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+      </property>
+      <property name="text">
+       <string>Nommez votre donnée :  </string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="lne_data">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="inputMethodHints">
+       <set>Qt::ImhLatinOnly|Qt::ImhUrlCharactersOnly</set>
+      </property>
+      <property name="dragEnabled">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="lne_projection">
+      <property name="minimumSize">
+       <size>
+        <width>250</width>
+        <height>10</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>350</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+      </property>
+      <property name="text">
+       <string>Indiquez la projection de vos données :</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QgsProjectionSelectionWidget" name="psw_projection"/>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>phb_ok</tabstop>
+  <tabstop>lvw_import_data</tabstop>
+  <tabstop>psw_projection</tabstop>
+  <tabstop>lne_data</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

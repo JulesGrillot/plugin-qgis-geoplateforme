@@ -9,6 +9,7 @@
 # ##################################
 
 # Standard library
+import json
 import logging
 
 # PyQGIS
@@ -26,6 +27,7 @@ from vectiler.toolbelt.preferences import PlgOptionsManager
 # ##################################
 
 logger = logging.getLogger(__name__)
+
 
 # ############################################################################
 # ########## Classes ###############
@@ -82,7 +84,7 @@ class NetworkRequestsManager:
             self.log(
                 f"Error while getting user informations: {self.ntwk_requester_blk.errorMessage()}",
                 log_level=2,
-                push=True,
+                push=0,
             )
             return self.ntwk_requester_blk.errorMessage()
         # check response type
@@ -113,7 +115,12 @@ class NetworkRequestsManager:
         auth_manager.loadAuthenticationConfig(
             self.plg_settings.qgis_auth_id, conf, True
         )
-        if conf.id():
+
+        if 'oauth2config' in conf.configMap().keys():
+            data = json.loads(conf.configMap()['oauth2config'])
+            username = data["username"]
+            password = data["password"]
+        else:
             username = conf.config("username", "")
             password = conf.config("password", "")
 

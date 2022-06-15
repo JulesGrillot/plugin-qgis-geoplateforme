@@ -9,6 +9,7 @@
 # ##################################
 
 # Standard library
+import json
 import logging
 
 # PyQGIS
@@ -18,7 +19,6 @@ from qgis.PyQt.QtCore import QByteArray, QCoreApplication
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # project
-from vectiler.__about__ import __title__, __version__
 from vectiler.toolbelt.log_handler import PlgLogger
 from vectiler.toolbelt.preferences import PlgOptionsManager
 
@@ -27,6 +27,7 @@ from vectiler.toolbelt.preferences import PlgOptionsManager
 # ##################################
 
 logger = logging.getLogger(__name__)
+
 
 # ############################################################################
 # ########## Classes ###############
@@ -76,14 +77,14 @@ class NetworkRequestsManager:
         """
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req_get = QNetworkRequest(QUrl(f"{self.plg_settings.url_api_entrepot}api/v1/users/me"))
-        resp = self.ntwk_requester_blk.get(req_get)
+        resp = self.ntwk_requester_blk.get(req_get, forceRefresh=True)
 
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
             self.log(
                 f"Error while getting user informations: {self.ntwk_requester_blk.errorMessage()}",
                 log_level=2,
-                push=True,
+                push=0,
             )
             return self.ntwk_requester_blk.errorMessage()
         # check response type
@@ -114,7 +115,12 @@ class NetworkRequestsManager:
         auth_manager.loadAuthenticationConfig(
             self.plg_settings.qgis_auth_id, conf, True
         )
-        if conf.id():
+
+        if 'oauth2config' in conf.configMap().keys():
+            data = json.loads(conf.configMap()['oauth2config'])
+            username = data["username"]
+            password = data["password"]
+        else:
             username = conf.config("username", "")
             password = conf.config("password", "")
 

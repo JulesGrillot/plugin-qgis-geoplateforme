@@ -52,6 +52,11 @@ class PlgSettingsStructure:
         """Return the URL to redirect to the authentication service."""
         return f"{self.url_auth}login/check"
 
+    @property
+    def base_url_api_entrepot(self) -> str:
+        """Return the URL for API entrepot"""
+        return f"{self.url_api_entrepot}api/v1"
+
     def create_auth_config(self, username: str, password: str) -> QgsAuthMethodConfig:
         """
         Create QgsAuthMethodConfig for OAuth2 authentification

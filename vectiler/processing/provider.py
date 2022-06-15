@@ -16,6 +16,7 @@ from vectiler.__about__ import DIR_PLUGIN_ROOT, __version__
 # ########## Classes ###############
 # ##################################
 from vectiler.processing.check_layer import CheckLayerAlgorithm
+from vectiler.processing.upload_creation import UploadCreationAlgorithm
 
 
 class VectilerProvider(QgsProcessingProvider):
@@ -26,6 +27,7 @@ class VectilerProvider(QgsProcessingProvider):
     def loadAlgorithms(self):
         """Loads all algorithms belonging to this provider."""
         self.addAlgorithm(CheckLayerAlgorithm())
+        self.addAlgorithm(UploadCreationAlgorithm())
         pass
 
     def id(self) -> str:

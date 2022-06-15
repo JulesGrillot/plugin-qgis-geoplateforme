@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Wizard</class>
+ <widget class="QWizard" name="Wizard">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>500</width>
+    <height>360</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Data configuration</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">font: 75 10pt &quot;Ubuntu Condensed&quot;;</string>
+  </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
+  <widget class="QWizardPage" name="wizardPage1">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QLabel" name="lbl_flux">
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+      </property>
+      <property name="text">
+       <string>Nommez votre flux :  </string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="lne_flux">
+      <property name="inputMethodHints">
+       <set>Qt::ImhLatinOnly</set>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="dragEnabled">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="lbl_zoom">
+      <property name="styleSheet">
+       <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+      </property>
+      <property name="text">
+       <string>Choisissez le niveau de zoom</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QgsScaleRangeWidget" name="srw_zoom">
+      <property name="styleSheet">
+       <string notr="true">font: 75 8pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="wizardPage2">
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="0">
+     <widget class="QLabel" name="lbl_tattributes">
+      <property name="maximumSize">
+       <size>
+        <width>300</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+      </property>
+      <property name="text">
+       <string>Choisissez les attributs de la table :</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QListWidget" name="lwg_attribut">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsScaleRangeWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalerangewidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>lne_flux</tabstop>
+  <tabstop>lwg_attribut</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

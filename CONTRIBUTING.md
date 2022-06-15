@@ -18,3 +18,17 @@ Make sure your code *roughly* follows [PEP-8](https://www.python.org/dev/peps/pe
 - formatting: [black](https://black.readthedocs.io/) is used to automatically format the code without debate.
 - sorted imports: [isort](https://pycqa.github.io/isort/) is used to sort imports
 - static analisis: [flake8](https://flake8.pycqa.org/en/latest/) is used to catch some dizziness and keep the source code healthy.
+
+## Branching
+
+The pattern is: `{category}/{slugified-description}`. Where:
+
+- `category` is the type of work. Can be: `feature`, `bug`, `tooling`, `refactor`, `test`, `chore`, `release`, `hotfix`, `docs`, `ci`, `deploy` or `release-candidate`.
+- `slugified-description` is the description of the work, slugified.
+
+Example: `feature/authentication-logic`
+
+### Special branches
+
+- `master`: the main branch.
+- `archive/*`: branches used to store legacy code for history reasons. Do not use them for new work.

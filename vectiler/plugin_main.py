@@ -3,13 +3,14 @@
 """
     Main plugin module.
 """
-
+import os
+import sys
 # PyQGIS
 from qgis.core import QgsApplication
 from qgis.gui import QgisInterface
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction,QPushButton,QToolBar
+from qgis.PyQt.QtWidgets import QAction, QPushButton, QToolBar
 from qgis.utils import showPluginHelp
 from qgis.PyQt.QtGui import QIcon
 # project
@@ -18,6 +19,8 @@ from vectiler.gui.wzd_import import WzdImport
 from vectiler.gui.dlg_settings import PlgOptionsFactory
 from vectiler.processing import VectilerProvider
 from vectiler.toolbelt import PlgLogger, PlgTranslator
+from vectiler.gui.dlg_authentication import AuthenticationDialog
+
 
 
 
@@ -45,6 +48,9 @@ class VectilerPlugin:
             QCoreApplication.installTranslator(translator)
         self.tr = plg_translation_mngr.tr
 
+        self.toolbar = None
+        self.dlg_authentication = None
+
     def initGui(self):
         """Set up plugin UI elements."""
 
@@ -53,12 +59,12 @@ class VectilerPlugin:
         self.iface.registerOptionsWidgetFactory(self.options_factory)
 
 
-        # functions to keep the windows open 
+        # functions to keep the windows open
         def import_data ():
             self.window = WzdImport()
             self.window.show()
-            
-         
+
+
         # -- Actions
         self.action_help = QAction(
             QIcon(":/images/themes/default/mActionHelpContents.svg"),
@@ -82,8 +88,14 @@ class VectilerPlugin:
         # -- Menu
         self.iface.addPluginToMenu(__title__, self.action_settings)
         self.iface.addPluginToMenu(__title__, self.action_help)
-        self.toolbar_import = QToolBar("import data")
-        self.iface.addToolBar(self.toolbar_import)
+        self.toolbar = QToolBar("Vectiler toolbar")
+        self.iface.addToolBar(self.toolbar)
+
+        self.dlg_authentication = AuthenticationDialog(self.iface.mainWindow())
+        icon = QIcon(QgsApplication.iconPath("console/iconShowEditorConsole.svg"))
+        self.btn_autentification = QPushButton(icon, "Login")
+        self.btn_autentification.clicked.connect(self.authentication)
+        self.toolbar.addWidget(self.btn_autentification)
 
         # -- Processing
         self.initProcessing()
@@ -91,7 +103,7 @@ class VectilerPlugin:
         icon = QIcon(QgsApplication.iconPath("console/iconSearchEditorConsole.svg"))
         self.btn_import = QPushButton(icon, "import data")
         self.btn_import.clicked.connect(import_data)
-        self.toolbar_import.addWidget(self.btn_import)
+        self.toolbar.addWidget(self.btn_import)
         self.window = WzdImport(self.iface.mainWindow())
 
 
@@ -107,7 +119,7 @@ class VectilerPlugin:
         self.iface.removePluginMenu(__title__, self.action_help)
         self.iface.removePluginMenu(__title__, self.action_settings)
         # remove toolbar :
-        self.toolbar_import.deleteLater()
+        self.toolbar.deleteLater()
         # -- Clean up preferences panel in QGIS settings
         self.iface.unregisterOptionsWidgetFactory(self.options_factory)
 
@@ -117,6 +129,14 @@ class VectilerPlugin:
         # remove actions
         del self.action_settings
         del self.action_help
+
+    def authentication(self):
+        """
+        Open authentification dialog
+
+        """
+        if self.dlg_authentication is not None:
+            self.dlg_authentication.exec()
 
     def run(self):
         """Main process.

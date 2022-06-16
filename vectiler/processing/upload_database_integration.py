@@ -2,6 +2,7 @@ from PyQt5.QtCore import QCoreApplication
 from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingParameterString,
+    QgsProcessingException
 )
 
 from vectiler.api.processing import ProcessingRequestManager
@@ -107,12 +108,12 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
             stored_data_manager.add_tags(datastore=datastore, stored_data=stored_data_val["_id"], tags=tags)
 
         except ProcessingRequestManager.UnavailableProcessingException as exc:
-            feedback.reportError(f"Can't retrieve processing for database integration : {exc}")
+            raise QgsProcessingException(f"Can't retrieve processing for database integration : {exc}")
         except ProcessingRequestManager.CreateProcessingException as exc:
-            feedback.reportError(f"Can't create processing execution for database integration : {exc}")
+            raise QgsProcessingException(f"Can't create processing execution for database integration : {exc}")
         except ProcessingRequestManager.LaunchExecutionException as exc:
-            feedback.reportError(f"Can't launch execution for database integration : {exc}")
+            raise QgsProcessingException(f"Can't launch execution for database integration : {exc}")
         except StoredDataRequestManager.AddTagException as exc:
-            feedback.reportError(f"Can't add tags to stored data for database integration : {exc}")
+            raise QgsProcessingException(f"Can't add tags to stored data for database integration : {exc}")
 
         return {self.CREATED_STORED_DATA_ID: stored_data_id}

@@ -43,7 +43,6 @@ class WzdImport(QWizard):
 
         """
         for x in self.lvw_import_data.selectedIndexes():
-
             row = x.row()
             item = self.lvw_import_data.takeItem(row)
             del item
@@ -55,7 +54,6 @@ class WzdImport(QWizard):
 
         """
         savepath = self.flw_files_put.filePath()
-        print(savepath)
         items = self.lvw_import_data.findItems(savepath, QtCore.Qt.MatchCaseSensitive)
 
         if QtCore.QFileInfo(savepath).exists():

@@ -43,19 +43,16 @@ class VectilerPlugin:
         self.toolbar = None
         self.dlg_authentication = None
 
+        self.btn_autentification = None
+        self.btn_import = None
+        self.btn_configuration = None
+
     def initGui(self):
         """Set up plugin UI elements."""
 
         # settings page within the QGIS preferences menu
         self.options_factory = PlgOptionsFactory()
         self.iface.registerOptionsWidgetFactory(self.options_factory)
-
-        # functions to keep the windows open
-
-        def configuration_data():
-            self.project = QgsProject.instance()
-            self.window = WzdConfiguration()
-            self.window.show()
 
         # -- Actions
         self.action_help = QAction(
@@ -80,8 +77,6 @@ class VectilerPlugin:
         # -- Menu
         self.iface.addPluginToMenu(__title__, self.action_settings)
         self.iface.addPluginToMenu(__title__, self.action_help)
-        self.toolbar_import = QToolBar("configuration data")
-        self.iface.addToolBar(self.toolbar_import)
         self.toolbar = QToolBar("Vectiler toolbar")
         self.iface.addToolBar(self.toolbar)
 
@@ -99,7 +94,7 @@ class VectilerPlugin:
         self.btn_import.clicked.connect(self.import_data)
         self.toolbar.addWidget(self.btn_import)
         self.btn_configuration = QPushButton(icon, "configuration data")
-        self.btn_configuration.clicked.connect(configuration_data)
+        self.btn_configuration.clicked.connect(self.configuration_data)
         self.toolbar.addWidget(self.btn_configuration)
 
     def initProcessing(self):
@@ -112,7 +107,6 @@ class VectilerPlugin:
         self.iface.removePluginMenu(__title__, self.action_help)
         self.iface.removePluginMenu(__title__, self.action_settings)
         # remove toolbar :
-        self.toolbar_import.deleteLater()
         self.toolbar.deleteLater()
         # -- Clean up preferences panel in QGIS settings
         self.iface.unregisterOptionsWidgetFactory(self.options_factory)
@@ -123,6 +117,14 @@ class VectilerPlugin:
         # remove actions
         del self.action_settings
         del self.action_help
+
+    def configuration_data(self):
+        """
+        Open configuration Wizard
+
+        """
+        wizard = WzdConfiguration(self.iface.mainWindow())
+        wizard.exec()
 
     def import_data(self):
         """
@@ -139,14 +141,6 @@ class VectilerPlugin:
         """
         if self.dlg_authentication is not None:
             self.dlg_authentication.exec()
-
-    def configuration(self):
-        """
-        Open configuration dialog
-
-        """
-        if self.wzd_configuration is not None:
-            self.wzd_configuration.exec()
 
     def run(self):
         """Main process.

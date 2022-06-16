@@ -8,6 +8,7 @@ from PyQt5.QtCore import QUrl, QByteArray, QFile, QIODevice, QEventLoop
 from PyQt5.QtNetwork import QNetworkRequest, QHttpMultiPart, QHttpPart, QNetworkAccessManager
 from qgis.core import QgsBlockingNetworkRequest, QgsApplication, QgsCoordinateReferenceSystem
 
+from vectiler.api.check import Check, Execution
 from vectiler.api.client import NetworkRequestsManager
 from vectiler.toolbelt import PlgLogger, PlgOptionsManager
 
@@ -23,6 +24,9 @@ class Upload:
 
 
 class UploadRequestManager:
+    class UnavailableUploadException(Exception):
+        pass
+
     class UploadCreationException(Exception):
         pass
 
@@ -53,6 +57,88 @@ class UploadRequestManager:
 
         """
         return f"{self.plg_settings.base_url_api_entrepot}/datastores/{datastore}/uploads"
+
+    def get_upload_status(self, datastore: str, upload: str) -> str:
+        """
+        Get upload status.
+
+        Args:
+            datastore: (str) datastore id
+            upload: (str) upload id
+
+        Returns: (str) Upload status if upload available, raise UnavailableUploadException otherwise
+
+        """
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+        req = QNetworkRequest(QUrl(f'{self.get_base_url(datastore)}/{upload}'))
+
+        # headers
+        req.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+
+        # send request
+        resp = self.ntwk_requester_blk.get(req, forceRefresh=True)
+
+        # check response
+        if resp != QgsBlockingNetworkRequest.NoError:
+            raise self.UnavailableUploadException(
+                f"Error while fetching upload : {self.ntwk_requester_blk.errorMessage()}")
+
+        # check response
+        req_reply = self.ntwk_requester_blk.reply()
+        if not req_reply.rawHeader(b"Content-Type") == "application/json; charset=utf-8":
+            raise self.UnavailableUploadException(
+                "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
+                    req_reply.rawHeader(b"Content-type")
+                )
+            )
+
+        data = json.loads(req_reply.content().data().decode("utf-8"))
+        return data["status"]
+
+    def get_upload_checks_execution(self, datastore: str, upload: str) -> {str: [Execution]}:
+        """
+        Get upload checks execution.
+
+        Args:
+            datastore: (str) datastore id
+            upload: (str) upload id
+
+        Returns: {str:[Execution] Upload checks execution map (key : execution status, value : Execution list)
+         if upload available, raise UnavailableUploadException otherwise
+        """
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+        req = QNetworkRequest(QUrl(f'{self.get_base_url(datastore)}/{upload}/checks'))
+
+        # headers
+        req.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+
+        # send request
+        resp = self.ntwk_requester_blk.get(req, forceRefresh=True)
+
+        # check response
+        if resp != QgsBlockingNetworkRequest.NoError:
+            raise self.UnavailableUploadException(
+                f"Error while fetching upload : {self.ntwk_requester_blk.errorMessage()}")
+
+        # check response
+        req_reply = self.ntwk_requester_blk.reply()
+        if not req_reply.rawHeader(b"Content-Type") == "application/json; charset=utf-8":
+            raise self.UnavailableUploadException(
+                "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
+                    req_reply.rawHeader(b"Content-type")
+                )
+            )
+
+        data = json.loads(req_reply.content().data().decode("utf-8"))
+        exec_map = {}
+        for key, executions in data.items():
+            exec_map[key] = []
+            for execution in executions:
+                exec_map[key].append(Execution(id=execution["_id"], status=execution["status"],
+                                               check=Check(id=execution["check"]["_id"],
+                                                           name=execution["check"]["name"]))
+                                     )
+        return exec_map
 
     def create_upload(self, datastore: str,
                       name: str,

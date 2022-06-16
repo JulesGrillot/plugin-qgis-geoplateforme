@@ -3,6 +3,7 @@
 import os
 from functools import partial
 
+from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWizardPage, QMessageBox
 from qgis.PyQt import uic
@@ -17,6 +18,8 @@ from qgis.core import (
     QgsProcessingAlgorithm
 )
 
+from vectiler.api.upload import UploadRequestManager
+from vectiler.gui.mdl_execution_map import ExecutionMapTreeModel
 from vectiler.gui.qwp_upload_edition import UploadEditionPageWizard
 from vectiler.processing import VectilerProvider
 from vectiler.processing.upload_creation import UploadCreationAlgorithm
@@ -38,14 +41,25 @@ class UploadCreationPageWizard(QWizardPage):
 
         uic.loadUi(os.path.join(os.path.dirname(__file__), "qwp_upload_creation.ui"), self)
 
+        # Task and feedback for upload creation
         self.upload_task = None
         self.upload_feedback = QgsProcessingFeedback()
 
+        # Task and feedback for database integration
         self.integrate_task = None
         self.integrate_feedback = QgsProcessingFeedback()
 
+        # Processing results
         self.created_upload_id = ""
         self.created_stored_data_id = ""
+
+        # Timer for upload check after upload creation
+        self.upload_check_timer = QTimer(self)
+        self.upload_check_timer.timeout.connect(self.check_upload_status)
+
+        # Tree model for upload checks display
+        self.mdl_execution_map = ExecutionMapTreeModel(self)
+        self.treeview_execution_map.setModel(self.mdl_execution_map)
 
         self.initializePage()
 
@@ -96,11 +110,10 @@ class UploadCreationPageWizard(QWizardPage):
         self._disconnect_btn(self.btn_upload)
         if successful:
             self.created_upload_id = results[UploadCreationAlgorithm.CREATED_UPLOAD_ID]
-            self.btn_integrate.setEnabled(True)
-            self.btn_integrate.setToolTip("")
-
             self.btn_upload.setEnabled(False)
             self.btn_upload.setToolTip(self.tr("Upload already created"))
+            # Run timer for upload check
+            self.upload_check_timer.start(300)
         else:
             self.btn_upload.setIcon(QIcon(QgsApplication.iconPath('mActionStart.svg')))
             self.btn_upload.clicked.connect(self.upload)
@@ -109,6 +122,39 @@ class UploadCreationPageWizard(QWizardPage):
                                  self.tr("Check details for more informations"))
             msgBox.setDetailedText(self.upload_feedback.textLog())
             msgBox.exec()
+
+    def check_upload_status(self):
+        """
+        Check upload status and run database integration if upload closed
+
+        """
+        if self.created_upload_id:
+            try:
+                manager = UploadRequestManager()
+                datastore_id = self.cbx_datastore.current_datastore_id()
+                status = manager.get_upload_status(datastore=datastore_id, upload=self.created_upload_id)
+
+                # Run integration and stop timer if upload closed
+                if status == "CLOSED":
+                    self.upload_check_timer.stop()
+                    self.btn_integrate.setEnabled(True)
+                    self.btn_integrate.setToolTip("")
+                    self.integrate()
+
+                execution_map = manager.get_upload_checks_execution(datastore=datastore_id,
+                                                                    upload=self.created_upload_id)
+                self.mdl_execution_map.set_execution_map(execution_map)
+
+                # Expand all items
+                self.treeview_execution_map.expandToDepth(-1)
+                self.treeview_execution_map.resizeColumnToContents(0)
+
+            except UploadRequestManager.UnavailableUploadException as exc:
+                msgBox = QMessageBox(QMessageBox.Warning,
+                                     self.tr("Upload check status failed"),
+                                     self.tr("Check details for more informations"))
+                msgBox.setDetailedText(str(exc))
+                msgBox.exec()
 
     def integrate(self):
         """

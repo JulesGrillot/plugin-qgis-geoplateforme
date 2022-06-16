@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
-    <height>360</height>
+    <width>441</width>
+    <height>492</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,6 +21,34 @@
   </property>
   <widget class="QWizardPage" name="wizardPage1">
    <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QLabel" name="lbl_datastore">
+      <property name="styleSheet">
+       <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+      </property>
+      <property name="text">
+       <string>Espace de travail</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="DatastoreComboBox" name="cbx_datastore"/>
+    </item>
+    <item>
+     <widget class="QLabel" name="lbl_stored_data">
+      <property name="styleSheet">
+       <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+      </property>
+      <property name="text">
+       <string>Jeux de données</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="StoredDataComboBox" name="cbx_stored_data"/>
+    </item>
     <item>
      <widget class="QLabel" name="lbl_flux">
       <property name="autoFillBackground">
@@ -106,6 +134,16 @@ color: rgb(52, 101, 164);</string>
    <class>QgsScaleRangeWidget</class>
    <extends>QWidget</extends>
    <header>qgsscalerangewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DatastoreComboBox</class>
+   <extends>QComboBox</extends>
+   <header>vectiler.gui.cbx_datastore</header>
+  </customwidget>
+  <customwidget>
+   <class>StoredDataComboBox</class>
+   <extends>QComboBox</extends>
+   <header>vectiler.gui.cbx_stored_data</header>
   </customwidget>
  </customwidgets>
  <tabstops>

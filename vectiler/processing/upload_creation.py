@@ -7,7 +7,8 @@ from qgis.core import (
     QgsProcessingParameterMultipleLayers,
     QgsProcessingParameterString,
     QgsProcessingParameterCrs,
-    QgsProcessingFeedback
+    QgsProcessingFeedback,
+    QgsProcessingException
 )
 
 from vectiler.api.client import NetworkRequestsManager
@@ -111,13 +112,13 @@ class UploadCreationAlgorithm(QgsProcessingAlgorithm):
                 # Get create upload id
                 upload_id = upload.id
             except UploadRequestManager.UploadCreationException as exc:
-                feedback.reportError(f"Upload creation failed : {exc}")
+                raise QgsProcessingException(f"Upload creation failed : {exc}")
             except UploadRequestManager.FileUploadException as exc:
-                feedback.reportError(f"File upload failed : {exc}")
+                raise QgsProcessingException(f"File upload failed : {exc}")
             except UploadRequestManager.UploadClosingException as exc:
-                feedback.reportError(f"Upload closing failed : {exc}")
+                raise QgsProcessingException(f"Upload closing failed : {exc}")
         else:
-            feedback.reportError(f"Can't define used datastore")
+            raise QgsProcessingException(f"Can't define used datastore")
 
         return {self.CREATED_UPLOAD_ID: upload_id, self.DATASTORE: datastore}
 

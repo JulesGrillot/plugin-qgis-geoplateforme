@@ -26,6 +26,13 @@ class StoredData:
                         attributes.append(field)
         return attributes
 
+    def get_tables(self) -> [str]:
+        tables = []
+        if self.type_infos:
+            table_relations = [relation for relation in self.type_infos["relations"] if relation["type"] == "TABLE"]
+            tables = [relation["name"] for relation in table_relations]
+        return tables
+
 
 class StoredDataRequestManager:
     class ReadStoredDataException(Exception):

@@ -16,6 +16,7 @@ from vectiler.__about__ import DIR_PLUGIN_ROOT, __version__
 # ########## Classes ###############
 # ##################################
 from vectiler.processing.check_layer import CheckLayerAlgorithm
+from vectiler.processing.tile_creation import TileCreationAlgorithm
 from vectiler.processing.upload_creation import UploadCreationAlgorithm
 from vectiler.processing.upload_database_integration import UploadDatabaseIntegrationAlgorithm
 
@@ -30,7 +31,7 @@ class VectilerProvider(QgsProcessingProvider):
         self.addAlgorithm(CheckLayerAlgorithm())
         self.addAlgorithm(UploadCreationAlgorithm())
         self.addAlgorithm(UploadDatabaseIntegrationAlgorithm())
-        pass
+        self.addAlgorithm(TileCreationAlgorithm())
 
     def id(self) -> str:
         """Unique provider id, used for identifying it. This string should be unique, \

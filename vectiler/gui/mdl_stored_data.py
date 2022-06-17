@@ -31,7 +31,7 @@ class StoredDataListModel(QStandardItemModel):
 
         manager = StoredDataRequestManager()
         try:
-            stored_datas = manager.get_stored_data(datastore)
+            stored_datas = manager.get_stored_data_list(datastore)
             for stored_data in stored_datas:
                 self.insert_stored_data(stored_data)
         except StoredDataRequestManager.ReadStoredDataException as exc:

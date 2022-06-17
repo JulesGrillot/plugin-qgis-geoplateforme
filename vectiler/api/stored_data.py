@@ -14,6 +14,17 @@ class StoredData:
     name: str
     type: str
     tags: {} = None
+    type_infos: {} = None
+
+    def get_fields(self) -> [str]:
+        attributes = []
+        if self.type_infos:
+            table_relations = [relation for relation in self.type_infos["relations"] if relation["type"] == "TABLE"]
+            for relation in table_relations:
+                for field in relation["attributes"].keys():
+                    if field != "fid" and field != "geom":
+                        attributes.append(field)
+        return attributes
 
 
 class StoredDataRequestManager:
@@ -47,7 +58,7 @@ class StoredDataRequestManager:
         self.ntwk_requester_blk = QgsBlockingNetworkRequest()
         self.plg_settings = PlgOptionsManager.get_plg_settings()
 
-    def get_stored_data(self, datastore: str) -> [StoredData]:
+    def get_stored_data_list(self, datastore: str) -> [StoredData]:
         """
         Get list of stored data
 
@@ -80,22 +91,37 @@ class StoredDataRequestManager:
             )
 
         data = json.loads(req_reply.content().data().decode("utf-8"))
+        stored_datas_id = [val["_id"] for val in data]
 
-        stored_datas = [StoredData(id=val["_id"], name=val["name"], type=val["type"]) for val in data]
-        for stored_data in stored_datas:
-            stored_data.tags = self.get_tags(datastore, stored_data.id)
+        return [self.get_stored_data(datastore, stored_data) for stored_data in stored_datas_id]
 
-        return stored_datas
-
-    def get_tags(self, datastore: str, stored_data: str) -> dict:
+    def get_stored_data(self, datastore: str, stored_data: str) -> StoredData:
         """
-        Get tag of stored data
+        Get stored data by id
+
+        Args:
+            datastore: (str) datastore id
+            stored_data: (str) stored dat id
+
+        Returns: stored data, raise ReadStoredDataException otherwise
+        """
+        data = self.get_stored_data_json(datastore, stored_data)
+        result = StoredData(id=data["_id"], name=data["name"], type=data["type"])
+        if "tags" in data:
+            result.tags = data["tags"]
+        if "type_infos" in data:
+            result.type_infos = data["type_infos"]
+        return result
+
+    def get_stored_data_json(self, datastore: str, stored_data: str) -> dict:
+        """
+        Get dict values of stored data
 
         Args:
             datastore: (str) datastore id
             stored_data: (str) stored data id
 
-        Returns: map of stored data tags, raise ReadStoredDataException otherwise
+        Returns: dict values of stored data, raise ReadStoredDataException otherwise
         """
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(QUrl(f'{self.get_base_url(datastore)}/{stored_data}'))
@@ -120,8 +146,7 @@ class StoredDataRequestManager:
                 )
             )
 
-        data = json.loads(req_reply.content().data().decode("utf-8"))
-        return data["tags"]
+        return json.loads(req_reply.content().data().decode("utf-8"))
 
     def add_tags(self, datastore: str, stored_data: str, tags: dict) -> None:
         """

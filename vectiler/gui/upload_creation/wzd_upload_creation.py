@@ -1,5 +1,5 @@
 # standard
-from PyQt5.QtWidgets import QWizard
+from PyQt5.QtWidgets import QWizard, QDialog
 
 # Plugin
 from vectiler.gui.upload_creation.qwp_upload_creation import UploadCreationPageWizard
@@ -22,3 +22,9 @@ class UploadCreationWizard(QWizard):
         self.qwp_upload_creation = UploadCreationPageWizard(qwp_upload_edition=self.qwp_upload_edition, parent=self)
         self.addPage(self.qwp_upload_edition)
         self.addPage(self.qwp_upload_creation)
+        self.setOption(QWizard.NoCancelButtonOnLastPage, True)
+
+    def accept(self) -> None:
+        super().accept()
+        if self.result() == QDialog.Accepted:
+            self.restart()

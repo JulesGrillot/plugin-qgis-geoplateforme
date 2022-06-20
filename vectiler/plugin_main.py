@@ -4,19 +4,19 @@
     Main plugin module.
 """
 # PyQGIS
-from qgis.core import QgsApplication, QgsProject
+from qgis.core import QgsApplication
 from qgis.gui import QgisInterface
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction, QPushButton, QToolBar
+from qgis.PyQt.QtWidgets import QAction, QToolBar
 from qgis.utils import showPluginHelp
 
 # project
-from vectiler.__about__ import __title__
+from vectiler.__about__ import __title__, DIR_PLUGIN_ROOT
 from vectiler.gui.dlg_authentication import AuthenticationDialog
 from vectiler.gui.dlg_settings import PlgOptionsFactory
-from vectiler.gui.wzd_configuration import WzdConfiguration
-from vectiler.gui.wzd_import import WzdImport
+from vectiler.gui.tile_creation.wzd_tile_creation import TileCreationWizard
+from vectiler.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
 from vectiler.processing import VectilerProvider
 from vectiler.toolbelt import PlgLogger, PlgTranslator
 
@@ -40,12 +40,23 @@ class VectilerPlugin:
             QCoreApplication.installTranslator(translator)
         self.tr = plg_translation_mngr.tr
 
+        self.options_factory = None
+        self.action_help = None
+        self.action_settings = None
+
         self.toolbar = None
         self.dlg_authentication = None
+
+        self.action_authentication = None
+        self.action_import = None
+        self.action_tile_create = None
 
         self.btn_autentification = None
         self.btn_import = None
         self.btn_configuration = None
+
+        self.import_wizard = None
+        self.tile_creation_wizard = None
 
     def initGui(self):
         """Set up plugin UI elements."""
@@ -80,22 +91,30 @@ class VectilerPlugin:
         self.toolbar = QToolBar("Vectiler toolbar")
         self.iface.addToolBar(self.toolbar)
 
+        # Login
         self.dlg_authentication = AuthenticationDialog(self.iface.mainWindow())
-        icon = QIcon(QgsApplication.iconPath("console/iconShowEditorConsole.svg"))
-        self.btn_autentification = QPushButton(icon, "Login")
-        self.btn_autentification.clicked.connect(self.authentication)
-        self.toolbar.addWidget(self.btn_autentification)
+        self.action_authentication = QAction(QIcon(str(DIR_PLUGIN_ROOT / 'resources' / 'images' / 'icons' / 'User.svg')),
+                                             self.tr("Login"),
+                                             self.iface.mainWindow())
+        self.action_authentication.triggered.connect(self.authentication)
+        self.toolbar.addAction(self.action_authentication)
+
+        # Import
+        self.action_import = QAction(QIcon(str(DIR_PLUGIN_ROOT / 'resources' / 'images' / 'icons' / 'Deposer.png')),
+                                     self.tr("Create a new upload"),
+                                     self.iface.mainWindow())
+        self.action_import.triggered.connect(self.import_data)
+        self.toolbar.addAction(self.action_import)
+
+        # Tile creation
+        self.action_tile_create = QAction(QIcon(str(DIR_PLUGIN_ROOT / 'resources' / 'images' / 'icons' / 'Tuile@1x.png')),
+                                          self.tr("Tile creation"),
+                                          self.iface.mainWindow())
+        self.action_tile_create.triggered.connect(self.tile_creation)
+        self.toolbar.addAction(self.action_tile_create)
 
         # -- Processings
         self.initProcessing()
-
-        icon = QIcon(QgsApplication.iconPath("console/iconSearchEditorConsole.svg"))
-        self.btn_import = QPushButton(icon, "import data")
-        self.btn_import.clicked.connect(self.import_data)
-        self.toolbar.addWidget(self.btn_import)
-        self.btn_configuration = QPushButton(icon, "configuration data")
-        self.btn_configuration.clicked.connect(self.configuration_data)
-        self.toolbar.addWidget(self.btn_configuration)
 
     def initProcessing(self):
         self.provider = VectilerProvider()
@@ -118,21 +137,23 @@ class VectilerPlugin:
         del self.action_settings
         del self.action_help
 
-    def configuration_data(self):
+    def tile_creation(self):
         """
-        Open configuration Wizard
+        Open tile creation Wizard
 
         """
-        wizard = WzdConfiguration(self.iface.mainWindow())
-        wizard.exec()
+        if self.tile_creation_wizard is None:
+            self.tile_creation_wizard = TileCreationWizard(self.iface.mainWindow())
+        self.tile_creation_wizard.show()
 
     def import_data(self):
         """
         Open import data Wizard
 
         """
-        wizard = WzdImport(self.iface.mainWindow())
-        wizard.exec()
+        if self.import_wizard is None:
+            self.import_wizard = UploadCreationWizard(self.iface.mainWindow())
+        self.import_wizard.show()
 
     def authentication(self):
         """

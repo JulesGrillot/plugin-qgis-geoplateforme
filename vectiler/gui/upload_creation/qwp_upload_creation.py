@@ -20,7 +20,7 @@ from qgis.core import (
 
 from vectiler.api.upload import UploadRequestManager
 from vectiler.gui.mdl_execution_list import ExecutionListModel
-from vectiler.gui.qwp_upload_edition import UploadEditionPageWizard
+from vectiler.gui.upload_creation.qwp_upload_edition import UploadEditionPageWizard
 from vectiler.processing import VectilerProvider
 from vectiler.processing.upload_creation import UploadCreationAlgorithm
 from vectiler.processing.upload_database_integration import UploadDatabaseIntegrationAlgorithm

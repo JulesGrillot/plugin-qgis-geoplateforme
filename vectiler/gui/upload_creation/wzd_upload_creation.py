@@ -2,11 +2,11 @@
 from PyQt5.QtWidgets import QWizard
 
 # Plugin
-from vectiler.gui.qwp_upload_creation import UploadCreationPageWizard
-from vectiler.gui.qwp_upload_edition import UploadEditionPageWizard
+from vectiler.gui.upload_creation.qwp_upload_creation import UploadCreationPageWizard
+from vectiler.gui.upload_creation.qwp_upload_edition import UploadEditionPageWizard
 
 
-class WzdImport(QWizard):
+class UploadCreationWizard(QWizard):
     def __init__(self, parent=None):
         """
         QWizard to for geotuileur data import
@@ -16,6 +16,7 @@ class WzdImport(QWizard):
         """
 
         super().__init__(parent)
+        self.setWindowTitle(self.tr("Upload creation"))
 
         self.qwp_upload_edition = UploadEditionPageWizard(self)
         self.qwp_upload_creation = UploadCreationPageWizard(qwp_upload_edition=self.qwp_upload_edition, parent=self)

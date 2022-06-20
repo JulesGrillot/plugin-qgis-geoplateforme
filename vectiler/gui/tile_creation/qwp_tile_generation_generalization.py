@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QWizardPage, QRadioButton, QLabel, QWidget
 from qgis.PyQt import uic
 
 from vectiler.__about__ import DIR_PLUGIN_ROOT
-from vectiler.gui.qwp_tile_generation_edition import TileGenerationEditionPageWizard
+from vectiler.gui.tile_creation.qwp_tile_generation_edition import TileGenerationEditionPageWizard
 
 
 class PixmapLabel(QLabel):

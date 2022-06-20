@@ -3,22 +3,23 @@
 # PyQGIS
 from qgis.PyQt.QtWidgets import QWizard
 
-from vectiler.gui.qwp_tile_generation_edition import TileGenerationEditionPageWizard
-from vectiler.gui.qwp_tile_generation_fields_selection import TileGenerationFieldsSelectionPageWizard
-from vectiler.gui.qwp_tile_generation_generalization import TileGenerationGeneralizationPageWizard
-from vectiler.gui.qwp_tile_generation_status import TileGenerationStatusPageWizard
+from vectiler.gui.tile_creation.qwp_tile_generation_edition import TileGenerationEditionPageWizard
+from vectiler.gui.tile_creation.qwp_tile_generation_fields_selection import TileGenerationFieldsSelectionPageWizard
+from vectiler.gui.tile_creation.qwp_tile_generation_generalization import TileGenerationGeneralizationPageWizard
+from vectiler.gui.tile_creation.qwp_tile_generation_status import TileGenerationStatusPageWizard
 
 
-class WzdConfiguration(QWizard):
+class TileCreationWizard(QWizard):
     def __init__(self, parent=None):
         """
-        Dialog to define current geotuileur configuration data
+        QWizard to create tile vector in geotuileur platform
 
         Args:
             parent: parent QObject
         """
 
         super().__init__(parent)
+        self.setWindowTitle(self.tr("Tile creation"))
 
         self.qwp_tile_generation_edition = TileGenerationEditionPageWizard(self)
         self.qwp_tile_generation_fields_selection = TileGenerationFieldsSelectionPageWizard(

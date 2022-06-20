@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QWizardPage, QListWidgetItem, QMessageBox
 from qgis.PyQt import uic
 
 from vectiler.api.stored_data import StoredDataRequestManager
-from vectiler.gui.qwp_tile_generation_edition import TileGenerationEditionPageWizard
+from vectiler.gui.tile_creation.qwp_tile_generation_edition import TileGenerationEditionPageWizard
 
 
 class TileGenerationFieldsSelectionPageWizard(QWizardPage):

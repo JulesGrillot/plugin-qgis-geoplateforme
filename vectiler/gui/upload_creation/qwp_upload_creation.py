@@ -28,6 +28,7 @@ from vectiler.gui.upload_creation.qwp_upload_edition import UploadEditionPageWiz
 from vectiler.processing import VectilerProvider
 from vectiler.processing.upload_creation import UploadCreationAlgorithm
 from vectiler.processing.upload_database_integration import UploadDatabaseIntegrationAlgorithm
+from vectiler.toolbelt import PlgLogger
 
 
 class UploadCreationPageWizard(QWizardPage):
@@ -43,16 +44,17 @@ class UploadCreationPageWizard(QWizardPage):
         """
 
         super().__init__(parent)
+        self.log = PlgLogger().log
         self.qwp_upload_edition = qwp_upload_edition
 
         uic.loadUi(os.path.join(os.path.dirname(__file__), "qwp_upload_creation.ui"), self)
 
-        # Task and feedback for upload creation
-        self.upload_task = None
+        # Task ID and feedback for upload creation
+        self.upload_task_id = None
         self.upload_feedback = QgsProcessingFeedback()
 
-        # Task and feedback for database integration
-        self.integrate_task = None
+        # Task ID and feedback for database integration
+        self.integrate_task_id = None
         self.integrate_feedback = QgsProcessingFeedback()
 
         # Processing results
@@ -74,8 +76,12 @@ class UploadCreationPageWizard(QWizardPage):
         Initialize page before show.
 
         """
+        self.upload_task_id = None
+        self.integrate_task_id = None
+
         self.created_upload_id = ""
         self.created_stored_data_id = ""
+
         self.mdl_execution_list.set_execution_list([])
         self.upload()
 
@@ -84,6 +90,7 @@ class UploadCreationPageWizard(QWizardPage):
         Run UploadCreationAlgorithm with UploadEditionPageWizard parameters
 
         """
+        self.log(f"Launch UploadCreationAlgorithm")
         algo_str = f'{VectilerProvider().id()}:{UploadCreationAlgorithm().name()}'
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
@@ -96,7 +103,7 @@ class UploadCreationPageWizard(QWizardPage):
         self.lbl_step_icon.setMovie(self.loading_movie)
         self.loading_movie.start()
 
-        self.upload_task = self._run_alg(alg, params, self.upload_feedback, self.upload_finished)
+        self.upload_task_id = self._run_alg(alg, params, self.upload_feedback, self.upload_finished)
 
     def upload_finished(self, context, successful, results):
         """
@@ -148,8 +155,8 @@ class UploadCreationPageWizard(QWizardPage):
                 execution_list = manager.get_upload_checks_execution(datastore=datastore_id,
                                                                      upload=self.created_upload_id)
 
-                # Run database integration if stored data not created
-                if status == "CLOSED" and not self.created_stored_data_id:
+                # Run database integration
+                if status == "CLOSED":
                     self.integrate()
 
             except UploadRequestManager.UnavailableUploadException as exc:
@@ -207,7 +214,9 @@ class UploadCreationPageWizard(QWizardPage):
         Run UploadDatabaseIntegrationAlgorithm
 
         """
-        if self.created_upload_id:
+        # Run database integration only if created upload available and no integrate task running
+        if self.created_upload_id and not self.integrate_task_id:
+            self.log(f"Launch UploadDatabaseIntegrationAlgorithm")
             algo_str = f'{VectilerProvider().id()}:{UploadDatabaseIntegrationAlgorithm().name()}'
             alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
@@ -216,7 +225,7 @@ class UploadCreationPageWizard(QWizardPage):
                 UploadDatabaseIntegrationAlgorithm.UPLOAD: self.created_upload_id,
                 UploadDatabaseIntegrationAlgorithm.STORED_DATA_NAME: self.qwp_upload_edition.lne_data.text()}
 
-            self.integrate_task = self._run_alg(alg, params, self.integrate_feedback, self.integrate_finished)
+            self.integrate_task_id = self._run_alg(alg, params, self.integrate_feedback, self.integrate_finished)
 
     def integrate_finished(self, context, successful, results):
         """
@@ -249,7 +258,7 @@ class UploadCreationPageWizard(QWizardPage):
     @staticmethod
     def _run_alg(alg: QgsProcessingAlgorithm, params: {},
                  feedback: QgsProcessingFeedback,
-                 executed_callback) -> QgsTask:
+                 executed_callback) -> int:
         """
         Run a QgsProcessingAlgorithm and connect execution callback and cancel task for button
 
@@ -266,4 +275,4 @@ class UploadCreationPageWizard(QWizardPage):
         context = QgsProcessingContext()
         task = QgsProcessingAlgRunnerTask(alg, params, context, feedback)
         task.executed.connect(partial(executed_callback, context))
-        QgsApplication.taskManager().addTask(task)
+        return QgsApplication.taskManager().addTask(task)

@@ -97,15 +97,15 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
             # Get created stored_data id
             stored_data_id = stored_data_val["_id"]
 
-            # Launch execution
-            processing_manager.launch_execution(datastore=datastore, exec_id=exec_id)
-
             # Update stored data tags
             tags = {
                 "upload_id": upload,
                 "proc_int_id": exec_id
             }
             stored_data_manager.add_tags(datastore=datastore, stored_data=stored_data_val["_id"], tags=tags)
+
+            # Launch execution
+            processing_manager.launch_execution(datastore=datastore, exec_id=exec_id)
 
         except ProcessingRequestManager.UnavailableProcessingException as exc:
             raise QgsProcessingException(f"Can't retrieve processing for database integration : {exc}")

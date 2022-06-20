@@ -1,6 +1,7 @@
 # standard
 
 # PyQGIS
+from PyQt5.QtWidgets import QDialog
 from qgis.PyQt.QtWidgets import QWizard
 
 from vectiler.gui.tile_creation.qwp_tile_generation_edition import TileGenerationEditionPageWizard
@@ -34,3 +35,9 @@ class TileCreationWizard(QWizard):
         self.addPage(self.qwp_tile_generation_fields_selection)
         self.addPage(self.qwp_tile_generation_generalization)
         self.addPage(self.qwp_tile_generation_status)
+        self.setOption(QWizard.NoCancelButtonOnLastPage, True)
+
+    def accept(self) -> None:
+        super().accept()
+        if self.result() == QDialog.Accepted:
+            self.restart()

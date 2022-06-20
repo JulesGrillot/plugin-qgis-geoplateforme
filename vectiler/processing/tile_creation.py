@@ -180,9 +180,6 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
             # Get created stored_data id
             stored_data_id = stored_data_val["_id"]
 
-            # Launch execution
-            processing_manager.launch_execution(datastore=datastore, exec_id=exec_id)
-
             # Update stored data tags
             tags = {
                 "upload_id": vector_db_stored_data.tags["upload_id"],
@@ -198,6 +195,9 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                 "pyramid_id": stored_data_id,
             }
             stored_data_manager.add_tags(datastore=datastore, stored_data=vector_db_stored_data.id, tags=vector_db_tag)
+
+            # Launch execution
+            processing_manager.launch_execution(datastore=datastore, exec_id=exec_id)
 
         except StoredDataRequestManager.UnavailableStoredData as exc:
             raise QgsProcessingException(f"Can't retrieve vector db datastore for tile creation : {exc}")

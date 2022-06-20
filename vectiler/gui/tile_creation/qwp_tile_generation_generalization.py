@@ -106,6 +106,10 @@ class TileGenerationGeneralizationPageWizard(QWizardPage):
 
         }
 
+        self._add_tippecanoe_radiobuttons()
+        self.setCommitPage(True)
+
+    def _add_tippecanoe_radiobuttons(self):
         nb_max_col = 3
         nb_row_for_options = 3
         minimum_width = 200

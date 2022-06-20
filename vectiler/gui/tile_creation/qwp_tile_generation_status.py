@@ -3,8 +3,8 @@
 import os
 from functools import partial
 
-from PyQt5.QtCore import QTimer
-from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import QTimer, QByteArray
+from PyQt5.QtGui import QMovie, QPixmap
 from PyQt5.QtWidgets import QWizardPage, QMessageBox, QHeaderView
 from qgis.PyQt import uic
 
@@ -13,11 +13,11 @@ from qgis.core import (
     QgsApplication,
     QgsProcessingContext,
     QgsProcessingAlgRunnerTask,
-    QgsTask,
     QgsProcessingFeedback,
     QgsProcessingAlgorithm
 )
 
+from vectiler.__about__ import DIR_PLUGIN_ROOT
 from vectiler.api.processing import ProcessingRequestManager
 from vectiler.api.stored_data import StoredDataRequestManager
 from vectiler.api.upload import UploadRequestManager
@@ -30,6 +30,8 @@ from vectiler.processing.tile_creation import TileCreationAlgorithm
 
 
 class TileGenerationStatusPageWizard(QWizardPage):
+    STATUS_CHECK_INTERVAL = 500
+
     def __init__(self, qwp_tile_generation_edition: TileGenerationEditionPageWizard,
                  qwp_tile_generation_fields_selection: TileGenerationFieldsSelectionPageWizard,
                  qwp_tile_generation_generalization: TileGenerationGeneralizationPageWizard, parent=None):
@@ -49,13 +51,14 @@ class TileGenerationStatusPageWizard(QWizardPage):
         uic.loadUi(os.path.join(os.path.dirname(__file__), "qwp_tile_generation_status.ui"), self)
 
         # Task and feedback for tile creation
-        self.create_tile_task = None
+        self.create_tile_task_id = None
         self.create_tile_feedback = QgsProcessingFeedback()
 
         # Processing results
         self.created_stored_data_id = ""
 
         # Timer for processing execution check after tile creation
+        self.loading_movie = QMovie(str(DIR_PLUGIN_ROOT / 'resources' / 'images' / 'loading.gif'), QByteArray(), self)
         self.create_tile_check_timer = QTimer(self)
         self.create_tile_check_timer.timeout.connect(self.check_create_tile_status)
 
@@ -65,19 +68,24 @@ class TileGenerationStatusPageWizard(QWizardPage):
 
         self.tableview_execution_list.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
 
-        self.initializePage()
-
     def initializePage(self) -> None:
         """
         Initialize page before show.
 
         """
-        self._disconnect_btn(self.btn_create)
-        self.btn_create.clicked.connect(self.create_tile)
-        self.btn_create.setIcon(QIcon(QgsApplication.iconPath('mActionStart.svg')))
-        self.btn_create.setEnabled(True)
-
         self.created_stored_data_id = ""
+        self.mdl_execution_list.set_execution_list([])
+        self.create_tile()
+
+    def validatePage(self) -> bool:
+        """
+        Validate current page and stop timer used to check status
+
+        Returns: True
+
+        """
+        self.create_tile_check_timer.stop()
+        return True
 
     def create_tile(self) -> None:
         """
@@ -99,9 +107,11 @@ class TileGenerationStatusPageWizard(QWizardPage):
                   TileCreationAlgorithm.TOP_LEVEL: self.qwp_tile_generation_edition.get_top_level(),
                   TileCreationAlgorithm.ATTRIBUTES: self.qwp_tile_generation_fields_selection.get_selected_attributes(),
                   }
+        self.lbl_step_text.setText(self.tr("Génération en cours"))
+        self.lbl_step_icon.setMovie(self.loading_movie)
+        self.loading_movie.start()
 
-        self.create_tile_task = self._run_alg(alg, params, self.create_tile_feedback, self.create_tile_finished,
-                                              self.btn_create)
+        self.create_tile_task_id = self._run_alg(alg, params, self.create_tile_feedback, self.create_tile_finished)
 
     def create_tile_finished(self, context, successful, results):
         """
@@ -112,16 +122,11 @@ class TileGenerationStatusPageWizard(QWizardPage):
             successful: algorithm success
             results: algorithm results
         """
-        self._disconnect_btn(self.btn_create)
         if successful:
             self.created_stored_data_id = results[TileCreationAlgorithm.CREATED_STORED_DATA_ID]
-            self.btn_create.setEnabled(False)
-            self.btn_create.setToolTip(self.tr("Tile already created"))
-            # Run timer for upload check
-            self.create_tile_check_timer.start(300)
+            # Run timer for tile creation check
+            self.create_tile_check_timer.start(self.STATUS_CHECK_INTERVAL)
         else:
-            self.btn_create.setIcon(QIcon(QgsApplication.iconPath('mActionStart.svg')))
-            self.btn_create.clicked.connect(self.create_tile)
             msgBox = QMessageBox(QMessageBox.Warning,
                                  self.tr("Tile creation failed"),
                                  self.tr("Check details for more informations"))
@@ -151,6 +156,11 @@ class TileGenerationStatusPageWizard(QWizardPage):
                 # Stop timer if stored_data generated
                 if stored_data.status == "GENERATED":
                     self.create_tile_check_timer.stop()
+                    self.loading_movie.stop()
+                    self.lbl_step_text.setText(self.tr("Votre données est prête"))
+                    pixmap = QPixmap(str(DIR_PLUGIN_ROOT / 'resources' / 'images' / 'icons' / 'Done.svg'))
+                    self.lbl_step_icon.setMovie(QMovie())
+                    self.lbl_step_icon.setPixmap(pixmap)
                 if stored_data.tags is not None and "proc_pyr_creat_id" in stored_data.tags.keys():
                     execution_list.append(processing_manager.get_execution(datastore=datastore_id,
                                                                            exec_id=stored_data.tags[
@@ -179,8 +189,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
     def _run_alg(self,
                  alg: QgsProcessingAlgorithm, params: {},
                  feedback: QgsProcessingFeedback,
-                 executed_callback,
-                 btn=None) -> QgsTask:
+                 executed_callback) -> int:
         """
         Run a QgsProcessingAlgorithm and connect execution callback and cancel task for button
 
@@ -197,25 +206,4 @@ class TileGenerationStatusPageWizard(QWizardPage):
         context = QgsProcessingContext()
         task = QgsProcessingAlgRunnerTask(alg, params, context, feedback)
         task.executed.connect(partial(executed_callback, context))
-        QgsApplication.taskManager().addTask(task)
-        if btn:
-            self._disconnect_btn(btn)
-            btn.setIcon(QIcon(QgsApplication.iconPath('mActionStop.svg')))
-            btn.clicked.connect(task.cancel)
-        return task
-
-    @staticmethod
-    def _disconnect_btn(btn) -> None:
-        try:
-            btn.disconnect()
-        except Exception:
-            pass
-
-    def validatePage(self) -> bool:
-        """
-        Validate current page content : Always returns true
-
-        Returns: True
-
-        """
-        return True
+        return QgsApplication.taskManager().addTask(task)

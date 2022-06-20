@@ -51,3 +51,17 @@ class TileGenerationFieldsSelectionPageWizard(QWizardPage):
                                  self.tr("Check details for more informations"))
             msgBox.setDetailedText(str(exc))
             msgBox.exec()
+
+    def get_selected_attributes(self) -> [str]:
+        """
+        Get list of selected attributes
+
+        Returns:[str] selected attributes
+
+        """
+        attributes = []
+        for i in range(0, self.lwg_attribut.count()):
+            item = self.lwg_attribut.item(i)
+            if item.checkState() == QtCore.Qt.Checked:
+                attributes.append(item.text())
+        return attributes

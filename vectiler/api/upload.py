@@ -8,8 +8,9 @@ from PyQt5.QtCore import QUrl, QByteArray, QFile, QIODevice, QEventLoop
 from PyQt5.QtNetwork import QNetworkRequest, QHttpMultiPart, QHttpPart, QNetworkAccessManager
 from qgis.core import QgsBlockingNetworkRequest, QgsApplication, QgsCoordinateReferenceSystem
 
-from vectiler.api.check import Check, Execution
+from vectiler.api.check import CheckRequestManager
 from vectiler.api.client import NetworkRequestsManager
+from vectiler.api.execution import Execution
 from vectiler.toolbelt import PlgLogger, PlgOptionsManager
 
 logger = logging.getLogger(__name__)
@@ -95,7 +96,7 @@ class UploadRequestManager:
         data = json.loads(req_reply.content().data().decode("utf-8"))
         return data["status"]
 
-    def get_upload_checks_execution(self, datastore: str, upload: str) -> {str: [Execution]}:
+    def get_upload_checks_execution(self, datastore: str, upload: str) -> [Execution]:
         """
         Get upload checks execution.
 
@@ -103,8 +104,7 @@ class UploadRequestManager:
             datastore: (str) datastore id
             upload: (str) upload id
 
-        Returns: {str:[Execution] Upload checks execution map (key : execution status, value : Execution list)
-         if upload available, raise UnavailableUploadException otherwise
+        Returns: [Execution] Upload checks execution list if upload available, raise UnavailableUploadException otherwise
         """
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(QUrl(f'{self.get_base_url(datastore)}/{upload}/checks'))
@@ -130,15 +130,17 @@ class UploadRequestManager:
             )
 
         data = json.loads(req_reply.content().data().decode("utf-8"))
-        exec_map = {}
-        for key, executions in data.items():
-            exec_map[key] = []
-            for execution in executions:
-                exec_map[key].append(Execution(id=execution["_id"], status=execution["status"],
-                                               check=Check(id=execution["check"]["_id"],
-                                                           name=execution["check"]["name"]))
-                                     )
-        return exec_map
+        exec_list = []
+
+        try:
+            check_manager = CheckRequestManager()
+            for key, executions in data.items():
+                for execution in executions:
+                    exec_list.append(check_manager.get_execution(datastore=datastore,
+                                                                 exec_id=execution["_id"]))
+        except CheckRequestManager.UnavailableExecutionException as exc:
+            raise self.UnavailableUploadException(f'Error while fetching upload check execution : {exc}')
+        return exec_list
 
     def create_upload(self, datastore: str,
                       name: str,

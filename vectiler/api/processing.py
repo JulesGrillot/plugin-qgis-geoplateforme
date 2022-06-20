@@ -5,6 +5,7 @@ from PyQt5.QtCore import QUrl, QByteArray
 from PyQt5.QtNetwork import QNetworkRequest
 from qgis.core import QgsBlockingNetworkRequest
 
+from vectiler.api.execution import Execution
 from vectiler.toolbelt import PlgLogger, PlgOptionsManager
 
 
@@ -16,6 +17,9 @@ class Processing:
 
 class ProcessingRequestManager:
     class UnavailableProcessingException(Exception):
+        pass
+
+    class UnavailableExecutionException(Exception):
         pass
 
     class CreateProcessingException(Exception):
@@ -149,3 +153,47 @@ class ProcessingRequestManager:
         if resp != QgsBlockingNetworkRequest.NoError:
             raise self.LaunchExecutionException(
                 f"Error while launching execution : {self.ntwk_requester_blk.errorMessage()}")
+
+    def get_execution(self, datastore: str, exec_id: str) -> Execution:
+        """
+        Get execution.
+
+        Args:
+            datastore: (str) datastore id
+            exec_id: (str) execution id
+
+        Returns: Execution execution if execution available, raise UnavailableExecutionException otherwise
+        """
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+        req = QNetworkRequest(QUrl(f'{self.get_base_url(datastore)}/executions/{exec_id}'))
+
+        # headers
+        req.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+
+        # send request
+        resp = self.ntwk_requester_blk.get(req, forceRefresh=True)
+
+        # check response
+        if resp != QgsBlockingNetworkRequest.NoError:
+            raise self.UnavailableExecutionException(
+                f"Error while fetching execution : {self.ntwk_requester_blk.errorMessage()}")
+
+        # check response
+        req_reply = self.ntwk_requester_blk.reply()
+        if not req_reply.rawHeader(b"Content-Type") == "application/json; charset=utf-8":
+            raise self.UnavailableExecutionException(
+                "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
+                    req_reply.rawHeader(b"Content-type")
+                )
+            )
+
+        data = json.loads(req_reply.content().data().decode("utf-8"))
+
+        execution = Execution(id=data["_id"], status=data["status"],
+                              name=data["processing"]["name"])
+
+        if "start" in data:
+            execution.start = data["start"]
+        if "finish" in data:
+            execution.finish = data["finish"]
+        return execution

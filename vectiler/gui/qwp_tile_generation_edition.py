@@ -41,3 +41,9 @@ class TileGenerationEditionPageWizard(QWizardPage):
 
     def datastore_updated(self) -> None:
         self.cbx_stored_data.set_datastore(self.cbx_datastore.current_datastore_id())
+
+    def get_bottom_level(self) -> int:
+        return 18
+
+    def get_top_level(self) -> int:
+        return 5

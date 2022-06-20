@@ -1,11 +1,12 @@
 # standard
 
 # PyQGIS
-from qgis.PyQt.QtWidgets import  QWizard
+from qgis.PyQt.QtWidgets import QWizard
 
 from vectiler.gui.qwp_tile_generation_edition import TileGenerationEditionPageWizard
 from vectiler.gui.qwp_tile_generation_fields_selection import TileGenerationFieldsSelectionPageWizard
 from vectiler.gui.qwp_tile_generation_generalization import TileGenerationGeneralizationPageWizard
+from vectiler.gui.qwp_tile_generation_status import TileGenerationStatusPageWizard
 
 
 class WzdConfiguration(QWizard):
@@ -20,8 +21,15 @@ class WzdConfiguration(QWizard):
         super().__init__(parent)
 
         self.qwp_tile_generation_edition = TileGenerationEditionPageWizard(self)
-        self.qwp_tile_generation_fields_selection = TileGenerationFieldsSelectionPageWizard(self.qwp_tile_generation_edition, self)
-        self.qwp_tile_generation_generalization = TileGenerationGeneralizationPageWizard(self.qwp_tile_generation_edition, parent=self)
+        self.qwp_tile_generation_fields_selection = TileGenerationFieldsSelectionPageWizard(
+            self.qwp_tile_generation_edition, self)
+        self.qwp_tile_generation_generalization = TileGenerationGeneralizationPageWizard(
+            self.qwp_tile_generation_edition, parent=self)
+        self.qwp_tile_generation_status = TileGenerationStatusPageWizard(self.qwp_tile_generation_edition,
+                                                                         self.qwp_tile_generation_fields_selection,
+                                                                         self.qwp_tile_generation_generalization,
+                                                                         self)
         self.addPage(self.qwp_tile_generation_edition)
         self.addPage(self.qwp_tile_generation_fields_selection)
         self.addPage(self.qwp_tile_generation_generalization)
+        self.addPage(self.qwp_tile_generation_status)

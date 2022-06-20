@@ -17,11 +17,11 @@
    <item row="3" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBox" name="gp_executions">
      <property name="title">
-      <string>Checks</string>
+      <string>Status</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
-       <widget class="QTreeView" name="treeview_execution_map"/>
+       <widget class="QTableView" name="tableview_execution_list"/>
       </item>
      </layout>
     </widget>

@@ -13,6 +13,7 @@ class StoredData:
     id: str
     name: str
     type: str
+    status: str
     tags: {} = None
     type_infos: {} = None
 
@@ -113,7 +114,7 @@ class StoredDataRequestManager:
         Returns: stored data, raise ReadStoredDataException otherwise
         """
         data = self.get_stored_data_json(datastore, stored_data)
-        result = StoredData(id=data["_id"], name=data["name"], type=data["type"])
+        result = StoredData(id=data["_id"], name=data["name"], type=data["type"], status=data["status"])
         if "tags" in data:
             result.tags = data["tags"]
         if "type_infos" in data:

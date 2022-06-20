@@ -5,7 +5,7 @@ from functools import partial
 
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QWizardPage, QMessageBox
+from PyQt5.QtWidgets import QWizardPage, QMessageBox, QHeaderView
 from qgis.PyQt import uic
 
 # PyQGIS
@@ -19,7 +19,7 @@ from qgis.core import (
 )
 
 from vectiler.api.upload import UploadRequestManager
-from vectiler.gui.mdl_execution_map import ExecutionMapTreeModel
+from vectiler.gui.mdl_execution_list import ExecutionListModel
 from vectiler.gui.qwp_upload_edition import UploadEditionPageWizard
 from vectiler.processing import VectilerProvider
 from vectiler.processing.upload_creation import UploadCreationAlgorithm
@@ -57,9 +57,10 @@ class UploadCreationPageWizard(QWizardPage):
         self.upload_check_timer = QTimer(self)
         self.upload_check_timer.timeout.connect(self.check_upload_status)
 
-        # Tree model for upload checks display
-        self.mdl_execution_map = ExecutionMapTreeModel(self)
-        self.treeview_execution_map.setModel(self.mdl_execution_map)
+        # Model for executions display
+        self.mdl_execution_list = ExecutionListModel(self)
+        self.tableview_execution_list.setModel(self.mdl_execution_list)
+        self.tableview_execution_list.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
 
         self.initializePage()
 
@@ -141,13 +142,13 @@ class UploadCreationPageWizard(QWizardPage):
                     self.btn_integrate.setToolTip("")
                     self.integrate()
 
-                execution_map = manager.get_upload_checks_execution(datastore=datastore_id,
-                                                                    upload=self.created_upload_id)
-                self.mdl_execution_map.set_execution_map(execution_map)
+                execution_list = manager.get_upload_checks_execution(datastore=datastore_id,
+                                                                     upload=self.created_upload_id)
+                self.mdl_execution_list.set_execution_list(execution_list)
 
                 # Expand all items
-                self.treeview_execution_map.expandToDepth(-1)
-                self.treeview_execution_map.resizeColumnToContents(0)
+                self.tableview_execution_list.resizeColumnToContents(0)
+                self.tableview_execution_list.resizeColumnToContents(1)
 
             except UploadRequestManager.UnavailableUploadException as exc:
                 msgBox = QMessageBox(QMessageBox.Warning,

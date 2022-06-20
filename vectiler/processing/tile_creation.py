@@ -128,7 +128,7 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
 
         tms = self.TMS_ENUM[self.parameterAsEnum(parameters, self.TMS, context)]
         bottom_level = self.parameterAsString(parameters, self.BOTTOM_LEVEL, context)
-        top_level = self.parameterAsString(parameters, self.BOTTOM_LEVEL, context)
+        top_level = self.parameterAsString(parameters, self.TOP_LEVEL, context)
         attributes = self.parameterAsString(parameters, self.ATTRIBUTES, context)
         try:
             stored_data_manager = StoredDataRequestManager()

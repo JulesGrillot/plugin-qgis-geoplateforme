@@ -3,8 +3,8 @@
 import os
 from functools import partial
 
-from PyQt5.QtCore import QTimer
-from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import QTimer, QByteArray
+from PyQt5.QtGui import QMovie, QPixmap
 from PyQt5.QtWidgets import QWizardPage, QMessageBox, QHeaderView
 from qgis.PyQt import uic
 
@@ -18,6 +18,10 @@ from qgis.core import (
     QgsProcessingAlgorithm
 )
 
+from vectiler.__about__ import DIR_PLUGIN_ROOT
+from vectiler.api.execution import Execution
+from vectiler.api.processing import ProcessingRequestManager
+from vectiler.api.stored_data import StoredDataRequestManager
 from vectiler.api.upload import UploadRequestManager
 from vectiler.gui.mdl_execution_list import ExecutionListModel
 from vectiler.gui.upload_creation.qwp_upload_edition import UploadEditionPageWizard
@@ -27,6 +31,8 @@ from vectiler.processing.upload_database_integration import UploadDatabaseIntegr
 
 
 class UploadCreationPageWizard(QWizardPage):
+    STATUS_CHECK_INTERVAL = 500
+
     def __init__(self, qwp_upload_edition: UploadEditionPageWizard, parent=None):
 
         """
@@ -54,6 +60,7 @@ class UploadCreationPageWizard(QWizardPage):
         self.created_stored_data_id = ""
 
         # Timer for upload check after upload creation
+        self.loading_movie = QMovie(str(DIR_PLUGIN_ROOT / 'resources' / 'images' / 'loading.gif'), QByteArray(), self)
         self.upload_check_timer = QTimer(self)
         self.upload_check_timer.timeout.connect(self.check_upload_status)
 
@@ -62,26 +69,15 @@ class UploadCreationPageWizard(QWizardPage):
         self.tableview_execution_list.setModel(self.mdl_execution_list)
         self.tableview_execution_list.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
 
-        self.initializePage()
-
     def initializePage(self) -> None:
         """
         Initialize page before show.
 
         """
-        self._disconnect_btn(self.btn_upload)
-        self.btn_upload.clicked.connect(self.upload)
-        self.btn_upload.setIcon(QIcon(QgsApplication.iconPath('mActionStart.svg')))
-        self.btn_upload.setEnabled(True)
-
-        self._disconnect_btn(self.btn_integrate)
-        self.btn_integrate.clicked.connect(self.integrate)
-        self.btn_integrate.setIcon(QIcon(QgsApplication.iconPath('mActionStart.svg')))
-        self.btn_integrate.setToolTip(self.tr("Upload not created. Can't integrate in database"))
-        self.btn_integrate.setEnabled(False)
-
         self.created_upload_id = ""
         self.created_stored_data_id = ""
+        self.mdl_execution_list.set_execution_list([])
+        self.upload()
 
     def upload(self) -> None:
         """
@@ -91,13 +87,16 @@ class UploadCreationPageWizard(QWizardPage):
         algo_str = f'{VectilerProvider().id()}:{UploadCreationAlgorithm().name()}'
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
-        params = {UploadCreationAlgorithm.DATASTORE: self.cbx_datastore.current_datastore_id(),
+        params = {UploadCreationAlgorithm.DATASTORE: self.qwp_upload_edition.cbx_datastore.current_datastore_id(),
                   UploadCreationAlgorithm.NAME: self.qwp_upload_edition.lne_data.text(),
                   UploadCreationAlgorithm.DESCRIPTION: self.qwp_upload_edition.lne_data.text(),
                   UploadCreationAlgorithm.SRS: self.qwp_upload_edition.psw_projection.crs(),
                   UploadCreationAlgorithm.INPUT_LAYERS: self.qwp_upload_edition.get_filenames()}
+        self.lbl_step_text.setText(self.tr("Vérification et intégration des données en cours"))
+        self.lbl_step_icon.setMovie(self.loading_movie)
+        self.loading_movie.start()
 
-        self.upload_task = self._run_alg(alg, params, self.upload_feedback, self.upload_finished, self.btn_upload)
+        self.upload_task = self._run_alg(alg, params, self.upload_feedback, self.upload_finished)
 
     def upload_finished(self, context, successful, results):
         """
@@ -108,16 +107,11 @@ class UploadCreationPageWizard(QWizardPage):
             successful: algorithm success
             results: algorithm results
         """
-        self._disconnect_btn(self.btn_upload)
         if successful:
             self.created_upload_id = results[UploadCreationAlgorithm.CREATED_UPLOAD_ID]
-            self.btn_upload.setEnabled(False)
-            self.btn_upload.setToolTip(self.tr("Upload already created"))
             # Run timer for upload check
-            self.upload_check_timer.start(300)
+            self.upload_check_timer.start(self.STATUS_CHECK_INTERVAL)
         else:
-            self.btn_upload.setIcon(QIcon(QgsApplication.iconPath('mActionStart.svg')))
-            self.btn_upload.clicked.connect(self.upload)
             msgBox = QMessageBox(QMessageBox.Warning,
                                  self.tr("Upload creation failed"),
                                  self.tr("Check details for more informations"))
@@ -129,26 +123,34 @@ class UploadCreationPageWizard(QWizardPage):
         Check upload status and run database integration if upload closed
 
         """
+        execution_list = self._check_upload_creation()
+
+        if self.created_stored_data_id:
+            execution_list.append(self._check_stored_data_creation())
+
+        self.mdl_execution_list.set_execution_list(execution_list)
+
+    def _check_upload_creation(self) -> [Execution]:
+        """
+        Check if upload creation check are done and return checks execution.
+        Il upload is closed, launch database integration
+
+        Returns: [Execution] upload checks Execution
+
+        """
+        execution_list = []
         if self.created_upload_id:
             try:
                 manager = UploadRequestManager()
-                datastore_id = self.cbx_datastore.current_datastore_id()
+                datastore_id = self.qwp_upload_edition.cbx_datastore.current_datastore_id()
                 status = manager.get_upload_status(datastore=datastore_id, upload=self.created_upload_id)
-
-                # Run integration and stop timer if upload closed
-                if status == "CLOSED":
-                    self.upload_check_timer.stop()
-                    self.btn_integrate.setEnabled(True)
-                    self.btn_integrate.setToolTip("")
-                    self.integrate()
 
                 execution_list = manager.get_upload_checks_execution(datastore=datastore_id,
                                                                      upload=self.created_upload_id)
-                self.mdl_execution_list.set_execution_list(execution_list)
 
-                # Expand all items
-                self.tableview_execution_list.resizeColumnToContents(0)
-                self.tableview_execution_list.resizeColumnToContents(1)
+                # Run database integration if stored data not created
+                if status == "CLOSED" and not self.created_stored_data_id:
+                    self.integrate()
 
             except UploadRequestManager.UnavailableUploadException as exc:
                 msgBox = QMessageBox(QMessageBox.Warning,
@@ -156,6 +158,49 @@ class UploadCreationPageWizard(QWizardPage):
                                      self.tr("Check details for more informations"))
                 msgBox.setDetailedText(str(exc))
                 msgBox.exec()
+        return execution_list
+
+    def _check_stored_data_creation(self) -> Execution:
+        """
+        Check if stored data creation is done and return processing execution
+        If stored data is generated, stop check timer
+
+        Returns: [Execution] database integration processing execution
+
+        """
+        execution = None
+        if self.created_stored_data_id:
+            try:
+                stored_data_manager = StoredDataRequestManager()
+                processing_manager = ProcessingRequestManager()
+                datastore_id = self.qwp_upload_edition.cbx_datastore.current_datastore_id()
+                stored_data = stored_data_manager.get_stored_data(datastore=datastore_id,
+                                                                  stored_data=self.created_stored_data_id)
+
+                if stored_data.tags is not None and "proc_int_id" in stored_data.tags.keys():
+                    execution = processing_manager.get_execution(datastore=datastore_id,
+                                                                 exec_id=stored_data.tags["proc_int_id"])
+                # Stop timer if stored_data generated
+                if stored_data.status == "GENERATED":
+                    self.upload_check_timer.stop()
+                    self.loading_movie.stop()
+                    self.lbl_step_text.setText(self.tr("Votre données est prête"))
+                    pixmap = QPixmap(str(DIR_PLUGIN_ROOT / 'resources' / 'images' / 'icons' / 'Done.svg'))
+                    self.lbl_step_icon.setMovie(QMovie())
+                    self.lbl_step_icon.setPixmap(pixmap)
+            except ProcessingRequestManager.UnavailableProcessingException as exc:
+                msgBox = QMessageBox(QMessageBox.Warning,
+                                     self.tr("Stored data database integration check failed"),
+                                     self.tr("Check details for more informations"))
+                msgBox.setDetailedText(str(exc))
+                msgBox.exec()
+            except StoredDataRequestManager.UnavailableStoredData as exc:
+                msgBox = QMessageBox(QMessageBox.Warning,
+                                     self.tr("Stored data database integration check failed"),
+                                     self.tr("Check details for more informations"))
+                msgBox.setDetailedText(str(exc))
+                msgBox.exec()
+        return execution
 
     def integrate(self):
         """
@@ -166,12 +211,12 @@ class UploadCreationPageWizard(QWizardPage):
             algo_str = f'{VectilerProvider().id()}:{UploadDatabaseIntegrationAlgorithm().name()}'
             alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
-            params = {UploadDatabaseIntegrationAlgorithm.DATASTORE: self.cbx_datastore.current_datastore_id(),
-                      UploadDatabaseIntegrationAlgorithm.UPLOAD: self.created_upload_id,
-                      UploadDatabaseIntegrationAlgorithm.STORED_DATA_NAME: self.qwp_upload_edition.lne_data.text()}
+            params = {
+                UploadDatabaseIntegrationAlgorithm.DATASTORE: self.qwp_upload_edition.cbx_datastore.current_datastore_id(),
+                UploadDatabaseIntegrationAlgorithm.UPLOAD: self.created_upload_id,
+                UploadDatabaseIntegrationAlgorithm.STORED_DATA_NAME: self.qwp_upload_edition.lne_data.text()}
 
-            self.integrate_task = self._run_alg(alg, params, self.integrate_feedback, self.integrate_finished,
-                                                self.btn_integrate)
+            self.integrate_task = self._run_alg(alg, params, self.integrate_feedback, self.integrate_finished)
 
     def integrate_finished(self, context, successful, results):
         """
@@ -183,26 +228,28 @@ class UploadCreationPageWizard(QWizardPage):
             results: algorithm results
         """
 
-        self._disconnect_btn(self.btn_integrate)
         if successful:
             self.created_stored_data_id = results[UploadDatabaseIntegrationAlgorithm.CREATED_STORED_DATA_ID]
-
-            self.btn_integrate.setEnabled(False)
-            self.btn_integrate.setToolTip(self.tr("Database integration already done"))
         else:
-            self.btn_integrate.setIcon(QIcon(QgsApplication.iconPath('mActionStart.svg')))
-            self.btn_integrate.clicked.connect(self.integrate)
             msgBox = QMessageBox(QMessageBox.Warning,
                                  self.tr("Database integration failed"),
                                  self.tr("Check details for more informations"))
             msgBox.setDetailedText(self.integrate_feedback.textLog())
             msgBox.exec()
 
-    def _run_alg(self,
-                 alg: QgsProcessingAlgorithm, params: {},
+    def validatePage(self) -> bool:
+        """
+        Validate current page content : return True
+
+        Returns: True
+
+        """
+        return True
+
+    @staticmethod
+    def _run_alg(alg: QgsProcessingAlgorithm, params: {},
                  feedback: QgsProcessingFeedback,
-                 executed_callback,
-                 btn=None) -> QgsTask:
+                 executed_callback) -> QgsTask:
         """
         Run a QgsProcessingAlgorithm and connect execution callback and cancel task for button
 
@@ -220,24 +267,3 @@ class UploadCreationPageWizard(QWizardPage):
         task = QgsProcessingAlgRunnerTask(alg, params, context, feedback)
         task.executed.connect(partial(executed_callback, context))
         QgsApplication.taskManager().addTask(task)
-        if btn:
-            self._disconnect_btn(btn)
-            btn.setIcon(QIcon(QgsApplication.iconPath('mActionStop.svg')))
-            btn.clicked.connect(task.cancel)
-        return task
-
-    @staticmethod
-    def _disconnect_btn(btn) -> None:
-        try:
-            btn.disconnect()
-        except Exception:
-            pass
-
-    def validatePage(self) -> bool:
-        """
-        Validate current page content : Always returns true
-
-        Returns: True
-
-        """
-        return True

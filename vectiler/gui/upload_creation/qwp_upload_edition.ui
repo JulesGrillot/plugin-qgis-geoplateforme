@@ -6,47 +6,35 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>526</width>
-    <height>285</height>
+    <width>649</width>
+    <height>504</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>WizardPage</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0">
-    <widget class="QgsFileWidget" name="flw_files_put">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="inputMethodHints">
-      <set>Qt::ImhLatinOnly</set>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
-    <widget class="QLabel" name="lne_projection">
-     <property name="styleSheet">
-      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
-     <property name="text">
-      <string>Indiquez la projection de vos données :</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="lbl_data">
-     <property name="styleSheet">
-      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
-     <property name="text">
-      <string>Nommez votre donnée :  </string>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="0">
+    <widget class="QLabel" name="lbl_datastore">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+     </property>
+     <property name="text">
+      <string>Espace de travail</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="DatastoreComboBox" name="cbx_datastore"/>
+   </item>
+   <item row="2" column="0">
     <widget class="QLabel" name="lbl_files_put">
      <property name="styleSheet">
       <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
@@ -58,6 +46,16 @@ color: rgb(52, 101, 164);</string>
     </widget>
    </item>
    <item row="3" column="0">
+    <widget class="QgsFileWidget" name="flw_files_put">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="inputMethodHints">
+      <set>Qt::ImhLatinOnly</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
     <widget class="QLabel" name="lbl_files_summary">
      <property name="styleSheet">
       <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
@@ -68,7 +66,7 @@ color: rgb(52, 101, 164);</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2">
+   <item row="5" column="0">
     <widget class="QListWidget" name="lvw_import_data">
      <property name="enabled">
       <bool>true</bool>
@@ -96,7 +94,18 @@ color: rgb(52, 101, 164);</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="0" colspan="2">
+   <item row="6" column="0">
+    <widget class="QLabel" name="lbl_data">
+     <property name="styleSheet">
+      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+     </property>
+     <property name="text">
+      <string>Nommez votre donnée :  </string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
     <widget class="QLineEdit" name="lne_data">
      <property name="enabled">
       <bool>true</bool>
@@ -109,7 +118,18 @@ color: rgb(52, 101, 164);</string>
      </property>
     </widget>
    </item>
-   <item row="8" column="0" colspan="2">
+   <item row="8" column="0">
+    <widget class="QLabel" name="lne_projection">
+     <property name="styleSheet">
+      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+     </property>
+     <property name="text">
+      <string>Indiquez la projection de vos données :</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0">
     <widget class="QgsProjectionSelectionWidget" name="psw_projection"/>
    </item>
   </layout>
@@ -124,6 +144,11 @@ color: rgb(52, 101, 164);</string>
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DatastoreComboBox</class>
+   <extends>QComboBox</extends>
+   <header>vectiler.gui.cbx_datastore</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -42,6 +42,8 @@ class UploadEditionPageWizard(QWizardPage):
         self.flw_files_put.fileChanged.connect(self.add_file_path)
         self.flw_files_put.setStorageMode(QgsFileWidget.GetMultipleFiles)
 
+        self.setCommitPage(True)
+
     def validatePage(self) -> bool:
         """
         Validate current page content by checking files

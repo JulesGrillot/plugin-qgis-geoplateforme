@@ -2,7 +2,7 @@
 import os
 
 from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QWizardPage, QSlider
+from PyQt5.QtWidgets import QWizardPage, QSlider, QMessageBox
 from qgis.PyQt import uic
 
 
@@ -48,6 +48,9 @@ class TileGenerationEditionPageWizard(QWizardPage):
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
         self._datastore_updated()
 
+        self.cbx_stored_data.currentIndexChanged.connect(self._stored_data_updated)
+        self._stored_data_updated()
+
         # To avoid some characters
         rx = QtCore.QRegExp("[a-z-A-Z-0-9-_]+")
         validator = QtGui.QRegExpValidator(rx)
@@ -64,7 +67,36 @@ class TileGenerationEditionPageWizard(QWizardPage):
 
         # Connect zoom level change to scale widget update
         self.levels_range_slider.sliderMoved.connect(self._levels_range_updated)
+        self._levels_range_updated()
         self.srw_zoom.setEnabled(False)
+
+    def initializePage(self) -> None:
+        """
+        Initialize page before show.
+
+        """
+        self.lne_flux.setText("")
+        self._datastore_updated()
+        self._stored_data_updated()
+
+    def validatePage(self) -> bool:
+        """
+        Validate current page content by checking files
+
+        Returns: True
+
+        """
+        valid = True
+
+        if not self.cbx_datastore.current_datastore_id():
+            valid = False
+            QMessageBox.warning(self, self.tr("No datastore selected."), self.tr("Please select a datastore"))
+
+        if valid and not self.cbx_stored_data.current_stored_data_id():
+            valid = False
+            QMessageBox.warning(self, self.tr("No stored data selected."), self.tr("Please select a stored data"))
+
+        return valid
 
     def get_bottom_level(self) -> int:
         """
@@ -90,6 +122,14 @@ class TileGenerationEditionPageWizard(QWizardPage):
 
         """
         self.cbx_stored_data.set_datastore(self.cbx_datastore.current_datastore_id())
+
+    def _stored_data_updated(self) -> None:
+        """
+        Define default flux name from stored data
+
+        """
+        if self.cbx_stored_data.current_stored_data_name() and not self.lne_flux.text():
+            self.lne_flux.setText(self.cbx_stored_data.current_stored_data_name())
 
     def _levels_range_updated(self) -> None:
         """

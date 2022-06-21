@@ -1,8 +1,6 @@
 #!/usr/bin/python3
-import os
-import sys
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from qgis.PyQt import QtCore, QtGui, QtWidgets
 
 # Originated from
 # https://www.mail-archive.com/pyqt@riverbankcomputing.com/msg22889.html
@@ -120,9 +118,23 @@ class RangeSlider(QtWidgets.QSlider):
             # painter.setPen(QtGui.QPen(self.palette().color(QtGui.QPalette.Dark), 0))
             """
             if opt.orientation == QtCore.Qt.Horizontal:
-                self.setupPainter(painter, opt.orientation, groove.center().x(), groove.top(), groove.center().x(), groove.bottom())
+                self.setupPainter(
+                    painter,
+                    opt.orientation,
+                    groove.center().x(),
+                    groove.top(),
+                    groove.center().x(),
+                    groove.bottom(),
+                )
             else:
-                self.setupPainter(painter, opt.orientation, groove.left(), groove.center().y(), groove.right(), groove.center().y())
+                self.setupPainter(
+                    painter,
+                    opt.orientation,
+                    groove.left(),
+                    groove.center().y(),
+                    groove.right(),
+                    groove.center().y(),
+                )
             """
             # spanRect =
             painter.drawRect(span_rect.intersected(groove))

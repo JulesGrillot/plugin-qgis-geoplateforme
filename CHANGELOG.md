@@ -23,6 +23,7 @@ Unreleased
 - Add processing to upload dataset
 - Add UI elements for main thre steps: authentication, dataset upload, storage listing and vector tile processing
 - Use Geotuileur icons
+- Partial translation into French
 
 ## 0.2.1 - 2022-06-01
 

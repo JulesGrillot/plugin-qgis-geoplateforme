@@ -13,7 +13,7 @@ from qgis.PyQt.QtCore import QLocale, QTranslator
 from qgis.PyQt.QtWidgets import QApplication
 
 # project package
-from vectiler.__about__ import DIR_PLUGIN_ROOT, __email__, __title__
+from vectiler.__about__ import DIR_PLUGIN_ROOT, __title__
 from vectiler.toolbelt import PlgLogger
 
 # ############################################################################

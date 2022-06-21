@@ -94,7 +94,7 @@ class ProcessingRequestManager:
             if processing["name"] == name:
                 return Processing(name=processing["name"], id=processing["_id"])
 
-        raise self.UnavailableProcessingException(f"Processing not available in server")
+        raise self.UnavailableProcessingException("Processing not available in server")
 
     def create_processing_execution(self, datastore: str, input_map: dict) -> dict:
         """

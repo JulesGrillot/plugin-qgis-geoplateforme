@@ -124,7 +124,7 @@ class UploadCreationAlgorithm(QgsProcessingAlgorithm):
             except UploadRequestManager.UploadClosingException as exc:
                 raise QgsProcessingException(f"Upload closing failed : {exc}")
         else:
-            raise QgsProcessingException(f"Can't define used datastore")
+            raise QgsProcessingException("Can't define used datastore")
 
         return {self.CREATED_UPLOAD_ID: upload_id, self.DATASTORE: datastore}
 

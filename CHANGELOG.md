@@ -16,6 +16,14 @@ Unreleased
 
 -->
 
+## 0.3.0 - 2022-06-21
+
+- Complete authentication workflow using QGIS Authentication Manager and proper oAuth2 grant flow
+- Add processing to prepare dataset
+- Add processing to upload dataset
+- Add UI elements for main thre steps: authentication, dataset upload, storage listing and vector tile processing
+- Use Geotuileur icons
+
 ## 0.2.1 - 2022-06-01
 
 - Fix CI build

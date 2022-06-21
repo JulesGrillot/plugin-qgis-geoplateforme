@@ -18,7 +18,9 @@ from vectiler.__about__ import DIR_PLUGIN_ROOT, __version__
 from vectiler.processing.check_layer import CheckLayerAlgorithm
 from vectiler.processing.tile_creation import TileCreationAlgorithm
 from vectiler.processing.upload_creation import UploadCreationAlgorithm
-from vectiler.processing.upload_database_integration import UploadDatabaseIntegrationAlgorithm
+from vectiler.processing.upload_database_integration import (
+    UploadDatabaseIntegrationAlgorithm,
+)
 
 
 class VectilerProvider(QgsProcessingProvider):

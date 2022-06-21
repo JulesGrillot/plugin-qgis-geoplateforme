@@ -26,7 +26,9 @@ class UploadEditionPageWizard(QWizardPage):
 
         super().__init__(parent)
 
-        uic.loadUi(os.path.join(os.path.dirname(__file__), "qwp_upload_edition.ui"), self)
+        uic.loadUi(
+            os.path.join(os.path.dirname(__file__), "qwp_upload_edition.ui"), self
+        )
 
         # # To avoid some characters
 
@@ -55,18 +57,22 @@ class UploadEditionPageWizard(QWizardPage):
 
         if valid and len(self.lne_data.text()) == 0:
             valid = False
-            QMessageBox.warning(self, self.tr("No name defined."), self.tr("Please define data name"))
+            QMessageBox.warning(
+                self, self.tr("No name defined."), self.tr("Please define data name")
+            )
 
         if valid and not self.psw_projection.crs().isValid():
             valid = False
-            QMessageBox.warning(self, self.tr("No SRS defined."), self.tr("Please define SRS"))
+            QMessageBox.warning(
+                self, self.tr("No SRS defined."), self.tr("Please define SRS")
+            )
 
         return valid
 
     def _check_input_layers(self) -> bool:
         valid = True
 
-        algo_str = f'{VectilerProvider().id()}:{CheckLayerAlgorithm().name()}'
+        algo_str = f"{VectilerProvider().id()}:{CheckLayerAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
         params = {CheckLayerAlgorithm.INPUT_LAYERS: self.get_filenames()}
@@ -78,21 +84,23 @@ class UploadEditionPageWizard(QWizardPage):
 
         if result_code != CheckLayerAlgorithm.ResultCode.VALID:
             valid = False
-            error_string = self.tr('Invalid layers :\n')
+            error_string = self.tr("Invalid layers :\n")
             if CheckLayerAlgorithm.ResultCode.CRS_MISMATCH in result_code:
-                error_string += self.tr('- CRS mismatch\n')
+                error_string += self.tr("- CRS mismatch\n")
             if CheckLayerAlgorithm.ResultCode.INVALID_LAYER_NAME in result_code:
-                error_string += self.tr('- invalid layer name\n')
+                error_string += self.tr("- invalid layer name\n")
             if CheckLayerAlgorithm.ResultCode.INVALID_FILE_NAME in result_code:
-                error_string += self.tr('- invalid file name\n')
+                error_string += self.tr("- invalid file name\n")
             if CheckLayerAlgorithm.ResultCode.INVALID_FIELD_NAME in result_code:
-                error_string += self.tr('- invalid field name\n')
+                error_string += self.tr("- invalid field name\n")
             if CheckLayerAlgorithm.ResultCode.INVALID_LAYER_TYPE in result_code:
-                error_string += self.tr('- invalid layer type\n')
+                error_string += self.tr("- invalid layer type\n")
 
-            error_string += self.tr('Invalid layers list are available in details.')
+            error_string += self.tr("Invalid layers list are available in details.")
 
-            msgBox = QMessageBox(QMessageBox.Warning, self.tr('Invalid layers'), error_string)
+            msgBox = QMessageBox(
+                QMessageBox.Warning, self.tr("Invalid layers"), error_string
+            )
             msgBox.setDetailedText(feedback.textLog())
             msgBox.exec()
 
@@ -121,9 +129,14 @@ class UploadEditionPageWizard(QWizardPage):
 
     def _add_file_path_to_list(self, savepath):
         if QtCore.QFileInfo(savepath).exists():
-            items = self.lvw_import_data.findItems(savepath, QtCore.Qt.MatchCaseSensitive)
+            items = self.lvw_import_data.findItems(
+                savepath, QtCore.Qt.MatchCaseSensitive
+            )
             if len(items) == 0:
                 self.lvw_import_data.addItem(savepath)
 
     def get_filenames(self):
-        return [self.lvw_import_data.item(row).text() for row in range(0, self.lvw_import_data.count())]
+        return [
+            self.lvw_import_data.item(row).text()
+            for row in range(0, self.lvw_import_data.count())
+        ]

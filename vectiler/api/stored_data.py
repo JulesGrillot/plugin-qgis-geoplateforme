@@ -20,7 +20,11 @@ class StoredData:
     def get_fields(self) -> [str]:
         attributes = []
         if self.type_infos:
-            table_relations = [relation for relation in self.type_infos["relations"] if relation["type"] == "TABLE"]
+            table_relations = [
+                relation
+                for relation in self.type_infos["relations"]
+                if relation["type"] == "TABLE"
+            ]
             for relation in table_relations:
                 for field in relation["attributes"].keys():
                     if field != "fid" and field != "geom":
@@ -30,7 +34,11 @@ class StoredData:
     def get_tables(self) -> [str]:
         tables = []
         if self.type_infos:
-            table_relations = [relation for relation in self.type_infos["relations"] if relation["type"] == "TABLE"]
+            table_relations = [
+                relation
+                for relation in self.type_infos["relations"]
+                if relation["type"] == "TABLE"
+            ]
             tables = [relation["name"] for relation in table_relations]
         return tables
 
@@ -87,11 +95,15 @@ class StoredDataRequestManager:
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
             raise self.ReadStoredDataException(
-                f"Error while fetching stored data : {self.ntwk_requester_blk.errorMessage()}")
+                f"Error while fetching stored data : {self.ntwk_requester_blk.errorMessage()}"
+            )
 
         # check response
         req_reply = self.ntwk_requester_blk.reply()
-        if not req_reply.rawHeader(b"Content-Type") == "application/json; charset=utf-8":
+        if (
+            not req_reply.rawHeader(b"Content-Type")
+            == "application/json; charset=utf-8"
+        ):
             raise self.ReadStoredDataException(
                 "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
                     req_reply.rawHeader(b"Content-type")
@@ -101,7 +113,10 @@ class StoredDataRequestManager:
         data = json.loads(req_reply.content().data().decode("utf-8"))
         stored_datas_id = [val["_id"] for val in data]
 
-        return [self.get_stored_data(datastore, stored_data) for stored_data in stored_datas_id]
+        return [
+            self.get_stored_data(datastore, stored_data)
+            for stored_data in stored_datas_id
+        ]
 
     def get_stored_data(self, datastore: str, stored_data: str) -> StoredData:
         """
@@ -114,7 +129,9 @@ class StoredDataRequestManager:
         Returns: stored data, raise ReadStoredDataException otherwise
         """
         data = self.get_stored_data_json(datastore, stored_data)
-        result = StoredData(id=data["_id"], name=data["name"], type=data["type"], status=data["status"])
+        result = StoredData(
+            id=data["_id"], name=data["name"], type=data["type"], status=data["status"]
+        )
         if "tags" in data:
             result.tags = data["tags"]
         if "type_infos" in data:
@@ -132,7 +149,7 @@ class StoredDataRequestManager:
         Returns: dict values of stored data, raise ReadStoredDataException otherwise
         """
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req = QNetworkRequest(QUrl(f'{self.get_base_url(datastore)}/{stored_data}'))
+        req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{stored_data}"))
 
         # headers
         req.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
@@ -143,11 +160,15 @@ class StoredDataRequestManager:
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
             raise self.ReadStoredDataException(
-                f"Error while fetching stored data : {self.ntwk_requester_blk.errorMessage()}")
+                f"Error while fetching stored data : {self.ntwk_requester_blk.errorMessage()}"
+            )
 
         # check response
         req_reply = self.ntwk_requester_blk.reply()
-        if not req_reply.rawHeader(b"Content-Type") == "application/json; charset=utf-8":
+        if (
+            not req_reply.rawHeader(b"Content-Type")
+            == "application/json; charset=utf-8"
+        ):
             raise self.ReadStoredDataException(
                 "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
                     req_reply.rawHeader(b"Content-type")
@@ -166,7 +187,9 @@ class StoredDataRequestManager:
             tags: (dict) dictionary of tags
         """
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req_post = QNetworkRequest(QUrl(f'{self.get_base_url(datastore)}/{stored_data}/tags'))
+        req_post = QNetworkRequest(
+            QUrl(f"{self.get_base_url(datastore)}/{stored_data}/tags")
+        )
 
         # headers
         req_post.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
@@ -181,4 +204,5 @@ class StoredDataRequestManager:
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
             raise self.AddTagException(
-                f"Error while adding tag to stored_data : {self.ntwk_requester_blk.errorMessage()}")
+                f"Error while adding tag to stored_data : {self.ntwk_requester_blk.errorMessage()}"
+            )

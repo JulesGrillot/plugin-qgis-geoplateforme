@@ -170,10 +170,11 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
                     push=True,
                 )
             else:
-                QMessageBox.information(self,
-                                        self.tr("Welcome"),
-                                        self.tr(f'Welcome {data["first_name"]} {data["last_name"]} !')
-                                        )
+                QMessageBox.information(
+                    self,
+                    self.tr("Welcome"),
+                    self.tr(f'Welcome {data["first_name"]} {data["last_name"]} !'),
+                )
 
 
 class PlgOptionsFactory(QgsOptionsWidgetFactory):

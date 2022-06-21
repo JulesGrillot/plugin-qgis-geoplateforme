@@ -4,7 +4,6 @@ from vectiler.gui.mdl_datastore import DatastoreListModel
 
 
 class DatastoreComboBox(QComboBox):
-
     def __init__(self, parent=None):
         """
         QComboBox for datastore selection.

@@ -18,7 +18,9 @@ class ExecutionListModel(QStandardItemModel):
             parent: QObject
         """
         super().__init__(0, 2, parent)
-        self.setHorizontalHeaderLabels([self.tr("Name"), self.tr("Status"), self.tr("Start"), self.tr("Finish")])
+        self.setHorizontalHeaderLabels(
+            [self.tr("Name"), self.tr("Status"), self.tr("Start"), self.tr("Finish")]
+        )
 
     def set_execution_list(self, execution_list: [Execution]) -> None:
         """

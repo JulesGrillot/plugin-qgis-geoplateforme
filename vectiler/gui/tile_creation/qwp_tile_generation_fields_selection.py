@@ -6,11 +6,15 @@ from PyQt5.QtWidgets import QWizardPage, QListWidgetItem, QMessageBox
 from qgis.PyQt import uic
 
 from vectiler.api.stored_data import StoredDataRequestManager
-from vectiler.gui.tile_creation.qwp_tile_generation_edition import TileGenerationEditionPageWizard
+from vectiler.gui.tile_creation.qwp_tile_generation_edition import (
+    TileGenerationEditionPageWizard,
+)
 
 
 class TileGenerationFieldsSelectionPageWizard(QWizardPage):
-    def __init__(self, qwp_tile_generation_edition: TileGenerationEditionPageWizard, parent=None):
+    def __init__(
+        self, qwp_tile_generation_edition: TileGenerationEditionPageWizard, parent=None
+    ):
 
         """
         QWizardPage to define fields for tile generation
@@ -22,7 +26,12 @@ class TileGenerationFieldsSelectionPageWizard(QWizardPage):
         super().__init__(parent)
         self.qwp_tile_generation_edition = qwp_tile_generation_edition
 
-        uic.loadUi(os.path.join(os.path.dirname(__file__), "qwp_tile_generation_fields_selection.ui"), self)
+        uic.loadUi(
+            os.path.join(
+                os.path.dirname(__file__), "qwp_tile_generation_fields_selection.ui"
+            ),
+            self,
+        )
 
     def initializePage(self) -> None:
         """
@@ -32,9 +41,15 @@ class TileGenerationFieldsSelectionPageWizard(QWizardPage):
         self.lwg_attribut.clear()
         try:
             manager = StoredDataRequestManager()
-            datastore_id = self.qwp_tile_generation_edition.cbx_datastore.current_datastore_id()
-            stored_data_id = self.qwp_tile_generation_edition.cbx_stored_data.current_stored_data_id()
-            stored_data = manager.get_stored_data(datastore=datastore_id, stored_data=stored_data_id)
+            datastore_id = (
+                self.qwp_tile_generation_edition.cbx_datastore.current_datastore_id()
+            )
+            stored_data_id = (
+                self.qwp_tile_generation_edition.cbx_stored_data.current_stored_data_id()
+            )
+            stored_data = manager.get_stored_data(
+                datastore=datastore_id, stored_data=stored_data_id
+            )
             fields = stored_data.get_fields()
 
             for field in fields:
@@ -46,9 +61,11 @@ class TileGenerationFieldsSelectionPageWizard(QWizardPage):
                 self.lwg_attribut.addItem(item)
 
         except StoredDataRequestManager.UnavailableStoredData as exc:
-            msgBox = QMessageBox(QMessageBox.Warning,
-                                 self.tr("Stored data read failed"),
-                                 self.tr("Check details for more informations"))
+            msgBox = QMessageBox(
+                QMessageBox.Warning,
+                self.tr("Stored data read failed"),
+                self.tr("Check details for more informations"),
+            )
             msgBox.setDetailedText(str(exc))
             msgBox.exec()
 

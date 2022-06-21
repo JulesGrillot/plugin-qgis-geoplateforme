@@ -5,7 +5,6 @@ from vectiler.gui.mdl_stored_data import StoredDataListModel
 
 
 class StoredDataProxyModel(QSortFilterProxyModel):
-
     def __init__(self, parent: QObject = None):
         super().__init__(parent)
         self.filter_type = []
@@ -54,14 +53,18 @@ class StoredDataProxyModel(QSortFilterProxyModel):
 
         # Check stored_data type
         if len(self.filter_type):
-            type_index = self.sourceModel().index(source_row, StoredDataListModel.TYPE_COL, source_parent)
+            type_index = self.sourceModel().index(
+                source_row, StoredDataListModel.TYPE_COL, source_parent
+            )
             type_value = self.sourceModel().data(type_index)
 
             result = type_value in self.filter_type
 
         # Check stored data flags
         if (len(self.tags) or len(self.forbidden_tags)) and result:
-            name_index = self.sourceModel().index(source_row, StoredDataListModel.NAME_COL, source_parent)
+            name_index = self.sourceModel().index(
+                source_row, StoredDataListModel.NAME_COL, source_parent
+            )
             tags = self.sourceModel().data(name_index, QtCore.Qt.UserRole)
             available_tags = tags.keys()
             for tag in self.tags:

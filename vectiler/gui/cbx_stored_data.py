@@ -5,7 +5,6 @@ from vectiler.gui.proxy_model_stored_data import StoredDataProxyModel
 
 
 class StoredDataComboBox(QComboBox):
-
     def __init__(self, parent=None):
         """
         QComboBox for stored data selection.

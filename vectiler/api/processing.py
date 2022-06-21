@@ -63,7 +63,7 @@ class ProcessingRequestManager:
 
         """
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req = QNetworkRequest(QUrl(f'{self.get_base_url(datastore)}'))
+        req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}"))
 
         # headers
         req.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
@@ -74,11 +74,15 @@ class ProcessingRequestManager:
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
             raise self.UnavailableProcessingException(
-                f"Error while fetching processing : {self.ntwk_requester_blk.errorMessage()}")
+                f"Error while fetching processing : {self.ntwk_requester_blk.errorMessage()}"
+            )
 
         # check response
         req_reply = self.ntwk_requester_blk.reply()
-        if not req_reply.rawHeader(b"Content-Type") == "application/json; charset=utf-8":
+        if (
+            not req_reply.rawHeader(b"Content-Type")
+            == "application/json; charset=utf-8"
+        ):
             raise self.UnavailableProcessingException(
                 "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
                     req_reply.rawHeader(b"Content-type")
@@ -87,7 +91,7 @@ class ProcessingRequestManager:
 
         processing_list = json.loads(req_reply.content().data().decode("utf-8"))
         for processing in processing_list:
-            if processing['name'] == name:
+            if processing["name"] == name:
                 return Processing(name=processing["name"], id=processing["_id"])
 
         raise self.UnavailableProcessingException(f"Processing not available in server")
@@ -104,7 +108,7 @@ class ProcessingRequestManager:
 
         """
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req_post = QNetworkRequest(QUrl(f'{self.get_base_url(datastore)}/executions'))
+        req_post = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/executions"))
 
         # headers
         req_post.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
@@ -119,11 +123,15 @@ class ProcessingRequestManager:
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
             raise self.CreateProcessingException(
-                f"Error while creating processing execution : {self.ntwk_requester_blk.errorMessage()}")
+                f"Error while creating processing execution : {self.ntwk_requester_blk.errorMessage()}"
+            )
 
         # check response
         req_reply = self.ntwk_requester_blk.reply()
-        if not req_reply.rawHeader(b"Content-Type") == "application/json; charset=utf-8":
+        if (
+            not req_reply.rawHeader(b"Content-Type")
+            == "application/json; charset=utf-8"
+        ):
             raise self.CreateProcessingException(
                 "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
                     req_reply.rawHeader(b"Content-type")
@@ -141,18 +149,23 @@ class ProcessingRequestManager:
             exec_id: (str) execution id (see create_processing_execution)
         """
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req_post = QNetworkRequest(QUrl(f'{self.get_base_url(datastore)}/executions/{exec_id}/launch'))
+        req_post = QNetworkRequest(
+            QUrl(f"{self.get_base_url(datastore)}/executions/{exec_id}/launch")
+        )
 
         # headers
         req_post.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
 
         # send request
-        resp = self.ntwk_requester_blk.post(req_post, data=QByteArray(), forceRefresh=True)
+        resp = self.ntwk_requester_blk.post(
+            req_post, data=QByteArray(), forceRefresh=True
+        )
 
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
             raise self.LaunchExecutionException(
-                f"Error while launching execution : {self.ntwk_requester_blk.errorMessage()}")
+                f"Error while launching execution : {self.ntwk_requester_blk.errorMessage()}"
+            )
 
     def get_execution(self, datastore: str, exec_id: str) -> Execution:
         """
@@ -165,7 +178,9 @@ class ProcessingRequestManager:
         Returns: Execution execution if execution available, raise UnavailableExecutionException otherwise
         """
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req = QNetworkRequest(QUrl(f'{self.get_base_url(datastore)}/executions/{exec_id}'))
+        req = QNetworkRequest(
+            QUrl(f"{self.get_base_url(datastore)}/executions/{exec_id}")
+        )
 
         # headers
         req.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
@@ -176,11 +191,15 @@ class ProcessingRequestManager:
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
             raise self.UnavailableExecutionException(
-                f"Error while fetching execution : {self.ntwk_requester_blk.errorMessage()}")
+                f"Error while fetching execution : {self.ntwk_requester_blk.errorMessage()}"
+            )
 
         # check response
         req_reply = self.ntwk_requester_blk.reply()
-        if not req_reply.rawHeader(b"Content-Type") == "application/json; charset=utf-8":
+        if (
+            not req_reply.rawHeader(b"Content-Type")
+            == "application/json; charset=utf-8"
+        ):
             raise self.UnavailableExecutionException(
                 "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
                     req_reply.rawHeader(b"Content-type")
@@ -189,8 +208,9 @@ class ProcessingRequestManager:
 
         data = json.loads(req_reply.content().data().decode("utf-8"))
 
-        execution = Execution(id=data["_id"], status=data["status"],
-                              name=data["processing"]["name"])
+        execution = Execution(
+            id=data["_id"], status=data["status"], name=data["processing"]["name"]
+        )
 
         if "start" in data:
             execution.start = data["start"]

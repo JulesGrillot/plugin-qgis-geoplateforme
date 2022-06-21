@@ -19,7 +19,9 @@ class UploadCreationWizard(QWizard):
         self.setWindowTitle(self.tr("Upload creation"))
 
         self.qwp_upload_edition = UploadEditionPageWizard(self)
-        self.qwp_upload_creation = UploadCreationPageWizard(qwp_upload_edition=self.qwp_upload_edition, parent=self)
+        self.qwp_upload_creation = UploadCreationPageWizard(
+            qwp_upload_edition=self.qwp_upload_edition, parent=self
+        )
         self.addPage(self.qwp_upload_edition)
         self.addPage(self.qwp_upload_creation)
         self.setOption(QWizard.NoCancelButtonOnLastPage, True)

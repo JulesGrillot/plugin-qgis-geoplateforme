@@ -13,7 +13,7 @@ from qgis.core import (
     QgsFields,
     QgsWkbTypes,
     QgsCoordinateReferenceSystem,
-    QgsField
+    QgsField,
 )
 
 from tests.qgis.processings.conftest import QgsProcessingFeedBackTest
@@ -31,24 +31,34 @@ def alg() -> QgsProcessingAlgorithm:
     Returns: QgsProcessingAlgorithm
 
     """
-    algo_str = f'{VectilerProvider().id()}:{CheckLayerAlgorithm().name()}'
+    algo_str = f"{VectilerProvider().id()}:{CheckLayerAlgorithm().name()}"
     alg = QgsApplication.processingRegistry().algorithmById(algo_str)
     assert alg is not None
     return alg
 
 
-def create_shape_file(tmpdir, filename: str, layer_name: str,
-                      crs_auth_id: str = None,
-                      fields: QgsFields = None) -> QgsVectorLayer:
+def create_shape_file(
+    tmpdir,
+    filename: str,
+    layer_name: str,
+    crs_auth_id: str = None,
+    fields: QgsFields = None,
+) -> QgsVectorLayer:
     layer_path = tmpdir / filename
 
     if fields is None:
         fields = QgsFields()
     if crs_auth_id is None:
-        crs_auth_id = 'EPSG:4326'
+        crs_auth_id = "EPSG:4326"
 
-    QgsVectorFileWriter(str(layer_path), 'UTF-8', fields, QgsWkbTypes.Polygon,
-                        QgsCoordinateReferenceSystem(crs_auth_id), 'ESRI Shapefile')
+    QgsVectorFileWriter(
+        str(layer_path),
+        "UTF-8",
+        fields,
+        QgsWkbTypes.Polygon,
+        QgsCoordinateReferenceSystem(crs_auth_id),
+        "ESRI Shapefile",
+    )
     layer = QgsVectorLayer(str(layer_path), layer_name, "ogr")
 
     assert layer.crs().authid() == crs_auth_id
@@ -81,9 +91,13 @@ def test_valid_layers(alg: QgsProcessingAlgorithm, tmpdir):
         tmpdir: pytest fixture to get temporary directory
     """
 
-    params = {CheckLayerAlgorithm.INPUT_LAYERS: [create_shape_file(tmpdir, "vect_1.shp", "vect_1"),
-                                                 create_shape_file(tmpdir, "vect_2.shp", "vect_2"),
-                                                 create_shape_file(tmpdir, "vect_2.shp", "vect_3")]}
+    params = {
+        CheckLayerAlgorithm.INPUT_LAYERS: [
+            create_shape_file(tmpdir, "vect_1.shp", "vect_1"),
+            create_shape_file(tmpdir, "vect_2.shp", "vect_2"),
+            create_shape_file(tmpdir, "vect_2.shp", "vect_3"),
+        ]
+    }
     context = QgsProcessingContext()
     feedback = QgsProcessingFeedBackTest()
     result, success = alg.run(params, context, feedback)
@@ -102,9 +116,13 @@ def test_crs_mismatch(alg: QgsProcessingAlgorithm, tmpdir):
         tmpdir: pytest fixture to get temporary directory
     """
 
-    params = {CheckLayerAlgorithm.INPUT_LAYERS: [create_shape_file(tmpdir, "vect_4326.shp", "vect_4326", 'EPSG:4326'),
-                                                 create_shape_file(tmpdir, "vect_4143.shp", "vect_4143", 'EPSG:4143'),
-                                                 create_shape_file(tmpdir, "vect_3857.shp", "vect_3857", 'EPSG:3857')]}
+    params = {
+        CheckLayerAlgorithm.INPUT_LAYERS: [
+            create_shape_file(tmpdir, "vect_4326.shp", "vect_4326", "EPSG:4326"),
+            create_shape_file(tmpdir, "vect_4143.shp", "vect_4143", "EPSG:4143"),
+            create_shape_file(tmpdir, "vect_3857.shp", "vect_3857", "EPSG:3857"),
+        ]
+    }
     context = QgsProcessingContext()
     feedback = QgsProcessingFeedBackTest()
     result, success = alg.run(params, context, feedback)
@@ -113,8 +131,10 @@ def test_crs_mismatch(alg: QgsProcessingAlgorithm, tmpdir):
     result_code = result[CheckLayerAlgorithm.RESULT_CODE]
     assert result_code == CheckLayerAlgorithm.ResultCode.CRS_MISMATCH
 
-    expected_warnings = ['- [KO] vect_4143 : invalid CRS EPSG:4143. Expected EPSG:4326',
-                         '- [KO] vect_3857 : invalid CRS EPSG:3857. Expected EPSG:4326']
+    expected_warnings = [
+        "- [KO] vect_4143 : invalid CRS EPSG:4143. Expected EPSG:4326",
+        "- [KO] vect_3857 : invalid CRS EPSG:3857. Expected EPSG:4326",
+    ]
     assert expected_warnings == feedback.warnings
 
 
@@ -127,11 +147,15 @@ def test_multiple_invalid_params(alg: QgsProcessingAlgorithm, tmpdir):
         tmpdir: pytest fixture to get temporary directory
     """
 
-    filepath = create_raster_file(tmpdir, 'raster.tif')
+    filepath = create_raster_file(tmpdir, "raster.tif")
 
-    params = {CheckLayerAlgorithm.INPUT_LAYERS: [create_shape_file(tmpdir, "valid.shp", "valid", 'EPSG:4326'),
-                                                 create_shape_file(tmpdir, "invalid.shp", "inva&lid", 'EPSG:3857'),
-                                                 filepath]}
+    params = {
+        CheckLayerAlgorithm.INPUT_LAYERS: [
+            create_shape_file(tmpdir, "valid.shp", "valid", "EPSG:4326"),
+            create_shape_file(tmpdir, "invalid.shp", "inva&lid", "EPSG:3857"),
+            filepath,
+        ]
+    }
     context = QgsProcessingContext()
     feedback = QgsProcessingFeedBackTest()
     result, success = alg.run(params, context, feedback)
@@ -139,14 +163,20 @@ def test_multiple_invalid_params(alg: QgsProcessingAlgorithm, tmpdir):
 
     result_code = result[CheckLayerAlgorithm.RESULT_CODE]
     expected_result_code = CheckLayerAlgorithm.ResultCode.CRS_MISMATCH
-    expected_result_code = expected_result_code | CheckLayerAlgorithm.ResultCode.INVALID_LAYER_NAME
-    expected_result_code = expected_result_code | CheckLayerAlgorithm.ResultCode.INVALID_LAYER_TYPE
+    expected_result_code = (
+        expected_result_code | CheckLayerAlgorithm.ResultCode.INVALID_LAYER_NAME
+    )
+    expected_result_code = (
+        expected_result_code | CheckLayerAlgorithm.ResultCode.INVALID_LAYER_TYPE
+    )
     assert result_code == expected_result_code
 
-    expected_warnings = ['- [KO] inva&lid : invalid CRS EPSG:3857. Expected EPSG:4326',
-                         '- [KO] raster : invalid CRS EPSG:26912. Expected EPSG:4326',
-                         f'- [KO] invalid layer name for inva&lid. Please remove any special character ({INVALID_CHARS})',
-                         '- [KO] invalid layer type for raster. Only QgsVectorLayer are supported.']
+    expected_warnings = [
+        "- [KO] inva&lid : invalid CRS EPSG:3857. Expected EPSG:4326",
+        "- [KO] raster : invalid CRS EPSG:26912. Expected EPSG:4326",
+        f"- [KO] invalid layer name for inva&lid. Please remove any special character ({INVALID_CHARS})",
+        "- [KO] invalid layer type for raster. Only QgsVectorLayer are supported.",
+    ]
     assert expected_warnings == feedback.warnings
 
 
@@ -159,12 +189,16 @@ def test_invalid_layer_name(alg: QgsProcessingAlgorithm, tmpdir):
         tmpdir: pytest fixture to get temporary directory
     """
 
-    params = {CheckLayerAlgorithm.INPUT_LAYERS: [create_shape_file(tmpdir, "valid.shp", "valid"),
-                                                 create_shape_file(tmpdir, "invalid_1.shp", "inva&lid"),
-                                                 create_shape_file(tmpdir, "invalid_2.shp", "inva'lid"),
-                                                 create_shape_file(tmpdir, "invalid_3.shp", "inva\"lid"),
-                                                 create_shape_file(tmpdir, "invalid_4.shp", "inva<lid"),
-                                                 create_shape_file(tmpdir, "invalid_5.shp", "inva>lid")]}
+    params = {
+        CheckLayerAlgorithm.INPUT_LAYERS: [
+            create_shape_file(tmpdir, "valid.shp", "valid"),
+            create_shape_file(tmpdir, "invalid_1.shp", "inva&lid"),
+            create_shape_file(tmpdir, "invalid_2.shp", "inva'lid"),
+            create_shape_file(tmpdir, "invalid_3.shp", 'inva"lid'),
+            create_shape_file(tmpdir, "invalid_4.shp", "inva<lid"),
+            create_shape_file(tmpdir, "invalid_5.shp", "inva>lid"),
+        ]
+    }
     context = QgsProcessingContext()
     feedback = QgsProcessingFeedBackTest()
     result, success = alg.run(params, context, feedback)
@@ -173,11 +207,11 @@ def test_invalid_layer_name(alg: QgsProcessingAlgorithm, tmpdir):
     result_code = result[CheckLayerAlgorithm.RESULT_CODE]
     assert result_code == CheckLayerAlgorithm.ResultCode.INVALID_LAYER_NAME
     expected_warnings = [
-        f'- [KO] invalid layer name for inva&lid. Please remove any special character ({INVALID_CHARS})',
-        f'- [KO] invalid layer name for inva\'lid. Please remove any special character ({INVALID_CHARS})',
-        f'- [KO] invalid layer name for inva\"lid. Please remove any special character ({INVALID_CHARS})',
-        f'- [KO] invalid layer name for inva<lid. Please remove any special character ({INVALID_CHARS})',
-        f'- [KO] invalid layer name for inva>lid. Please remove any special character ({INVALID_CHARS})'
+        f"- [KO] invalid layer name for inva&lid. Please remove any special character ({INVALID_CHARS})",
+        f"- [KO] invalid layer name for inva'lid. Please remove any special character ({INVALID_CHARS})",
+        f'- [KO] invalid layer name for inva"lid. Please remove any special character ({INVALID_CHARS})',
+        f"- [KO] invalid layer name for inva<lid. Please remove any special character ({INVALID_CHARS})",
+        f"- [KO] invalid layer name for inva>lid. Please remove any special character ({INVALID_CHARS})",
     ]
     assert expected_warnings == feedback.warnings
 
@@ -191,15 +225,19 @@ def test_invalid_filename(alg: QgsProcessingAlgorithm, tmpdir):
         tmpdir: pytest fixture to get temporary directory
     """
 
-    layers = [{'layer_name': "file_1", 'file_name': "inva&lid.shp"},
-              {'layer_name': "file_2", 'file_name': "inva'lid.shp"},
-              {'layer_name': "file_3", 'file_name': "inva\"lid.shp"},
-              {'layer_name': "file_4", 'file_name': "inva\"lid.shp"},
-              {'layer_name': "file_5", 'file_name': "inva<lid.shp"},
-              {'layer_name': "file_6", 'file_name': "inva>lid.shp"},
-              ]
+    layers = [
+        {"layer_name": "file_1", "file_name": "inva&lid.shp"},
+        {"layer_name": "file_2", "file_name": "inva'lid.shp"},
+        {"layer_name": "file_3", "file_name": 'inva"lid.shp'},
+        {"layer_name": "file_4", "file_name": 'inva"lid.shp'},
+        {"layer_name": "file_5", "file_name": "inva<lid.shp"},
+        {"layer_name": "file_6", "file_name": "inva>lid.shp"},
+    ]
 
-    layer_list = [create_shape_file(tmpdir, layer['file_name'], layer['layer_name']) for layer in layers]
+    layer_list = [
+        create_shape_file(tmpdir, layer["file_name"], layer["layer_name"])
+        for layer in layers
+    ]
 
     params = {CheckLayerAlgorithm.INPUT_LAYERS: layer_list}
     context = QgsProcessingContext()
@@ -214,7 +252,8 @@ def test_invalid_filename(alg: QgsProcessingAlgorithm, tmpdir):
     for layer in layers:
         file_path = str(tmpdir / layer["file_name"])
         expected_warnings.append(
-            f'- [KO] invalid file name for {file_path}. Please remove any special character ({INVALID_CHARS})')
+            f"- [KO] invalid file name for {file_path}. Please remove any special character ({INVALID_CHARS})"
+        )
     assert expected_warnings == feedback.warnings
 
 
@@ -227,21 +266,54 @@ def test_invalid_field_name(alg: QgsProcessingAlgorithm, tmpdir):
         tmpdir: pytest fixture to get temporary directory
     """
 
-    layers = [{'layer_name': "file_1", 'file_name': "invalid_field_1.shp", 'field_names': ['inva&lid']},
-              {'layer_name': "file_2", 'file_name': "invalid_field_2.shp", 'field_names': ["inva'lid"]},
-              {'layer_name': "file_3", 'file_name': "invalid_field_3.shp", 'field_names': ["inva\"lid"]},
-              {'layer_name': "file_4", 'file_name': "invalid_field_4.shp", 'field_names': ["inva\"lid"]},
-              {'layer_name': "file_5", 'file_name': "invalid_field_5.shp", 'field_names': ["inva<lid"]},
-              {'layer_name': "file_6", 'file_name': "invalid_field_6.shp", 'field_names': ["inva>lid"]},
-              {'layer_name': "file_7", 'file_name': "invalid_field_7.shp", 'field_names': ["inva>lid", "inva<lid"]},
-              ]
+    layers = [
+        {
+            "layer_name": "file_1",
+            "file_name": "invalid_field_1.shp",
+            "field_names": ["inva&lid"],
+        },
+        {
+            "layer_name": "file_2",
+            "file_name": "invalid_field_2.shp",
+            "field_names": ["inva'lid"],
+        },
+        {
+            "layer_name": "file_3",
+            "file_name": "invalid_field_3.shp",
+            "field_names": ['inva"lid'],
+        },
+        {
+            "layer_name": "file_4",
+            "file_name": "invalid_field_4.shp",
+            "field_names": ['inva"lid'],
+        },
+        {
+            "layer_name": "file_5",
+            "file_name": "invalid_field_5.shp",
+            "field_names": ["inva<lid"],
+        },
+        {
+            "layer_name": "file_6",
+            "file_name": "invalid_field_6.shp",
+            "field_names": ["inva>lid"],
+        },
+        {
+            "layer_name": "file_7",
+            "file_name": "invalid_field_7.shp",
+            "field_names": ["inva>lid", "inva<lid"],
+        },
+    ]
 
     layer_list = []
     for layer in layers:
         fields = QgsFields()
-        for field in layer['field_names']:
+        for field in layer["field_names"]:
             fields.append(QgsField(field, QVariant.String))
-        layer_list.append(create_shape_file(tmpdir, layer['file_name'], layer['layer_name'], 'EPSG:4326', fields))
+        layer_list.append(
+            create_shape_file(
+                tmpdir, layer["file_name"], layer["layer_name"], "EPSG:4326", fields
+            )
+        )
 
     params = {CheckLayerAlgorithm.INPUT_LAYERS: layer_list}
     context = QgsProcessingContext()
@@ -255,16 +327,17 @@ def test_invalid_field_name(alg: QgsProcessingAlgorithm, tmpdir):
     expected_warnings = []
     for layer in layers:
         layer_name = layer["layer_name"]
-        for field in layer['field_names']:
+        for field in layer["field_names"]:
             expected_warnings.append(
-                f'- [KO] invalid layer field name {field} for {layer_name}. Please remove any special character ({INVALID_CHARS})')
+                f"- [KO] invalid layer field name {field} for {layer_name}. Please remove any special character ({INVALID_CHARS})"
+            )
     assert expected_warnings == feedback.warnings
 
 
 def create_raster_file(tmpdir, filename: str) -> str:
     fn = str(tmpdir / filename)
 
-    driver = gdal.GetDriverByName('GTiff')
+    driver = gdal.GetDriverByName("GTiff")
     ds = driver.Create(fn, xsize=10, ysize=10, bands=1, eType=gdal.GDT_Float32)
 
     # Dummy minimal optional values
@@ -272,7 +345,7 @@ def create_raster_file(tmpdir, filename: str) -> str:
     ds.SetGeoTransform(geot)
     srs = osr.SpatialReference()
     srs.SetUTM(12, 1)
-    srs.SetWellKnownGeogCS('NAD83')
+    srs.SetWellKnownGeogCS("NAD83")
     ds.SetProjection(srs.ExportToWkt())
 
     return fn
@@ -286,7 +359,7 @@ def test_invalid_layer_type(alg: QgsProcessingAlgorithm, tmpdir):
         alg: pytest fixture to get QgsProcessingAlgorithm
         tmpdir: pytest fixture to get temporary directory
     """
-    filepath = create_raster_file(tmpdir, 'raster.tif')
+    filepath = create_raster_file(tmpdir, "raster.tif")
     params = {CheckLayerAlgorithm.INPUT_LAYERS: filepath}
     context = QgsProcessingContext()
     feedback = QgsProcessingFeedBackTest()
@@ -296,5 +369,7 @@ def test_invalid_layer_type(alg: QgsProcessingAlgorithm, tmpdir):
     result_code = result[CheckLayerAlgorithm.RESULT_CODE]
     assert result_code == CheckLayerAlgorithm.ResultCode.INVALID_LAYER_TYPE
 
-    expected_warnings = [f'- [KO] invalid layer type for raster. Only QgsVectorLayer are supported.']
+    expected_warnings = [
+        f"- [KO] invalid layer type for raster. Only QgsVectorLayer are supported."
+    ]
     assert expected_warnings == feedback.warnings

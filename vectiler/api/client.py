@@ -76,7 +76,9 @@ class NetworkRequestsManager:
         :rtype: QByteArray
         """
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req_get = QNetworkRequest(QUrl(f"{self.plg_settings.url_api_entrepot}api/v1/users/me"))
+        req_get = QNetworkRequest(
+            QUrl(f"{self.plg_settings.url_api_entrepot}api/v1/users/me")
+        )
         resp = self.ntwk_requester_blk.get(req_get, forceRefresh=True)
 
         # check response
@@ -89,7 +91,10 @@ class NetworkRequestsManager:
             return self.ntwk_requester_blk.errorMessage()
         # check response type
         req_reply = self.ntwk_requester_blk.reply()
-        if not req_reply.rawHeader(b"Content-Type") == "application/json; charset=utf-8":
+        if (
+            not req_reply.rawHeader(b"Content-Type")
+            == "application/json; charset=utf-8"
+        ):
             raise TypeError(
                 "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
                     req_reply.rawHeader(b"Content-type")
@@ -116,8 +121,8 @@ class NetworkRequestsManager:
             self.plg_settings.qgis_auth_id, conf, True
         )
 
-        if 'oauth2config' in conf.configMap().keys():
-            data = json.loads(conf.configMap()['oauth2config'])
+        if "oauth2config" in conf.configMap().keys():
+            data = json.loads(conf.configMap()["oauth2config"])
             username = data["username"]
             password = data["password"]
         else:

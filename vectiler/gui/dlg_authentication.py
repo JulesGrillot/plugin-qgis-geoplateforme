@@ -13,7 +13,6 @@ from vectiler.toolbelt.preferences import PlgOptionsManager
 
 
 class AuthenticationDialog(QDialog):
-
     def __init__(self, parent=None):
         """
         Dialog to define current geotuileur connection as authentication config
@@ -24,7 +23,9 @@ class AuthenticationDialog(QDialog):
         super().__init__(parent)
         self.plg_settings = PlgOptionsManager()
 
-        uic.loadUi(os.path.join(os.path.dirname(__file__), "dlg_authentication.ui"), self)
+        uic.loadUi(
+            os.path.join(os.path.dirname(__file__), "dlg_authentication.ui"), self
+        )
 
         rx = QtCore.QRegExp("[a-z-A-Z-0-9-_.@]+")
         validator = QtGui.QRegExpValidator(rx)
@@ -37,9 +38,7 @@ class AuthenticationDialog(QDialog):
         self.btn_connection.clicked.connect(self.connect)
 
     def openUrl(self) -> None:
-        QDesktopServices.openUrl(
-            QUrl(str('https://qlf-portail-gpf-beta.ign.fr'))
-        )
+        QDesktopServices.openUrl(QUrl(str("https://qlf-portail-gpf-beta.ign.fr")))
 
     def connect(self) -> None:
         """
@@ -84,24 +83,29 @@ class AuthenticationDialog(QDialog):
         network_requests_manager.plg_settings.qgis_auth_id = qgis_auth_id
         check = network_requests_manager.get_user_info()
         if not isinstance(check, (dict, QByteArray, bytes)):
-            QMessageBox.warning(self,
-                                self.tr("Invalid connection"),
-                                self.tr(f'Invalid connection parameters : {check}')
-                                )
+            QMessageBox.warning(
+                self,
+                self.tr("Invalid connection"),
+                self.tr(f"Invalid connection parameters : {check}"),
+            )
             res = False
         else:
             # decode token as dict
             data = json.loads(check.data().decode("utf-8"))
             if not isinstance(data, dict):
                 res = False
-                QMessageBox.warning(self,
-                                    self.tr("Error"),
-                                    self.tr(f"ERROR - Invalid user data received. Expected dict, not {type(data)}")
-                                    )
+                QMessageBox.warning(
+                    self,
+                    self.tr("Error"),
+                    self.tr(
+                        f"ERROR - Invalid user data received. Expected dict, not {type(data)}"
+                    ),
+                )
             else:
-                QMessageBox.information(self,
-                                        self.tr("Welcome"),
-                                        self.tr(f'Welcome {data["first_name"]} {data["last_name"]} !')
-                                        )
+                QMessageBox.information(
+                    self,
+                    self.tr("Welcome"),
+                    self.tr(f'Welcome {data["first_name"]} {data["last_name"]} !'),
+                )
 
         return res

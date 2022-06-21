@@ -8,7 +8,7 @@
 from dataclasses import asdict, dataclass, fields
 
 # PyQGIS
-from qgis.core import QgsSettings, QgsAuthMethodConfig, QgsApplication
+from qgis.core import QgsApplication, QgsAuthMethodConfig, QgsSettings
 
 # package
 import vectiler.toolbelt.log_handler as log_hdlr

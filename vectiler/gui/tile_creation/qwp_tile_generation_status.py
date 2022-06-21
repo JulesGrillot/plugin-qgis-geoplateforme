@@ -3,19 +3,19 @@
 import os
 from functools import partial
 
-from PyQt5.QtCore import QTimer, QByteArray
+from PyQt5.QtCore import QByteArray, QTimer
 from PyQt5.QtGui import QMovie, QPixmap
-from PyQt5.QtWidgets import QWizardPage, QMessageBox, QHeaderView
-from qgis.PyQt import uic
+from PyQt5.QtWidgets import QHeaderView, QMessageBox, QWizardPage
 
 # PyQGIS
 from qgis.core import (
     QgsApplication,
-    QgsProcessingContext,
-    QgsProcessingAlgRunnerTask,
-    QgsProcessingFeedback,
     QgsProcessingAlgorithm,
+    QgsProcessingAlgRunnerTask,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
 )
+from qgis.PyQt import uic
 
 from vectiler.__about__ import DIR_PLUGIN_ROOT
 from vectiler.api.processing import ProcessingRequestManager

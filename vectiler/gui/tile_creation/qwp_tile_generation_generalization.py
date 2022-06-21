@@ -4,7 +4,7 @@ import os
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QWizardPage, QRadioButton, QLabel, QWidget
+from PyQt5.QtWidgets import QLabel, QRadioButton, QWidget, QWizardPage
 from qgis.PyQt import uic
 
 from vectiler.__about__ import DIR_PLUGIN_ROOT

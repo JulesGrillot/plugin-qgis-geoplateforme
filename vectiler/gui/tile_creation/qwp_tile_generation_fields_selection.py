@@ -2,7 +2,7 @@
 import os
 
 from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QWizardPage, QListWidgetItem, QMessageBox
+from PyQt5.QtWidgets import QListWidgetItem, QMessageBox, QWizardPage
 from qgis.PyQt import uic
 
 from vectiler.api.stored_data import StoredDataRequestManager

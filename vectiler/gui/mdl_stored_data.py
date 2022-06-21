@@ -2,7 +2,7 @@ from PyQt5 import QtCore
 from PyQt5.QtCore import QObject
 from PyQt5.QtGui import QStandardItemModel
 
-from vectiler.api.stored_data import StoredDataRequestManager, StoredData
+from vectiler.api.stored_data import StoredData, StoredDataRequestManager
 from vectiler.toolbelt import PlgLogger
 
 

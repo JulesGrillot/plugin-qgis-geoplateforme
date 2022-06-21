@@ -3,12 +3,12 @@
 import os
 
 from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QAbstractItemView, QShortcut, QWizardPage, QMessageBox
-from qgis.PyQt import uic
+from PyQt5.QtWidgets import QAbstractItemView, QMessageBox, QShortcut, QWizardPage
+from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
 
 # PyQGIS
 from qgis.gui import QgsFileWidget
-from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
+from qgis.PyQt import uic
 
 from vectiler.processing import VectilerProvider
 from vectiler.processing.check_layer import CheckLayerAlgorithm

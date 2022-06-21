@@ -3,17 +3,16 @@ import logging
 from dataclasses import dataclass
 
 import requests
-
-from PyQt5.QtCore import QUrl, QByteArray, QFile, QIODevice, QEventLoop
+from PyQt5.QtCore import QByteArray, QEventLoop, QFile, QIODevice, QUrl
 from PyQt5.QtNetwork import (
-    QNetworkRequest,
     QHttpMultiPart,
     QHttpPart,
     QNetworkAccessManager,
+    QNetworkRequest,
 )
 from qgis.core import (
-    QgsBlockingNetworkRequest,
     QgsApplication,
+    QgsBlockingNetworkRequest,
     QgsCoordinateReferenceSystem,
 )
 

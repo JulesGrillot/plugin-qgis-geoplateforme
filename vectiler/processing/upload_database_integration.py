@@ -1,8 +1,8 @@
 from PyQt5.QtCore import QCoreApplication
 from qgis.core import (
     QgsProcessingAlgorithm,
-    QgsProcessingParameterString,
     QgsProcessingException,
+    QgsProcessingParameterString,
 )
 
 from vectiler.api.processing import ProcessingRequestManager

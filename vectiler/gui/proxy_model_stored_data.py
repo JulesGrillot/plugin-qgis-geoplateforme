@@ -1,5 +1,5 @@
 from PyQt5 import QtCore
-from PyQt5.QtCore import QSortFilterProxyModel, QObject, QModelIndex
+from PyQt5.QtCore import QModelIndex, QObject, QSortFilterProxyModel
 
 from vectiler.gui.mdl_stored_data import StoredDataListModel
 

@@ -1,10 +1,10 @@
 from PyQt5.QtCore import QCoreApplication
 from qgis.core import (
     QgsProcessingAlgorithm,
-    QgsProcessingParameterString,
     QgsProcessingException,
-    QgsProcessingParameterNumber,
     QgsProcessingParameterEnum,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterString,
 )
 
 from vectiler.api.processing import ProcessingRequestManager

@@ -12,7 +12,7 @@ from qgis.PyQt.QtWidgets import QAction, QToolBar
 from qgis.utils import showPluginHelp
 
 # project
-from vectiler.__about__ import __title__, DIR_PLUGIN_ROOT
+from vectiler.__about__ import DIR_PLUGIN_ROOT, __title__
 from vectiler.gui.dlg_authentication import AuthenticationDialog
 from vectiler.gui.dlg_settings import PlgOptionsFactory
 from vectiler.gui.tile_creation.wzd_tile_creation import TileCreationWizard

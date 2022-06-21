@@ -1,5 +1,5 @@
 # standard
-from PyQt5.QtWidgets import QWizard, QDialog
+from PyQt5.QtWidgets import QDialog, QWizard
 
 # Plugin
 from vectiler.gui.upload_creation.qwp_upload_creation import UploadCreationPageWizard

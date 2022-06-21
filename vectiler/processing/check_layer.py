@@ -2,13 +2,12 @@ import re
 from enum import IntFlag
 
 from PyQt5.QtCore import QCoreApplication
-
 from qgis.core import (
+    QgsMapLayer,
     QgsProcessing,
     QgsProcessingAlgorithm,
-    QgsProcessingParameterMultipleLayers,
     QgsProcessingFeedback,
-    QgsMapLayer,
+    QgsProcessingParameterMultipleLayers,
     QgsVectorLayer,
 )
 

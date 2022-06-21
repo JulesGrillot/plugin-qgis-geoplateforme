@@ -1,19 +1,17 @@
 import pytest
 from osgeo import gdal, osr
-
 from PyQt5.QtCore import QVariant
-
 from qgis.core import (
     QgsApplication,
+    QgsCoordinateReferenceSystem,
+    QgsField,
+    QgsFields,
     QgsProcessingAlgorithm,
     QgsProcessingContext,
     QgsProcessingFeedback,
-    QgsVectorLayer,
     QgsVectorFileWriter,
-    QgsFields,
+    QgsVectorLayer,
     QgsWkbTypes,
-    QgsCoordinateReferenceSystem,
-    QgsField,
 )
 
 from tests.qgis.processings.conftest import QgsProcessingFeedBackTest

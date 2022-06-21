@@ -1,7 +1,7 @@
 import json
 from dataclasses import dataclass
 
-from PyQt5.QtCore import QUrl, QByteArray
+from PyQt5.QtCore import QByteArray, QUrl
 from PyQt5.QtNetwork import QNetworkRequest
 from qgis.core import QgsBlockingNetworkRequest
 

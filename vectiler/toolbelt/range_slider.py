@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-import sys, os
-from PyQt5 import QtCore, QtGui, QtWidgets
+import os
+import sys
 
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 # Originated from
 # https://www.mail-archive.com/pyqt@riverbankcomputing.com/msg22889.html

@@ -1,6 +1,6 @@
 import json
 
-from PyQt5.QtCore import QObject, QByteArray
+from PyQt5.QtCore import QByteArray, QObject
 from PyQt5.QtGui import QStandardItemModel
 
 from vectiler.api.client import NetworkRequestsManager

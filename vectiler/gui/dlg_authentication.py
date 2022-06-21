@@ -2,11 +2,11 @@ import json
 import os
 
 # PyQGIS
-from PyQt5.QtCore import QUrl, QByteArray
+from PyQt5.QtCore import QByteArray, QUrl
 from PyQt5.QtWidgets import QDialog, QMessageBox
-from qgis.PyQt import uic, QtCore, QtGui
-from qgis.PyQt.QtGui import QDesktopServices
 from qgis.core import QgsApplication
+from qgis.PyQt import QtCore, QtGui, uic
+from qgis.PyQt.QtGui import QDesktopServices
 
 from vectiler.api.client import NetworkRequestsManager
 from vectiler.toolbelt.preferences import PlgOptionsManager

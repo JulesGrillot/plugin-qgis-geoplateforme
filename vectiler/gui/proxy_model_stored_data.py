@@ -1,5 +1,6 @@
-from PyQt5 import QtCore
-from PyQt5.QtCore import QModelIndex, QObject, QSortFilterProxyModel
+from typing import List
+
+from qgis.PyQt.QtCore import QModelIndex, QObject, QSortFilterProxyModel, Qt
 
 from vectiler.gui.mdl_stored_data import StoredDataListModel
 
@@ -11,7 +12,7 @@ class StoredDataProxyModel(QSortFilterProxyModel):
         self.tags = []
         self.forbidden_tags = []
 
-    def set_filter_type(self, filter_type: []) -> None:
+    def set_filter_type(self, filter_type: List) -> None:
         """
         Define filter of expected stored data type
 
@@ -20,7 +21,7 @@ class StoredDataProxyModel(QSortFilterProxyModel):
         """
         self.filter_type = filter_type
 
-    def set_expected_tags(self, tags: [str]) -> None:
+    def set_expected_tags(self, tags: List[str]) -> None:
         """
         Define filter of expected tags for stored data tags key
 
@@ -29,7 +30,7 @@ class StoredDataProxyModel(QSortFilterProxyModel):
         """
         self.tags = tags
 
-    def set_forbidden_tags(self, forbidden_tags: [str]) -> None:
+    def set_forbidden_tags(self, forbidden_tags: List[str]) -> None:
         """
         Define filter of forbidden tags for stored data tags key
 
@@ -65,7 +66,7 @@ class StoredDataProxyModel(QSortFilterProxyModel):
             name_index = self.sourceModel().index(
                 source_row, StoredDataListModel.NAME_COL, source_parent
             )
-            tags = self.sourceModel().data(name_index, QtCore.Qt.UserRole)
+            tags = self.sourceModel().data(name_index, Qt.UserRole)
             available_tags = tags.keys()
             for tag in self.tags:
                 result &= tag in available_tags

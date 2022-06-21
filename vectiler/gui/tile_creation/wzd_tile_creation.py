@@ -1,8 +1,7 @@
 # standard
 
 # PyQGIS
-from PyQt5.QtWidgets import QDialog
-from qgis.PyQt.QtWidgets import QWizard
+from qgis.PyQt.QtWidgets import QDialog, QWizard
 
 from vectiler.gui.tile_creation.qwp_tile_generation_edition import (
     TileGenerationEditionPageWizard,

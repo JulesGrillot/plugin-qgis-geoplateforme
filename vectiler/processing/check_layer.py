@@ -1,7 +1,7 @@
 import re
 from enum import IntFlag
+from typing import List
 
-from PyQt5.QtCore import QCoreApplication
 from qgis.core import (
     QgsMapLayer,
     QgsProcessing,
@@ -10,6 +10,7 @@ from qgis.core import (
     QgsProcessingParameterMultipleLayers,
     QgsVectorLayer,
 )
+from qgis.PyQt.QtCore import QCoreApplication
 
 
 class CheckLayerAlgorithm(QgsProcessingAlgorithm):
@@ -86,14 +87,14 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
 
     @staticmethod
     def add_layers_info_feedback(
-        feedback: QgsProcessingFeedback, layers: [QgsMapLayer]
+        feedback: QgsProcessingFeedback, layers: List[QgsMapLayer]
     ) -> None:
         """
         Add layers information in feedback
 
         Args:
             feedback: QgsProcessingFeedback
-            layers: [QgsMapLayer])
+            layers: List[QgsMapLayer])
         """
         feedback.pushInfo("Checking layers :")
         for layer in layers:
@@ -101,14 +102,14 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
 
     @staticmethod
     def check_layers_crs(
-        feedback: QgsProcessingFeedback, layers: [QgsMapLayer]
+        feedback: QgsProcessingFeedback, layers: List[QgsMapLayer]
     ) -> bool:
         """
         Check that layers have the same CRS
 
         Args:
             feedback: QgsProcessingFeedback
-            layers: [QgsMapLayer])
+            layers: List[QgsMapLayer])
 
         Returns: True if layers have the same CRS, False otherwise
 
@@ -130,14 +131,14 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
         return res
 
     def check_layers_name(
-        self, feedback: QgsProcessingFeedback, layers: [QgsMapLayer]
+        self, feedback: QgsProcessingFeedback, layers: List[QgsMapLayer]
     ) -> bool:
         """
         Check that layers have a valid name
 
         Args:
             feedback: QgsProcessingFeedback
-            layers: [QgsMapLayer])
+            layers: List[QgsMapLayer])
 
         Returns: True if all layers have valid name, False otherwise
 
@@ -158,14 +159,14 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
         return res
 
     def check_file_name(
-        self, feedback: QgsProcessingFeedback, layers: [QgsMapLayer]
+        self, feedback: QgsProcessingFeedback, layers: List[QgsMapLayer]
     ) -> bool:
         """
         Check that layers have a valid file name
 
         Args:
             feedback: QgsProcessingFeedback
-            layers: [QgsMapLayer])
+            layers: List[QgsMapLayer])
 
         Returns: True if all layers have valid name, False otherwise
 
@@ -186,14 +187,14 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
         return res
 
     def check_layers_fields(
-        self, feedback: QgsProcessingFeedback, layers: [QgsMapLayer]
+        self, feedback: QgsProcessingFeedback, layers: List[QgsMapLayer]
     ) -> bool:
         """
         Check that layers have valid fields name
 
         Args:
             feedback: QgsProcessingFeedback
-            layers: [QgsMapLayer])
+            layers: List[QgsMapLayer])
 
         Returns: True if all layers have valid fields name, False otherwise
 
@@ -236,14 +237,14 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
 
     @staticmethod
     def check_layers_type(
-        feedback: QgsProcessingFeedback, layers: [QgsMapLayer]
+        feedback: QgsProcessingFeedback, layers: List[QgsMapLayer]
     ) -> bool:
         """
         Check that layers have valid fields name
 
         Args:
             feedback: QgsProcessingFeedback
-            layers: [QgsMapLayer])
+            layers: List[QgsMapLayer])
 
         Returns: True if all layers have valid name, False otherwise
 

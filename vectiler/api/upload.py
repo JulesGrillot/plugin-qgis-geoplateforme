@@ -1,19 +1,20 @@
 import json
 import logging
 from dataclasses import dataclass
+from typing import List
 
 import requests
-from PyQt5.QtCore import QByteArray, QEventLoop, QFile, QIODevice, QUrl
-from PyQt5.QtNetwork import (
-    QHttpMultiPart,
-    QHttpPart,
-    QNetworkAccessManager,
-    QNetworkRequest,
-)
 from qgis.core import (
     QgsApplication,
     QgsBlockingNetworkRequest,
     QgsCoordinateReferenceSystem,
+)
+from qgis.PyQt.QtCore import QByteArray, QEventLoop, QFile, QIODevice, QUrl
+from qgis.PyQt.QtNetwork import (
+    QHttpMultiPart,
+    QHttpPart,
+    QNetworkAccessManager,
+    QNetworkRequest,
 )
 
 from vectiler.api.check import CheckRequestManager
@@ -110,7 +111,9 @@ class UploadRequestManager:
         data = json.loads(req_reply.content().data().decode("utf-8"))
         return data["status"]
 
-    def get_upload_checks_execution(self, datastore: str, upload: str) -> [Execution]:
+    def get_upload_checks_execution(
+        self, datastore: str, upload: str
+    ) -> List[Execution]:
         """
         Get upload checks execution.
 

@@ -2,12 +2,13 @@ import json
 import os
 
 # PyQGIS
-from PyQt5.QtCore import QByteArray, QUrl
-from PyQt5.QtWidgets import QDialog, QMessageBox
 from qgis.core import QgsApplication
 from qgis.PyQt import QtCore, QtGui, uic
+from qgis.PyQt.QtCore import QByteArray, QUrl
 from qgis.PyQt.QtGui import QDesktopServices
+from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 
+# Plugin
 from vectiler.api.client import NetworkRequestsManager
 from vectiler.toolbelt.preferences import PlgOptionsManager
 
@@ -42,7 +43,8 @@ class AuthenticationDialog(QDialog):
 
     def connect(self) -> None:
         """
-        Check connection parameter and define current vectiler authentication config if connection valid
+        Check connection parameter and define current vectiler authentication config
+        if connection is valid.
 
         """
         user = self.lbl_userEdit.text()
@@ -70,7 +72,8 @@ class AuthenticationDialog(QDialog):
     def check_connection(self, qgis_auth_id: str) -> bool:
         """
         Check if connection is valid for a qgis authentication id.
-        Display a message box with user name and last name if connection valid, or message with error message otherwise
+        Display a message box with user name and last name if connection valid, or
+        message with error message otherwise.
 
         Args:
             qgis_auth_id: qgis authentication id to use

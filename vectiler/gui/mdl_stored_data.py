@@ -1,6 +1,5 @@
-from PyQt5 import QtCore
-from PyQt5.QtCore import QObject
-from PyQt5.QtGui import QStandardItemModel
+from qgis.PyQt.QtCore import QObject, Qt
+from qgis.PyQt.QtGui import QStandardItemModel
 
 from vectiler.api.stored_data import StoredData, StoredDataRequestManager
 from vectiler.toolbelt import PlgLogger
@@ -48,8 +47,6 @@ class StoredDataListModel(QStandardItemModel):
         self.insertRow(row)
 
         self.setData(self.index(row, self.NAME_COL), stored_data.name)
-        self.setData(
-            self.index(row, self.NAME_COL), stored_data.tags, QtCore.Qt.UserRole
-        )
+        self.setData(self.index(row, self.NAME_COL), stored_data.tags, Qt.UserRole)
         self.setData(self.index(row, self.ID_COL), stored_data.id)
         self.setData(self.index(row, self.TYPE_COL), stored_data.type)

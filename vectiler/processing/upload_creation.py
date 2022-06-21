@@ -1,6 +1,5 @@
 import json
 
-from PyQt5.QtCore import QByteArray, QCoreApplication
 from qgis.core import (
     QgsProcessing,
     QgsProcessingAlgorithm,
@@ -10,6 +9,7 @@ from qgis.core import (
     QgsProcessingParameterMultipleLayers,
     QgsProcessingParameterString,
 )
+from qgis.PyQt.QtCore import QByteArray, QCoreApplication
 
 from vectiler.api.client import NetworkRequestsManager
 from vectiler.api.upload import UploadRequestManager

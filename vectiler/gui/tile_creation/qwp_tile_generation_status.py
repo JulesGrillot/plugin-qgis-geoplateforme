@@ -3,10 +3,6 @@
 import os
 from functools import partial
 
-from PyQt5.QtCore import QByteArray, QTimer
-from PyQt5.QtGui import QMovie, QPixmap
-from PyQt5.QtWidgets import QHeaderView, QMessageBox, QWizardPage
-
 # PyQGIS
 from qgis.core import (
     QgsApplication,
@@ -16,6 +12,9 @@ from qgis.core import (
     QgsProcessingFeedback,
 )
 from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QByteArray, QTimer
+from qgis.PyQt.QtGui import QMovie, QPixmap
+from qgis.PyQt.QtWidgets import QHeaderView, QMessageBox, QWizardPage
 
 from vectiler.__about__ import DIR_PLUGIN_ROOT
 from vectiler.api.processing import ProcessingRequestManager

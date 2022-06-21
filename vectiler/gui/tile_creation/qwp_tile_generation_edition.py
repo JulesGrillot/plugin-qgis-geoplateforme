@@ -1,9 +1,8 @@
 # standard
 import os
 
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QMessageBox, QSlider, QWizardPage
-from qgis.PyQt import uic
+from qgis.PyQt import QtCore, QtGui, uic
+from qgis.PyQt.QtWidgets import QMessageBox, QSlider, QWizardPage
 
 
 class TileGenerationEditionPageWizard(QWizardPage):

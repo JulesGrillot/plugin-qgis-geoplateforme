@@ -1,5 +1,5 @@
-from PyQt5.QtCore import QObject
-from PyQt5.QtGui import QStandardItemModel
+from qgis.PyQt.QtCore import QObject
+from qgis.PyQt.QtGui import QStandardItemModel
 
 from vectiler.api.execution import Execution
 

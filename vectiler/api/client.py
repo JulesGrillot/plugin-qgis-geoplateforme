@@ -15,7 +15,7 @@ import logging
 # PyQGIS
 from qgis.core import QgsApplication, QgsAuthMethodConfig, QgsBlockingNetworkRequest
 from qgis.PyQt.Qt import QByteArray, QUrl
-from qgis.PyQt.QtCore import QByteArray, QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # project

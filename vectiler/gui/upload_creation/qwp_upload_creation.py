@@ -1,11 +1,7 @@
 # standard
-
 import os
 from functools import partial
-
-from PyQt5.QtCore import QByteArray, QTimer
-from PyQt5.QtGui import QMovie, QPixmap
-from PyQt5.QtWidgets import QHeaderView, QMessageBox, QWizardPage
+from typing import List
 
 # PyQGIS
 from qgis.core import (
@@ -14,9 +10,11 @@ from qgis.core import (
     QgsProcessingAlgRunnerTask,
     QgsProcessingContext,
     QgsProcessingFeedback,
-    QgsTask,
 )
 from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QByteArray, QTimer
+from qgis.PyQt.QtGui import QMovie, QPixmap
+from qgis.PyQt.QtWidgets import QHeaderView, QMessageBox, QWizardPage
 
 from vectiler.__about__ import DIR_PLUGIN_ROOT
 from vectiler.api.execution import Execution
@@ -100,7 +98,7 @@ class UploadCreationPageWizard(QWizardPage):
         Run UploadCreationAlgorithm with UploadEditionPageWizard parameters
 
         """
-        self.log(f"Launch UploadCreationAlgorithm")
+        self.log("Launch UploadCreationAlgorithm")
         algo_str = f"{VectilerProvider().id()}:{UploadCreationAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
@@ -155,7 +153,7 @@ class UploadCreationPageWizard(QWizardPage):
 
         self.mdl_execution_list.set_execution_list(execution_list)
 
-    def _check_upload_creation(self) -> [Execution]:
+    def _check_upload_creation(self) -> List[Execution]:
         """
         Check if upload creation check are done and return checks execution.
         Il upload is closed, launch database integration
@@ -260,7 +258,7 @@ class UploadCreationPageWizard(QWizardPage):
         """
         # Run database integration only if created upload available and no integrate task running
         if self.created_upload_id and not self.integrate_task_id:
-            self.log(f"Launch UploadDatabaseIntegrationAlgorithm")
+            self.log("Launch UploadDatabaseIntegrationAlgorithm")
             algo_str = f"{VectilerProvider().id()}:{UploadDatabaseIntegrationAlgorithm().name()}"
             alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
@@ -309,7 +307,7 @@ class UploadCreationPageWizard(QWizardPage):
     @staticmethod
     def _run_alg(
         alg: QgsProcessingAlgorithm,
-        params: {},
+        params: dict,
         feedback: QgsProcessingFeedback,
         executed_callback,
     ) -> int:

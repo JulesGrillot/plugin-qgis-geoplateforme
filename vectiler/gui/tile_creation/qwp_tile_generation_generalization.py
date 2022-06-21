@@ -1,12 +1,13 @@
 # standard
 import os
 
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtCore import QSize
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QLabel, QRadioButton, QWidget, QWizardPage
-from qgis.PyQt import uic
+# PyQGIS
+from qgis.PyQt import QtCore, QtGui, uic
+from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtGui import QPixmap
+from qgis.PyQt.QtWidgets import QLabel, QRadioButton, QWidget, QWizardPage
 
+# Plugin
 from vectiler.__about__ import DIR_PLUGIN_ROOT
 from vectiler.gui.tile_creation.qwp_tile_generation_edition import (
     TileGenerationEditionPageWizard,

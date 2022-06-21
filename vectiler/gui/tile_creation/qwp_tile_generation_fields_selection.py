@@ -1,9 +1,9 @@
 # standard
 import os
+from typing import List
 
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QListWidgetItem, QMessageBox, QWizardPage
-from qgis.PyQt import uic
+from qgis.PyQt import QtCore, QtGui, uic
+from qgis.PyQt.QtWidgets import QListWidgetItem, QMessageBox, QWizardPage
 
 from vectiler.api.stored_data import StoredDataRequestManager
 from vectiler.gui.tile_creation.qwp_tile_generation_edition import (
@@ -69,11 +69,11 @@ class TileGenerationFieldsSelectionPageWizard(QWizardPage):
             msgBox.setDetailedText(str(exc))
             msgBox.exec()
 
-    def get_selected_attributes(self) -> [str]:
+    def get_selected_attributes(self) -> List[str]:
         """
         Get list of selected attributes
 
-        Returns:[str] selected attributes
+        Returns:List[str] selected attributes
 
         """
         attributes = []

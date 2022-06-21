@@ -10,13 +10,12 @@ from functools import partial
 from pathlib import Path
 
 # PyQGIS
-from PyQt5.QtWidgets import QMessageBox
-from qgis.core import QgsApplication
 from qgis.gui import QgsOptionsPageWidget, QgsOptionsWidgetFactory
 from qgis.PyQt import uic
 from qgis.PyQt.Qt import QUrl
 from qgis.PyQt.QtCore import QByteArray, QCoreApplication
 from qgis.PyQt.QtGui import QDesktopServices, QIcon
+from qgis.PyQt.QtWidgets import QMessageBox
 
 # project
 from vectiler.__about__ import (

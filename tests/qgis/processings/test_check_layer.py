@@ -1,6 +1,5 @@
 import pytest
 from osgeo import gdal, osr
-from PyQt5.QtCore import QVariant
 from qgis.core import (
     QgsApplication,
     QgsCoordinateReferenceSystem,
@@ -13,6 +12,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
+from qgis.PyQt.QtCore import QVariant
 
 from tests.qgis.processings.conftest import QgsProcessingFeedBackTest
 from vectiler.processing import VectilerProvider

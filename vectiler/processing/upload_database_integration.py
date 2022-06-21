@@ -1,9 +1,9 @@
-from PyQt5.QtCore import QCoreApplication
 from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingException,
     QgsProcessingParameterString,
 )
+from qgis.PyQt.QtCore import QCoreApplication
 
 from vectiler.api.processing import ProcessingRequestManager
 from vectiler.api.stored_data import StoredDataRequestManager

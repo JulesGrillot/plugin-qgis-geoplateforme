@@ -2,9 +2,9 @@ import json
 import logging
 from dataclasses import dataclass
 
-from PyQt5.QtCore import QUrl
-from PyQt5.QtNetwork import QNetworkRequest
 from qgis.core import QgsBlockingNetworkRequest
+from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtNetwork import QNetworkRequest
 
 from vectiler.api.client import NetworkRequestsManager
 from vectiler.api.execution import Execution

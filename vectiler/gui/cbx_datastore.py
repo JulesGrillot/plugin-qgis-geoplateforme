@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QComboBox
+from qgis.PyQt.QtWidgets import QComboBox
 
 from vectiler.gui.mdl_datastore import DatastoreListModel
 

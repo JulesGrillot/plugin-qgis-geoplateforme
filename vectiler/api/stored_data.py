@@ -1,9 +1,10 @@
 import json
 from dataclasses import dataclass
+from typing import List
 
-from PyQt5.QtCore import QByteArray, QUrl
-from PyQt5.QtNetwork import QNetworkRequest
 from qgis.core import QgsBlockingNetworkRequest
+from qgis.PyQt.QtCore import QByteArray, QUrl
+from qgis.PyQt.QtNetwork import QNetworkRequest
 
 from vectiler.toolbelt import PlgLogger, PlgOptionsManager
 
@@ -14,10 +15,10 @@ class StoredData:
     name: str
     type: str
     status: str
-    tags: {} = None
-    type_infos: {} = None
+    tags: dict = None
+    type_infos: dict = None
 
-    def get_fields(self) -> [str]:
+    def get_fields(self) -> List[str]:
         attributes = []
         if self.type_infos:
             table_relations = [
@@ -31,7 +32,7 @@ class StoredData:
                         attributes.append(field)
         return attributes
 
-    def get_tables(self) -> [str]:
+    def get_tables(self) -> List[str]:
         tables = []
         if self.type_infos:
             table_relations = [
@@ -74,7 +75,7 @@ class StoredDataRequestManager:
         self.ntwk_requester_blk = QgsBlockingNetworkRequest()
         self.plg_settings = PlgOptionsManager.get_plg_settings()
 
-    def get_stored_data_list(self, datastore: str) -> [StoredData]:
+    def get_stored_data_list(self, datastore: str) -> List[StoredData]:
         """
         Get list of stored data
 

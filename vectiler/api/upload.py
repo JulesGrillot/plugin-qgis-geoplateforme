@@ -288,7 +288,7 @@ class UploadRequestManager:
         # headers
         filepart.setHeader(
             QNetworkRequest.ContentDispositionHeader,
-            f'form-data; name="filename" filename="test.gpkg"',
+            f'form-data; name="filename" filename="{filename}"',
         )
 
         file = QFile(filename)

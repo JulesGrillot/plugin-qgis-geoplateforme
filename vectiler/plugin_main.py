@@ -12,7 +12,7 @@ from qgis.PyQt.QtWidgets import QAction, QToolBar
 from qgis.utils import showPluginHelp
 
 # project
-from vectiler.__about__ import __title__, DIR_PLUGIN_ROOT
+from vectiler.__about__ import DIR_PLUGIN_ROOT, __title__
 from vectiler.gui.dlg_authentication import AuthenticationDialog
 from vectiler.gui.dlg_settings import PlgOptionsFactory
 from vectiler.gui.tile_creation.wzd_tile_creation import TileCreationWizard
@@ -93,23 +93,33 @@ class VectilerPlugin:
 
         # Login
         self.dlg_authentication = AuthenticationDialog(self.iface.mainWindow())
-        self.action_authentication = QAction(QIcon(str(DIR_PLUGIN_ROOT / 'resources' / 'images' / 'icons' / 'User.svg')),
-                                             self.tr("Login"),
-                                             self.iface.mainWindow())
+        self.action_authentication = QAction(
+            QIcon(str(DIR_PLUGIN_ROOT / "resources" / "images" / "icons" / "User.svg")),
+            self.tr("Login"),
+            self.iface.mainWindow(),
+        )
         self.action_authentication.triggered.connect(self.authentication)
         self.toolbar.addAction(self.action_authentication)
 
         # Import
-        self.action_import = QAction(QIcon(str(DIR_PLUGIN_ROOT / 'resources' / 'images' / 'icons' / 'Deposer.png')),
-                                     self.tr("Create a new upload"),
-                                     self.iface.mainWindow())
+        self.action_import = QAction(
+            QIcon(
+                str(DIR_PLUGIN_ROOT / "resources" / "images" / "icons" / "Deposer.png")
+            ),
+            self.tr("Create a new upload"),
+            self.iface.mainWindow(),
+        )
         self.action_import.triggered.connect(self.import_data)
         self.toolbar.addAction(self.action_import)
 
         # Tile creation
-        self.action_tile_create = QAction(QIcon(str(DIR_PLUGIN_ROOT / 'resources' / 'images' / 'icons' / 'Tuile@1x.png')),
-                                          self.tr("Tile creation"),
-                                          self.iface.mainWindow())
+        self.action_tile_create = QAction(
+            QIcon(
+                str(DIR_PLUGIN_ROOT / "resources" / "images" / "icons" / "Tuile@1x.png")
+            ),
+            self.tr("Tile creation"),
+            self.iface.mainWindow(),
+        )
         self.action_tile_create.triggered.connect(self.tile_creation)
         self.toolbar.addAction(self.action_tile_create)
 

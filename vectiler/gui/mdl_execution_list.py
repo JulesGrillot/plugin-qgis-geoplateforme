@@ -1,5 +1,5 @@
-from PyQt5.QtCore import QObject
-from PyQt5.QtGui import QStandardItemModel
+from qgis.PyQt.QtCore import QObject
+from qgis.PyQt.QtGui import QStandardItemModel
 
 from vectiler.api.execution import Execution
 
@@ -18,7 +18,9 @@ class ExecutionListModel(QStandardItemModel):
             parent: QObject
         """
         super().__init__(0, 2, parent)
-        self.setHorizontalHeaderLabels([self.tr("Name"), self.tr("Status"), self.tr("Start"), self.tr("Finish")])
+        self.setHorizontalHeaderLabels(
+            [self.tr("Name"), self.tr("Status"), self.tr("Start"), self.tr("Finish")]
+        )
 
     def set_execution_list(self, execution_list: [Execution]) -> None:
         """

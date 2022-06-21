@@ -1,12 +1,21 @@
 import json
 import logging
 from dataclasses import dataclass
+from typing import List
 
 import requests
-
-from PyQt5.QtCore import QUrl, QByteArray, QFile, QIODevice, QEventLoop
-from PyQt5.QtNetwork import QNetworkRequest, QHttpMultiPart, QHttpPart, QNetworkAccessManager
-from qgis.core import QgsBlockingNetworkRequest, QgsApplication, QgsCoordinateReferenceSystem
+from qgis.core import (
+    QgsApplication,
+    QgsBlockingNetworkRequest,
+    QgsCoordinateReferenceSystem,
+)
+from qgis.PyQt.QtCore import QByteArray, QEventLoop, QFile, QIODevice, QUrl
+from qgis.PyQt.QtNetwork import (
+    QHttpMultiPart,
+    QHttpPart,
+    QNetworkAccessManager,
+    QNetworkRequest,
+)
 
 from vectiler.api.check import CheckRequestManager
 from vectiler.api.client import NetworkRequestsManager
@@ -57,7 +66,9 @@ class UploadRequestManager:
         Returns: url for uploads
 
         """
-        return f"{self.plg_settings.base_url_api_entrepot}/datastores/{datastore}/uploads"
+        return (
+            f"{self.plg_settings.base_url_api_entrepot}/datastores/{datastore}/uploads"
+        )
 
     def get_upload_status(self, datastore: str, upload: str) -> str:
         """
@@ -71,7 +82,7 @@ class UploadRequestManager:
 
         """
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req = QNetworkRequest(QUrl(f'{self.get_base_url(datastore)}/{upload}'))
+        req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{upload}"))
 
         # headers
         req.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
@@ -82,11 +93,15 @@ class UploadRequestManager:
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
             raise self.UnavailableUploadException(
-                f"Error while fetching upload : {self.ntwk_requester_blk.errorMessage()}")
+                f"Error while fetching upload : {self.ntwk_requester_blk.errorMessage()}"
+            )
 
         # check response
         req_reply = self.ntwk_requester_blk.reply()
-        if not req_reply.rawHeader(b"Content-Type") == "application/json; charset=utf-8":
+        if (
+            not req_reply.rawHeader(b"Content-Type")
+            == "application/json; charset=utf-8"
+        ):
             raise self.UnavailableUploadException(
                 "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
                     req_reply.rawHeader(b"Content-type")
@@ -96,7 +111,9 @@ class UploadRequestManager:
         data = json.loads(req_reply.content().data().decode("utf-8"))
         return data["status"]
 
-    def get_upload_checks_execution(self, datastore: str, upload: str) -> [Execution]:
+    def get_upload_checks_execution(
+        self, datastore: str, upload: str
+    ) -> List[Execution]:
         """
         Get upload checks execution.
 
@@ -107,7 +124,7 @@ class UploadRequestManager:
         Returns: [Execution] Upload checks execution list if upload available, raise UnavailableUploadException otherwise
         """
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req = QNetworkRequest(QUrl(f'{self.get_base_url(datastore)}/{upload}/checks'))
+        req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{upload}/checks"))
 
         # headers
         req.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
@@ -118,11 +135,15 @@ class UploadRequestManager:
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
             raise self.UnavailableUploadException(
-                f"Error while fetching upload : {self.ntwk_requester_blk.errorMessage()}")
+                f"Error while fetching upload : {self.ntwk_requester_blk.errorMessage()}"
+            )
 
         # check response
         req_reply = self.ntwk_requester_blk.reply()
-        if not req_reply.rawHeader(b"Content-Type") == "application/json; charset=utf-8":
+        if (
+            not req_reply.rawHeader(b"Content-Type")
+            == "application/json; charset=utf-8"
+        ):
             raise self.UnavailableUploadException(
                 "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
                     req_reply.rawHeader(b"Content-type")
@@ -136,16 +157,24 @@ class UploadRequestManager:
             check_manager = CheckRequestManager()
             for key, executions in data.items():
                 for execution in executions:
-                    exec_list.append(check_manager.get_execution(datastore=datastore,
-                                                                 exec_id=execution["_id"]))
+                    exec_list.append(
+                        check_manager.get_execution(
+                            datastore=datastore, exec_id=execution["_id"]
+                        )
+                    )
         except CheckRequestManager.UnavailableExecutionException as exc:
-            raise self.UnavailableUploadException(f'Error while fetching upload check execution : {exc}')
+            raise self.UnavailableUploadException(
+                f"Error while fetching upload check execution : {exc}"
+            )
         return exec_list
 
-    def create_upload(self, datastore: str,
-                      name: str,
-                      description: str,
-                      srs: QgsCoordinateReferenceSystem) -> Upload:
+    def create_upload(
+        self,
+        datastore: str,
+        name: str,
+        description: str,
+        srs: QgsCoordinateReferenceSystem,
+    ) -> Upload:
         """
         Create upload on Geotuileur entrepot
 
@@ -165,11 +194,12 @@ class UploadRequestManager:
 
         # encode data
         data = QByteArray()
-        data_map = {"description": description,
-                    "name": name,
-                    "type": "VECTOR",
-                    "srs": srs.authid()
-                    }
+        data_map = {
+            "description": description,
+            "name": name,
+            "type": "VECTOR",
+            "srs": srs.authid(),
+        }
         data.append(json.dumps(data_map))
 
         # send request
@@ -177,11 +207,16 @@ class UploadRequestManager:
 
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
-            raise self.UploadCreationException(f"Error while creating upload : "
-                                               f"{self.ntwk_requester_blk.errorMessage()}")
+            raise self.UploadCreationException(
+                f"Error while creating upload : "
+                f"{self.ntwk_requester_blk.errorMessage()}"
+            )
         # check response type
         req_reply = self.ntwk_requester_blk.reply()
-        if not req_reply.rawHeader(b"Content-Type") == "application/json; charset=utf-8":
+        if (
+            not req_reply.rawHeader(b"Content-Type")
+            == "application/json; charset=utf-8"
+        ):
             raise self.UploadCreationException(
                 "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
                     req_reply.rawHeader(b"Content-type")
@@ -189,9 +224,16 @@ class UploadRequestManager:
             )
 
         data = json.loads(req_reply.content().data().decode("utf-8"))
-        return Upload(name=data["name"], id=data["_id"], description=data["description"], srs=data["srs"])
+        return Upload(
+            name=data["name"],
+            id=data["_id"],
+            description=data["description"],
+            srs=data["srs"],
+        )
 
-    def add_file_with_requests(self, datastore: str, upload: str, filename: str) -> None:
+    def add_file_with_requests(
+        self, datastore: str, upload: str, filename: str
+    ) -> None:
         """
         Add file to upload by using python package requests
 
@@ -205,23 +247,25 @@ class UploadRequestManager:
         session = requests.Session()
         check = self.request_manager.get_api_token()
         data = json.loads(check.data().decode("utf-8"))
-        session.headers.update({'Authorization': 'Bearer ' + data["access_token"]})
+        session.headers.update({"Authorization": "Bearer " + data["access_token"]})
 
         # Open file
-        with open(filename, 'rb') as file:
+        with open(filename, "rb") as file:
             if not file:
                 raise self.FileUploadException(f"Can't open {filename}")
 
             # Define request param
-            files = {'filename': (filename, file)}
+            files = {"filename": (filename, file)}
             url = f"{self.get_base_url(datastore)}/{upload}/data"
             response = session.post(url, verify=False, timeout=300, files=files)
 
             # Check response
             if not response.ok:
                 if response.content:
-                    error = f"Error when uploading {filename} to {url}. HTTP error : {response.status_code}.\n" \
-                            f" Response content : {response.text} "
+                    error = (
+                        f"Error when uploading {filename} to {url}. HTTP error : {response.status_code}.\n"
+                        f" Response content : {response.text} "
+                    )
                 else:
                     error = f"Error when uploading {filename} to {url}. HTTP error : {response.status_code}."
                 raise self.FileUploadException(error)
@@ -236,24 +280,33 @@ class UploadRequestManager:
             filename: (str) file to import
         """
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req_post = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{upload}/data"))
+        req_post = QNetworkRequest(
+            QUrl(f"{self.get_base_url(datastore)}/{upload}/data")
+        )
 
         # Create multipart
         multipart = QHttpMultiPart(QHttpMultiPart.FormDataType)
         filepart = QHttpPart()
 
         # headers
-        filepart.setHeader(QNetworkRequest.ContentDispositionHeader, f'form-data; name="filename" filename="test.gpkg"')
+        filepart.setHeader(
+            QNetworkRequest.ContentDispositionHeader,
+            f'form-data; name="filename" filename="{filename}"',
+        )
 
         file = QFile(filename)
-        file.setParent(multipart)  # we cannot delete the file now, so delete it with the multiPart
+        file.setParent(
+            multipart
+        )  # we cannot delete the file now, so delete it with the multiPart
         file.open(QIODevice.ReadOnly)
 
         filepart.setBodyDevice(file)
         multipart.append(filepart)
 
         networkManager = QNetworkAccessManager(self.ntwk_requester_blk)
-        QgsApplication.authManager().updateNetworkRequest(req_post, self.plg_settings.qgis_auth_id)
+        QgsApplication.authManager().updateNetworkRequest(
+            req_post, self.plg_settings.qgis_auth_id
+        )
         reply = networkManager.post(req_post, multipart)
         multipart.setParent(reply)
 
@@ -266,8 +319,7 @@ class UploadRequestManager:
         if reply.error() != QgsBlockingNetworkRequest.NoError:
             raise self.FileUploadException(reply.errorString())
 
-    def close_upload(self, datastore: str,
-                     upload: str) -> None:
+    def close_upload(self, datastore: str, upload: str) -> None:
         """
         Close upload on Geotuileur entrepot
 
@@ -276,7 +328,9 @@ class UploadRequestManager:
             upload: (str) upload id
         """
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req_post = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{upload}/close"))
+        req_post = QNetworkRequest(
+            QUrl(f"{self.get_base_url(datastore)}/{upload}/close")
+        )
 
         # headers
         req_post.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")

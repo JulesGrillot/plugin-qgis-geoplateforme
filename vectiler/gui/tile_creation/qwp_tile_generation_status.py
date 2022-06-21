@@ -3,28 +3,33 @@
 import os
 from functools import partial
 
-from PyQt5.QtCore import QTimer, QByteArray
-from PyQt5.QtGui import QMovie, QPixmap
-from PyQt5.QtWidgets import QWizardPage, QMessageBox, QHeaderView
-from qgis.PyQt import uic
-
 # PyQGIS
 from qgis.core import (
     QgsApplication,
-    QgsProcessingContext,
+    QgsProcessingAlgorithm,
     QgsProcessingAlgRunnerTask,
+    QgsProcessingContext,
     QgsProcessingFeedback,
-    QgsProcessingAlgorithm
 )
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QByteArray, QTimer
+from qgis.PyQt.QtGui import QMovie, QPixmap
+from qgis.PyQt.QtWidgets import QHeaderView, QMessageBox, QWizardPage
 
 from vectiler.__about__ import DIR_PLUGIN_ROOT
 from vectiler.api.processing import ProcessingRequestManager
 from vectiler.api.stored_data import StoredDataRequestManager
 from vectiler.api.upload import UploadRequestManager
 from vectiler.gui.mdl_execution_list import ExecutionListModel
-from vectiler.gui.tile_creation.qwp_tile_generation_edition import TileGenerationEditionPageWizard
-from vectiler.gui.tile_creation.qwp_tile_generation_fields_selection import TileGenerationFieldsSelectionPageWizard
-from vectiler.gui.tile_creation.qwp_tile_generation_generalization import TileGenerationGeneralizationPageWizard
+from vectiler.gui.tile_creation.qwp_tile_generation_edition import (
+    TileGenerationEditionPageWizard,
+)
+from vectiler.gui.tile_creation.qwp_tile_generation_fields_selection import (
+    TileGenerationFieldsSelectionPageWizard,
+)
+from vectiler.gui.tile_creation.qwp_tile_generation_generalization import (
+    TileGenerationGeneralizationPageWizard,
+)
 from vectiler.processing import VectilerProvider
 from vectiler.processing.tile_creation import TileCreationAlgorithm
 
@@ -32,9 +37,13 @@ from vectiler.processing.tile_creation import TileCreationAlgorithm
 class TileGenerationStatusPageWizard(QWizardPage):
     STATUS_CHECK_INTERVAL = 500
 
-    def __init__(self, qwp_tile_generation_edition: TileGenerationEditionPageWizard,
-                 qwp_tile_generation_fields_selection: TileGenerationFieldsSelectionPageWizard,
-                 qwp_tile_generation_generalization: TileGenerationGeneralizationPageWizard, parent=None):
+    def __init__(
+        self,
+        qwp_tile_generation_edition: TileGenerationEditionPageWizard,
+        qwp_tile_generation_fields_selection: TileGenerationFieldsSelectionPageWizard,
+        qwp_tile_generation_generalization: TileGenerationGeneralizationPageWizard,
+        parent=None,
+    ):
 
         """
         QWizardPage to create tile vector
@@ -48,7 +57,10 @@ class TileGenerationStatusPageWizard(QWizardPage):
         self.qwp_tile_generation_fields_selection = qwp_tile_generation_fields_selection
         self.qwp_tile_generation_generalization = qwp_tile_generation_generalization
 
-        uic.loadUi(os.path.join(os.path.dirname(__file__), "qwp_tile_generation_status.ui"), self)
+        uic.loadUi(
+            os.path.join(os.path.dirname(__file__), "qwp_tile_generation_status.ui"),
+            self,
+        )
 
         # Task and feedback for tile creation
         self.create_tile_task_id = None
@@ -58,7 +70,11 @@ class TileGenerationStatusPageWizard(QWizardPage):
         self.created_stored_data_id = ""
 
         # Timer for processing execution check after tile creation
-        self.loading_movie = QMovie(str(DIR_PLUGIN_ROOT / 'resources' / 'images' / 'loading.gif'), QByteArray(), self)
+        self.loading_movie = QMovie(
+            str(DIR_PLUGIN_ROOT / "resources" / "images" / "loading.gif"),
+            QByteArray(),
+            self,
+        )
         self.create_tile_check_timer = QTimer(self)
         self.create_tile_check_timer.timeout.connect(self.check_create_tile_status)
 
@@ -66,7 +82,9 @@ class TileGenerationStatusPageWizard(QWizardPage):
         self.mdl_execution_list = ExecutionListModel(self)
         self.tableview_execution_list.setModel(self.mdl_execution_list)
 
-        self.tableview_execution_list.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.tableview_execution_list.horizontalHeader().setSectionResizeMode(
+            QHeaderView.ResizeToContents
+        )
 
     def initializePage(self) -> None:
         """
@@ -92,26 +110,33 @@ class TileGenerationStatusPageWizard(QWizardPage):
         Run TileCreationAlgorithm with parameters defined from previous QWizardPage
 
         """
-        algo_str = f'{VectilerProvider().id()}:{TileCreationAlgorithm().name()}'
+        algo_str = f"{VectilerProvider().id()}:{TileCreationAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
-        datastore_id = self.qwp_tile_generation_edition.cbx_datastore.current_datastore_id()
-        vector_db_stored_id = self.qwp_tile_generation_edition.cbx_stored_data.current_stored_data_id()
+        datastore_id = (
+            self.qwp_tile_generation_edition.cbx_datastore.current_datastore_id()
+        )
+        vector_db_stored_id = (
+            self.qwp_tile_generation_edition.cbx_stored_data.current_stored_data_id()
+        )
 
-        params = {TileCreationAlgorithm.DATASTORE: datastore_id,
-                  TileCreationAlgorithm.VECTOR_DB_STORED_DATA_ID: vector_db_stored_id,
-                  TileCreationAlgorithm.STORED_DATA_NAME: self.qwp_tile_generation_edition.lne_flux.text(),
-                  TileCreationAlgorithm.TIPPECANOE_OPTIONS: self.qwp_tile_generation_generalization.get_tippecanoe_value(),
-                  TileCreationAlgorithm.TMS: 0,
-                  TileCreationAlgorithm.BOTTOM_LEVEL: self.qwp_tile_generation_edition.get_bottom_level(),
-                  TileCreationAlgorithm.TOP_LEVEL: self.qwp_tile_generation_edition.get_top_level(),
-                  TileCreationAlgorithm.ATTRIBUTES: self.qwp_tile_generation_fields_selection.get_selected_attributes(),
-                  }
+        params = {
+            TileCreationAlgorithm.DATASTORE: datastore_id,
+            TileCreationAlgorithm.VECTOR_DB_STORED_DATA_ID: vector_db_stored_id,
+            TileCreationAlgorithm.STORED_DATA_NAME: self.qwp_tile_generation_edition.lne_flux.text(),
+            TileCreationAlgorithm.TIPPECANOE_OPTIONS: self.qwp_tile_generation_generalization.get_tippecanoe_value(),
+            TileCreationAlgorithm.TMS: 0,
+            TileCreationAlgorithm.BOTTOM_LEVEL: self.qwp_tile_generation_edition.get_bottom_level(),
+            TileCreationAlgorithm.TOP_LEVEL: self.qwp_tile_generation_edition.get_top_level(),
+            TileCreationAlgorithm.ATTRIBUTES: self.qwp_tile_generation_fields_selection.get_selected_attributes(),
+        }
         self.lbl_step_text.setText(self.tr("Génération en cours"))
         self.lbl_step_icon.setMovie(self.loading_movie)
         self.loading_movie.start()
 
-        self.create_tile_task_id = self._run_alg(alg, params, self.create_tile_feedback, self.create_tile_finished)
+        self.create_tile_task_id = self._run_alg(
+            alg, params, self.create_tile_feedback, self.create_tile_finished
+        )
 
     def create_tile_finished(self, context, successful, results):
         """
@@ -123,13 +148,17 @@ class TileGenerationStatusPageWizard(QWizardPage):
             results: algorithm results
         """
         if successful:
-            self.created_stored_data_id = results[TileCreationAlgorithm.CREATED_STORED_DATA_ID]
+            self.created_stored_data_id = results[
+                TileCreationAlgorithm.CREATED_STORED_DATA_ID
+            ]
             # Run timer for tile creation check
             self.create_tile_check_timer.start(self.STATUS_CHECK_INTERVAL)
         else:
-            msgBox = QMessageBox(QMessageBox.Warning,
-                                 self.tr("Tile creation failed"),
-                                 self.tr("Check details for more informations"))
+            msgBox = QMessageBox(
+                QMessageBox.Warning,
+                self.tr("Tile creation failed"),
+                self.tr("Check details for more informations"),
+            )
             msgBox.setDetailedText(self.create_tile_feedback.textLog())
             msgBox.exec()
 
@@ -143,53 +172,79 @@ class TileGenerationStatusPageWizard(QWizardPage):
                 upload_manager = UploadRequestManager()
                 processing_manager = ProcessingRequestManager()
                 stored_data_manager = StoredDataRequestManager()
-                datastore_id = self.qwp_tile_generation_edition.cbx_datastore.current_datastore_id()
+                datastore_id = (
+                    self.qwp_tile_generation_edition.cbx_datastore.current_datastore_id()
+                )
 
-                stored_data = stored_data_manager.get_stored_data(datastore=datastore_id,
-                                                                  stored_data=self.created_stored_data_id)
+                stored_data = stored_data_manager.get_stored_data(
+                    datastore=datastore_id, stored_data=self.created_stored_data_id
+                )
 
                 execution_list = []
                 if stored_data.tags and "upload_id" in stored_data.tags.keys():
-                    execution_list = upload_manager.get_upload_checks_execution(datastore=datastore_id,
-                                                                                upload=stored_data.tags["upload_id"])
+                    execution_list = upload_manager.get_upload_checks_execution(
+                        datastore=datastore_id, upload=stored_data.tags["upload_id"]
+                    )
 
                 # Stop timer if stored_data generated
                 if stored_data.status == "GENERATED":
                     self.create_tile_check_timer.stop()
                     self.loading_movie.stop()
                     self.lbl_step_text.setText(self.tr("Votre données est prête"))
-                    pixmap = QPixmap(str(DIR_PLUGIN_ROOT / 'resources' / 'images' / 'icons' / 'Done.svg'))
+                    pixmap = QPixmap(
+                        str(
+                            DIR_PLUGIN_ROOT
+                            / "resources"
+                            / "images"
+                            / "icons"
+                            / "Done.svg"
+                        )
+                    )
                     self.lbl_step_icon.setMovie(QMovie())
                     self.lbl_step_icon.setPixmap(pixmap)
-                if stored_data.tags is not None and "proc_pyr_creat_id" in stored_data.tags.keys():
-                    execution_list.append(processing_manager.get_execution(datastore=datastore_id,
-                                                                           exec_id=stored_data.tags[
-                                                                               "proc_pyr_creat_id"])
-                                          )
+                if (
+                    stored_data.tags is not None
+                    and "proc_pyr_creat_id" in stored_data.tags.keys()
+                ):
+                    execution_list.append(
+                        processing_manager.get_execution(
+                            datastore=datastore_id,
+                            exec_id=stored_data.tags["proc_pyr_creat_id"],
+                        )
+                    )
                 self.mdl_execution_list.set_execution_list(execution_list)
             except StoredDataRequestManager.UnavailableStoredData as exc:
-                msgBox = QMessageBox(QMessageBox.Warning,
-                                     self.tr("Stored data check status failed"),
-                                     self.tr("Check details for more informations"))
+                msgBox = QMessageBox(
+                    QMessageBox.Warning,
+                    self.tr("Stored data check status failed"),
+                    self.tr("Check details for more informations"),
+                )
                 msgBox.setDetailedText(str(exc))
                 msgBox.exec()
             except ProcessingRequestManager.UnavailableProcessingException as exc:
-                msgBox = QMessageBox(QMessageBox.Warning,
-                                     self.tr("Stored data check status failed"),
-                                     self.tr("Check details for more informations"))
+                msgBox = QMessageBox(
+                    QMessageBox.Warning,
+                    self.tr("Stored data check status failed"),
+                    self.tr("Check details for more informations"),
+                )
                 msgBox.setDetailedText(str(exc))
                 msgBox.exec()
             except UploadRequestManager.UnavailableUploadException as exc:
-                msgBox = QMessageBox(QMessageBox.Warning,
-                                     self.tr("Stored data check status failed"),
-                                     self.tr("Check details for more informations"))
+                msgBox = QMessageBox(
+                    QMessageBox.Warning,
+                    self.tr("Stored data check status failed"),
+                    self.tr("Check details for more informations"),
+                )
                 msgBox.setDetailedText(str(exc))
                 msgBox.exec()
 
-    def _run_alg(self,
-                 alg: QgsProcessingAlgorithm, params: {},
-                 feedback: QgsProcessingFeedback,
-                 executed_callback) -> int:
+    def _run_alg(
+        self,
+        alg: QgsProcessingAlgorithm,
+        params: {},
+        feedback: QgsProcessingFeedback,
+        executed_callback,
+    ) -> int:
         """
         Run a QgsProcessingAlgorithm and connect execution callback and cancel task for button
 

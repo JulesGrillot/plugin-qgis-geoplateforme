@@ -1,7 +1,7 @@
 import json
 
-from PyQt5.QtCore import QObject, QByteArray
-from PyQt5.QtGui import QStandardItemModel
+from qgis.PyQt.QtCore import QByteArray, QObject
+from qgis.PyQt.QtGui import QStandardItemModel
 
 from vectiler.api.client import NetworkRequestsManager
 

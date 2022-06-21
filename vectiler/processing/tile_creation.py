@@ -1,11 +1,11 @@
-from PyQt5.QtCore import QCoreApplication
 from qgis.core import (
     QgsProcessingAlgorithm,
-    QgsProcessingParameterString,
     QgsProcessingException,
+    QgsProcessingParameterEnum,
     QgsProcessingParameterNumber,
-    QgsProcessingParameterEnum
+    QgsProcessingParameterString,
 )
+from qgis.PyQt.QtCore import QCoreApplication
 
 from vectiler.api.processing import ProcessingRequestManager
 from vectiler.api.stored_data import StoredDataRequestManager
@@ -121,10 +121,16 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
         )
 
     def processAlgorithm(self, parameters, context, feedback):
-        stored_data_name = self.parameterAsString(parameters, self.STORED_DATA_NAME, context)
+        stored_data_name = self.parameterAsString(
+            parameters, self.STORED_DATA_NAME, context
+        )
         datastore = self.parameterAsString(parameters, self.DATASTORE, context)
-        tippecanoe_options = self.parameterAsString(parameters, self.TIPPECANOE_OPTIONS, context)
-        vector_db_stored_data_id = self.parameterAsString(parameters, self.VECTOR_DB_STORED_DATA_ID, context)
+        tippecanoe_options = self.parameterAsString(
+            parameters, self.TIPPECANOE_OPTIONS, context
+        )
+        vector_db_stored_data_id = self.parameterAsString(
+            parameters, self.VECTOR_DB_STORED_DATA_ID, context
+        )
 
         tms = self.TMS_ENUM[self.parameterAsEnum(parameters, self.TMS, context)]
         bottom_level = self.parameterAsString(parameters, self.BOTTOM_LEVEL, context)
@@ -134,46 +140,47 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
             stored_data_manager = StoredDataRequestManager()
             processing_manager = ProcessingRequestManager()
 
-            vector_db_stored_data = stored_data_manager.get_stored_data(datastore, vector_db_stored_data_id)
+            vector_db_stored_data = stored_data_manager.get_stored_data(
+                datastore, vector_db_stored_data_id
+            )
 
             # Get processing for tile creation
             # TODO : for now we use processing name, how can we get processing otherwise ?
-            processing = processing_manager.get_processing(datastore,
-                                                           "Création d'une pyramide vecteur")
+            processing = processing_manager.get_processing(
+                datastore, "Création d'une pyramide vecteur"
+            )
             # Execution parameters
             exec_params = {
                 "tms": tms,
                 "bottom_level": bottom_level,
                 "top_level": top_level,
-                "tippecanoe_options": tippecanoe_options
+                "tippecanoe_options": tippecanoe_options,
             }
 
             # Define attributes parameters : for now common attributes for all table and same bottom and top level
             if attributes:
                 compositions = []
                 for table in vector_db_stored_data.get_tables():
-                    compositions.append({
-                        "table": table,
-                        "bottom_level": bottom_level,
-                        "top_level": top_level,
-                        "attributes": attributes
-                    })
+                    compositions.append(
+                        {
+                            "table": table,
+                            "bottom_level": bottom_level,
+                            "top_level": top_level,
+                            "attributes": attributes,
+                        }
+                    )
                 exec_params["composition"] = compositions
 
             # Create execution
             data_map = {
                 "processing": processing.id,
-                "inputs": {
-                    "stored_data": [vector_db_stored_data_id]
-                },
-                "output": {
-                    "stored_data": {
-                        "name": stored_data_name
-                    }
-                },
-                "parameters": exec_params
+                "inputs": {"stored_data": [vector_db_stored_data_id]},
+                "output": {"stored_data": {"name": stored_data_name}},
+                "parameters": exec_params,
             }
-            res = processing_manager.create_processing_execution(datastore=datastore, input_map=data_map)
+            res = processing_manager.create_processing_execution(
+                datastore=datastore, input_map=data_map
+            )
             stored_data_val = res["output"]["stored_data"]
             exec_id = res["_id"]
 
@@ -186,28 +193,44 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                 "proc_int_id": vector_db_stored_data.tags["proc_int_id"],
                 "vectordb_id": vector_db_stored_data.id,
                 "pyramid_id": stored_data_id,
-                "proc_pyr_creat_id": exec_id
+                "proc_pyr_creat_id": exec_id,
             }
-            stored_data_manager.add_tags(datastore=datastore, stored_data=stored_data_val["_id"], tags=tags)
+            stored_data_manager.add_tags(
+                datastore=datastore, stored_data=stored_data_val["_id"], tags=tags
+            )
 
             # Add tag to vector db
             vector_db_tag = {
                 "pyramid_id": stored_data_id,
             }
-            stored_data_manager.add_tags(datastore=datastore, stored_data=vector_db_stored_data.id, tags=vector_db_tag)
+            stored_data_manager.add_tags(
+                datastore=datastore,
+                stored_data=vector_db_stored_data.id,
+                tags=vector_db_tag,
+            )
 
             # Launch execution
             processing_manager.launch_execution(datastore=datastore, exec_id=exec_id)
 
         except StoredDataRequestManager.UnavailableStoredData as exc:
-            raise QgsProcessingException(f"Can't retrieve vector db datastore for tile creation : {exc}")
+            raise QgsProcessingException(
+                f"Can't retrieve vector db datastore for tile creation : {exc}"
+            )
         except ProcessingRequestManager.UnavailableProcessingException as exc:
-            raise QgsProcessingException(f"Can't retrieve processing for tile creation : {exc}")
+            raise QgsProcessingException(
+                f"Can't retrieve processing for tile creation : {exc}"
+            )
         except ProcessingRequestManager.CreateProcessingException as exc:
-            raise QgsProcessingException(f"Can't create processing execution for tile creation : {exc}")
+            raise QgsProcessingException(
+                f"Can't create processing execution for tile creation : {exc}"
+            )
         except ProcessingRequestManager.LaunchExecutionException as exc:
-            raise QgsProcessingException(f"Can't launch execution for tile creation : {exc}")
+            raise QgsProcessingException(
+                f"Can't launch execution for tile creation : {exc}"
+            )
         except StoredDataRequestManager.AddTagException as exc:
-            raise QgsProcessingException(f"Can't add tags to stored data for tile creation : {exc}")
+            raise QgsProcessingException(
+                f"Can't add tags to stored data for tile creation : {exc}"
+            )
 
         return {self.CREATED_STORED_DATA_ID: stored_data_id}

@@ -1,14 +1,10 @@
 import pytest
-from qgis.core import (
-    QgsApplication,
-    QgsProcessingFeedback
-)
+from qgis.core import QgsApplication, QgsProcessingFeedback
 
 from vectiler.processing import VectilerProvider
 
 
 class QgsProcessingFeedBackTest(QgsProcessingFeedback):
-
     def __init__(self):
         """
         QgsProcessingFeedback to store calls from QgsProcessingAlgorithm

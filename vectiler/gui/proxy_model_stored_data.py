@@ -1,18 +1,18 @@
-from PyQt5 import QtCore
-from PyQt5.QtCore import QSortFilterProxyModel, QObject, QModelIndex
+from typing import List
+
+from qgis.PyQt.QtCore import QModelIndex, QObject, QSortFilterProxyModel, Qt
 
 from vectiler.gui.mdl_stored_data import StoredDataListModel
 
 
 class StoredDataProxyModel(QSortFilterProxyModel):
-
     def __init__(self, parent: QObject = None):
         super().__init__(parent)
         self.filter_type = []
         self.tags = []
         self.forbidden_tags = []
 
-    def set_filter_type(self, filter_type: []) -> None:
+    def set_filter_type(self, filter_type: List) -> None:
         """
         Define filter of expected stored data type
 
@@ -21,7 +21,7 @@ class StoredDataProxyModel(QSortFilterProxyModel):
         """
         self.filter_type = filter_type
 
-    def set_expected_tags(self, tags: [str]) -> None:
+    def set_expected_tags(self, tags: List[str]) -> None:
         """
         Define filter of expected tags for stored data tags key
 
@@ -30,7 +30,7 @@ class StoredDataProxyModel(QSortFilterProxyModel):
         """
         self.tags = tags
 
-    def set_forbidden_tags(self, forbidden_tags: [str]) -> None:
+    def set_forbidden_tags(self, forbidden_tags: List[str]) -> None:
         """
         Define filter of forbidden tags for stored data tags key
 
@@ -54,15 +54,19 @@ class StoredDataProxyModel(QSortFilterProxyModel):
 
         # Check stored_data type
         if len(self.filter_type):
-            type_index = self.sourceModel().index(source_row, StoredDataListModel.TYPE_COL, source_parent)
+            type_index = self.sourceModel().index(
+                source_row, StoredDataListModel.TYPE_COL, source_parent
+            )
             type_value = self.sourceModel().data(type_index)
 
             result = type_value in self.filter_type
 
         # Check stored data flags
         if (len(self.tags) or len(self.forbidden_tags)) and result:
-            name_index = self.sourceModel().index(source_row, StoredDataListModel.NAME_COL, source_parent)
-            tags = self.sourceModel().data(name_index, QtCore.Qt.UserRole)
+            name_index = self.sourceModel().index(
+                source_row, StoredDataListModel.NAME_COL, source_parent
+            )
+            tags = self.sourceModel().data(name_index, Qt.UserRole)
             available_tags = tags.keys()
             for tag in self.tags:
                 result &= tag in available_tags

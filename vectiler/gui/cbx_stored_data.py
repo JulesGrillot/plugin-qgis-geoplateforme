@@ -1,11 +1,12 @@
-from PyQt5.QtWidgets import QComboBox
+from typing import List
+
+from qgis.PyQt.QtWidgets import QComboBox
 
 from vectiler.gui.mdl_stored_data import StoredDataListModel
 from vectiler.gui.proxy_model_stored_data import StoredDataProxyModel
 
 
 class StoredDataComboBox(QComboBox):
-
     def __init__(self, parent=None):
         """
         QComboBox for stored data selection.
@@ -32,7 +33,7 @@ class StoredDataComboBox(QComboBox):
         """
         self.proxy_model_stored_data.set_filter_type(filter_type)
 
-    def set_expected_tags(self, tags: [str]) -> None:
+    def set_expected_tags(self, tags: List[str]) -> None:
         """
         Define filter of expected tags for stored data tags key
 
@@ -41,7 +42,7 @@ class StoredDataComboBox(QComboBox):
         """
         self.proxy_model_stored_data.set_expected_tags(tags)
 
-    def set_forbidden_tags(self, forbidden_tags: [str]) -> None:
+    def set_forbidden_tags(self, forbidden_tags: List[str]) -> None:
         """
         Define filter of forbidden tags for stored data tags key
 

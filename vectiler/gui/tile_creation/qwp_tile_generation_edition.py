@@ -1,9 +1,8 @@
 # standard
 import os
 
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QWizardPage, QSlider, QMessageBox
-from qgis.PyQt import uic
+from qgis.PyQt import QtCore, QtGui, uic
+from qgis.PyQt.QtWidgets import QMessageBox, QSlider, QWizardPage
 
 
 class TileGenerationEditionPageWizard(QWizardPage):
@@ -12,21 +11,22 @@ class TileGenerationEditionPageWizard(QWizardPage):
     MIN_ZOOM_LEVEL = 5
     MAX_ZOOM_LEVEL = 18
 
-    LEVEL_SCALE_LAMBERT_MAP = {5: 11666284,
-                               6: 5833093,
-                               7: 2916534,
-                               8: 1458263,
-                               9: 729131,
-                               10: 364565,
-                               11: 182283,
-                               12: 91141,
-                               13: 45570,
-                               14: 22785,
-                               15: 11393,
-                               16: 5696,
-                               17: 2848,
-                               18: 1424
-                               }
+    LEVEL_SCALE_LAMBERT_MAP = {
+        5: 11666284,
+        6: 5833093,
+        7: 2916534,
+        8: 1458263,
+        9: 729131,
+        10: 364565,
+        11: 182283,
+        12: 91141,
+        13: 45570,
+        14: 22785,
+        15: 11393,
+        16: 5696,
+        17: 2848,
+        18: 1424,
+    }
 
     def __init__(self, parent=None):
         """
@@ -38,7 +38,10 @@ class TileGenerationEditionPageWizard(QWizardPage):
 
         super().__init__(parent)
 
-        uic.loadUi(os.path.join(os.path.dirname(__file__), "qwp_tile_generation_edition.ui"), self)
+        uic.loadUi(
+            os.path.join(os.path.dirname(__file__), "qwp_tile_generation_edition.ui"),
+            self,
+        )
 
         # Only display stored data ready for pyramid generation
         self.cbx_stored_data.set_filter_type(["VECTOR-DB"])
@@ -90,11 +93,19 @@ class TileGenerationEditionPageWizard(QWizardPage):
 
         if not self.cbx_datastore.current_datastore_id():
             valid = False
-            QMessageBox.warning(self, self.tr("No datastore selected."), self.tr("Please select a datastore"))
+            QMessageBox.warning(
+                self,
+                self.tr("No datastore selected."),
+                self.tr("Please select a datastore"),
+            )
 
         if valid and not self.cbx_stored_data.current_stored_data_id():
             valid = False
-            QMessageBox.warning(self, self.tr("No stored data selected."), self.tr("Please select a stored data"))
+            QMessageBox.warning(
+                self,
+                self.tr("No stored data selected."),
+                self.tr("Please select a stored data"),
+            )
 
         return valid
 
@@ -136,5 +147,7 @@ class TileGenerationEditionPageWizard(QWizardPage):
         Update zoom level widget when zoom level range is updated
 
         """
-        self.srw_zoom.setScaleRange(self.LEVEL_SCALE_LAMBERT_MAP[self.levels_range_slider.low()],
-                                    self.LEVEL_SCALE_LAMBERT_MAP[self.levels_range_slider.high()])
+        self.srw_zoom.setScaleRange(
+            self.LEVEL_SCALE_LAMBERT_MAP[self.levels_range_slider.low()],
+            self.LEVEL_SCALE_LAMBERT_MAP[self.levels_range_slider.high()],
+        )

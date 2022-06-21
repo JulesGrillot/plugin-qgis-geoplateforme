@@ -1,15 +1,15 @@
 import json
 
-from PyQt5.QtCore import QCoreApplication, QByteArray
 from qgis.core import (
     QgsProcessing,
     QgsProcessingAlgorithm,
+    QgsProcessingException,
+    QgsProcessingFeedback,
+    QgsProcessingParameterCrs,
     QgsProcessingParameterMultipleLayers,
     QgsProcessingParameterString,
-    QgsProcessingParameterCrs,
-    QgsProcessingFeedback,
-    QgsProcessingException
 )
+from qgis.PyQt.QtCore import QByteArray, QCoreApplication
 
 from vectiler.api.client import NetworkRequestsManager
 from vectiler.api.upload import UploadRequestManager
@@ -24,7 +24,9 @@ class UploadCreationAlgorithm(QgsProcessingAlgorithm):
     CREATED_UPLOAD_ID = "CREATED_UPLOAD_ID"
 
     def tr(self, string):
-        return QCoreApplication.translate("Create an upload for IGN Geotuileur platform", string)
+        return QCoreApplication.translate(
+            "Create an upload for IGN Geotuileur platform", string
+        )
 
     def createInstance(self):
         return UploadCreationAlgorithm()
@@ -99,12 +101,16 @@ class UploadCreationAlgorithm(QgsProcessingAlgorithm):
                 manager = UploadRequestManager()
 
                 # Create upload
-                upload = manager.create_upload(datastore=datastore, name=name, description=description, srs=srs)
+                upload = manager.create_upload(
+                    datastore=datastore, name=name, description=description, srs=srs
+                )
 
                 # Add layers file
                 for layer in layers:
                     filename = layer.dataProvider().dataSourceUri()
-                    manager.add_file_with_requests(datastore=datastore, upload=upload.id, filename=filename)
+                    manager.add_file_with_requests(
+                        datastore=datastore, upload=upload.id, filename=filename
+                    )
 
                 # Close upload
                 manager.close_upload(datastore=datastore, upload=upload.id)
@@ -130,7 +136,11 @@ class UploadCreationAlgorithm(QgsProcessingAlgorithm):
             # decode token as dict
             data = json.loads(check.data().decode("utf-8"))
             if not isinstance(data, dict):
-                feedback.reportError(self.tr(f"Invalid user data received. Expected dict, not {type(data)}"))
+                feedback.reportError(
+                    self.tr(
+                        f"Invalid user data received. Expected dict, not {type(data)}"
+                    )
+                )
             else:
                 # For now, not using any User object : will be done later
                 communities_member = data["communities_member"]

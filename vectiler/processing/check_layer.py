@@ -1,16 +1,16 @@
 import re
 from enum import IntFlag
-
-from PyQt5.QtCore import QCoreApplication
+from typing import List
 
 from qgis.core import (
+    QgsMapLayer,
     QgsProcessing,
     QgsProcessingAlgorithm,
-    QgsProcessingParameterMultipleLayers,
     QgsProcessingFeedback,
-    QgsMapLayer,
-    QgsVectorLayer
+    QgsProcessingParameterMultipleLayers,
+    QgsVectorLayer,
 )
+from qgis.PyQt.QtCore import QCoreApplication
 
 
 class CheckLayerAlgorithm(QgsProcessingAlgorithm):
@@ -21,6 +21,7 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
         """
         https://docs.python.org/fr/3/library/enum.html#intflag
         """
+
         VALID = 0
         CRS_MISMATCH = 1
         INVALID_LAYER_NAME = 2
@@ -85,26 +86,30 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
         return {self.RESULT_CODE: result_code}
 
     @staticmethod
-    def add_layers_info_feedback(feedback: QgsProcessingFeedback, layers: [QgsMapLayer]) -> None:
+    def add_layers_info_feedback(
+        feedback: QgsProcessingFeedback, layers: List[QgsMapLayer]
+    ) -> None:
         """
         Add layers information in feedback
 
         Args:
             feedback: QgsProcessingFeedback
-            layers: [QgsMapLayer])
+            layers: List[QgsMapLayer])
         """
         feedback.pushInfo("Checking layers :")
         for layer in layers:
             feedback.pushInfo(f"- {layer.name()} ({layer.crs().authid()})")
 
     @staticmethod
-    def check_layers_crs(feedback: QgsProcessingFeedback, layers: [QgsMapLayer]) -> bool:
+    def check_layers_crs(
+        feedback: QgsProcessingFeedback, layers: List[QgsMapLayer]
+    ) -> bool:
         """
         Check that layers have the same CRS
 
         Args:
             feedback: QgsProcessingFeedback
-            layers: [QgsMapLayer])
+            layers: List[QgsMapLayer])
 
         Returns: True if layers have the same CRS, False otherwise
 
@@ -117,19 +122,23 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
             layer_crs = layer.crs().authid()
             if ref_crs != layer_crs:
                 res = False
-                feedback.pushWarning(f"- [KO] {layer.name()} : invalid CRS {layer_crs}. Expected {ref_crs}")
+                feedback.pushWarning(
+                    f"- [KO] {layer.name()} : invalid CRS {layer_crs}. Expected {ref_crs}"
+                )
         if res:
             feedback.pushInfo("[OK] CRS identical for all input layers")
 
         return res
 
-    def check_layers_name(self, feedback: QgsProcessingFeedback, layers: [QgsMapLayer]) -> bool:
+    def check_layers_name(
+        self, feedback: QgsProcessingFeedback, layers: List[QgsMapLayer]
+    ) -> bool:
         """
         Check that layers have a valid name
 
         Args:
             feedback: QgsProcessingFeedback
-            layers: [QgsMapLayer])
+            layers: List[QgsMapLayer])
 
         Returns: True if all layers have valid name, False otherwise
 
@@ -141,20 +150,23 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
             if self.has_invalid_character(layer_name):
                 res = False
                 feedback.pushWarning(
-                    f'- [KO] invalid layer name for {layer_name}. '
-                    f'Please remove any special character ({self.get_invalid_characters()})')
+                    f"- [KO] invalid layer name for {layer_name}. "
+                    f"Please remove any special character ({self.get_invalid_characters()})"
+                )
         if res:
             feedback.pushInfo("[OK] valid layer name for all input layers")
 
         return res
 
-    def check_file_name(self, feedback: QgsProcessingFeedback, layers: [QgsMapLayer]) -> bool:
+    def check_file_name(
+        self, feedback: QgsProcessingFeedback, layers: List[QgsMapLayer]
+    ) -> bool:
         """
         Check that layers have a valid file name
 
         Args:
             feedback: QgsProcessingFeedback
-            layers: [QgsMapLayer])
+            layers: List[QgsMapLayer])
 
         Returns: True if all layers have valid name, False otherwise
 
@@ -166,20 +178,23 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
             if self.has_invalid_character(file_name):
                 res = False
                 feedback.pushWarning(
-                    f'- [KO] invalid file name for {file_name}. '
-                    f'Please remove any special character ({self.get_invalid_characters()})')
+                    f"- [KO] invalid file name for {file_name}. "
+                    f"Please remove any special character ({self.get_invalid_characters()})"
+                )
         if res:
             feedback.pushInfo("[OK] valid file name for all input layers")
 
         return res
 
-    def check_layers_fields(self, feedback: QgsProcessingFeedback, layers: [QgsMapLayer]) -> bool:
+    def check_layers_fields(
+        self, feedback: QgsProcessingFeedback, layers: List[QgsMapLayer]
+    ) -> bool:
         """
         Check that layers have valid fields name
 
         Args:
             feedback: QgsProcessingFeedback
-            layers: [QgsMapLayer])
+            layers: List[QgsMapLayer])
 
         Returns: True if all layers have valid fields name, False otherwise
 
@@ -195,7 +210,9 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
 
         return res
 
-    def check_layer_fields(self, feedback: QgsProcessingFeedback, layer: QgsVectorLayer) -> bool:
+    def check_layer_fields(
+        self, feedback: QgsProcessingFeedback, layer: QgsVectorLayer
+    ) -> bool:
         """
         Check that layer have valid fields name
 
@@ -213,18 +230,21 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
             if self.has_invalid_character(field_name):
                 res = False
                 feedback.pushWarning(
-                    f'- [KO] invalid layer field name {field_name} for {layer_name}. '
-                    f'Please remove any special character ({self.get_invalid_characters()})')
+                    f"- [KO] invalid layer field name {field_name} for {layer_name}. "
+                    f"Please remove any special character ({self.get_invalid_characters()})"
+                )
         return res
 
     @staticmethod
-    def check_layers_type(feedback: QgsProcessingFeedback, layers: [QgsMapLayer]) -> bool:
+    def check_layers_type(
+        feedback: QgsProcessingFeedback, layers: List[QgsMapLayer]
+    ) -> bool:
         """
         Check that layers have valid fields name
 
         Args:
             feedback: QgsProcessingFeedback
-            layers: [QgsMapLayer])
+            layers: List[QgsMapLayer])
 
         Returns: True if all layers have valid name, False otherwise
 
@@ -235,7 +255,8 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
             if not isinstance(layer, QgsVectorLayer):
                 res = False
                 feedback.pushWarning(
-                    f'- [KO] invalid layer type for {layer.name()}. Only QgsVectorLayer are supported.')
+                    f"- [KO] invalid layer type for {layer.name()}. Only QgsVectorLayer are supported."
+                )
 
         if res:
             feedback.pushInfo("[OK] valid layer fields name for all input layers")

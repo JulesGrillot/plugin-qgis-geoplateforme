@@ -368,6 +368,6 @@ def test_invalid_layer_type(alg: QgsProcessingAlgorithm, tmpdir):
     assert result_code == CheckLayerAlgorithm.ResultCode.INVALID_LAYER_TYPE
 
     expected_warnings = [
-        f"- [KO] invalid layer type for raster. Only QgsVectorLayer are supported."
+        "- [KO] invalid layer type for raster. Only QgsVectorLayer are supported."
     ]
     assert expected_warnings == feedback.warnings

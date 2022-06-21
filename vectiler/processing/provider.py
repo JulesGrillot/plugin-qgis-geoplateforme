@@ -10,17 +10,17 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 
 # project
-from vectiler.__about__ import DIR_PLUGIN_ROOT, __version__
-
-# ############################################################################
-# ########## Classes ###############
-# ##################################
+from vectiler.__about__ import DIR_PLUGIN_ROOT, __title__, __version__
 from vectiler.processing.check_layer import CheckLayerAlgorithm
 from vectiler.processing.tile_creation import TileCreationAlgorithm
 from vectiler.processing.upload_creation import UploadCreationAlgorithm
 from vectiler.processing.upload_database_integration import (
     UploadDatabaseIntegrationAlgorithm,
 )
+
+# ############################################################################
+# ########## Classes ###############
+# ##################################
 
 
 class VectilerProvider(QgsProcessingProvider):
@@ -52,7 +52,7 @@ class VectilerProvider(QgsProcessingProvider):
         :return: provider name
         :rtype: str
         """
-        return self.tr("Vectiler")
+        return __title__
 
     def longName(self) -> str:
         """Longer version of the provider name, which can include

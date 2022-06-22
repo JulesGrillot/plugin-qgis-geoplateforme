@@ -2,10 +2,10 @@
 import os
 from typing import List
 
-from qgis.PyQt import QtCore, QtGui, uic
-from qgis.PyQt.QtWidgets import QListWidgetItem, QMessageBox, QWizardPage
+from qgis.PyQt import uic
+from qgis.PyQt.QtWidgets import QWizardPage
 
-from vectiler.api.stored_data import StoredDataRequestManager
+from vectiler.gui.mdl_table_relation import TableRelationTreeModel
 from vectiler.gui.tile_creation.qwp_tile_generation_edition import (
     TileGenerationEditionPageWizard,
 )
@@ -33,41 +33,22 @@ class TileGenerationFieldsSelectionPageWizard(QWizardPage):
             self,
         )
 
+        self.mdl_table_relation = TableRelationTreeModel(self)
+        self.tw_table_relation.setModel(self.mdl_table_relation)
+
     def initializePage(self) -> None:
         """
         Initialize page before show.
 
         """
-        self.lwg_attribut.clear()
-        try:
-            manager = StoredDataRequestManager()
-            datastore_id = (
-                self.qwp_tile_generation_edition.cbx_datastore.current_datastore_id()
-            )
-            stored_data_id = (
-                self.qwp_tile_generation_edition.cbx_stored_data.current_stored_data_id()
-            )
-            stored_data = manager.get_stored_data(
-                datastore=datastore_id, stored_data=stored_data_id
-            )
-            fields = stored_data.get_fields()
+        datastore_id = (
+            self.qwp_tile_generation_edition.cbx_datastore.current_datastore_id()
+        )
+        stored_data_id = (
+            self.qwp_tile_generation_edition.cbx_stored_data.current_stored_data_id()
+        )
 
-            for field in fields:
-                item = QListWidgetItem()
-                item.setText(field)
-                item.setFont(QtGui.QFont("Arial", 13))
-                item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
-                item.setCheckState(QtCore.Qt.Unchecked)
-                self.lwg_attribut.addItem(item)
-
-        except StoredDataRequestManager.UnavailableStoredData as exc:
-            msgBox = QMessageBox(
-                QMessageBox.Warning,
-                self.tr("Stored data read failed"),
-                self.tr("Check details for more informations"),
-            )
-            msgBox.setDetailedText(str(exc))
-            msgBox.exec()
+        self.mdl_table_relation.set_stored_data(datastore_id, stored_data_id)
 
     def get_selected_attributes(self) -> List[str]:
         """
@@ -77,8 +58,7 @@ class TileGenerationFieldsSelectionPageWizard(QWizardPage):
 
         """
         attributes = []
-        for i in range(0, self.lwg_attribut.count()):
-            item = self.lwg_attribut.item(i)
-            if item.checkState() == QtCore.Qt.Checked:
-                attributes.append(item.text())
+        tables_attributes = self.mdl_table_relation.get_selected_table_attributes()
+        for table, table_attributes in tables_attributes.items():
+            attributes += table_attributes
         return attributes

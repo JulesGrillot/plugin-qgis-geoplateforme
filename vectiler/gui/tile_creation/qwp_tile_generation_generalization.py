@@ -85,13 +85,13 @@ class TileGenerationGeneralizationPageWizard(QWizardPage):
                 "explain": self.tr(
                     "Toutes les formes sont simplifiées et les nœuds du réseau sont conservés."
                 ),
-                "value": "-pn –S15",
+                "value": "-pn -S15",
             },
             "delete_smallest": {
                 "name": "delete_smallest",
                 "title": self.tr("Simplification de données linéaires autres"),
                 "explain": self.tr("Les petits objets sont supprimés."),
-                "value": "-an –S15",
+                "value": "-an -S15",
             },
             "keep_cover": {
                 "name": "keep_cover",
@@ -99,7 +99,7 @@ class TileGenerationGeneralizationPageWizard(QWizardPage):
                 "explain": self.tr(
                     "Les formes sont simplifiées en conservant une couverture du territoire."
                 ),
-                "value": "-aL –D8 –S15",
+                "value": "-aL -D8 -S15",
             },
             "keep_densest_delete_smallest": {
                 "name": "keep_densest_delete_smallest",
@@ -109,7 +109,7 @@ class TileGenerationGeneralizationPageWizard(QWizardPage):
                     "plus petites supprimées. Ce choix est pertinent si 3 attributs "
                     "ou moins sont conservés à l'étape précédente."
                 ),
-                "value": "-ac –aD -an –S15",
+                "value": "-ac -aD -an -S15",
             },
             "merge_same_attributes_and_simplify": {
                 "name": "merge_same_attributes_and_simplify",
@@ -119,7 +119,7 @@ class TileGenerationGeneralizationPageWizard(QWizardPage):
                     "les formes et en supprimant les petites surfaces. "
                     "Ce choix est pertinent si 3 attributs ou moins sont conservés à l'étape précédente."
                 ),
-                "value": "-ac -an –S10",
+                "value": "-ac -an -S10",
             },
             "keep_shared_edges": {
                 "name": "keep_shared_edges",
@@ -128,7 +128,7 @@ class TileGenerationGeneralizationPageWizard(QWizardPage):
                     "Les formes sont simplifiées en conservant les limites partagées entre deux "
                     "surfaces."
                 ),
-                "value": "-ab –S20",
+                "value": "-ab -S20",
             },
         }
 

@@ -55,6 +55,9 @@ color: rgb(52, 101, 164);</string>
    </item>
    <item row="5" column="3">
     <widget class="QCommandLinkButton" name="clb_forgot">
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
      <property name="styleSheet">
       <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
 font: italic 11pt &quot;Ubuntu Condensed&quot;;
@@ -84,6 +87,18 @@ color: rgb(52, 101, 164);</string>
    </item>
    <item row="4" column="0" colspan="4">
     <widget class="QPushButton" name="btn_connection">
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="contextMenuPolicy">
+      <enum>Qt::PreventContextMenu</enum>
+     </property>
+     <property name="toolTip">
+      <string notr="true"/>
+     </property>
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(114, 159, 207);
 font: 75 15pt &quot;Ubuntu Condensed&quot;;</string>
@@ -93,6 +108,9 @@ font: 75 15pt &quot;Ubuntu Condensed&quot;;</string>
      </property>
      <property name="checkable">
       <bool>false</bool>
+     </property>
+     <property name="default">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -118,6 +136,9 @@ font: 75 15pt &quot;Ubuntu Condensed&quot;;</string>
    </item>
    <item row="6" column="0" colspan="4">
     <widget class="QCommandLinkButton" name="clb_url">
+     <property name="focusPolicy">
+      <enum>Qt::TabFocus</enum>
+     </property>
      <property name="styleSheet">
       <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
 font: italic 11pt &quot;Ubuntu Condensed&quot;;

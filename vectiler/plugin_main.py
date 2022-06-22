@@ -3,16 +3,20 @@
 """
     Main plugin module.
 """
+
+# standard
+from functools import partial
+
 # PyQGIS
 from qgis.core import QgsApplication
 from qgis.gui import QgisInterface
+from qgis.PyQt.Qt import QUrl
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QDesktopServices, QIcon
 from qgis.PyQt.QtWidgets import QAction, QToolBar
-from qgis.utils import showPluginHelp
 
 # project
-from vectiler.__about__ import DIR_PLUGIN_ROOT, __title__
+from vectiler.__about__ import DIR_PLUGIN_ROOT, __title__, __uri_homepage__
 from vectiler.gui.dlg_authentication import AuthenticationDialog
 from vectiler.gui.dlg_settings import PlgOptionsFactory
 from vectiler.gui.tile_creation.wzd_tile_creation import TileCreationWizard
@@ -72,7 +76,7 @@ class VectilerPlugin:
             self.iface.mainWindow(),
         )
         self.action_help.triggered.connect(
-            lambda: showPluginHelp(filename="resources/help/index")
+            partial(QDesktopServices.openUrl, QUrl(__uri_homepage__))
         )
 
         self.action_settings = QAction(

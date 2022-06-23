@@ -6,14 +6,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>492</width>
-    <height>454</height>
+    <width>479</width>
+    <height>488</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>WizardPage</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0">
+   <item row="1" column="0">
+    <widget class="QTreeView" name="tw_table_relation"/>
+   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="lbl_attributes">
      <property name="maximumSize">
@@ -30,12 +33,39 @@
 color: rgb(52, 101, 164);</string>
      </property>
      <property name="text">
-      <string>Choisissez les attributs de la table :</string>
+      <string>Composez votre flux à partir de vos données</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QTreeView" name="tw_table_relation"/>
+   <item row="3" column="0">
+    <widget class="QLabel" name="lbl_description">
+     <property name="minimumSize">
+      <size>
+       <width>400</width>
+       <height>90</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 75 10pt &quot;Ubuntu Condensed&quot;;</string>
+     </property>
+     <property name="text">
+      <string>Cochez les attributs à conserver dans votre flux de tuiles vectorielles. Ces attributs seront notamment accessibles au clic sur une carte par vos utilisateurs. En limitant le nombre d'attributs, vous allégez le volume des tuiles et améliorez la fluidité d'affichage. Ne conservez que les attributs utiles à vos utilisateurs. Si vous ne conservez aucun attribut, vos tuiles vectorielles ne contiendront que des géométries et les possibilités de symbolisation seront limitées.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="lbl_choose">
+     <property name="styleSheet">
+      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+     </property>
+     <property name="text">
+      <string>Choisissez les attributs des tables</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

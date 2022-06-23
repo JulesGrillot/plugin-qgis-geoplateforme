@@ -12,26 +12,9 @@
 
 {{ title }} est un plugin pour QGIS 3.22+ qui a pour objectif de permettre de reproduire le parcours utilisateur du site Géotuileur dont voici 2 vidéos le détaillant :
 
-[Parcours 1](https://share.oslandia.net/public/60304f) :
-
-<video width="100%" controls>
-    <!-- markdownlint-disable MD033 -->
-      <source src="https://share.oslandia.net/public/?secure_token=wBVa5uMGAVV0MWJNGPa49t4fFvwpc7Li&minisite_session=60304f&ajxp_sessid=76nspl8uolgd0mvh8ajp3tjhkd&get_action=read_video_data&file=%2Fparcours.webm" type="video/webm">
-      Votre navigateur ne supporte pas la balise video HTML 5.
-      <!-- markdownlint-enable MD033 -->
-</video>
-
-[Parcours 2](https://share.oslandia.net/public/e7991a)
-
-<video width="100%" controls>
-    <!-- markdownlint-disable MD033 -->
-      <source src="https://share.oslandia.net/public/?secure_token=V2tiAxHr4E0Jxms4G8m5Dsr4IJnN9KP7&minisite_session=e7991a&ajxp_sessid=3gncjcb94a8f7tmj35aq63ous4&get_action=read_video_data&file=%2Fparcours2.webm" type="video/webm">
-      Votre navigateur ne supporte pas la balise video HTML 5.
-      <!-- markdownlint-enable MD033 -->
-</video>
+<iframe src="https://player.vimeo.com/video/722998381?h=3dcf3a2ef0&amp;title=0&amp;byline=0&amp;portrait=0&amp;speed=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="100%" height="450" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="screen-recording.webm"></iframe>
 
 ----
-
 
 ```{toctree}
 ---

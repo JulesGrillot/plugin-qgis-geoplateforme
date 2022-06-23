@@ -75,7 +75,7 @@ pygments_style = "sphinx"
 
 html_favicon = str(__about__.__icon_path__)
 html_logo = str(__about__.__icon_path__)
-html_static_path = ["_static"]
+html_static_path = ["static/additionnal_files"]
 html_theme = "sphinx_book_theme"
 html_theme_options = {
     "home_page_in_toc": True,

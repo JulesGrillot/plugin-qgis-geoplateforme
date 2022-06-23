@@ -151,25 +151,45 @@ class VectilerPlugin:
         del self.action_settings
         del self.action_help
 
-    def tile_creation(self):
+    def tile_creation(self) -> None:
         """
         Open tile creation Wizard
 
         """
         if self.tile_creation_wizard is None:
             self.tile_creation_wizard = TileCreationWizard(self.iface.mainWindow())
+            self.tile_creation_wizard.finished.connect(self._del_tile_creation_wizard)
         self.tile_creation_wizard.show()
 
-    def import_data(self):
+    def _del_tile_creation_wizard(self) -> None:
+        """
+        Delete tile creation wizard
+
+        """
+        if self.tile_creation_wizard is not None:
+            self.tile_creation_wizard.deleteLater()
+            self.tile_creation_wizard = None
+
+    def import_data(self) -> None:
         """
         Open import data Wizard
 
         """
         if self.import_wizard is None:
             self.import_wizard = UploadCreationWizard(self.iface.mainWindow())
+            self.import_wizard.finished.connect(self._del_import_wizard)
         self.import_wizard.show()
 
-    def authentication(self):
+    def _del_import_wizard(self) -> None:
+        """
+        Delete import wizard
+
+        """
+        if self.import_wizard is not None:
+            self.import_wizard.deleteLater()
+            self.import_wizard = None
+
+    def authentication(self) -> None:
         """
         Open authentification dialog
 

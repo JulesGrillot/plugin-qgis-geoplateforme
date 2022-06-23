@@ -10,6 +10,13 @@ from vectiler.toolbelt import PlgLogger, PlgOptionsManager
 
 
 @dataclass
+class TableRelation:
+    name: str
+    attributes: {}
+    primary_key: str
+
+
+@dataclass
 class StoredData:
     id: str
     name: str
@@ -18,29 +25,14 @@ class StoredData:
     tags: dict = None
     type_infos: dict = None
 
-    def get_fields(self) -> List[str]:
-        attributes = []
-        if self.type_infos:
-            table_relations = [
-                relation
-                for relation in self.type_infos["relations"]
-                if relation["type"] == "TABLE"
-            ]
-            for relation in table_relations:
-                for field in relation["attributes"].keys():
-                    if field != "fid" and field != "geom":
-                        attributes.append(field)
-        return attributes
-
-    def get_tables(self) -> List[str]:
+    def get_tables(self) -> List[TableRelation]:
         tables = []
         if self.type_infos:
-            table_relations = [
-                relation
+            tables = [
+                TableRelation(relation["name"], relation["attributes"], relation["primary_key"])
                 for relation in self.type_infos["relations"]
                 if relation["type"] == "TABLE"
             ]
-            tables = [relation["name"] for relation in table_relations]
         return tables
 
 

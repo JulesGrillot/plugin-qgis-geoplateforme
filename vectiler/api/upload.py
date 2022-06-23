@@ -8,6 +8,7 @@ from qgis.core import (
     QgsApplication,
     QgsBlockingNetworkRequest,
     QgsCoordinateReferenceSystem,
+    QgsSettings,
 )
 from qgis.PyQt.QtCore import QByteArray, QEventLoop, QFile, QIODevice, QUrl
 from qgis.PyQt.QtNetwork import (
@@ -231,6 +232,31 @@ class UploadRequestManager:
             srs=data["srs"],
         )
 
+    @staticmethod
+    def get_qgis_proxy_params_str() -> str:
+        """Gets the proxy params from QGIS settings.
+        Returns None if proxy is not enabled in QGIS. Otherwise,
+        returns proxy params in a single string"""
+        sett = QgsSettings()
+        proxyEnabled = sett.value("proxy/proxyEnabled", "")
+        proxyType = sett.value("proxy/proxyType", "")
+        proxyHost = sett.value("proxy/proxyHost", "")
+        proxyPort = sett.value("proxy/proxyPort", "")
+        proxyUser = sett.value("proxy/proxyUser", "")
+        proxyPassword = sett.value("proxy/proxyPassword", "")
+        if proxyEnabled != "true":
+            return ""
+        if not proxyHost:
+            return ""
+        proxyStr = proxyHost + ":" + proxyPort
+        if proxyUser:
+            proxyStr = proxyUser + ":" + proxyPassword + "@" + proxyStr
+        if proxyType == "Socks5Proxy":
+            proxyStr = "socks5://" + proxyStr
+        else:
+            proxyStr = "https://" + proxyStr
+        return proxyStr
+
     def add_file_with_requests(
         self, datastore: str, upload: str, filename: str
     ) -> None:
@@ -244,31 +270,36 @@ class UploadRequestManager:
         """
 
         # Get api token for requests
-        session = requests.Session()
-        check = self.request_manager.get_api_token()
-        data = json.loads(check.data().decode("utf-8"))
-        session.headers.update({"Authorization": "Bearer " + data["access_token"]})
+        with requests.Session() as session:
+            # Add proxy params
+            proxy_str = self.get_qgis_proxy_params_str()
+            if proxy_str:
+                session.proxies = {"http": proxy_str, "https": proxy_str}
 
-        # Open file
-        with open(filename, "rb") as file:
-            if not file:
-                raise self.FileUploadException(f"Can't open {filename}")
+            check = self.request_manager.get_api_token()
+            data = json.loads(check.data().decode("utf-8"))
+            session.headers.update({"Authorization": "Bearer " + data["access_token"]})
 
-            # Define request param
-            files = {"filename": (filename, file)}
-            url = f"{self.get_base_url(datastore)}/{upload}/data"
-            response = session.post(url, verify=False, timeout=300, files=files)
+            # Open file
+            with open(filename, "rb") as file:
+                if not file:
+                    raise self.FileUploadException(f"Can't open {filename}")
 
-            # Check response
-            if not response.ok:
-                if response.content:
-                    error = (
-                        f"Error when uploading {filename} to {url}. HTTP error : {response.status_code}.\n"
-                        f" Response content : {response.text} "
-                    )
-                else:
-                    error = f"Error when uploading {filename} to {url}. HTTP error : {response.status_code}."
-                raise self.FileUploadException(error)
+                # Define request param
+                files = {"filename": (filename, file)}
+                url = f"{self.get_base_url(datastore)}/{upload}/data"
+                response = session.post(url, verify=False, timeout=300, files=files)
+
+                # Check response
+                if not response.ok:
+                    if response.content:
+                        error = (
+                            f"Error when uploading {filename} to {url}. HTTP error : {response.status_code}.\n"
+                            f" Response content : {response.text} "
+                        )
+                    else:
+                        error = f"Error when uploading {filename} to {url}. HTTP error : {response.status_code}."
+                    raise self.FileUploadException(error)
 
     def add_file(self, datastore: str, upload: str, filename: str) -> None:
         """

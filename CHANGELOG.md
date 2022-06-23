@@ -16,6 +16,14 @@ Unreleased
 
 -->
 
+## 0.4.0 - 2022-06-23
+
+- Improve feature attributes selection widget. See: #52 - !30 (sroting in !34)
+- Improve connection widget behavior. See: #28 - !28
+- Fix wizard refresh. See: !33
+- Fix proxy handling for upload operations. See: #50 - !32
+- Fix bad interpretation of Tippecanoe options. See: #27 - !27
+
 ## 0.3.0 - 2022-06-21
 
 - Complete authentication workflow using QGIS Authentication Manager and proper oAuth2 grant flow

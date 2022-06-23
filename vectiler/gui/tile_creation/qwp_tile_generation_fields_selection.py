@@ -35,6 +35,7 @@ class TileGenerationFieldsSelectionPageWizard(QWizardPage):
 
         self.mdl_table_relation = TableRelationTreeModel(self)
         self.tw_table_relation.setModel(self.mdl_table_relation)
+        self.tw_table_relation.setSortingEnabled(True)
 
     def initializePage(self) -> None:
         """

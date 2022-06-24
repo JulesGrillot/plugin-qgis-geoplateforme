@@ -17,6 +17,7 @@ from qgis.PyQt.QtWidgets import QAction, QToolBar
 
 # project
 from vectiler.__about__ import DIR_PLUGIN_ROOT, __title__, __uri_homepage__
+from vectiler.gui.dashboard.dlg_dashboard import DashboardDialog
 from vectiler.gui.dlg_authentication import AuthenticationDialog
 from vectiler.gui.dlg_settings import PlgOptionsFactory
 from vectiler.gui.tile_creation.wzd_tile_creation import TileCreationWizard
@@ -50,8 +51,10 @@ class VectilerPlugin:
 
         self.toolbar = None
         self.dlg_authentication = None
+        self.dlg_dashboard = None
 
         self.action_authentication = None
+        self.action_dashboard = None
         self.action_import = None
         self.action_tile_create = None
 
@@ -104,6 +107,24 @@ class VectilerPlugin:
         )
         self.action_authentication.triggered.connect(self.authentication)
         self.toolbar.addAction(self.action_authentication)
+
+        # Dashboard
+        self.dlg_dashboard = DashboardDialog(self.iface.mainWindow())
+        self.action_dashboard = QAction(
+            QIcon(
+                str(
+                    DIR_PLUGIN_ROOT
+                    / "resources"
+                    / "images"
+                    / "datastore"
+                    / "bac-a-sable.svg"
+                )
+            ),
+            self.tr("Dashboard"),
+            self.iface.mainWindow(),
+        )
+        self.action_dashboard.triggered.connect(self.display_dashboard)
+        self.toolbar.addAction(self.action_dashboard)
 
         # Import
         self.action_import = QAction(
@@ -196,6 +217,15 @@ class VectilerPlugin:
         """
         if self.dlg_authentication is not None:
             self.dlg_authentication.exec()
+
+    def display_dashboard(self) -> None:
+        """
+        Display dashboard dialog
+
+        """
+        if self.dlg_dashboard is not None:
+            self.dlg_dashboard.refresh()
+            self.dlg_dashboard.show()
 
     def run(self):
         """Main process.

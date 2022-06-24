@@ -17,12 +17,13 @@ from qgis.PyQt.QtWidgets import QAction, QToolBar
 
 # project
 from geotuileur.__about__ import DIR_PLUGIN_ROOT, __title__, __uri_homepage__
+from geotuileur.gui.dashboard.dlg_dashboard import DashboardDialog
 from geotuileur.gui.dlg_authentication import AuthenticationDialog
 from geotuileur.gui.dlg_settings import PlgOptionsFactory
 from geotuileur.gui.tile_creation.wzd_tile_creation import TileCreationWizard
 from geotuileur.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
 from geotuileur.gui.user.dlg_user import UserDialog
-from geotuileur.processing import GeotuileurProvider
+from geotuileur.processing import GeotuileurProvider, VectilerProvider
 from geotuileur.toolbelt import PlgLogger, PlgOptionsManager, PlgTranslator
 
 
@@ -51,8 +52,11 @@ class GeotuileurPlugin:
         self.action_settings = None
 
         self.toolbar = None
+        self.dlg_authentication = None
+        self.dlg_dashboard = None
 
         self.action_authentication = None
+        self.action_dashboard = None
         self.action_import = None
         self.action_tile_create = None
 
@@ -126,6 +130,34 @@ class GeotuileurPlugin:
         self.toolbar = QToolBar("Geotuileur toolbar")
         self.iface.addToolBar(self.toolbar)
         self.toolbar.addAction(self.action_authentication)
+
+        # Dashboard
+        self.dlg_dashboard = DashboardDialog(self.iface.mainWindow())
+        self.action_dashboard = QAction(
+            QIcon(
+                str(
+                    DIR_PLUGIN_ROOT
+                    / "resources"
+                    / "images"
+                    / "datastore"
+                    / "bac-a-sable.svg"
+                )
+            ),
+            self.tr("Dashboard"),
+            self.iface.mainWindow(),
+        )
+        self.action_dashboard.triggered.connect(self.display_dashboard)
+        self.toolbar.addAction(self.action_dashboard)
+
+        # Import
+        self.action_import = QAction(
+            QIcon(
+                str(DIR_PLUGIN_ROOT / "resources" / "images" / "icons" / "Deposer.png")
+            ),
+            self.tr("Create a new upload"),
+            self.iface.mainWindow(),
+        )
+        self.action_import.triggered.connect(self.import_data)
         self.toolbar.addAction(self.action_import)
         self.toolbar.addAction(self.action_tile_create)
 
@@ -222,6 +254,15 @@ class GeotuileurPlugin:
 
         self.action_import.setEnabled(enabled)
         self.action_tile_create.setEnabled(enabled)
+
+    def display_dashboard(self) -> None:
+        """
+        Display dashboard dialog
+
+        """
+        if self.dlg_dashboard is not None:
+            self.dlg_dashboard.refresh()
+            self.dlg_dashboard.show()
 
     def run(self):
         """Main process.

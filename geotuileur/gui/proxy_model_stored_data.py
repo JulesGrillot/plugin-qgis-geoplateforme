@@ -67,11 +67,12 @@ class StoredDataProxyModel(QSortFilterProxyModel):
                 source_row, StoredDataListModel.NAME_COL, source_parent
             )
             tags = self.sourceModel().data(name_index, Qt.UserRole)
-            available_tags = tags.keys()
-            for tag in self.tags:
-                result &= tag in available_tags
+            if tags is not None:
+                available_tags = tags.keys()
+                for tag in self.tags:
+                    result &= tag in available_tags
 
-            for tag in self.forbidden_tags:
-                result &= tag not in available_tags
+                for tag in self.forbidden_tags:
+                    result &= tag not in available_tags
 
         return result

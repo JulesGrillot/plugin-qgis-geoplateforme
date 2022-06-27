@@ -174,7 +174,7 @@ class UploadRequestManager:
         datastore: str,
         name: str,
         description: str,
-        srs: QgsCoordinateReferenceSystem,
+        srs: str,
     ) -> Upload:
         """
         Create upload on Geotuileur entrepot
@@ -199,7 +199,7 @@ class UploadRequestManager:
             "description": description,
             "name": name,
             "type": "VECTOR",
-            "srs": srs.authid(),
+            "srs": srs,
         }
         data.append(json.dumps(data_map))
 

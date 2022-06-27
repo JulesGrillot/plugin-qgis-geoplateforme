@@ -1,26 +1,24 @@
 import json
 
 from qgis.core import (
-    QgsProcessing,
     QgsProcessingAlgorithm,
     QgsProcessingException,
-    QgsProcessingFeedback,
-    QgsProcessingParameterCrs,
-    QgsProcessingParameterMultipleLayers,
-    QgsProcessingParameterString,
+    QgsProcessingParameterFile,
 )
-from qgis.PyQt.QtCore import QByteArray, QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 
-from vectiler.api.client import NetworkRequestsManager
 from vectiler.api.upload import UploadRequestManager
 
 
 class UploadCreationAlgorithm(QgsProcessingAlgorithm):
-    DATASTORE = "DATASTORE"
-    NAME = "NAME"
-    DESCRIPTION = "DESCRIPTION"
-    INPUT_LAYERS = "INPUT_LAYERS"
-    SRS = "SRS"
+    INPUT_JSON = "INPUT_JSON"
+
+    DATASTORE = "datastore"
+    NAME = "name"
+    DESCRIPTION = "description"
+    FILES = "files"
+    SRS = "srs"
+
     CREATED_UPLOAD_ID = "CREATED_UPLOAD_ID"
 
     def tr(self, string):
@@ -47,56 +45,40 @@ class UploadCreationAlgorithm(QgsProcessingAlgorithm):
         return ""
 
     def shortHelpString(self):
-        return ""
+        return self.tr(
+            "Create upload in geotuileur platform.\n"
+            "Input parameters are defined in a .json file.\n"
+            "Available parameters:\n"
+            "{\n"
+            f'    "{self.DATASTORE}": datastore id (str),\n'
+            f'    "{self.NAME}": wanted upload name (str),\n'
+            f'    "{self.DESCRIPTION}": upload description (str),\n'
+            f'    "{self.FILES}": upload full file path list [str],\n'
+            f'    "{self.SRS}": upload SRS (str) must be in IGNF or EPSG repository,\n'
+            "}\n"
+            f"Returns created upload id in {self.CREATED_UPLOAD_ID} results"
+        )
 
     def initAlgorithm(self, config=None):
-
         self.addParameter(
-            QgsProcessingParameterString(
-                name=self.DATASTORE,
-                description=self.tr("Upload datastore"),
-                optional=True,
+            QgsProcessingParameterFile(
+                name=self.INPUT_JSON,
+                description=self.tr("Input .json file"),
             )
         )
-
-        self.addParameter(
-            QgsProcessingParameterString(
-                name=self.NAME,
-                description=self.tr("Upload name"),
-                optional=False,
-            )
-        )
-
-        self.addParameter(
-            QgsProcessingParameterString(
-                name=self.DESCRIPTION,
-                description=self.tr("Upload description"),
-                optional=True,
-            )
-        )
-
-        self.addParameter(
-            QgsProcessingParameterMultipleLayers(
-                name=self.INPUT_LAYERS,
-                layerType=QgsProcessing.TypeVectorAnyGeometry,
-                description=self.tr("Uploaded layers"),
-                optional=True,
-            )
-        )
-
-        self.addParameter(QgsProcessingParameterCrs(self.SRS, self.tr("SRS")))
 
     def processAlgorithm(self, parameters, context, feedback):
-        name = self.parameterAsString(parameters, self.NAME, context)
-        description = self.parameterAsString(parameters, self.DESCRIPTION, context)
-        layers = self.parameterAsLayerList(parameters, self.INPUT_LAYERS, context)
-        srs = self.parameterAsCrs(parameters, self.SRS, context)
+        filename = self.parameterAsFile(parameters, self.INPUT_JSON, context)
 
-        datastore = self.parameterAsString(parameters, self.DATASTORE, context)
-        upload_id = ""
-        if not datastore:
-            datastore = self.get_default_datastore(feedback)
-        if datastore:
+        with open(filename, "r") as file:
+            data = json.load(file)
+
+            name = data[self.NAME]
+            description = data[self.DESCRIPTION]
+            files = data[self.FILES]
+            srs = data[self.SRS]
+            datastore = data[self.DATASTORE]
+
             try:
                 manager = UploadRequestManager()
 
@@ -105,9 +87,8 @@ class UploadCreationAlgorithm(QgsProcessingAlgorithm):
                     datastore=datastore, name=name, description=description, srs=srs
                 )
 
-                # Add layers file
-                for layer in layers:
-                    filename = layer.dataProvider().dataSourceUri()
+                # Add files
+                for filename in files:
                     manager.add_file_with_requests(
                         datastore=datastore, upload=upload.id, filename=filename
                     )
@@ -123,28 +104,5 @@ class UploadCreationAlgorithm(QgsProcessingAlgorithm):
                 raise QgsProcessingException(f"File upload failed : {exc}")
             except UploadRequestManager.UploadClosingException as exc:
                 raise QgsProcessingException(f"Upload closing failed : {exc}")
-        else:
-            raise QgsProcessingException("Can't define used datastore")
 
         return {self.CREATED_UPLOAD_ID: upload_id, self.DATASTORE: datastore}
-
-    def get_default_datastore(self, feedback: QgsProcessingFeedback) -> str:
-        datastore = ""
-        network_requests_manager = NetworkRequestsManager()
-        check = network_requests_manager.get_user_info()
-        if isinstance(check, (dict, QByteArray, bytes)):
-            # decode token as dict
-            data = json.loads(check.data().decode("utf-8"))
-            if not isinstance(data, dict):
-                feedback.reportError(
-                    self.tr(
-                        f"Invalid user data received. Expected dict, not {type(data)}"
-                    )
-                )
-            else:
-                # For now, not using any User object : will be done later
-                communities_member = data["communities_member"]
-                if len(communities_member) != 0:
-                    community = communities_member[0]["community"]
-                    datastore = community["datastore"]
-        return datastore

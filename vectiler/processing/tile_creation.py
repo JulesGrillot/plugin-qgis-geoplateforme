@@ -57,7 +57,7 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
             f'    "{self.DATASTORE}": datastore id (str),\n'
             f'    "{self.VECTOR_DB_STORED_DATA_ID}": vector db stored data is used for tile creation (str),\n'
             f'    "{self.TIPPECANOE_OPTIONS}": tippecanoe option for tile creation (str),\n'
-            f'    "{self.TMS}": tile matrix set (str),\n'
+            f'    "{self.TMS}": tile matrix set (str) available options are "PM" or "4326",\n'
             f'    "{self.BOTTOM_LEVEL}": tile bottom level (str), value between 1 and 21,\n'
             f'    "{self.TOP_LEVEL}": tile top level (str), value between 1 and 21,\n'
             f'    "{self.COMPOSITION}": table composition ([]): define attributes and levels for each table,\n'

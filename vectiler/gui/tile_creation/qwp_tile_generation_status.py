@@ -139,8 +139,8 @@ class TileGenerationStatusPageWizard(QWizardPage):
         selected_attributes = (
             self.qwp_tile_generation_fields_selection.get_selected_attributes()
         )
-        print(selected_attributes)
 
+        # Define composition for each table. For now using zoom levels from tile vector
         for table, attributes in selected_attributes.items():
             data[TileCreationAlgorithm.COMPOSITION].append(
                 {

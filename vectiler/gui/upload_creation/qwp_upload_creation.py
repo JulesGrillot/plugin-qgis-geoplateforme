@@ -1,5 +1,7 @@
 # standard
+import json
 import os
+import tempfile
 from functools import partial
 from typing import List
 
@@ -262,15 +264,19 @@ class UploadCreationPageWizard(QWizardPage):
             algo_str = f"{VectilerProvider().id()}:{UploadDatabaseIntegrationAlgorithm().name()}"
             alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
-            params = {
+            data = {
                 UploadDatabaseIntegrationAlgorithm.DATASTORE: self.qwp_upload_edition.cbx_datastore.current_datastore_id(),
                 UploadDatabaseIntegrationAlgorithm.UPLOAD: self.created_upload_id,
                 UploadDatabaseIntegrationAlgorithm.STORED_DATA_NAME: self.qwp_upload_edition.lne_data.text(),
             }
+            filename = tempfile.NamedTemporaryFile(suffix=".json").name
+            with open(filename, "w") as file:
+                json.dump(data, file)
+                params = {UploadDatabaseIntegrationAlgorithm.INPUT_JSON: filename}
 
-            self.integrate_task_id = self._run_alg(
-                alg, params, self.integrate_feedback, self.integrate_finished
-            )
+                self.integrate_task_id = self._run_alg(
+                    alg, params, self.integrate_feedback, self.integrate_finished
+                )
 
     def integrate_finished(self, context, successful, results):
         """

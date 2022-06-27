@@ -51,15 +51,15 @@ class TileGenerationFieldsSelectionPageWizard(QWizardPage):
 
         self.mdl_table_relation.set_stored_data(datastore_id, stored_data_id)
 
-    def get_selected_attributes(self) -> List[str]:
+    def get_selected_attributes(self) -> {str: [str]}:
         """
         Get list of selected attributes
 
-        Returns:List[str] selected attributes
+        Returns: {str:[str]} map of selected attributes for each table
 
         """
-        attributes = []
+        attributes = {}
         tables_attributes = self.mdl_table_relation.get_selected_table_attributes()
         for table, table_attributes in tables_attributes.items():
-            attributes += table_attributes
+            attributes[table] = table_attributes
         return attributes

@@ -127,10 +127,34 @@ class TileGenerationStatusPageWizard(QWizardPage):
             TileCreationAlgorithm.STORED_DATA_NAME: self.qwp_tile_generation_edition.lne_flux.text(),
             TileCreationAlgorithm.TIPPECANOE_OPTIONS: self.qwp_tile_generation_generalization.get_tippecanoe_value(),
             TileCreationAlgorithm.TMS: "PM",
-            TileCreationAlgorithm.BOTTOM_LEVEL: self.qwp_tile_generation_edition.get_bottom_level(),
-            TileCreationAlgorithm.TOP_LEVEL: self.qwp_tile_generation_edition.get_top_level(),
-            TileCreationAlgorithm.ATTRIBUTES: self.qwp_tile_generation_fields_selection.get_selected_attributes(),
+            TileCreationAlgorithm.BOTTOM_LEVEL: str(
+                self.qwp_tile_generation_edition.get_bottom_level()
+            ),
+            TileCreationAlgorithm.TOP_LEVEL: str(
+                self.qwp_tile_generation_edition.get_top_level()
+            ),
+            TileCreationAlgorithm.COMPOSITION: [],
         }
+
+        selected_attributes = (
+            self.qwp_tile_generation_fields_selection.get_selected_attributes()
+        )
+        print(selected_attributes)
+
+        for table, attributes in selected_attributes.items():
+            data[TileCreationAlgorithm.COMPOSITION].append(
+                {
+                    "table": table,
+                    "attributes": ",".join(attributes),
+                    TileCreationAlgorithm.BOTTOM_LEVEL: str(
+                        self.qwp_tile_generation_edition.get_bottom_level()
+                    ),
+                    TileCreationAlgorithm.TOP_LEVEL: str(
+                        self.qwp_tile_generation_edition.get_top_level()
+                    ),
+                }
+            )
+
         filename = tempfile.NamedTemporaryFile(suffix=".json").name
         with open(filename, "w") as file:
             json.dump(data, file)

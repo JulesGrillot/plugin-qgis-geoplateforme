@@ -21,8 +21,8 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
     TMS = "tms"
     BOTTOM_LEVEL = "bottom_level"
     TOP_LEVEL = "top_level"
-    ATTRIBUTES = "attributes"
     COMPOSITION = "composition"
+    BBOX = "bbox"
 
     CREATED_STORED_DATA_ID = "CREATED_STORED_DATA_ID"
 
@@ -58,9 +58,16 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
             f'    "{self.VECTOR_DB_STORED_DATA_ID}": vector db stored data is used for tile creation (str),\n'
             f'    "{self.TIPPECANOE_OPTIONS}": tippecanoe option for tile creation (str),\n'
             f'    "{self.TMS}": tile matrix set (str),\n'
-            f'    "{self.BOTTOM_LEVEL}": tile bottom level (int), value between 1 and 21,\n'
-            f'    "{self.TOP_LEVEL}": tile top level (int), value between 1 and 21,\n'
+            f'    "{self.BOTTOM_LEVEL}": tile bottom level (str), value between 1 and 21,\n'
+            f'    "{self.TOP_LEVEL}": tile top level (str), value between 1 and 21,\n'
             f'    "{self.COMPOSITION}": table composition ([]): define attributes and levels for each table,\n'
+            f'        ["table": (str) table name,\n'
+            f'         "attributes": (str) attributes list as a string with "," separator,\n'
+            f'         "{self.TOP_LEVEL}": tile top level (str), value between 1 and 21,\n'
+            f'         "{self.TOP_LEVEL}": tile top level (str), value between 1 and 21,\n'
+            f"        ]"
+            f'    "{self.BBOX}": bounding box of sample generation ([x_min,x_max,y_min,y_max]): define bounding box, '
+            f"if used is_sample tag added to created stored data,\n"
             "}\n"
             f"Returns created stored data id in {self.CREATED_STORED_DATA_ID} results"
         )
@@ -87,7 +94,6 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
             tms = data[self.TMS]
             bottom_level = data[self.BOTTOM_LEVEL]
             top_level = data[self.TOP_LEVEL]
-            attributes = data[self.ATTRIBUTES]
             try:
                 stored_data_manager = StoredDataRequestManager()
                 processing_manager = ProcessingRequestManager()
@@ -109,19 +115,13 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                     "tippecanoe_options": tippecanoe_options,
                 }
 
-                # Define attributes parameters : for now common attributes for all table and same bottom and top level
-                if attributes:
-                    compositions = []
-                    for table in vector_db_stored_data.get_tables():
-                        compositions.append(
-                            {
-                                "table": table,
-                                "bottom_level": str(bottom_level),
-                                "top_level": str(top_level),
-                                "attributes": attributes,
-                            }
-                        )
-                    exec_params["composition"] = compositions
+                bbox_used = False
+                if self.BBOX in data:
+                    exec_params[self.BBOX] = data[self.BBOX]
+                    bbox_used = True
+
+                if self.COMPOSITION in data:
+                    exec_params[self.COMPOSITION] = data[self.COMPOSITION]
 
                 # Create execution
                 data_map = {
@@ -147,6 +147,10 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                     "pyramid_id": stored_data_id,
                     "proc_pyr_creat_id": exec_id,
                 }
+
+                if bbox_used:
+                    tags["is_sample"] = "true"
+
                 stored_data_manager.add_tags(
                     datastore=datastore, stored_data=stored_data_val["_id"], tags=tags
                 )

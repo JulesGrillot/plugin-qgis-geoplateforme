@@ -57,7 +57,7 @@ class StoredDataProxyModel(QSortFilterProxyModel):
             type_index = self.sourceModel().index(
                 source_row, StoredDataListModel.TYPE_COL, source_parent
             )
-            type_value = self.sourceModel().data(type_index)
+            type_value = self.sourceModel().data(type_index, Qt.DisplayRole)
 
             result = type_value in self.filter_type
 

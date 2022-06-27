@@ -37,7 +37,7 @@ class DashboardWidget(QWidget):
         # TODO running actions need filter on stored data status : for now display all stored_data
         self.tbl_running_actions.setModel(self.mdl_stored_data)
 
-        # Publicated files
+        # Publicated tiles
         self.proxy_mdl_publicated_tiles = self._create_proxy_model(
             expected_tags=["upload_id", "tms_url"], forbidden_tags=[]
         )
@@ -80,3 +80,12 @@ class DashboardWidget(QWidget):
 
         """
         self.mdl_stored_data.set_datastore(self.cbx_datastore.current_datastore_id())
+
+        self.tbv_actions_to_finish.resizeRowsToContents()
+        self.tbv_actions_to_finish.resizeColumnsToContents()
+
+        self.tbl_running_actions.resizeRowsToContents()
+        self.tbl_running_actions.resizeColumnsToContents()
+
+        self.tbl_publicated_tiles.resizeRowsToContents()
+        self.tbl_publicated_tiles.resizeColumnsToContents()

@@ -132,6 +132,7 @@ class UploadCreationPageWizard(QWizardPage):
         """
         if successful:
             self.created_upload_id = results[UploadCreationAlgorithm.CREATED_UPLOAD_ID]
+
             # Run timer for upload check
             self.upload_check_timer.start(self.STATUS_CHECK_INTERVAL)
         else:
@@ -308,7 +309,42 @@ class UploadCreationPageWizard(QWizardPage):
         Returns: True
 
         """
-        return True
+        result = True
+
+        if not self.created_upload_id:
+            result = False
+            QMessageBox.warning(
+                self,
+                self.tr("Upload not finished."),
+                self.tr(
+                    "Upload not finished. You must wait for data upload before closing this dialog"
+                ),
+            )
+
+        if not self.created_stored_data_id and result:
+            QMessageBox.information(
+                self,
+                self.tr("Database integration not finished."),
+                self.tr(
+                    "Database integration not finished. You can check integration status in "
+                    "dashboard"
+                ),
+            )
+
+        return result
+
+    def isComplete(self) -> bool:
+        """
+        Check if QWizardPage is complete for next/finish button enable.
+        Here we check that upload was created.
+
+        Returns: True if upload was created, False otherwise
+
+        """
+        result = True
+        if not self.created_upload_id:
+            result = False
+        return result
 
     @staticmethod
     def _run_alg(

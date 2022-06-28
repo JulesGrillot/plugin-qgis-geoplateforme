@@ -53,15 +53,14 @@ class UploadCreationPageWizard(QWizardPage):
             os.path.join(os.path.dirname(__file__), "qwp_upload_creation.ui"), self
         )
 
+        self.tbw_errors.setVisible(False)
+
         # Task ID and feedback for upload creation
         self.upload_task_id = None
         self.upload_feedback = QgsProcessingFeedback()
 
-        # Task ID and feedback for database integration
-        self.integrate_task_id = None
-        self.integrate_feedback = QgsProcessingFeedback()
-
         # Processing results
+        self.processing_failed = False
         self.created_upload_id = ""
         self.created_stored_data_id = ""
 
@@ -86,9 +85,11 @@ class UploadCreationPageWizard(QWizardPage):
         Initialize page before show.
 
         """
+        self.tbw_errors.setVisible(False)
         self.upload_task_id = None
-        self.integrate_task_id = None
 
+        # Processing results
+        self.processing_failed = False
         self.created_upload_id = ""
         self.created_stored_data_id = ""
 
@@ -143,6 +144,7 @@ class UploadCreationPageWizard(QWizardPage):
             )
             msgBox.setDetailedText(self.upload_feedback.textLog())
             msgBox.exec()
+            self._report_processing_error(self.upload_feedback.textLog())
 
     def check_upload_status(self):
         """
@@ -260,7 +262,11 @@ class UploadCreationPageWizard(QWizardPage):
 
         """
         # Run database integration only if created upload available and no integrate task running
-        if self.created_upload_id and not self.integrate_task_id:
+        if self.created_upload_id and not self.created_stored_data_id:
+
+            # Stop timer for upload check during processing to avoid multiple integration launch
+            self.upload_check_timer.stop()
+
             self.log("Launch UploadDatabaseIntegrationAlgorithm")
             algo_str = f"{VectilerProvider().id()}:{UploadDatabaseIntegrationAlgorithm().name()}"
             alg = QgsApplication.processingRegistry().algorithmById(algo_str)
@@ -273,34 +279,33 @@ class UploadCreationPageWizard(QWizardPage):
             filename = tempfile.NamedTemporaryFile(suffix=".json").name
             with open(filename, "w") as file:
                 json.dump(data, file)
-                params = {UploadDatabaseIntegrationAlgorithm.INPUT_JSON: filename}
 
-                self.integrate_task_id = self._run_alg(
-                    alg, params, self.integrate_feedback, self.integrate_finished
+            params = {UploadDatabaseIntegrationAlgorithm.INPUT_JSON: filename}
+
+            context = QgsProcessingContext()
+            feedback = QgsProcessingFeedback()
+            results, successful = alg.run(params, context, feedback)
+
+            if successful:
+                self.created_stored_data_id = results[
+                    UploadDatabaseIntegrationAlgorithm.CREATED_STORED_DATA_ID
+                ]
+
+                # Start timer for upload check
+                self.upload_check_timer.start(self.STATUS_CHECK_INTERVAL)
+                self.loading_movie.start()
+
+                # Emit completeChanged to update finish button
+                self.completeChanged.emit()
+            else:
+                msgBox = QMessageBox(
+                    QMessageBox.Warning,
+                    self.tr("Database integration failed"),
+                    self.tr("Check details for more informations"),
                 )
-
-    def integrate_finished(self, context, successful, results):
-        """
-        Callback executed when UploadDatabaseIntegrationAlgorithm is finished
-
-        Args:
-            context:  algorithm context
-            successful: algorithm success
-            results: algorithm results
-        """
-
-        if successful:
-            self.created_stored_data_id = results[
-                UploadDatabaseIntegrationAlgorithm.CREATED_STORED_DATA_ID
-            ]
-        else:
-            msgBox = QMessageBox(
-                QMessageBox.Warning,
-                self.tr("Database integration failed"),
-                self.tr("Check details for more informations"),
-            )
-            msgBox.setDetailedText(self.integrate_feedback.textLog())
-            msgBox.exec()
+                msgBox.setDetailedText(feedback.textLog())
+                msgBox.exec()
+                self._report_processing_error(feedback.textLog())
 
     def validatePage(self) -> bool:
         """
@@ -311,23 +316,23 @@ class UploadCreationPageWizard(QWizardPage):
         """
         result = True
 
-        if not self.created_upload_id:
+        if not self.created_upload_id and not self.processing_failed:
             result = False
             QMessageBox.warning(
                 self,
                 self.tr("Upload not finished."),
                 self.tr(
-                    "Upload not finished. You must wait for data upload before closing this dialog"
+                    "Upload not finished. You must wait for data upload before closing this dialog."
                 ),
             )
-
-        if not self.created_stored_data_id and result:
-            QMessageBox.information(
+        elif not self.created_stored_data_id and not self.processing_failed:
+            result = False
+            QMessageBox.warning(
                 self,
                 self.tr("Database integration not finished."),
                 self.tr(
-                    "Database integration not finished. You can check integration status in "
-                    "dashboard"
+                    "Database integration not finished. You must wait for database integration before closing this "
+                    "dialog."
                 ),
             )
 
@@ -342,9 +347,25 @@ class UploadCreationPageWizard(QWizardPage):
 
         """
         result = True
-        if not self.created_upload_id:
+        if not self.created_upload_id and not self.processing_failed:
             result = False
+        elif not self.created_upload_id and not self.processing_failed:
+            result = False
+
         return result
+
+    def _report_processing_error(self, error: str) -> None:
+        """
+        Report processing error by displaying error in text browser
+
+        Args:
+            error:
+        """
+        self.loading_movie.stop()
+        self.processing_failed = True
+        self.tbw_errors.setVisible(True)
+        self.tbw_errors.setText(error)
+        self.completeChanged.emit()
 
     @staticmethod
     def _run_alg(

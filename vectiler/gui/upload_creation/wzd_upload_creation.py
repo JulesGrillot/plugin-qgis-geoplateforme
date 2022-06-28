@@ -34,8 +34,12 @@ class UploadCreationWizard(QWizard):
         Args:
             event: QCloseEvent
         """
-        # Check that current page is valid
-        if self.currentPage().validatePage():
-            event.accept()
+        # If upload creation page, check that page is valid
+        current_page = self.currentPage()
+        if current_page == self.qwp_upload_creation:
+            if current_page.validatePage():
+                event.accept()
+            else:
+                event.ignore()
         else:
-            event.ignore()
+            super().closeEvent(event)

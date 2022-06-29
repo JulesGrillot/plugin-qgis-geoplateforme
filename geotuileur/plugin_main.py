@@ -83,6 +83,23 @@ class GeotuileurPlugin:
         )
         self.action_authentication.triggered.connect(self.authentication)
 
+        # Dashboard
+        self.dlg_dashboard = DashboardDialog(self.iface.mainWindow())
+        self.action_dashboard = QAction(
+            QIcon(
+                str(
+                    DIR_PLUGIN_ROOT
+                    / "resources"
+                    / "images"
+                    / "datastore"
+                    / "bac-a-sable.svg"
+                )
+            ),
+            self.tr("Dashboard"),
+            self.iface.mainWindow(),
+        )
+        self.action_dashboard.triggered.connect(self.display_dashboard)
+
         # Import
         self.action_import = QAction(
             QIcon(str(DIR_PLUGIN_ROOT / "resources/images/icons/Deposer.png")),
@@ -123,6 +140,7 @@ class GeotuileurPlugin:
 
         # -- Menu
         self.iface.addPluginToMenu(__title__, self.action_authentication)
+        self.iface.addPluginToMenu(__title__, self.action_dashboard)
         self.iface.addPluginToMenu(__title__, self.action_settings)
         self.iface.addPluginToMenu(__title__, self.action_help)
 
@@ -130,37 +148,11 @@ class GeotuileurPlugin:
         self.toolbar = QToolBar("Geotuileur toolbar")
         self.iface.addToolBar(self.toolbar)
         self.toolbar.addAction(self.action_authentication)
-
-        # Dashboard
-        self.dlg_dashboard = DashboardDialog(self.iface.mainWindow())
-        self.action_dashboard = QAction(
-            QIcon(
-                str(
-                    DIR_PLUGIN_ROOT
-                    / "resources"
-                    / "images"
-                    / "datastore"
-                    / "bac-a-sable.svg"
-                )
-            ),
-            self.tr("Dashboard"),
-            self.iface.mainWindow(),
-        )
-        self.action_dashboard.triggered.connect(self.display_dashboard)
         self.toolbar.addAction(self.action_dashboard)
-
-        # Import
-        self.action_import = QAction(
-            QIcon(
-                str(DIR_PLUGIN_ROOT / "resources" / "images" / "icons" / "Deposer.png")
-            ),
-            self.tr("Create a new upload"),
-            self.iface.mainWindow(),
-        )
-        self.action_import.triggered.connect(self.import_data)
         self.toolbar.addAction(self.action_import)
         self.toolbar.addAction(self.action_tile_create)
 
+        # -- Check actions
         self._update_actions_availability()
 
         # -- Processings

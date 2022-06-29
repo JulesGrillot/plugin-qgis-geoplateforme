@@ -5,7 +5,9 @@ FORMS = ../../gui/dlg_settings.ui \
     ../../gui/tile_creation/qwp_tile_generation_generalization.ui \
     ../../gui/tile_creation/qwp_tile_generation_status.ui \
     ../../gui/upload_creation/qwp_upload_creation.ui \
-    ../../gui/upload_creation/qwp_upload_edition.ui
+    ../../gui/upload_creation/qwp_upload_edition.ui \
+    ../../gui/user/dlg_user.ui \
+    ../../gui/user/dlg_user.ui
 
 SOURCES= ../../plugin_main.py \
     # API
@@ -32,6 +34,8 @@ SOURCES= ../../plugin_main.py \
     ../../gui/upload_creation/qwp_upload_creation.py \
     ../../gui/upload_creation/qwp_upload_edition.py \
     ../../gui/upload_creation/wzd_upload_creation.py \
+    ../../gui/user/dlg_user.py \
+    ../../gui/user/wdg_user.py \
     # Processings
     ../../processing/check_layer.py \
     ../../processing/provider.py \

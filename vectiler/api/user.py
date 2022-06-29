@@ -1,0 +1,165 @@
+#! python3  # noqa: E265
+
+# Standard library
+import datetime
+import json
+import logging
+from dataclasses import dataclass
+
+# PyQGIS
+from qgis.core import QgsBlockingNetworkRequest
+from qgis.PyQt.Qt import QUrl
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtNetwork import QNetworkRequest
+
+# project
+from vectiler.toolbelt.log_handler import PlgLogger
+from vectiler.toolbelt.preferences import PlgOptionsManager
+
+logger = logging.getLogger(__name__)
+
+
+@dataclass
+class Community:
+    _id: str
+    public: bool
+    name: str
+    technical_name: str
+    supervisor: str
+    datastore: str
+
+
+@dataclass
+class CommunitiesMember:
+    rights: {}
+    community: Community
+
+    @classmethod
+    def from_json(cls, data):
+        res = cls(rights=data["rights"], community=Community(**data["community"]))
+        return res
+
+
+@dataclass
+class Datastore:
+    id: str
+    name: str
+
+
+@dataclass
+class User:
+    _id: str
+    first_name: str
+    last_name: str
+    email: str
+    creation: datetime
+    communities_member: [CommunitiesMember]
+
+    def get_datastore_list(self) -> [Datastore]:
+        """
+        Get datastore list from communities
+
+        Returns: [Datastore] datastore list
+
+        """
+        result = []
+        for community_member in self.communities_member:
+            result.append(
+                Datastore(
+                    id=community_member.community.datastore,
+                    name=community_member.community.name,
+                )
+            )
+        return result
+
+    @classmethod
+    def from_json(cls, data):
+        """
+        Define User from json data
+
+        Args:
+            data: json data
+
+        Returns: User
+
+        """
+        res = cls(
+            _id=data["_id"],
+            first_name=data["first_name"],
+            last_name=data["last_name"],
+            email=data["email"],
+            creation=data["creation"],
+            communities_member=[],
+        )
+        for communities in data["communities_member"]:
+            res.communities_member.append(CommunitiesMember.from_json(communities))
+        return res
+
+
+class UserRequestsManager:
+    class UnavailableUserException(Exception):
+        pass
+
+    def __init__(self):
+        """
+        Helper for user request
+
+        """
+        self.log = PlgLogger().log
+        self.ntwk_requester_blk = QgsBlockingNetworkRequest()
+        self.plg_settings = PlgOptionsManager.get_plg_settings()
+
+    def get_base_url(self) -> str:
+        """
+        Get base url for user
+
+        Returns: url for user
+
+        """
+        return f"{self.plg_settings.base_url_api_entrepot}/users"
+
+    def get_user(self) -> User:
+        """Get user.
+
+        Returns: User, raise UnavailableUserException otherwise
+        """
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+        req = QNetworkRequest(QUrl(f"{self.get_base_url()}/me"))
+
+        # headers
+        req.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+
+        # send request
+        resp = self.ntwk_requester_blk.get(req, forceRefresh=True)
+
+        # check response
+        if resp != QgsBlockingNetworkRequest.NoError:
+            raise self.UnavailableUserException(
+                f"Error while fetching user info : {self.ntwk_requester_blk.errorMessage()}"
+            )
+
+        # check response
+        req_reply = self.ntwk_requester_blk.reply()
+        if (
+            not req_reply.rawHeader(b"Content-Type")
+            == "application/json; charset=utf-8"
+        ):
+            raise self.UnavailableUserException(
+                "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
+                    req_reply.rawHeader(b"Content-type")
+                )
+            )
+
+        data = json.loads(req_reply.content().data().decode("utf-8"))
+        return User.from_json(data)
+
+    def tr(self, message: str) -> str:
+        """Get the translation for a string using Qt translation API.
+
+        :param message: string to be translated.
+        :type message: str
+
+        :returns: Translated version of message.
+        :rtype: str
+        """
+        return QCoreApplication.translate(self.__class__.__name__, message)

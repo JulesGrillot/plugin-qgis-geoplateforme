@@ -1,4 +1,5 @@
 # standard
+from qgis.PyQt.QtGui import QCloseEvent
 from qgis.PyQt.QtWidgets import QDialog, QWizard
 
 # Plugin
@@ -26,7 +27,19 @@ class UploadCreationWizard(QWizard):
         self.addPage(self.qwp_upload_creation)
         self.setOption(QWizard.NoCancelButtonOnLastPage, True)
 
-    def accept(self) -> None:
-        super().accept()
-        if self.result() == QDialog.Accepted:
-            self.restart()
+    def closeEvent(self, event: QCloseEvent) -> None:
+        """
+        Override closeEvent to check that current page is valid before close
+
+        Args:
+            event: QCloseEvent
+        """
+        # If upload creation page, check that page is valid
+        current_page = self.currentPage()
+        if current_page == self.qwp_upload_creation:
+            if current_page.validatePage():
+                event.accept()
+            else:
+                event.ignore()
+        else:
+            super().closeEvent(event)

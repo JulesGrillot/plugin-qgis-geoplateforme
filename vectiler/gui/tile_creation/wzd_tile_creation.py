@@ -51,8 +51,3 @@ class TileCreationWizard(QWizard):
         self.addPage(self.qwp_tile_generation_generalization)
         self.addPage(self.qwp_tile_generation_status)
         self.setOption(QWizard.NoCancelButtonOnLastPage, True)
-
-    def accept(self) -> None:
-        super().accept()
-        if self.result() == QDialog.Accepted:
-            self.restart()

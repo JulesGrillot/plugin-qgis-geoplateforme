@@ -67,41 +67,6 @@ class NetworkRequestsManager:
                 return self.test_url(url=url, method="get")
             return False
 
-    def get_user_info(self) -> QByteArray:
-        """Get user info as json.
-
-        :raises TypeError: if response mime-type is not valid
-
-        :return: user info in bytes or error string in case of request error
-        :rtype: QByteArray
-        """
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req_get = QNetworkRequest(
-            QUrl(f"{self.plg_settings.url_api_entrepot}api/v1/users/me")
-        )
-        resp = self.ntwk_requester_blk.get(req_get, forceRefresh=True)
-
-        # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
-            self.log(
-                f"Error while getting user informations: {self.ntwk_requester_blk.errorMessage()}",
-                log_level=2,
-                push=0,
-            )
-            return self.ntwk_requester_blk.errorMessage()
-        # check response type
-        req_reply = self.ntwk_requester_blk.reply()
-        if (
-            not req_reply.rawHeader(b"Content-Type")
-            == "application/json; charset=utf-8"
-        ):
-            raise TypeError(
-                "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
-                    req_reply.rawHeader(b"Content-type")
-                )
-            )
-        return req_reply.content()
-
     def get_api_token(self) -> QByteArray:
         """Get API token.
 

@@ -26,6 +26,7 @@ from vectiler.__about__ import (
     __version__,
 )
 from vectiler.api.client import NetworkRequestsManager
+from vectiler.api.user import UserRequestsManager
 from vectiler.toolbelt import PlgLogger, PlgOptionsManager
 from vectiler.toolbelt.preferences import PlgSettingsStructure
 
@@ -143,37 +144,31 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
         Check connection by getting user information from Entrepot API and update button icon and tooltip
 
         """
+        manager = UserRequestsManager()
         # Update requests manager settings with current displayed settings
-        self.network_requests_manager.plg_settings = self.current_settings()
+        manager.plg_settings = self.current_settings()
 
         # Check connection to API by getting user information
-        check = self.network_requests_manager.get_user_info()
-        if not isinstance(check, (dict, QByteArray, bytes)):
-            self.btn_check_connection.setIcon(
-                QIcon(":/images/themes/default/repositoryUnavailable.svg")
-            )
-            self.btn_check_connection.setToolTip(check)
-            return
-        else:
+        try:
+            manager = UserRequestsManager()
+            user = manager.get_user()
+
             self.btn_check_connection.setIcon(
                 QIcon(":/images/themes/default/repositoryConnected.svg")
             )
             self.btn_check_connection.setToolTip("Connection OK")
 
-            # decode token as dict
-            data = json.loads(check.data().decode("utf-8"))
-            if not isinstance(data, dict):
-                self.log(
-                    message=f"ERROR - Invalid user data received. Expected dict, not {type(data)}",
-                    log_level=2,
-                    push=True,
-                )
-            else:
-                QMessageBox.information(
-                    self,
-                    self.tr("Welcome"),
-                    self.tr(f'Welcome {data["first_name"]} {data["last_name"]} !'),
-                )
+            QMessageBox.information(
+                self,
+                self.tr("Welcome"),
+                self.tr(f"Welcome {user.first_name} {user.last_name} !"),
+            )
+
+        except UserRequestsManager.UnavailableUserException as exc:
+            self.btn_check_connection.setIcon(
+                QIcon(":/images/themes/default/repositoryUnavailable.svg")
+            )
+            self.btn_check_connection.setToolTip(str(exc))
 
 
 class PlgOptionsFactory(QgsOptionsWidgetFactory):

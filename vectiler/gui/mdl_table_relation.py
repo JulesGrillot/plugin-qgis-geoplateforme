@@ -1,5 +1,4 @@
-from PyQt5 import QtCore
-from qgis.PyQt.QtCore import QObject
+from qgis.PyQt.QtCore import QObject, Qt
 
 from vectiler.api.stored_data import StoredDataRequestManager, TableRelation
 from vectiler.toolbelt import PlgLogger
@@ -19,9 +18,7 @@ class TableRelationTreeModel(CheckStateModel):
         """
         super().__init__(parent)
         self.log = PlgLogger().log
-        self.setHorizontalHeaderLabels(
-            [self.tr("Name"), self.tr("Attribute type")]
-        )
+        self.setHorizontalHeaderLabels([self.tr("Name"), self.tr("Attribute type")])
 
     def set_stored_data(self, datastore: str, stored_data: str) -> None:
         """
@@ -55,7 +52,7 @@ class TableRelationTreeModel(CheckStateModel):
             result[table] = []
             for table_attribute in range(0, self.rowCount(table_index)):
                 attribute_index = self.index(row, self.NAME_COL, table_index)
-                if self.data(attribute_index, QtCore.Qt.CheckStateRole) == QtCore.Qt.Checked:
+                if self.data(attribute_index, Qt.CheckStateRole) == Qt.Checked:
                     result[table].append(self.data(attribute_index))
         return result
 
@@ -79,7 +76,11 @@ class TableRelationTreeModel(CheckStateModel):
         row = self.rowCount()
         self.insertRow(row)
         table_index = self.index(row, self.NAME_COL)
-        self.setData(self.index(row, self.NAME_COL), QtCore.Qt.Unchecked, QtCore.Qt.CheckStateRole)
+        self.setData(
+            self.index(row, self.NAME_COL),
+            Qt.Unchecked,
+            Qt.CheckStateRole,
+        )
         self.insertColumns(0, self.columnCount(), table_index)
 
         self.setData(table_index, table_relation.name)
@@ -89,5 +90,9 @@ class TableRelationTreeModel(CheckStateModel):
                 row = self.rowCount(table_index)
                 self.insertRow(row, table_index)
                 self.setData(self.index(row, self.NAME_COL, table_index), attribute)
-                self.setData(self.index(row, self.NAME_COL, table_index), QtCore.Qt.Unchecked, QtCore.Qt.CheckStateRole)
+                self.setData(
+                    self.index(row, self.NAME_COL, table_index),
+                    Qt.Unchecked,
+                    Qt.CheckStateRole,
+                )
                 self.setData(self.index(row, self.TYPE_COL, table_index), val)

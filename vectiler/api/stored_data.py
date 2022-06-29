@@ -1,4 +1,6 @@
 import json
+import math
+import re
 from dataclasses import dataclass
 from typing import List
 
@@ -29,7 +31,9 @@ class StoredData:
         tables = []
         if self.type_infos:
             tables = [
-                TableRelation(relation["name"], relation["attributes"], relation["primary_key"])
+                TableRelation(
+                    relation["name"], relation["attributes"], relation["primary_key"]
+                )
                 for relation in self.type_infos["relations"]
                 if relation["type"] == "TABLE"
             ]
@@ -45,6 +49,8 @@ class StoredDataRequestManager:
 
     class AddTagException(Exception):
         pass
+
+    MAX_LIMIT = 50
 
     def get_base_url(self, datastore: str) -> str:
         """
@@ -76,8 +82,77 @@ class StoredDataRequestManager:
 
         Returns: list of available stored data, raise ReadStoredDataException otherwise
         """
+        nb_value = self._get_nb_available_stored_data(datastore)
+        nb_request = math.ceil(nb_value / self.MAX_LIMIT)
+        result = []
+        for page in range(0, nb_request):
+            result += self._get_stored_data_list(datastore, page + 1, self.MAX_LIMIT)
+        return result
+
+    def _get_stored_data_list(
+        self, datastore: str, page: int = 1, limit: int = MAX_LIMIT
+    ) -> List[StoredData]:
+        """
+        Get list of stored data
+
+        Args:
+            datastore: (str) datastore id
+            page: (int) page number (start at 1)
+            limit: (int)
+
+        Returns: list of available stored data, raise ReadStoredDataException otherwise
+        """
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req = QNetworkRequest(QUrl(self.get_base_url(datastore)))
+
+        req = QNetworkRequest(
+            QUrl(f"{self.get_base_url(datastore)}?page={page}&limit={limit}")
+        )
+
+        # headers
+        req.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+
+        # send request
+        resp = self.ntwk_requester_blk.get(req, forceRefresh=True)
+
+        # check response
+        if resp != QgsBlockingNetworkRequest.NoError:
+            raise self.ReadStoredDataException(
+                f"Error while fetching stored data : {self.ntwk_requester_blk.errorMessage()}"
+            )
+
+        # check response
+        req_reply = self.ntwk_requester_blk.reply()
+        if (
+            not req_reply.rawHeader(b"Content-Type")
+            == "application/json; charset=utf-8"
+        ):
+            raise self.ReadStoredDataException(
+                "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
+                    req_reply.rawHeader(b"Content-type")
+                )
+            )
+        data = json.loads(req_reply.content().data().decode("utf-8"))
+        stored_datas_id = [val["_id"] for val in data]
+
+        return [
+            self.get_stored_data(datastore, stored_data)
+            for stored_data in stored_datas_id
+        ]
+
+    def _get_nb_available_stored_data(self, datastore: str) -> int:
+        """
+        Get number of available stored data
+
+        Args:
+            datastore: (str) datastore id
+
+        Returns: (int) number of available data, raise ReadStoredDataException in case of request error
+
+        """
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+
+        # For now read with maximum limit possible
+        req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}?limit=1"))
 
         # headers
         req.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
@@ -103,13 +178,18 @@ class StoredDataRequestManager:
                 )
             )
 
-        data = json.loads(req_reply.content().data().decode("utf-8"))
-        stored_datas_id = [val["_id"] for val in data]
-
-        return [
-            self.get_stored_data(datastore, stored_data)
-            for stored_data in stored_datas_id
-        ]
+        content_range = req_reply.rawHeader(b"Content-Range").data().decode("utf-8")
+        match = re.match(
+            r"(?P<min>\d+)\s?-\s?(?P<max>\d+)?\s?\/?\s?(?P<nb_val>\d+|\*)?",
+            content_range,
+        )
+        if match:
+            nb_val = int(match.group("nb_val"))
+        else:
+            raise self.ReadStoredDataException(
+                f"Invalid Content-Range {content_range} not min-max/nb_val as expected"
+            )
+        return nb_val
 
     def get_stored_data(self, datastore: str, stored_data: str) -> StoredData:
         """

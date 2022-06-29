@@ -1,9 +1,8 @@
-import json
-
-from qgis.PyQt.QtCore import QByteArray, QObject
+from qgis.PyQt.QtCore import QObject
 from qgis.PyQt.QtGui import QStandardItemModel
 
-from vectiler.api.client import NetworkRequestsManager
+from vectiler.api.user import UserRequestsManager
+from vectiler.toolbelt import PlgLogger
 
 
 class DatastoreListModel(QStandardItemModel):
@@ -18,6 +17,7 @@ class DatastoreListModel(QStandardItemModel):
             parent: QObject parent
         """
         super().__init__(parent)
+        self.log = PlgLogger().log
         self.setHorizontalHeaderLabels([self.tr("Name"), self.tr("id")])
         self.refresh()
 
@@ -28,24 +28,20 @@ class DatastoreListModel(QStandardItemModel):
         """
         self.removeRows(0, self.rowCount())
 
-        network_requests_manager = NetworkRequestsManager()
-        check = network_requests_manager.get_user_info()
-        if isinstance(check, (dict, QByteArray, bytes)):
-            # decode token as dict
-            data = json.loads(check.data().decode("utf-8"))
-            if not isinstance(data, dict):
-                self.log(
-                    message=f"ERROR - Invalid user data received. Expected dict, not {type(data)}",
-                    log_level=2,
-                    push=True,
-                )
-            else:
-                # For now, not using any User object : will be done later
-                communities_member = data["communities_member"]
-                for community_member in communities_member:
-                    community = community_member["community"]
-                    self.insertRow(self.rowCount())
-                    row = self.rowCount() - 1
+        try:
+            manager = UserRequestsManager()
+            user = manager.get_user()
 
-                    self.setData(self.index(row, self.NAME_COL), community["name"])
-                    self.setData(self.index(row, self.ID_COL), community["datastore"])
+            for datastore in user.get_datastore_list():
+                self.insertRow(self.rowCount())
+                row = self.rowCount() - 1
+
+                self.setData(self.index(row, self.NAME_COL), datastore.name)
+                self.setData(self.index(row, self.ID_COL), datastore.id)
+
+        except UserRequestsManager.UnavailableUserException as exc:
+            self.log(
+                f"Error while getting user datastore: {exc}",
+                log_level=2,
+                push=False,
+            )

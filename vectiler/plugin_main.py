@@ -22,8 +22,9 @@ from vectiler.gui.dlg_authentication import AuthenticationDialog
 from vectiler.gui.dlg_settings import PlgOptionsFactory
 from vectiler.gui.tile_creation.wzd_tile_creation import TileCreationWizard
 from vectiler.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
+from vectiler.gui.user.dlg_user import UserDialog
 from vectiler.processing import VectilerProvider
-from vectiler.toolbelt import PlgLogger, PlgTranslator
+from vectiler.toolbelt import PlgLogger, PlgOptionsManager, PlgTranslator
 
 
 class VectilerPlugin:
@@ -44,13 +45,13 @@ class VectilerPlugin:
         if translator:
             QCoreApplication.installTranslator(translator)
         self.tr = plg_translation_mngr.tr
+        self.plg_settings = PlgOptionsManager()
 
         self.options_factory = None
         self.action_help = None
         self.action_settings = None
 
         self.toolbar = None
-        self.dlg_authentication = None
         self.dlg_dashboard = None
 
         self.action_authentication = None
@@ -73,40 +74,13 @@ class VectilerPlugin:
         self.iface.registerOptionsWidgetFactory(self.options_factory)
 
         # -- Actions
-        self.action_help = QAction(
-            QIcon(":/images/themes/default/mActionHelpContents.svg"),
-            self.tr("Help", context="VectilerPlugin"),
-            self.iface.mainWindow(),
-        )
-        self.action_help.triggered.connect(
-            partial(QDesktopServices.openUrl, QUrl(__uri_homepage__))
-        )
-
-        self.action_settings = QAction(
-            QgsApplication.getThemeIcon("console/iconSettingsConsole.svg"),
-            self.tr("Settings"),
-            self.iface.mainWindow(),
-        )
-        self.action_settings.triggered.connect(
-            lambda: self.iface.showOptionsDialog(
-                currentPage="mOptionsPage{}".format(__title__)
-            )
-        )
-        # -- Menu
-        self.iface.addPluginToMenu(__title__, self.action_settings)
-        self.iface.addPluginToMenu(__title__, self.action_help)
-        self.toolbar = QToolBar("Vectiler toolbar")
-        self.iface.addToolBar(self.toolbar)
-
         # Login
-        self.dlg_authentication = AuthenticationDialog(self.iface.mainWindow())
         self.action_authentication = QAction(
-            QIcon(str(DIR_PLUGIN_ROOT / "resources" / "images" / "icons" / "User.svg")),
+            QIcon(str(DIR_PLUGIN_ROOT / "resources/images/icons/User.svg")),
             self.tr("Login"),
             self.iface.mainWindow(),
         )
         self.action_authentication.triggered.connect(self.authentication)
-        self.toolbar.addAction(self.action_authentication)
 
         # Dashboard
         self.dlg_dashboard = DashboardDialog(self.iface.mainWindow())
@@ -128,25 +102,55 @@ class VectilerPlugin:
 
         # Import
         self.action_import = QAction(
-            QIcon(
-                str(DIR_PLUGIN_ROOT / "resources" / "images" / "icons" / "Deposer.png")
-            ),
+            QIcon(str(DIR_PLUGIN_ROOT / "resources/images/icons/Deposer.png")),
             self.tr("Create a new upload"),
             self.iface.mainWindow(),
         )
         self.action_import.triggered.connect(self.import_data)
-        self.toolbar.addAction(self.action_import)
 
         # Tile creation
         self.action_tile_create = QAction(
-            QIcon(
-                str(DIR_PLUGIN_ROOT / "resources" / "images" / "icons" / "Tuile@1x.png")
-            ),
+            QIcon(str(DIR_PLUGIN_ROOT / "resources/images/icons/Tuile@1x.png")),
             self.tr("Tile creation"),
             self.iface.mainWindow(),
         )
         self.action_tile_create.triggered.connect(self.tile_creation)
+
+        # Help
+        self.action_help = QAction(
+            QIcon(":/images/themes/default/mActionHelpContents.svg"),
+            self.tr("Help", context="VectilerPlugin"),
+            self.iface.mainWindow(),
+        )
+        self.action_help.triggered.connect(
+            partial(QDesktopServices.openUrl, QUrl(__uri_homepage__))
+        )
+
+        # Settings
+        self.action_settings = QAction(
+            QgsApplication.getThemeIcon("console/iconSettingsConsole.svg"),
+            self.tr("Settings"),
+            self.iface.mainWindow(),
+        )
+        self.action_settings.triggered.connect(
+            lambda: self.iface.showOptionsDialog(
+                currentPage="mOptionsPage{}".format(__title__)
+            )
+        )
+
+        # -- Menu
+        self.iface.addPluginToMenu(__title__, self.action_authentication)
+        self.iface.addPluginToMenu(__title__, self.action_settings)
+        self.iface.addPluginToMenu(__title__, self.action_help)
+
+        # -- Toolbar
+        self.toolbar = QToolBar("Vectiler toolbar")
+        self.iface.addToolBar(self.toolbar)
+        self.toolbar.addAction(self.action_authentication)
+        self.toolbar.addAction(self.action_import)
         self.toolbar.addAction(self.action_tile_create)
+
+        self._update_actions_availability()
 
         # -- Processings
         self.initProcessing()
@@ -158,10 +162,13 @@ class VectilerPlugin:
     def unload(self):
         """Cleans up when plugin is disabled/uninstalled."""
         # -- Clean up menu
+        self.iface.removePluginMenu(__title__, self.action_authentication)
         self.iface.removePluginMenu(__title__, self.action_help)
         self.iface.removePluginMenu(__title__, self.action_settings)
+
         # remove toolbar :
         self.toolbar.deleteLater()
+
         # -- Clean up preferences panel in QGIS settings
         self.iface.unregisterOptionsWidgetFactory(self.options_factory)
 
@@ -215,8 +222,27 @@ class VectilerPlugin:
         Open authentification dialog
 
         """
-        if self.dlg_authentication is not None:
-            self.dlg_authentication.exec()
+
+        plg_settings = self.plg_settings.get_plg_settings()
+
+        if len(plg_settings.qgis_auth_id) == 0:
+            dlg_authentication = AuthenticationDialog(self.iface.mainWindow())
+            dlg_authentication.exec()
+        else:
+            dlg_user = UserDialog(self.iface.mainWindow())
+            dlg_user.exec()
+        self._update_actions_availability()
+
+    def _update_actions_availability(self) -> None:
+        """
+        Update actions availability if user is connected or not
+
+        """
+        plg_settings = self.plg_settings.get_plg_settings()
+        enabled = len(plg_settings.qgis_auth_id) != 0
+
+        self.action_import.setEnabled(enabled)
+        self.action_tile_create.setEnabled(enabled)
 
     def display_dashboard(self) -> None:
         """

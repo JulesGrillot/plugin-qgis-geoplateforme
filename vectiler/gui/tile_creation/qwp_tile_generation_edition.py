@@ -139,7 +139,7 @@ class TileGenerationEditionPageWizard(QWizardPage):
         Define default flux name from stored data
 
         """
-        if self.cbx_stored_data.current_stored_data_name() and not self.lne_flux.text():
+        if self.cbx_stored_data.current_stored_data_name():
             self.lne_flux.setText(self.cbx_stored_data.current_stored_data_name())
 
     def _levels_range_updated(self) -> None:

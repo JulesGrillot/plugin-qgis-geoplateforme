@@ -1,8 +1,7 @@
 import typing
 
-from PyQt5 import QtCore
-from PyQt5.QtCore import QModelIndex, Qt
-from PyQt5.QtGui import QStandardItemModel
+from qgis.PyQt.QtCore import QModelIndex, Qt, pyqtSignal
+from qgis.PyQt.QtGui import QStandardItemModel
 
 
 class CheckStateModel(QStandardItemModel):
@@ -12,9 +11,9 @@ class CheckStateModel(QStandardItemModel):
     """
 
     # Signal emitted when delimiter is changed.
-    itemCheckStateChanged = QtCore.pyqtSignal(QModelIndex)
+    itemCheckStateChanged = pyqtSignal(QModelIndex)
 
-    def flags(self, index: QtCore.QModelIndex) -> QtCore.Qt.ItemFlags:
+    def flags(self, index: QModelIndex) -> Qt.ItemFlags:
         """
         Override QStandardItemModel flags.
 
@@ -29,7 +28,9 @@ class CheckStateModel(QStandardItemModel):
         flags = flags | Qt.ItemIsUserCheckable | Qt.ItemIsAutoTristate
         return flags
 
-    def setData(self, index: QtCore.QModelIndex, value: typing.Any, role: int = Qt.DisplayRole) -> bool:
+    def setData(
+        self, index: QModelIndex, value: typing.Any, role: int = Qt.DisplayRole
+    ) -> bool:
         """
         Override QStandardItemModel setData for child and parent CheckStateRole synchronization.
 

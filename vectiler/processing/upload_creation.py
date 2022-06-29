@@ -11,8 +11,8 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QByteArray, QCoreApplication
 
-from vectiler.api.client import NetworkRequestsManager
 from vectiler.api.upload import UploadRequestManager
+from vectiler.api.user import UserRequestsManager
 
 
 class UploadCreationAlgorithm(QgsProcessingAlgorithm):
@@ -130,21 +130,14 @@ class UploadCreationAlgorithm(QgsProcessingAlgorithm):
 
     def get_default_datastore(self, feedback: QgsProcessingFeedback) -> str:
         datastore = ""
-        network_requests_manager = NetworkRequestsManager()
-        check = network_requests_manager.get_user_info()
-        if isinstance(check, (dict, QByteArray, bytes)):
-            # decode token as dict
-            data = json.loads(check.data().decode("utf-8"))
-            if not isinstance(data, dict):
-                feedback.reportError(
-                    self.tr(
-                        f"Invalid user data received. Expected dict, not {type(data)}"
-                    )
-                )
-            else:
-                # For now, not using any User object : will be done later
-                communities_member = data["communities_member"]
-                if len(communities_member) != 0:
-                    community = communities_member[0]["community"]
-                    datastore = community["datastore"]
+        try:
+            manager = UserRequestsManager()
+            user = manager.get_user()
+
+            datastore_list = user.get_datastore_list()
+            if len(datastore_list) != 0:
+                datastore = datastore_list[0].id
+
+        except UserRequestsManager.UnavailableUserException as exc:
+            feedback.reportError(self.tr(f"Error while getting user datastore: {exc}"))
         return datastore

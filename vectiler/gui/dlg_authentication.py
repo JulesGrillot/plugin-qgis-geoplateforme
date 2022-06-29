@@ -1,15 +1,14 @@
-import json
 import os
 
 # PyQGIS
 from qgis.core import QgsApplication
 from qgis.PyQt import QtCore, QtGui, uic
-from qgis.PyQt.QtCore import QByteArray, QUrl
+from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 
 # Plugin
-from vectiler.api.client import NetworkRequestsManager
+from vectiler.api.user import UserRequestsManager
 from vectiler.toolbelt.preferences import PlgOptionsManager
 
 
@@ -82,33 +81,25 @@ class AuthenticationDialog(QDialog):
 
         """
         res = True
-        network_requests_manager = NetworkRequestsManager()
-        network_requests_manager.plg_settings.qgis_auth_id = qgis_auth_id
-        check = network_requests_manager.get_user_info()
-        if not isinstance(check, (dict, QByteArray, bytes)):
+
+        # Check connection to API by getting user information
+        try:
+            manager = UserRequestsManager()
+            manager.plg_settings.qgis_auth_id = qgis_auth_id
+            user = manager.get_user()
+
+            QMessageBox.information(
+                self,
+                self.tr("Welcome"),
+                self.tr(f"Welcome {user.first_name} {user.last_name} !"),
+            )
+
+        except UserRequestsManager.UnavailableUserException as exc:
             QMessageBox.warning(
                 self,
                 self.tr("Invalid connection"),
-                self.tr(f"Invalid connection parameters : {check}"),
+                self.tr(f"Invalid connection parameters : {exc}"),
             )
             res = False
-        else:
-            # decode token as dict
-            data = json.loads(check.data().decode("utf-8"))
-            if not isinstance(data, dict):
-                res = False
-                QMessageBox.warning(
-                    self,
-                    self.tr("Error"),
-                    self.tr(
-                        f"ERROR - Invalid user data received. Expected dict, not {type(data)}"
-                    ),
-                )
-            else:
-                QMessageBox.information(
-                    self,
-                    self.tr("Welcome"),
-                    self.tr(f'Welcome {data["first_name"]} {data["last_name"]} !'),
-                )
 
         return res

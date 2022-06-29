@@ -98,7 +98,6 @@ class VectilerPlugin:
             self.iface.mainWindow(),
         )
         self.action_dashboard.triggered.connect(self.display_dashboard)
-        self.toolbar.addAction(self.action_dashboard)
 
         # Import
         self.action_import = QAction(
@@ -147,6 +146,7 @@ class VectilerPlugin:
         self.toolbar = QToolBar("Vectiler toolbar")
         self.iface.addToolBar(self.toolbar)
         self.toolbar.addAction(self.action_authentication)
+        self.toolbar.addAction(self.action_dashboard)
         self.toolbar.addAction(self.action_import)
         self.toolbar.addAction(self.action_tile_create)
 

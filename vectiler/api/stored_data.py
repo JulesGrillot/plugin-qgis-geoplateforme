@@ -29,7 +29,9 @@ class StoredData:
         tables = []
         if self.type_infos:
             tables = [
-                TableRelation(relation["name"], relation["attributes"], relation["primary_key"])
+                TableRelation(
+                    relation["name"], relation["attributes"], relation["primary_key"]
+                )
                 for relation in self.type_infos["relations"]
                 if relation["type"] == "TABLE"
             ]

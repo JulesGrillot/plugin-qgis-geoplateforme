@@ -22,6 +22,8 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
     BOTTOM_LEVEL = "bottom_level"
     TOP_LEVEL = "top_level"
     COMPOSITION = "composition"
+    TABLE = "table"
+    ATTRIBUTES = "attributes"
     BBOX = "bbox"
 
     CREATED_STORED_DATA_ID = "CREATED_STORED_DATA_ID"
@@ -61,8 +63,8 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
             f'    "{self.BOTTOM_LEVEL}": tile bottom level (str), value between 1 and 21,\n'
             f'    "{self.TOP_LEVEL}": tile top level (str), value between 1 and 21,\n'
             f'    "{self.COMPOSITION}": table composition ([]): define attributes and levels for each table,\n'
-            f'        ["table": (str) table name,\n'
-            f'         "attributes": (str) attributes list as a string with "," separator,\n'
+            f'        ["{self.TABLE}": (str) table name,\n'
+            f'         "{self.ATTRIBUTES}": (str) attributes list as a string with "," separator,\n'
             f'         "{self.TOP_LEVEL}": tile top level (str), value between 1 and 21,\n'
             f'         "{self.TOP_LEVEL}": tile top level (str), value between 1 and 21,\n'
             f"        ]"
@@ -84,7 +86,9 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
         filename = self.parameterAsFile(parameters, self.INPUT_JSON, context)
         with open(filename, "r") as file:
             data = json.load(file)
-            print(data)
+
+            # Check input data before use
+            self._check_json_data(data)
 
             stored_data_name = data[self.STORED_DATA_NAME]
             datastore = data[self.DATASTORE]
@@ -192,3 +196,70 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                 )
 
         return {self.CREATED_STORED_DATA_ID: stored_data_id}
+
+    def _check_json_data(self, data) -> None:
+        """
+        Check json data, raises QgsProcessingException in case of errors
+
+        Args:
+            data: input json data
+        """
+        mandatory_keys = [
+            self.STORED_DATA_NAME,
+            self.DATASTORE,
+            self.TIPPECANOE_OPTIONS,
+            self.VECTOR_DB_STORED_DATA_ID,
+            self.TMS,
+            self.BOTTOM_LEVEL,
+            self.TOP_LEVEL,
+        ]
+
+        missing_keys = [key for key in mandatory_keys if key not in data]
+
+        if missing_keys:
+            raise QgsProcessingException(
+                f"Missing {', '.join(missing_keys)} keys in input json."
+            )
+
+        if self.BBOX in data:
+            self._check_bbox_data(data[self.BBOX])
+
+        if self.COMPOSITION in data:
+            self._check_composition(data[self.COMPOSITION])
+
+    def _check_bbox_data(self, data) -> None:
+        """
+        Check bbox data, raises QgsProcessingException in case of errors
+
+        Args:
+            data: input bbox data
+        """
+        if not isinstance(data, list):
+            raise QgsProcessingException(
+                f"Invalid {self.BBOX} key in input json.  Expected list, not {type(data)}"
+            )
+        if len(data) != 4:
+            raise QgsProcessingException(
+                f"Invalid {self.BBOX} key in input json.  Expected 4 values [x_min,x_max,y_min,y_max]"
+            )
+
+    def _check_composition(self, data) -> None:
+        """
+        Check composition data, raises QgsProcessingException in case of errors
+
+        Args:
+            data: input composition data
+        """
+        if not isinstance(data, list):
+            raise QgsProcessingException(
+                f"Invalid {self.COMPOSITION} key in input json.  Expected list, not {type(data)}"
+            )
+
+        mandatory_keys = [self.TABLE, self.ATTRIBUTES]
+        for compo in data:
+            missing_keys = [key for key in mandatory_keys if key not in compo]
+
+            if missing_keys:
+                raise QgsProcessingException(
+                    f"Missing {', '.join(missing_keys)} keys for {self.COMPOSITION} item in input json."
+                )

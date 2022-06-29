@@ -1,6 +1,6 @@
 # standard
 import os
-from typing import List
+from typing import Dict, List
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QWizardPage
@@ -51,7 +51,7 @@ class TileGenerationFieldsSelectionPageWizard(QWizardPage):
 
         self.mdl_table_relation.set_stored_data(datastore_id, stored_data_id)
 
-    def get_selected_attributes(self) -> {str: [str]}:
+    def get_selected_attributes(self) -> Dict[str, List[str]]:
         """
         Get list of selected attributes
 

@@ -4,47 +4,62 @@
 <context>
     <name>AuthenticationDialog</name>
     <message>
-        <location filename="../../gui/dlg_authentication.py" line="89"/>
+        <location filename="../../gui/dlg_authentication.py" line="98"/>
         <source>Invalid connection</source>
         <translation>Connexion invalide</translation>
     </message>
     <message>
         <location filename="../../gui/dlg_authentication.py" line="89"/>
         <source>Invalid connection parameters : {check}</source>
-        <translation>Les paramètres de connexion sont invalides : {check}</translation>
+        <translation type="obsolete">Les paramètres de connexion sont invalides : {check}</translation>
     </message>
     <message>
         <location filename="../../gui/dlg_authentication.py" line="100"/>
         <source>Error</source>
-        <translation>Erreur</translation>
+        <translation type="obsolete">Erreur</translation>
     </message>
     <message>
         <location filename="../../gui/dlg_authentication.py" line="100"/>
         <source>ERROR - Invalid user data received. Expected dict, not {type(data)}</source>
-        <translation>ERREUR - L&apos;information reçue sur l&apos;utilisateur n&apos;est pas conforme au format attendu. Un dictionnaire est attendu,non {type(data)}</translation>
+        <translation type="obsolete">ERREUR - L&apos;information reçue sur l&apos;utilisateur n&apos;est pas conforme au format attendu. Un dictionnaire est attendu,non {type(data)}</translation>
     </message>
     <message>
-        <location filename="../../gui/dlg_authentication.py" line="108"/>
+        <location filename="../../gui/dlg_authentication.py" line="91"/>
         <source>Welcome</source>
         <translation>Bienvenue</translation>
     </message>
     <message>
         <location filename="../../gui/dlg_authentication.py" line="108"/>
         <source>Welcome {data[&quot;first_name&quot;]} {data[&quot;last_name&quot;]} !</source>
-        <translation>Bienvenue {data[&quot;first_name&quot;]} {data[&quot;last_name&quot;]} !</translation>
+        <translation type="obsolete">Bienvenue {data[&quot;first_name&quot;]} {data[&quot;last_name&quot;]} !</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dlg_authentication.py" line="91"/>
+        <source>Welcome {user.first_name} {user.last_name} !</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/dlg_authentication.py" line="98"/>
+        <source>Invalid connection parameters : {exc}</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>ConfigOptionsPage</name>
     <message>
-        <location filename="../../gui/dlg_settings.py" line="172"/>
+        <location filename="../../gui/dlg_settings.py" line="161"/>
         <source>Welcome</source>
         <translation>Bienvenue</translation>
     </message>
     <message>
         <location filename="../../gui/dlg_settings.py" line="172"/>
         <source>Welcome {data[&quot;first_name&quot;]} {data[&quot;last_name&quot;]} !</source>
-        <translation>Bienvenue {data[&quot;first_name&quot;]} {data[&quot;last_name&quot;]} !</translation>
+        <translation type="obsolete">Bienvenue {data[&quot;first_name&quot;]} {data[&quot;last_name&quot;]} !</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dlg_settings.py" line="161"/>
+        <source>Welcome {user.first_name} {user.last_name} !</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -128,7 +143,7 @@
     <message>
         <location filename="../../gui/dlg_settings.ui" line="287"/>
         <source>GÃ©otuileur portal:</source>
-        <translation>URL du portail du Géotuileur :</translation>
+        <translation type="unfinished">URL du portail du Géotuileur :</translation>
     </message>
     <message>
         <location filename="../../gui/dlg_settings.ui" line="306"/>
@@ -138,7 +153,7 @@
     <message>
         <location filename="../../gui/dlg_settings.ui" line="313"/>
         <source>API EntrepÃ´t endpoint:</source>
-        <translation>URL de l&apos;API Entrepôt :</translation>
+        <translation type="unfinished">URL de l&apos;API Entrepôt :</translation>
     </message>
     <message>
         <location filename="../../gui/dlg_settings.ui" line="335"/>
@@ -286,12 +301,12 @@
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.py" line="64"/>
         <source>Stored data read failed</source>
-        <translation>La lecture de la donnée stockée a échoué</translation>
+        <translation type="obsolete">La lecture de la donnée stockée a échoué</translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.py" line="64"/>
         <source>Check details for more informations</source>
-        <translation>Consulter les détails pour plus d&apos;informations</translation>
+        <translation type="obsolete">Consulter les détails pour plus d&apos;informations</translation>
     </message>
 </context>
 <context>
@@ -382,7 +397,7 @@
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="233"/>
         <source>Check details for more informations</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Consulter les détails pour plus d&apos;informations</translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="193"/>
@@ -428,45 +443,35 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../processing/upload_creation.py" line="139"/>
-        <source>Invalid user data received. Expected dict, not {type(data)}</source>
+        <location filename="../../processing/upload_creation.py" line="142"/>
+        <source>Error while getting user datastore: {exc}</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>UploadCreationPageWizard</name>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="112"/>
-        <source>VÃ©rification et intÃ©gration des donnÃ©es en cours</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="136"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="138"/>
         <source>Upload creation failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="290"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="296"/>
         <source>Check details for more informations</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Consulter les détails pour plus d&apos;informations</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="184"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="186"/>
         <source>Upload check status failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="224"/>
-        <source>Votre donnÃ©es est prÃªte</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="245"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="247"/>
         <source>Stored data database integration check failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="290"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="296"/>
         <source>Database integration failed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -485,6 +490,16 @@
         <source>TextLabel</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="114"/>
+        <source>Vérification et intégration des données en cours</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="226"/>
+        <source>Votre données est prête</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UploadCreationWizard</name>
@@ -497,23 +512,36 @@
 <context>
     <name>UploadDatabaseIntegrationAlgorithm</name>
     <message>
-        <location filename="../../processing/upload_database_integration.py" line="28"/>
+        <location filename="../../processing/upload_database_integration.py" line="33"/>
         <source>Integrate upload in database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../processing/upload_database_integration.py" line="43"/>
         <source>Stored data name</source>
-        <translation type="unfinished">Nom du jeu de données stocké</translation>
+        <translation type="obsolete">Nom du jeu de données stocké</translation>
     </message>
     <message>
         <location filename="../../processing/upload_database_integration.py" line="50"/>
         <source>Upload datastore</source>
-        <translation type="unfinished">Identifiant de l&apos;espace de stockage</translation>
+        <translation type="obsolete">Identifiant de l&apos;espace de stockage</translation>
+    </message>
+    <message>
+        <location filename="../../processing/upload_database_integration.py" line="45"/>
+        <source>Integration of geotuileur platform upload in database.
+Input parameters are defined in a .json file.
+Available parameters:
+{
+    &quot;{self.STORED_DATA_NAME}&quot;: wanted stored data name (str),
+    &quot;{self.DATASTORE}&quot;: datastore id (str),
+    &quot;{self.UPLOAD}&quot;: upload id (str),
+}
+Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../processing/upload_database_integration.py" line="58"/>
-        <source>Upload id</source>
+        <source>Input .json file</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -631,35 +659,68 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="33"/>
-        <source>Choisissez les attributs de la table :</source>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="36"/>
+        <source>Composez votre flux à partir de vos données</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="52"/>
+        <source>Cochez les attributs à conserver dans votre flux de tuiles vectorielles. Ces attributs seront notamment accessibles au clic sur une carte par vos utilisateurs. En limitant le nombre d&apos;attributs, vous allégez le volume des tuiles et améliorez la fluidité d&apos;affichage. Ne conservez que les attributs utiles à vos utilisateurs. Si vous ne conservez aucun attribut, vos tuiles vectorielles ne contiendront que des géométries et les possibilités de symbolisation seront limitées.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="66"/>
+        <source>Choisissez les attributs des tables</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UserDialog</name>
+    <message>
+        <location filename="../../gui/user/dlg_user.ui" line="54"/>
+        <source>Disconnect</source>
+        <translation>Se déconnecter</translation>
+    </message>
+    <message>
+        <location filename="../../gui/user/dlg_user.py" line="37"/>
+        <source>User informations</source>
+        <translation>Mon compte</translation>
+    </message>
+    <message>
+        <location filename="../../gui/user/dlg_user.py" line="49"/>
+        <source>Unavailable user</source>
+        <translation>Utilisateur indéfini</translation>
+    </message>
+    <message>
+        <location filename="../../gui/user/dlg_user.py" line="49"/>
+        <source>Can&apos;t define connected user : {exc}</source>
+        <translation>Imposse d&apos;identifier l&apos;utilisateur connecté : {exc}</translation>
     </message>
 </context>
 <context>
     <name>VectilerPlugin</name>
     <message>
-        <location filename="../../plugin_main.py" line="69"/>
+        <location filename="../../plugin_main.py" line="74"/>
         <source>Help</source>
         <translation>Documentation</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="78"/>
+        <location filename="../../plugin_main.py" line="83"/>
         <source>Settings</source>
         <translation>Paramètres</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="96"/>
+        <location filename="../../plugin_main.py" line="100"/>
         <source>Login</source>
         <translation>S&apos;authentifier</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="105"/>
+        <location filename="../../plugin_main.py" line="109"/>
         <source>Create a new upload</source>
         <translation>Téléverser des données</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="116"/>
+        <location filename="../../plugin_main.py" line="120"/>
         <source>Tile creation</source>
         <translation>Générer des tuiles</translation>
     </message>
@@ -705,27 +766,27 @@
         <translation>Mot de passe</translation>
     </message>
     <message>
-        <location filename="../../gui/dlg_authentication.ui" line="64"/>
+        <location filename="../../gui/dlg_authentication.ui" line="67"/>
         <source>Forgotten password</source>
         <translation>Mot de passe oublié</translation>
     </message>
     <message>
-        <location filename="../../gui/dlg_authentication.ui" line="92"/>
+        <location filename="../../gui/dlg_authentication.ui" line="107"/>
         <source>Log in</source>
         <translation>Se connecter</translation>
     </message>
     <message>
-        <location filename="../../gui/dlg_authentication.ui" line="115"/>
+        <location filename="../../gui/dlg_authentication.ui" line="133"/>
         <source>Username or email</source>
         <translation>Identifiant ou adresse email</translation>
     </message>
     <message>
-        <location filename="../../gui/dlg_authentication.ui" line="127"/>
+        <location filename="../../gui/dlg_authentication.ui" line="148"/>
         <source>New here? Don&apos;t have an account yet? Click me to sign-in!</source>
         <translation>Vous découvrez ce service ? Pas encore de compte ? Cliquez-ici pour vous enregistrer !</translation>
     </message>
     <message>
-        <location filename="../../gui/dlg_authentication.ui" line="140"/>
+        <location filename="../../gui/dlg_authentication.ui" line="161"/>
         <source>firstname.name@gis-is-what-i-do.com</source>
         <translation>prenom.nom@la-geomatique-est-mon-metier.fr</translation>
     </message>

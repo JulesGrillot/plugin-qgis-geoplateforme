@@ -23,7 +23,7 @@ from geotuileur.gui.dlg_settings import PlgOptionsFactory
 from geotuileur.gui.tile_creation.wzd_tile_creation import TileCreationWizard
 from geotuileur.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
 from geotuileur.gui.user.dlg_user import UserDialog
-from geotuileur.processing import GeotuileurProvider, VectilerProvider
+from geotuileur.processing import GeotuileurProvider
 from geotuileur.toolbelt import PlgLogger, PlgOptionsManager, PlgTranslator
 
 

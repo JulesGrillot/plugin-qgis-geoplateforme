@@ -26,5 +26,6 @@ Through git workflow:
 
 1. Add the new version to the `CHANGELOG.md`
 1. Optionally change the version number in `metadata.txt`
-1. Apply a git tag with the relevant version: `git tag -a X.y.z {git commit hash} -m "This version rocks!"`
-1. Push tag to main branch: `git push origin X.y.z`
+1. Commit these changes on the branch `master` and set aside the commit id
+1. Apply a git tag on the commit id with the relevant version: `git tag -a X.y.z {git commit hash} -m "This version rocks!"`
+1. Push tag to the main remote: `git push origin X.y.z`

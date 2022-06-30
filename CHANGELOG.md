@@ -16,9 +16,17 @@ Unreleased
 
 -->
 
+## 0.5.0 - 2022-06-30
+
+- Switch to .json for processing parameters : See #72 #76 #73
+- Improve features attributes picking : See #52
+- Add user account UI :#56
+- Add data integration check : See #51
+- Minor bug fixes : See #48 #33 #28 #27
+
 ## 0.4.0 - 2022-06-23
 
-- Improve feature attributes selection widget. See: #52 - !30 (sroting in !34)
+- Improve feature attributes selection widget. See: #52 - !30 (sorting in !34)
 - Improve connection widget behavior. See: #28 - !28
 - Fix wizard refresh. See: !33
 - Fix proxy handling for upload operations. See: #50 - !32

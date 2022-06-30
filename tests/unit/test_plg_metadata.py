@@ -18,7 +18,7 @@ from pathlib import Path
 from semver import VersionInfo
 
 # project
-from vectiler import __about__
+from geotuileur import __about__
 
 # ############################################################################
 # ########## Classes #############

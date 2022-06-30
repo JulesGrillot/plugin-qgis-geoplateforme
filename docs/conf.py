@@ -12,7 +12,7 @@ from os import environ, path
 sys.path.insert(0, path.abspath(".."))  # move into project package
 
 # Package
-from vectiler import __about__
+from geotuileur import __about__
 
 # -- Build environment -----------------------------------------------------
 on_rtd = environ.get("READTHEDOCS", None) == "True"

@@ -15,8 +15,8 @@
 from qgis.testing import unittest
 
 # project
-from vectiler.__about__ import __version__
-from vectiler.toolbelt.preferences import PlgSettingsStructure
+from geotuileur.__about__ import __version__
+from geotuileur.toolbelt.preferences import PlgSettingsStructure
 
 # ############################################################################
 # ########## Classes #############

@@ -1,7 +1,7 @@
 import pytest
 from qgis.core import QgsApplication, QgsProcessingFeedback
 
-from vectiler.processing import VectilerProvider
+from geotuileur.processing import VectilerProvider
 
 
 class QgsProcessingFeedBackTest(QgsProcessingFeedback):

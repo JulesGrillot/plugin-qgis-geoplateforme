@@ -30,7 +30,7 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
         INVALID_LAYER_TYPE = 16
 
     def tr(self, string):
-        return QCoreApplication.translate("Check layers for IGN Vectiler", string)
+        return QCoreApplication.translate("Check layers for IGN Geotuileur", string)
 
     def createInstance(self):
         return CheckLayerAlgorithm()
@@ -39,7 +39,7 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
         return "check_layer"
 
     def displayName(self):
-        return self.tr("Check layers for IGN Vectiler")
+        return self.tr("Check layers for IGN Geotuileur")
 
     def group(self):
         return self.tr("")

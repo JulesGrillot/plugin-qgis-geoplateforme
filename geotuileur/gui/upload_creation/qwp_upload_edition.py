@@ -8,7 +8,7 @@ from qgis.PyQt import QtCore, QtGui, uic
 from qgis.PyQt.QtWidgets import QAbstractItemView, QMessageBox, QShortcut, QWizardPage
 
 # Plugin
-from geotuileur.processing import VectilerProvider
+from geotuileur.processing import GeotuileurProvider
 from geotuileur.processing.check_layer import CheckLayerAlgorithm
 
 
@@ -70,7 +70,7 @@ class UploadEditionPageWizard(QWizardPage):
     def _check_input_layers(self) -> bool:
         valid = True
 
-        algo_str = f"{VectilerProvider().id()}:{CheckLayerAlgorithm().name()}"
+        algo_str = f"{GeotuileurProvider().id()}:{CheckLayerAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
         params = {CheckLayerAlgorithm.INPUT_LAYERS: self.get_filenames()}

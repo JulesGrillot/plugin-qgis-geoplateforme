@@ -25,7 +25,7 @@ from geotuileur.api.stored_data import StoredDataRequestManager
 from geotuileur.api.upload import UploadRequestManager
 from geotuileur.gui.mdl_execution_list import ExecutionListModel
 from geotuileur.gui.upload_creation.qwp_upload_edition import UploadEditionPageWizard
-from geotuileur.processing import VectilerProvider
+from geotuileur.processing import GeotuileurProvider
 from geotuileur.processing.upload_creation import UploadCreationAlgorithm
 from geotuileur.processing.upload_database_integration import (
     UploadDatabaseIntegrationAlgorithm,
@@ -102,7 +102,7 @@ class UploadCreationPageWizard(QWizardPage):
 
         """
         self.log("Launch UploadCreationAlgorithm")
-        algo_str = f"{VectilerProvider().id()}:{UploadCreationAlgorithm().name()}"
+        algo_str = f"{GeotuileurProvider().id()}:{UploadCreationAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
         data = {
@@ -273,7 +273,7 @@ class UploadCreationPageWizard(QWizardPage):
             self.upload_check_timer.stop()
 
             self.log("Launch UploadDatabaseIntegrationAlgorithm")
-            algo_str = f"{VectilerProvider().id()}:{UploadDatabaseIntegrationAlgorithm().name()}"
+            algo_str = f"{GeotuileurProvider().id()}:{UploadDatabaseIntegrationAlgorithm().name()}"
             alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
             data = {

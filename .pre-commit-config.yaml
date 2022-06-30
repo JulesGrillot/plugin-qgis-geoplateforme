@@ -31,7 +31,7 @@ repos:
     rev: 4.0.1
     hooks:
       - id: flake8
-        files: ^vectiler/.*\.py$
+        files: ^geotuileur/.*\.py$
         additional_dependencies: ["flake8-qgis<2"]
         args:
           [

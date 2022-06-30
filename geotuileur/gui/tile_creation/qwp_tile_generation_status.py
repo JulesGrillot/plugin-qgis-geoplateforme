@@ -31,7 +31,7 @@ from geotuileur.gui.tile_creation.qwp_tile_generation_fields_selection import (
 from geotuileur.gui.tile_creation.qwp_tile_generation_generalization import (
     TileGenerationGeneralizationPageWizard,
 )
-from geotuileur.processing import VectilerProvider
+from geotuileur.processing import GeotuileurProvider
 from geotuileur.processing.tile_creation import TileCreationAlgorithm
 
 
@@ -111,7 +111,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
         Run TileCreationAlgorithm with parameters defined from previous QWizardPage
 
         """
-        algo_str = f"{VectilerProvider().id()}:{TileCreationAlgorithm().name()}"
+        algo_str = f"{GeotuileurProvider().id()}:{TileCreationAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
         datastore_id = (

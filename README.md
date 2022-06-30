@@ -1,4 +1,4 @@
-# Vectiler - QGIS Plugin
+# Geotuileur - QGIS Plugin
 
 [![pipeline status](https://gitlab.com/Oslandia/qgis/ign-vectuileur/badges/master/pipeline.svg)](https://gitlab.com/Oslandia/qgis/ign-vectuileur/-/commits/master)
 

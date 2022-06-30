@@ -22,11 +22,11 @@ from geotuileur.gui.dlg_settings import PlgOptionsFactory
 from geotuileur.gui.tile_creation.wzd_tile_creation import TileCreationWizard
 from geotuileur.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
 from geotuileur.gui.user.dlg_user import UserDialog
-from geotuileur.processing import VectilerProvider
+from geotuileur.processing import GeotuileurProvider
 from geotuileur.toolbelt import PlgLogger, PlgOptionsManager, PlgTranslator
 
 
-class VectilerPlugin:
+class GeotuileurPlugin:
     def __init__(self, iface: QgisInterface):
         """Constructor.
 
@@ -98,7 +98,7 @@ class VectilerPlugin:
         # Help
         self.action_help = QAction(
             QIcon(":/images/themes/default/mActionHelpContents.svg"),
-            self.tr("Help", context="VectilerPlugin"),
+            self.tr("Help", context="GeotuileurPlugin"),
             self.iface.mainWindow(),
         )
         self.action_help.triggered.connect(
@@ -123,7 +123,7 @@ class VectilerPlugin:
         self.iface.addPluginToMenu(__title__, self.action_help)
 
         # -- Toolbar
-        self.toolbar = QToolBar("Vectiler toolbar")
+        self.toolbar = QToolBar("Geotuileur toolbar")
         self.iface.addToolBar(self.toolbar)
         self.toolbar.addAction(self.action_authentication)
         self.toolbar.addAction(self.action_import)
@@ -135,7 +135,7 @@ class VectilerPlugin:
         self.initProcessing()
 
     def initProcessing(self):
-        self.provider = VectilerProvider()
+        self.provider = GeotuileurProvider()
         QgsApplication.processingRegistry().addProvider(self.provider)
 
     def unload(self):
@@ -232,7 +232,7 @@ class VectilerPlugin:
             self.log(
                 message=self.tr(
                     text="Everything ran OK.",
-                    context="VectilerPlugin",
+                    context="GeotuileurPlugin",
                 ),
                 log_level=3,
                 push=False,
@@ -241,7 +241,7 @@ class VectilerPlugin:
             self.log(
                 message=self.tr(
                     text="Houston, we've got a problem: {}".format(err),
-                    context="VectilerPlugin",
+                    context="GeotuileurPlugin",
                 ),
                 log_level=2,
                 push=True,

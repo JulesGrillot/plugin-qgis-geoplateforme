@@ -68,7 +68,7 @@
   <customwidget>
    <class>UserWidget</class>
    <extends>QWidget</extends>
-   <header>vectiler.gui.user.wdg_user</header>
+   <header>geotuileur.gui.user.wdg_user</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

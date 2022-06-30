@@ -18,7 +18,7 @@ from geotuileur.__about__ import __title__, __version__
 # ########## Classes ###############
 # ##################################
 
-CFG_AUTH_NAME = "vectiler_cfg"
+CFG_AUTH_NAME = "geotuileur_cfg"
 
 
 @dataclass

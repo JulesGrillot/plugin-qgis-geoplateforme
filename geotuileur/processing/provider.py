@@ -23,7 +23,7 @@ from geotuileur.processing.upload_database_integration import (
 # ##################################
 
 
-class VectilerProvider(QgsProcessingProvider):
+class GeotuileurProvider(QgsProcessingProvider):
     """
     Processing provider class.
     """
@@ -43,7 +43,7 @@ class VectilerProvider(QgsProcessingProvider):
         :return: provider ID
         :rtype: str
         """
-        return "vectiler"
+        return "geotuileur"
 
     def name(self) -> str:
         """Returns the provider name, which is used to describe the provider
@@ -62,7 +62,7 @@ class VectilerProvider(QgsProcessingProvider):
         :return: provider long name
         :rtype: str
         """
-        return self.tr("Vectiler - Tools")
+        return self.tr("Geotuileur - Tools")
 
     def icon(self) -> QIcon:
         """QIcon used for your provider inside the Processing toolbox menu.

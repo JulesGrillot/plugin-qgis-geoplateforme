@@ -115,17 +115,17 @@ color: rgb(52, 101, 164);</string>
   <customwidget>
    <class>DatastoreComboBox</class>
    <extends>QComboBox</extends>
-   <header>vectiler.gui.cbx_datastore</header>
+   <header>geotuileur.gui.cbx_datastore</header>
   </customwidget>
   <customwidget>
    <class>StoredDataComboBox</class>
    <extends>QComboBox</extends>
-   <header>vectiler.gui.cbx_stored_data</header>
+   <header>geotuileur.gui.cbx_stored_data</header>
   </customwidget>
   <customwidget>
    <class>RangeSlider</class>
    <extends>QWidget</extends>
-   <header>vectiler.toolbelt.range_slider</header>
+   <header>geotuileur.toolbelt.range_slider</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

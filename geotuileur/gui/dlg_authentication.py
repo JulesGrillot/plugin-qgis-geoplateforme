@@ -42,7 +42,7 @@ class AuthenticationDialog(QDialog):
 
     def connect(self) -> None:
         """
-        Check connection parameter and define current vectiler authentication config
+        Check connection parameter and define current geotuileur authentication config
         if connection is valid.
 
         """

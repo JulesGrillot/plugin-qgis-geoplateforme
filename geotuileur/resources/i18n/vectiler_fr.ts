@@ -190,8 +190,8 @@
     <name>ResultCode</name>
     <message>
         <location filename="../../processing/check_layer.py" line="42"/>
-        <source>Check layers for IGN Vectiler</source>
-        <translation>Vérifier les couches pour IGN Vectiler</translation>
+        <source>Check layers for IGN Geotuileur</source>
+        <translation>Vérifier les couches pour IGN Geotuileur</translation>
     </message>
     <message>
         <location filename="../../processing/check_layer.py" line="57"/>
@@ -698,7 +698,7 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
     </message>
 </context>
 <context>
-    <name>VectilerPlugin</name>
+    <name>GeotuileurPlugin</name>
     <message>
         <location filename="../../plugin_main.py" line="74"/>
         <source>Help</source>
@@ -726,11 +726,11 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
     </message>
 </context>
 <context>
-    <name>VectilerProvider</name>
+    <name>GeotuileurProvider</name>
     <message>
         <location filename="../../processing/provider.py" line="65"/>
-        <source>Vectiler - Tools</source>
-        <translation>Vectiler - Outillage</translation>
+        <source>Geotuileur - Tools</source>
+        <translation>Geotuileur - Outillage</translation>
     </message>
 </context>
 <context>

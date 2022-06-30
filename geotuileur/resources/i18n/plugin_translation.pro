@@ -48,4 +48,4 @@ SOURCES= ../../plugin_main.py \
     ../../toolbelt/range_slider.py \
     ../../toolbelt/translator.py
 
-TRANSLATIONS = vectiler_fr.ts
+TRANSLATIONS = geotuileur_fr.ts

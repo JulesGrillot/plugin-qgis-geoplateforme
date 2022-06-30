@@ -2,7 +2,6 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QWidget
-
 from vectiler.gui.mdl_stored_data import StoredDataListModel
 from vectiler.gui.proxy_model_stored_data import StoredDataProxyModel
 

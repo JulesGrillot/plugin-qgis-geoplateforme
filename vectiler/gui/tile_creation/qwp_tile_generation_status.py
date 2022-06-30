@@ -1,6 +1,7 @@
 # standard
-
+import json
 import os
+import tempfile
 from functools import partial
 
 # PyQGIS
@@ -120,23 +121,52 @@ class TileGenerationStatusPageWizard(QWizardPage):
             self.qwp_tile_generation_edition.cbx_stored_data.current_stored_data_id()
         )
 
-        params = {
+        data = {
             TileCreationAlgorithm.DATASTORE: datastore_id,
             TileCreationAlgorithm.VECTOR_DB_STORED_DATA_ID: vector_db_stored_id,
             TileCreationAlgorithm.STORED_DATA_NAME: self.qwp_tile_generation_edition.lne_flux.text(),
             TileCreationAlgorithm.TIPPECANOE_OPTIONS: self.qwp_tile_generation_generalization.get_tippecanoe_value(),
-            TileCreationAlgorithm.TMS: 0,
-            TileCreationAlgorithm.BOTTOM_LEVEL: self.qwp_tile_generation_edition.get_bottom_level(),
-            TileCreationAlgorithm.TOP_LEVEL: self.qwp_tile_generation_edition.get_top_level(),
-            TileCreationAlgorithm.ATTRIBUTES: self.qwp_tile_generation_fields_selection.get_selected_attributes(),
+            TileCreationAlgorithm.TMS: "PM",
+            TileCreationAlgorithm.BOTTOM_LEVEL: str(
+                self.qwp_tile_generation_edition.get_bottom_level()
+            ),
+            TileCreationAlgorithm.TOP_LEVEL: str(
+                self.qwp_tile_generation_edition.get_top_level()
+            ),
+            TileCreationAlgorithm.COMPOSITION: [],
         }
-        self.lbl_step_text.setText(self.tr("Génération en cours"))
-        self.lbl_step_icon.setMovie(self.loading_movie)
-        self.loading_movie.start()
 
-        self.create_tile_task_id = self._run_alg(
-            alg, params, self.create_tile_feedback, self.create_tile_finished
+        selected_attributes = (
+            self.qwp_tile_generation_fields_selection.get_selected_attributes()
         )
+
+        # Define composition for each table. For now using zoom levels from tile vector
+        for table, attributes in selected_attributes.items():
+            data[TileCreationAlgorithm.COMPOSITION].append(
+                {
+                    TileCreationAlgorithm.TABLE: table,
+                    TileCreationAlgorithm.ATTRIBUTES: ",".join(attributes),
+                    TileCreationAlgorithm.BOTTOM_LEVEL: str(
+                        self.qwp_tile_generation_edition.get_bottom_level()
+                    ),
+                    TileCreationAlgorithm.TOP_LEVEL: str(
+                        self.qwp_tile_generation_edition.get_top_level()
+                    ),
+                }
+            )
+
+        filename = tempfile.NamedTemporaryFile(suffix=".json").name
+        with open(filename, "w") as file:
+            json.dump(data, file)
+            params = {TileCreationAlgorithm.INPUT_JSON: filename}
+
+            self.lbl_step_text.setText(self.tr("Génération en cours"))
+            self.lbl_step_icon.setMovie(self.loading_movie)
+            self.loading_movie.start()
+
+            self.create_tile_task_id = self._run_alg(
+                alg, params, self.create_tile_feedback, self.create_tile_finished
+            )
 
     def create_tile_finished(self, context, successful, results):
         """

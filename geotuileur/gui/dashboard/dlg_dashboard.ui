@@ -33,7 +33,7 @@
   <customwidget>
    <class>DashboardWidget</class>
    <extends>QWidget</extends>
-   <header>vectiler.gui.dashboard.wdg_dashboard</header>
+   <header>geotuileur.gui.dashboard.wdg_dashboard</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

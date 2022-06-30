@@ -105,22 +105,27 @@ class UploadCreationPageWizard(QWizardPage):
         algo_str = f"{VectilerProvider().id()}:{UploadCreationAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
-        params = {
+        data = {
             UploadCreationAlgorithm.DATASTORE: self.qwp_upload_edition.cbx_datastore.current_datastore_id(),
             UploadCreationAlgorithm.NAME: self.qwp_upload_edition.lne_data.text(),
             UploadCreationAlgorithm.DESCRIPTION: self.qwp_upload_edition.lne_data.text(),
-            UploadCreationAlgorithm.SRS: self.qwp_upload_edition.psw_projection.crs(),
-            UploadCreationAlgorithm.INPUT_LAYERS: self.qwp_upload_edition.get_filenames(),
+            UploadCreationAlgorithm.SRS: self.qwp_upload_edition.psw_projection.crs().authid(),
+            UploadCreationAlgorithm.FILES: self.qwp_upload_edition.get_filenames(),
         }
-        self.lbl_step_text.setText(
-            self.tr("Vérification et intégration des données en cours")
-        )
-        self.lbl_step_icon.setMovie(self.loading_movie)
-        self.loading_movie.start()
+        filename = tempfile.NamedTemporaryFile(suffix=".json").name
+        with open(filename, "w") as file:
+            json.dump(data, file)
+            params = {UploadCreationAlgorithm.INPUT_JSON: filename}
 
-        self.upload_task_id = self._run_alg(
-            alg, params, self.upload_feedback, self.upload_finished
-        )
+            self.lbl_step_text.setText(
+                self.tr("Vérification et intégration des données en cours")
+            )
+            self.lbl_step_icon.setMovie(self.loading_movie)
+            self.loading_movie.start()
+
+            self.upload_task_id = self._run_alg(
+                alg, params, self.upload_feedback, self.upload_finished
+            )
 
     def upload_finished(self, context, successful, results):
         """

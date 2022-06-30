@@ -133,7 +133,7 @@ class UploadEditionPageWizard(QWizardPage):
             if len(items) == 0:
                 self.lvw_import_data.addItem(savepath)
 
-    def get_filenames(self):
+    def get_filenames(self) -> [str]:
         return [
             self.lvw_import_data.item(row).text()
             for row in range(0, self.lvw_import_data.count())

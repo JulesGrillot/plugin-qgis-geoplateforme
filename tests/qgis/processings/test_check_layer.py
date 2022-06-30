@@ -14,9 +14,9 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QVariant
 
+from geotuileur.processing import GeotuileurProvider
+from geotuileur.processing.check_layer import CheckLayerAlgorithm
 from tests.qgis.processings.conftest import QgsProcessingFeedBackTest
-from vectiler.processing import VectilerProvider
-from vectiler.processing.check_layer import CheckLayerAlgorithm
 
 INVALID_CHARS = CheckLayerAlgorithm.get_invalid_characters()
 
@@ -29,7 +29,7 @@ def alg() -> QgsProcessingAlgorithm:
     Returns: QgsProcessingAlgorithm
 
     """
-    algo_str = f"{VectilerProvider().id()}:{CheckLayerAlgorithm().name()}"
+    algo_str = f"{GeotuileurProvider().id()}:{CheckLayerAlgorithm().name()}"
     alg = QgsApplication.processingRegistry().algorithmById(algo_str)
     assert alg is not None
     return alg

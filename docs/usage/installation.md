@@ -2,7 +2,7 @@
 
 ## Stable version (recomended)
 
-This plugin is published on the official QGIS plugins repository: <https://plugins.qgis.org/plugins/vectiler/>.
+This plugin is published on the official QGIS plugins repository: <https://plugins.qgis.org/plugins/geotuileur/>.
 
 ## Beta versions released
 

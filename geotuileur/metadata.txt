@@ -1,0 +1,27 @@
+[general]
+name=Geotuileur
+about=Plugin to c
+about[fr]=
+category=Web
+hasProcessingProvider=yes
+description=Plugin
+description[fr]=
+icon=resources/images/default_icon.png
+tags=vector tile,Géotuileur,IGN France
+
+# credits and contact
+author=Oslandia, IGN France
+email=qgis@oslandia.com
+homepage=https://oslandia.gitlab.io/qgis/ign-vectuileur/
+repository=https://gitlab.com/Oslandia/qgis/ign-vectuileur/
+tracker=https://gitlab.com/Oslandia/qgis/ign-vectuileur/issues/
+
+# experimental flag
+deprecated=False
+experimental=True
+qgisMinimumVersion=3.22
+qgisMaximumVersion=3.99
+
+# versionnement
+version=0.5.0
+changelog=

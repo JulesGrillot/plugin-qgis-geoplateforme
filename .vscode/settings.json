@@ -28,7 +28,7 @@
     ],
     "python.linting.pylintEnabled": false,
     // Git
-    "git.enableCommitSigning": true,
+    // "git.enableCommitSigning": true,
     // Extensions
     "autoDocstring.docstringFormat": "sphinx"
 }

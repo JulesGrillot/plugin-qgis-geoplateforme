@@ -18,11 +18,9 @@ Unreleased
 
 ## 0.5.1 - 2022-07-07
 
-- Switch to .json for processing parameters : See #72 #76 #73
-- Improve features attributes picking : See #52
-- Add user account UI :#56
-- Add data integration check : See #51
-- Minor bug fixes : See #48 #33 #28 #27
+- Change client id from `guichet` to `geotuileur-qgis-plugin` to fix #81
+- plugin has been renamed from `Vectiler` to `Geotuileur` (alternatively `Géotuileur`)
+- plugin's metadata are complete
 
 ## 0.5.0 - 2022-06-30
 

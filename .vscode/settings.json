@@ -5,7 +5,7 @@
         "source.organizeImports": true
     },
     "editor.formatOnSave": true,
-    "editor.guides.bracketPairs":"active",
+    "editor.guides.bracketPairs": "active",
     "editor.rulers": [
         88
     ],
@@ -28,7 +28,7 @@
     ],
     "python.linting.pylintEnabled": false,
     // Git
-    // "git.enableCommitSigning": true,
+    "git.enableCommitSigning": true,
     // Extensions
     "autoDocstring.docstringFormat": "sphinx"
 }

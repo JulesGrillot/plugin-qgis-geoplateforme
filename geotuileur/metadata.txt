@@ -1,13 +1,13 @@
 [general]
 name=Geotuileur
-about=Plugin to c
-about[fr]=
+about=It allows an authenticated user to upload and host his data on the Geoplatform in order to distribute them via vector tile services for which he chooses a number of parameters.
+about[fr]=Permet à un utilisateur authentifié de téléverser et d'héberger ses données sur la Géoplateforme en vue de les diffuser via des services de tuiles vectorielles dont il choisit un certain nombre de paramètres.
 category=Web
 hasProcessingProvider=yes
-description=Plugin
-description[fr]=
+description=Plugin associated with the IGN France service of the same name: Geotuileur.
+description[fr]=Plugin associé au service idoine de l'IGN France.
 icon=resources/images/default_icon.png
-tags=vector tile,Géotuileur,IGN France
+tags=vector tile,Géotuileur,IGN France,Géoplateforme,tippecanoe
 
 # credits and contact
 author=Oslandia, IGN France
@@ -23,5 +23,5 @@ qgisMinimumVersion=3.22
 qgisMaximumVersion=3.99
 
 # versionnement
-version=0.5.0
+version=0.5.1
 changelog=

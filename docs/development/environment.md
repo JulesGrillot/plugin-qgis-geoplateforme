@@ -22,3 +22,18 @@ python -m pip install -U -r requirements/development.txt
 # install git hooks (pre-commit)
 pre-commit install
 ```
+
+Typically on Windows :
+
+```powershell
+# create virtual environment linking to system packages (for pyqgis)
+py -3 -m venv .venv
+.\.venv\Scripts\activate
+
+# bump dependencies inside venv
+python -m pip install -U pip setuptools wheel
+python -m pip install -U -r requirements/development.txt
+
+# install git hooks (pre-commit)
+pre-commit install
+```

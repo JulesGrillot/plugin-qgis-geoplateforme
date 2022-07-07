@@ -35,7 +35,7 @@ class PlgSettingsStructure:
     url_service_vt: str = "https://qlf-vt-gpf-beta.ign.fr/"
     url_auth: str = "https://iam-ign-qa-ext.cegedim.cloud/"
     auth_realm: str = "demo"
-    auth_client_id: str = "guichet"
+    auth_client_id: str = "geotuileur-qgis-plugin"
     qgis_auth_id: str = ""
 
     @property

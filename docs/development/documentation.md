@@ -13,7 +13,6 @@ python -m pip install -U -r requirements/documentation.txt
 sphinx-build -b html docs docs/_build
 # optimized (quiet, multiprocessing, doctrees separated)
 sphinx-build -b html -d docs/_build/cache -j auto -q docs docs/_build/html
-
 ```
 
 Open `docs/_build/index.html` in a web browser.

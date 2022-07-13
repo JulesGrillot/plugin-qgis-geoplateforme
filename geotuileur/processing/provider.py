@@ -17,6 +17,7 @@ from geotuileur.processing.upload_creation import UploadCreationAlgorithm
 from geotuileur.processing.upload_database_integration import (
     UploadDatabaseIntegrationAlgorithm,
 )
+from geotuileur.processing.upload_publication import UploadPublicationAlgorithm
 
 # ############################################################################
 # ########## Classes ###############
@@ -34,6 +35,7 @@ class GeotuileurProvider(QgsProcessingProvider):
         self.addAlgorithm(UploadCreationAlgorithm())
         self.addAlgorithm(UploadDatabaseIntegrationAlgorithm())
         self.addAlgorithm(TileCreationAlgorithm())
+        self.addAlgorithm(UploadPublicationAlgorithm())
 
     def id(self) -> str:
         """Unique provider id, used for identifying it. This string should be unique, \

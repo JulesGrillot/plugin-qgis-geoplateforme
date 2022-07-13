@@ -19,6 +19,9 @@ from qgis.PyQt.QtWidgets import QAction, QToolBar
 from geotuileur.__about__ import DIR_PLUGIN_ROOT, __title__, __uri_homepage__
 from geotuileur.gui.dlg_authentication import AuthenticationDialog
 from geotuileur.gui.dlg_settings import PlgOptionsFactory
+from geotuileur.gui.publication_creation.wzd_publication_creation import (
+    PublicationFormCreation,
+)
 from geotuileur.gui.tile_creation.wzd_tile_creation import TileCreationWizard
 from geotuileur.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
 from geotuileur.gui.user.dlg_user import UserDialog
@@ -55,13 +58,16 @@ class GeotuileurPlugin:
         self.action_authentication = None
         self.action_import = None
         self.action_tile_create = None
+        self.action_publication = None
 
         self.btn_autentification = None
         self.btn_import = None
         self.btn_configuration = None
+        self.btn_publication = None
 
         self.import_wizard = None
         self.tile_creation_wizard = None
+        self.publication_wizard = None
 
     def initGui(self):
         """Set up plugin UI elements."""
@@ -94,6 +100,18 @@ class GeotuileurPlugin:
             self.iface.mainWindow(),
         )
         self.action_tile_create.triggered.connect(self.tile_creation)
+
+        # Publication
+        self.action_publication = QAction(
+            QIcon(
+                str(
+                    DIR_PLUGIN_ROOT / "resources" / "images" / "icons" / "Publie@2x.png"
+                )
+            ),
+            self.tr("Publication"),
+            self.iface.mainWindow(),
+        )
+        self.action_publication.triggered.connect(self.publication)
 
         # Help
         self.action_help = QAction(
@@ -128,7 +146,7 @@ class GeotuileurPlugin:
         self.toolbar.addAction(self.action_authentication)
         self.toolbar.addAction(self.action_import)
         self.toolbar.addAction(self.action_tile_create)
-
+        self.toolbar.addAction(self.action_publication)
         self._update_actions_availability()
 
         # -- Processings
@@ -168,16 +186,17 @@ class GeotuileurPlugin:
             self.tile_creation_wizard.finished.connect(self._del_tile_creation_wizard)
         self.tile_creation_wizard.show()
 
-    def _del_tile_creation_wizard(self) -> None:
+    def publication(self):
         """
-        Delete tile creation wizard
+        Open tile creation Wizard
 
         """
-        if self.tile_creation_wizard is not None:
-            self.tile_creation_wizard.deleteLater()
-            self.tile_creation_wizard = None
+        if self.publication_wizard is None:
+            self.publication_wizard = PublicationFormCreation(self.iface.mainWindow())
+            self.publication_wizard.finished.connect(self._del_tile_publication_wizard)
+        self.publication_wizard.show()
 
-    def import_data(self) -> None:
+    def import_data(self):
         """
         Open import data Wizard
 
@@ -195,6 +214,24 @@ class GeotuileurPlugin:
         if self.import_wizard is not None:
             self.import_wizard.deleteLater()
             self.import_wizard = None
+
+    def _del_tile_creation_wizard(self) -> None:
+        """
+        Delete tile creation wizard
+
+        """
+        if self.tile_creation_wizard is not None:
+            self.tile_creation_wizard.deleteLater()
+            self.tile_creation_wizard = None
+
+    def _del_tile_publication_wizard(self) -> None:
+        """
+        Delete tile publication wizard
+
+        """
+        if self.publication_wizard is not None:
+            self.publication_wizard.deleteLater()
+            self.publication_wizard = None
 
     def authentication(self) -> None:
         """
@@ -222,6 +259,7 @@ class GeotuileurPlugin:
 
         self.action_import.setEnabled(enabled)
         self.action_tile_create.setEnabled(enabled)
+        self.action_publication.setEnabled(enabled)
 
     def run(self):
         """Main process.

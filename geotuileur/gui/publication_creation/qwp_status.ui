@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>UploadCreationPageWizard</class>
+ <widget class="QWizardPage" name="UploadCreationPageWizard">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>571</width>
+    <height>364</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>WizardPage</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="lbl_step_text">
+     <property name="styleSheet">
+      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+     </property>
+     <property name="text">
+      <string>Publication URL :</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QCommandLinkButton" name="clb_publication">
+     <property name="text">
+      <string>Publication URL</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

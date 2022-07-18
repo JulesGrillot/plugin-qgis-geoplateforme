@@ -42,11 +42,11 @@ class PublicationFormPageWizard(QWizardPage):
 
         """
         if (
-            len(self.wdg_publication_form.lbl_flux_name.text()) == 0
-            or len(self.wdg_publication_form.lbl_descriptif_title.text()) == 0
-            or len(self.wdg_publication_form.pte_abstract.toPlainText()) == 0
-            or len(self.wdg_publication_form.lbl_legal_notice.text()) == 0
-            or len(self.wdg_publication_form.lbl_URL_legal.text()) == 0
+            len(self.wdg_publication_form.lne_name.text()) == 0
+            or len(self.wdg_publication_form.lne_title.text()) == 0
+            or len(self.wdg_publication_form.txe_abstract.toPlainText()) == 0
+            or len(self.wdg_publication_form.lne_legal_notice.text()) == 0
+            or len(self.wdg_publication_form.lne_url_legal.text()) == 0
         ):
             valid = False
             QMessageBox.warning(

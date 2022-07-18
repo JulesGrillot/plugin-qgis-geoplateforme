@@ -36,7 +36,7 @@ class PlgSettingsStructure:
     url_auth: str = "https://iam-ign-qa-ext.cegedim.cloud/"
     auth_realm: str = "demo"
     auth_client_id: str = "geotuileur-qgis-plugin"
-    qgis_auth_id: str = ""
+    qgis_auth_id: str = None
 
     @property
     def url_authentication_token(self) -> str:
@@ -52,6 +52,26 @@ class PlgSettingsStructure:
     def base_url_api_entrepot(self) -> str:
         """Return the URL for API entrepot"""
         return f"{self.url_api_entrepot}api/v1"
+
+    @property
+    def url_forgotten_password(self) -> str:
+        """URL where an user can reset its credentials.
+
+        :return: reset URL
+        :rtype: str
+        """
+        return f"{self.url_auth}auth/realms/{self.auth_realm}/login-actions/reset-credentials?client_id={self.auth_client_id}"
+
+    @property
+    def url_sign_in(self) -> str:
+        """URL where an user can register himself to create an account.
+
+        :return: registration URL
+        :rtype: str
+        """
+        # not working for now. See #95
+        # return f"{self.url_auth}auth/realms/{self.auth_realm}/login-actions/authenticate?client_id={self.auth_client_id}"
+        return f"{self.url_geotuileur}login"
 
     def create_auth_config(self, username: str, password: str) -> QgsAuthMethodConfig:
         """

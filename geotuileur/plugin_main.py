@@ -234,8 +234,7 @@ class GeotuileurPlugin:
             self.publication_wizard = None
 
     def authentication(self) -> None:
-        """Open authentification dialog."""
-
+        """Open authentication dialog."""
         plg_settings = self.plg_settings.get_plg_settings()
 
         if len(plg_settings.qgis_auth_id) == 0:

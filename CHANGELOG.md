@@ -16,6 +16,13 @@ Unreleased
 
 -->
 
+## 0.6.0 - 2022-07-18
+
+- Add configuration and offering processing and .ui for publication
+- refactoring of Authentication dialog
+- refactoring of text validators
+- end of sprint 3 (the second of active development)
+
 ## 0.5.1 - 2022-07-07
 
 - Change client id from `guichet` to `geotuileur-qgis-plugin` to fix #81

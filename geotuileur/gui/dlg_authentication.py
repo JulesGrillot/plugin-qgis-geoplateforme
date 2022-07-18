@@ -5,7 +5,7 @@ from qgis.core import QgsApplication
 from qgis.PyQt import QtCore, QtGui, uic
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtGui import QDesktopServices
-from qgis.PyQt.QtWidgets import QDialog, QMessageBox
+from qgis.PyQt.QtWidgets import QDialog
 
 # Plugin
 from geotuileur.api.user import UserRequestsManager
@@ -88,17 +88,19 @@ class AuthenticationDialog(QDialog):
             manager.plg_settings.qgis_auth_id = qgis_auth_id
             user = manager.get_user()
 
-            QMessageBox.information(
-                self,
-                self.tr("Welcome"),
-                self.tr(f"Welcome {user.first_name} {user.last_name} !"),
+            self.log(
+                message=self.tr(f"Welcome {user.first_name} {user.last_name}!"),
+                log_level=3,
+                push=True,
+                duration=5,
             )
 
         except UserRequestsManager.UnavailableUserException as exc:
-            QMessageBox.warning(
-                self,
-                self.tr("Invalid connection"),
-                self.tr(f"Invalid connection parameters : {exc}"),
+            self.log(
+                message=self.tr(f"Invalid connection parameters: {exc}"),
+                log_level=2,
+                push=True,
+                duration=30,
             )
             res = False
 

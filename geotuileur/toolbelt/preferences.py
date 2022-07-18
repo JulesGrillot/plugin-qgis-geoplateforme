@@ -69,7 +69,9 @@ class PlgSettingsStructure:
         :return: registration URL
         :rtype: str
         """
-        return f"{self.url_auth}auth/realms/{self.auth_realm}/login-actions/registration?client_id={self.auth_client_id}"
+        # not working for now. See #95
+        # return f"{self.url_auth}auth/realms/{self.auth_realm}/login-actions/authenticate?client_id={self.auth_client_id}"
+        return f"{self.url_geotuileur}login"
 
     def create_auth_config(self, username: str, password: str) -> QgsAuthMethodConfig:
         """

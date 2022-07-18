@@ -234,10 +234,7 @@ class GeotuileurPlugin:
             self.publication_wizard = None
 
     def authentication(self) -> None:
-        """
-        Open authentification dialog
-
-        """
+        """Open authentification dialog."""
 
         plg_settings = self.plg_settings.get_plg_settings()
 
@@ -246,7 +243,7 @@ class GeotuileurPlugin:
             dlg_authentication.exec()
         else:
             dlg_user = UserDialog(self.iface.mainWindow())
-            dlg_user.exec()
+            dlg_user.exec_()
         self._update_actions_availability()
 
     def _update_actions_availability(self) -> None:

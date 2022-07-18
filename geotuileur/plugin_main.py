@@ -239,10 +239,10 @@ class GeotuileurPlugin:
 
         if len(plg_settings.qgis_auth_id) == 0:
             dlg_authentication = AuthenticationDialog(self.iface.mainWindow())
-            dlg_authentication.open()
+            dlg_authentication.exec_()
         else:
             dlg_user = UserDialog(self.iface.mainWindow())
-            dlg_user.open()
+            dlg_user.exec_()
         self._update_actions_availability()
 
     def _update_actions_availability(self) -> None:

@@ -36,7 +36,7 @@ class PlgSettingsStructure:
     url_auth: str = "https://iam-ign-qa-ext.cegedim.cloud/"
     auth_realm: str = "demo"
     auth_client_id: str = "geotuileur-qgis-plugin"
-    qgis_auth_id: str = ""
+    qgis_auth_id: str = None
 
     @property
     def url_authentication_token(self) -> str:

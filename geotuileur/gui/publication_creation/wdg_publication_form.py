@@ -1,9 +1,13 @@
+# standard
 import os
 
-from qgis.PyQt import QtCore, QtGui, uic
+# PyQGIS
+from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QWidget
 
+# Plugin
 from geotuileur.api.configuration import Configuration
+from geotuileur.gui.lne_validators import alphanumx_qval, url_qval
 
 
 class PublicationForm(QWidget):
@@ -20,14 +24,9 @@ class PublicationForm(QWidget):
             os.path.join(os.path.dirname(__file__), "wdg_publication_form.ui"),
             self,
         )
-        rx = QtCore.QRegExp("[a-z-A-Z-0-9-_-.--]+")
-        validator = QtGui.QRegExpValidator(rx)
 
-        rx_url = QtCore.QRegExp("^https://[a-zA-ZS-.---_-]*")
-        validator_url = QtGui.QRegExpValidator(rx_url)
-
-        self.lbl_flux_name.setValidator(validator)
-        self.lbl_URL_legal.setValidator(validator_url)
+        self.lbl_flux_name.setValidator(alphanumx_qval)
+        self.lbl_URL_legal.setValidator(url_qval)
 
     def get_config(self) -> Configuration:
 

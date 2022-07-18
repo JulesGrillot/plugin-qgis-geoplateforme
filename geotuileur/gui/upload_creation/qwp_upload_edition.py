@@ -8,6 +8,7 @@ from qgis.PyQt import QtCore, QtGui, uic
 from qgis.PyQt.QtWidgets import QAbstractItemView, QMessageBox, QShortcut, QWizardPage
 
 # Plugin
+from geotuileur.gui.lne_validators import alphanum_qval
 from geotuileur.processing import GeotuileurProvider
 from geotuileur.processing.check_layer import CheckLayerAlgorithm
 
@@ -28,11 +29,8 @@ class UploadEditionPageWizard(QWizardPage):
             os.path.join(os.path.dirname(__file__), "qwp_upload_edition.ui"), self
         )
 
-        # # To avoid some characters
-
-        rx = QtCore.QRegExp("[a-z-A-Z-0-9-_]+")
-        validator = QtGui.QRegExpValidator(rx)
-        self.lne_data.setValidator(validator)
+        # To avoid some characters
+        self.lne_data.setValidator(alphanum_qval)
 
         self.lvw_import_data.setSelectionMode(QAbstractItemView.MultiSelection)
 

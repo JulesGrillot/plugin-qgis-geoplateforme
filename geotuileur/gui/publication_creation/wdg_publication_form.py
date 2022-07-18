@@ -7,7 +7,7 @@ from qgis.PyQt.QtWidgets import QWidget
 
 # Plugin
 from geotuileur.api.configuration import Configuration
-from geotuileur.gui.lne_validators import alphanumx_qval, url_qval
+from geotuileur.gui.lne_validators import alphanum_qval, url_qval
 
 
 class PublicationForm(QWidget):
@@ -25,8 +25,8 @@ class PublicationForm(QWidget):
             self,
         )
 
-        # self.lbl_flux_name.setValidator(alphanumx_qval)
-        # self.lbl_URL_legal.setValidator(url_qval)
+        self.lbl_flux_name.setValidator(alphanum_qval)
+        self.lbl_URL_legal.setValidator(url_qval)
 
     def get_config(self) -> Configuration:
 

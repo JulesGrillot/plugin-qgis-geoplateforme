@@ -53,6 +53,24 @@ class PlgSettingsStructure:
         """Return the URL for API entrepot"""
         return f"{self.url_api_entrepot}api/v1"
 
+    @property
+    def url_forgotten_password(self) -> str:
+        """URL where an user can reset its credentials.
+
+        :return: reset URL
+        :rtype: str
+        """
+        return f"{self.url_auth}auth/realms/{self.auth_realm}/login-actions/reset-credentials?client_id={self.auth_client_id}"
+
+    @property
+    def url_sign_in(self) -> str:
+        """URL where an user can register himself to create an account.
+
+        :return: registration URL
+        :rtype: str
+        """
+        return f"{self.url_auth}auth/realms/{self.auth_realm}/login-actions/registration?client_id={self.auth_client_id}"
+
     def create_auth_config(self, username: str, password: str) -> QgsAuthMethodConfig:
         """
         Create QgsAuthMethodConfig for OAuth2 authentification

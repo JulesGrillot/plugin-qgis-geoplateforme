@@ -34,7 +34,8 @@ class AuthenticationDialog(QDialog):
 
         # toolbelt
         self.log = PlgLogger().log
-        self.plg_settings = PlgOptionsManager().get_plg_settings()
+        self.plg_settings_mngr = PlgOptionsManager()
+        self.plg_settings = self.plg_settings_mngr.get_plg_settings()
 
         # enforce email input
         self.lne_user_email.setValidator(email_qval)
@@ -62,6 +63,11 @@ class AuthenticationDialog(QDialog):
         auth_manager = QgsApplication.authManager()
         new_auth = self.plg_settings.create_auth_config(user, password)
         auth_manager.storeAuthenticationConfig(new_auth, True)
+        self.log(
+            message="Credentials saved into QGIS Authentication Manager as "
+            f" {new_auth.name()} ({new_auth.id()})",
+            log_level=4,
+        )
 
         # If connection valid, remove previous config and use new created config,
         # otherwise remove created config
@@ -69,7 +75,7 @@ class AuthenticationDialog(QDialog):
             if self.plg_settings.qgis_auth_id:
                 auth_manager.removeAuthenticationConfig(self.plg_settings.qgis_auth_id)
             self.plg_settings.qgis_auth_id = new_auth.id()
-            self.self.plg_settings.save_from_object(self.plg_settings)
+            self.plg_settings_mngr.save_from_object(self.plg_settings)
 
             # Validate dialog
             self.accept()

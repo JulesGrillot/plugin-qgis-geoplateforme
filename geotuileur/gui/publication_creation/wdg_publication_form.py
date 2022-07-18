@@ -25,8 +25,8 @@ class PublicationForm(QWidget):
             self,
         )
 
-        self.lbl_flux_name.setValidator(alphanumx_qval)
-        self.lbl_URL_legal.setValidator(url_qval)
+        # self.lbl_flux_name.setValidator(alphanumx_qval)
+        # self.lbl_URL_legal.setValidator(url_qval)
 
     def get_config(self) -> Configuration:
 

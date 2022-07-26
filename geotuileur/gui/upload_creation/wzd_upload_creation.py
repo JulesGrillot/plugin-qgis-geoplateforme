@@ -1,6 +1,6 @@
 # standard
 from qgis.PyQt.QtGui import QCloseEvent
-from qgis.PyQt.QtWidgets import QDialog, QWizard
+from qgis.PyQt.QtWidgets import QWizard
 
 # Plugin
 from geotuileur.gui.upload_creation.qwp_upload_creation import UploadCreationPageWizard

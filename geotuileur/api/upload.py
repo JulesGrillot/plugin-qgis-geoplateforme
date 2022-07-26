@@ -4,12 +4,7 @@ from dataclasses import dataclass
 from typing import List
 
 import requests
-from qgis.core import (
-    QgsApplication,
-    QgsBlockingNetworkRequest,
-    QgsCoordinateReferenceSystem,
-    QgsSettings,
-)
+from qgis.core import QgsApplication, QgsBlockingNetworkRequest, QgsSettings
 from qgis.PyQt.QtCore import QByteArray, QEventLoop, QFile, QIODevice, QUrl
 from qgis.PyQt.QtNetwork import (
     QHttpMultiPart,

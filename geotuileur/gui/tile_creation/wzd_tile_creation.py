@@ -1,7 +1,7 @@
 # standard
 
 # PyQGIS
-from qgis.PyQt.QtWidgets import QDialog, QWizard
+from qgis.PyQt.QtWidgets import QWizard
 
 from geotuileur.gui.tile_creation.qwp_tile_generation_edition import (
     TileGenerationEditionPageWizard,

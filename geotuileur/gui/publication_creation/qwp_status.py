@@ -9,7 +9,6 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtWidgets import QWizardPage
-from sqlalchemy import true
 
 # Plugin
 from geotuileur.__about__ import __title_clean__

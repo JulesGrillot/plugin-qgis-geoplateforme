@@ -2,7 +2,7 @@
 import os
 
 # PyQGIS
-from qgis.PyQt import QtCore, QtGui, uic
+from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtWidgets import QMessageBox, QSlider, QWizardPage
 
 # Plugin

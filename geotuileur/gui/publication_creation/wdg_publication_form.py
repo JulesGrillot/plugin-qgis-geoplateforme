@@ -25,23 +25,23 @@ class PublicationForm(QWidget):
             self,
         )
 
-        self.lbl_flux_name.setValidator(alphanum_qval)
-        self.lbl_URL_legal.setValidator(url_qval)
+        self.lne_name.setValidator(alphanum_qval)
+        self.lne_url_legal.setValidator(url_qval)
 
     def get_config(self) -> Configuration:
 
         configuration = Configuration(
             type_data="",
             metadata=[],
-            name=self.lbl_flux_name.text(),
-            layer_name=self.lbl_flux_name.text(),
+            name=self.lne_name.text(),
+            layer_name=self.lne_name.text(),
             type_infos={},
             attribution={},
         )
 
-        configuration.title = self.lbl_descriptif_title.text()
-        configuration.abstract = self.pte_abstract.toPlainText()
-        configuration.url_title = self.lbl_legal_notice.text()
-        configuration.url = self.lbl_URL_legal.text()
+        configuration.title = self.lne_title.text()
+        configuration.abstract = self.txe_abstract.toPlainText()
+        configuration.url_title = self.lne_legal_notice.text()
+        configuration.url = self.lne_url_legal.text()
 
         return configuration

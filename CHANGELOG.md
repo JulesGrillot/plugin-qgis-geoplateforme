@@ -16,7 +16,7 @@ Unreleased
 
 -->
 
-## 0.6.0 - 2022-07-18
+## 0.6.0 - 2022-07-27
 
 - Add configuration and offering processing and .ui for publication
 - refactoring of Authentication dialog

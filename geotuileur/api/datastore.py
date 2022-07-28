@@ -1,6 +1,7 @@
 # standard
 import json
 import logging
+
 from numpy import empty
 
 # PyQGIS
@@ -19,9 +20,6 @@ class DatastoreRequestManager:
     class UnavailableEndpointException(Exception):
         pass
 
-    # class EndpointCreationException(Exception):
-    #     pass
-
     def __init__(self):
         """
         Helper for Endpoint request
@@ -33,7 +31,7 @@ class DatastoreRequestManager:
 
     def get_base_url(self, datastore: str) -> str:
         """
-        Get base url for Endpoint
+        Get base url for endpoint
 
         Args:
             datastore: (str)
@@ -43,12 +41,12 @@ class DatastoreRequestManager:
         """
         return f"{self.plg_settings.base_url_api_entrepot}/datastores/{datastore}"
 
-    def get_endpoint(self, datastore: str,data_type:str):
+    def get_endpoint(self, datastore: str, data_type: str):
         """
-        Create Endpoint on Geotuileur entrepot
+        Get the endpoint for publication
 
         Args:
-            datastores: (str)
+            datastores: (str), data_type: (str)
 
 
         """
@@ -80,14 +78,12 @@ class DatastoreRequestManager:
             )
 
         data = json.loads(req_reply.content().data().decode("utf-8"))
-        for k, v in data["endpoints"][0].items():
-            if type(v) is dict:
-                for nk, nv in v.items():
-                    if nv == data_type:
-                        data = v["_id"]
-        if len(data)==0 :
+        for i in range(0, len(data["endpoints"])):
+            if data["endpoints"][i]["endpoint"]["type"] == data_type:
+                data = data["endpoints"][i]["endpoint"]["_id"]
+
+        if len(data) == 0:
             raise self.UnavailableEndpointException(
-                f"Error while endpoint publication is empty : "
-                f"{data}"
+                f"Error while endpoint publication is empty : " f"{data}"
             )
         return data

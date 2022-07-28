@@ -15,7 +15,9 @@ from geotuileur.api.datastore import DatastoreRequestManager
 from geotuileur.api.offering import OfferingRequestManager
 from geotuileur.toolbelt import PlgLogger
 
-data_type="WMTS-TMS"
+data_type = "WMTS-TMS"
+
+
 class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
 
     ABSTRACT = "abstract"
@@ -151,11 +153,11 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
             except ConfigurationRequestManager.ConfigurationCreationException as exc:
                 raise QgsProcessingException(f"exc configuration id : {exc}")
 
-            # get the endpoint
+            # get the endpoint for the publication
             try:
                 manager_endpoint = DatastoreRequestManager()
                 res = manager_endpoint.get_endpoint(
-                    datastore=datastore,data_type=data_type
+                    datastore=datastore, data_type=data_type
                 )
 
                 publication_endpoint = res

@@ -11,11 +11,11 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 # Plugin
 from geotuileur.api.configuration import Configuration, ConfigurationRequestManager
-from geotuileur.api.endpoint import EndpointRequestManager
+from geotuileur.api.datastore import DatastoreRequestManager
 from geotuileur.api.offering import OfferingRequestManager
 from geotuileur.toolbelt import PlgLogger
 
-
+data_type="WMTS-TMS"
 class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
 
     ABSTRACT = "abstract"
@@ -109,7 +109,6 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
             layer_name = data.get(self.LAYER_NAME)
             metadata = data.get(self.METADATA)
             name = data.get(self.NAME)
-            publication_endpoint = data.get(self.ENDPOINT)
             publication_visibility = data.get(self.VISIBILITY, "PUBLIC")
             stored_data_id = data.get(self.STORED_DATA)
             title = data.get(self.TITLE)
@@ -154,13 +153,13 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
 
             # get the endpoint
             try:
-                manager_endpoint = EndpointRequestManager()
-                res = manager_endpoint.create_endpoint(
-                    datastore=datastore,
+                manager_endpoint = DatastoreRequestManager()
+                res = manager_endpoint.get_endpoint(
+                    datastore=datastore,data_type=data_type
                 )
 
                 publication_endpoint = res
-            except EndpointRequestManager.EndpointCreationException as exc:
+            except DatastoreRequestManager.UnavailableEndpointException as exc:
                 raise QgsProcessingException(f"exc endpoint : {exc}")
 
             # create publication (offering)

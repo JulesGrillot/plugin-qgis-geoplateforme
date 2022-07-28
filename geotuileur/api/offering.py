@@ -78,7 +78,7 @@ class OfferingRequestManager:
 
         data.append(json.dumps(data_map))
 
-        self.log(message=f" creation data map PUBLIL: {data}", log_level=4)
+        self.log(message=f" creation data map : {data}", log_level=4)
 
         # send request
         resp = self.ntwk_requester_blk.post(req_post, data=data)

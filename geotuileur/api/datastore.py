@@ -1,6 +1,7 @@
 # standard
 import json
 import logging
+from numpy import empty
 
 # PyQGIS
 from qgis.core import QgsBlockingNetworkRequest
@@ -14,12 +15,12 @@ from geotuileur.toolbelt.preferences import PlgOptionsManager
 logger = logging.getLogger(__name__)
 
 
-class EndpointRequestManager:
+class DatastoreRequestManager:
     class UnavailableEndpointException(Exception):
         pass
 
-    class EndpointCreationException(Exception):
-        pass
+    # class EndpointCreationException(Exception):
+    #     pass
 
     def __init__(self):
         """
@@ -42,7 +43,7 @@ class EndpointRequestManager:
         """
         return f"{self.plg_settings.base_url_api_entrepot}/datastores/{datastore}"
 
-    def create_endpoint(self, datastore: str):
+    def get_endpoint(self, datastore: str,data_type:str):
         """
         Create Endpoint on Geotuileur entrepot
 
@@ -62,7 +63,7 @@ class EndpointRequestManager:
 
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
-            raise self.EndpointCreationException(
+            raise self.UnavailableEndpointException(
                 f"Error while endpoint publication : "
                 f"{self.ntwk_requester_blk.errorMessage()}"
             )
@@ -72,17 +73,21 @@ class EndpointRequestManager:
             not req_reply.rawHeader(b"Content-Type")
             == "application/json; charset=utf-8"
         ):
-            raise self.EndpointCreationException(
+            raise self.UnavailableEndpointException(
                 "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
                     req_reply.rawHeader(b"Content-type")
                 )
             )
 
         data = json.loads(req_reply.content().data().decode("utf-8"))
-        data = data["endpoints"][0]["endpoint"]["_id"]
-        self.log(
-            message=f"result endpoint: {data}",
-            log_level=4,
-        )
-
+        for k, v in data["endpoints"][0].items():
+            if type(v) is dict:
+                for nk, nv in v.items():
+                    if nv == data_type:
+                        data = v["_id"]
+        if len(data)==0 :
+            raise self.UnavailableEndpointException(
+                f"Error while endpoint publication is empty : "
+                f"{data}"
+            )
         return data

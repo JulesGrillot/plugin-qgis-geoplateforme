@@ -11,6 +11,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 # Plugin
 from geotuileur.api.configuration import Configuration, ConfigurationRequestManager
+from geotuileur.api.endpoint import EndpointRequestManager
 from geotuileur.api.offering import OfferingRequestManager
 from geotuileur.toolbelt import PlgLogger
 
@@ -94,24 +95,6 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
             )
         )
 
-        # Those following parameters are not used for now
-        # TODO: use them or remove them
-        self.addParameter(
-            QgsProcessingParameterString(
-                name="PublicationEndpoint",
-                defaultValue="6220b50fb579ed7b9ad7f4ae",
-                description=self.tr("Publication endpoint:"),
-            )
-        )
-
-        self.addParameter(
-            QgsProcessingParameterString(
-                name="PublicationVisibility",
-                defaultValue="PUBLIC",
-                description=self.tr("Publication visibility:"),
-            )
-        )
-
     def processAlgorithm(self, parameters, context, feedback):
         filename = self.parameterAsFile(parameters, self.INPUT_JSON, context)
         self.log(message=f"Input publication configuration: {filename}", log_level=4)
@@ -126,7 +109,7 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
             layer_name = data.get(self.LAYER_NAME)
             metadata = data.get(self.METADATA)
             name = data.get(self.NAME)
-            publication_endpoint = data.get(self.ENDPOINT, "6220b50fb579ed7b9ad7f4ae")
+            publication_endpoint = data.get(self.ENDPOINT)
             publication_visibility = data.get(self.VISIBILITY, "PUBLIC")
             stored_data_id = data.get(self.STORED_DATA)
             title = data.get(self.TITLE)
@@ -168,6 +151,17 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
 
             except ConfigurationRequestManager.ConfigurationCreationException as exc:
                 raise QgsProcessingException(f"exc configuration id : {exc}")
+
+            # get the endpoint
+            try:
+                manager_endpoint = EndpointRequestManager()
+                res = manager_endpoint.create_endpoint(
+                    datastore=datastore,
+                )
+
+                publication_endpoint = res
+            except EndpointRequestManager.EndpointCreationException as exc:
+                raise QgsProcessingException(f"exc endpoint : {exc}")
 
             # create publication (offering)
             try:

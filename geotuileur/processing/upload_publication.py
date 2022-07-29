@@ -25,7 +25,6 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
     CONFIGURATION_ID = "configuration_id"
     PUBLICATION_URL = "publication_url"
     DATASTORE = "datastore"
-    ENDPOINT = "endpoint"
     INPUT_JSON = "INPUT_JSON"
     KEYWORDS = "keywords"
     LAYER_NAME = "layer_name"

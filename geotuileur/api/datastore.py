@@ -41,7 +41,7 @@ class DatastoreRequestManager:
         """
         return f"{self.plg_settings.base_url_api_entrepot}/datastores/{datastore}"
 
-    def get_endpoint(self, datastore: str, data_type: str):
+    def get_endpoint(self, datastore: str, data_type: str) -> str:
         """
         Get the endpoint for publication
 

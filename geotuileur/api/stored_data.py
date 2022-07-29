@@ -19,11 +19,6 @@ class TableRelation:
 
 
 @dataclass
-class ZoomLevels:
-    type_infos: {}
-
-
-@dataclass
 class StoredData:
     id: str
     name: str
@@ -43,6 +38,14 @@ class StoredData:
                 if relation["type"] == "TABLE"
             ]
         return tables
+
+    def zoom_levels(self) -> List:
+        zoom_levels = []
+        self.type_infos["levels"] = 0
+        if self.type_infos["levels"] != 0:
+            zoom_levels = [self.type_infos["levels"][-1], self.type_infos["levels"][0]]
+
+        return zoom_levels
 
 
 class StoredDataRequestManager:
@@ -215,21 +218,6 @@ class StoredDataRequestManager:
         if "type_infos" in data:
             result.type_infos = data["type_infos"]
         return result
-
-    def get_zoom_levels(self, datastore: str, stored_data: str) -> ZoomLevels:
-        """
-        Get stored data by id
-
-        Args:
-            datastore: (str) datastore id
-            stored_data: (str) stored dat id
-
-        Returns: zoom levels, raise ReadStoredDataException otherwise
-        """
-        data = self.get_stored_data_json(datastore, stored_data)
-        result = ZoomLevels(type_infos=data["type_infos"])
-
-        return result.type_infos["levels"][-1], result.type_infos["levels"][0]
 
     def get_stored_data_json(self, datastore: str, stored_data: str) -> dict:
         """

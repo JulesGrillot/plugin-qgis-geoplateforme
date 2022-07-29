@@ -63,12 +63,13 @@ class PublicationStatut(QWizardPage):
         stored_data = self.qwp_publication_form.cbx_stored_data.current_stored_data_id()
 
         # Getting zoom levels parameters
-        stored_data_manager = StoredDataRequestManager()
+        manager = StoredDataRequestManager()
         try:
-            bottom, top = stored_data_manager.get_zoom_levels(datastore_id, stored_data)
+            stored_data_levels = manager.get_stored_data(datastore_id, stored_data)
+            bottom, top = stored_data_levels.zoom_levels()
         except StoredDataRequestManager.ReadStoredDataException as exc:
             self.log(
-                f"Error while getting levels informations: {exc}",
+                f"Error while getting zoom levels from stored data: {exc}",
                 log_level=2,
                 push=False,
             )
@@ -88,7 +89,6 @@ class PublicationStatut(QWizardPage):
             UploadPublicationAlgorithm.URL_TITLE: configuration.url_title,
             UploadPublicationAlgorithm.URL_ATTRIBUTION: configuration.url,
         }
-        print(data)
         filename = tempfile.NamedTemporaryFile(
             prefix=f"qgis_{__title_clean__}_", suffix=".json"
         ).name

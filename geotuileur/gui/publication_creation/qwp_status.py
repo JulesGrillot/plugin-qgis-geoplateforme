@@ -58,25 +58,37 @@ class PublicationStatut(QWizardPage):
         Run UploadPublicationAlgorithm
 
         """
-
         configuration = self.qwp_publication_form.wdg_publication_form.get_config()
+        datastore_id = self.qwp_publication_form.cbx_datastore.current_datastore_id()
+        stored_data = self.qwp_publication_form.cbx_stored_data.current_stored_data_id()
+
+        # Getting zoom levels parameters
+        stored_data_manager = StoredDataRequestManager()
+        try:
+            bottom, top = stored_data_manager.get_zoom_levels(datastore_id, stored_data)
+        except StoredDataRequestManager.ReadStoredDataException as exc:
+            self.log(
+                f"Error while getting levels informations: {exc}",
+                log_level=2,
+                push=False,
+            )
 
         data = {
             UploadPublicationAlgorithm.ABSTRACT: configuration.abstract,
-            UploadPublicationAlgorithm.BOTTOM_LEVEL: "18",
-            UploadPublicationAlgorithm.DATASTORE: self.qwp_publication_form.cbx_datastore.current_datastore_id(),
+            UploadPublicationAlgorithm.BOTTOM_LEVEL: bottom,
+            UploadPublicationAlgorithm.DATASTORE: datastore_id,
             UploadPublicationAlgorithm.KEYWORDS: "Adresse",
             UploadPublicationAlgorithm.LAYER_NAME: configuration.layer_name,
             UploadPublicationAlgorithm.METADATA: [],
             UploadPublicationAlgorithm.NAME: configuration.name,
-            UploadPublicationAlgorithm.STORED_DATA: self.qwp_publication_form.cbx_stored_data.current_stored_data_id(),
+            UploadPublicationAlgorithm.STORED_DATA: stored_data,
             UploadPublicationAlgorithm.TITLE: configuration.title,
-            UploadPublicationAlgorithm.TOP_LEVEL: "8",
+            UploadPublicationAlgorithm.TOP_LEVEL: top,
             UploadPublicationAlgorithm.TYPE_DATA: "WMTS-TMS",
             UploadPublicationAlgorithm.URL_TITLE: configuration.url_title,
             UploadPublicationAlgorithm.URL_ATTRIBUTION: configuration.url,
         }
-
+        print(data)
         filename = tempfile.NamedTemporaryFile(
             prefix=f"qgis_{__title_clean__}_", suffix=".json"
         ).name
@@ -104,7 +116,7 @@ class PublicationStatut(QWizardPage):
             self.url_data = url_data
             self.url_publication = (
                 "https://qlf-portail-gpf-beta.ign.fr/viewer?tiles_url=https://qlf-vt-gpf-beta.ign.fr/"
-                + str(url_data[31:47])
+                + str(url_data[31::])
             )
             manager = StoredDataRequestManager()
             manager.add_tags(

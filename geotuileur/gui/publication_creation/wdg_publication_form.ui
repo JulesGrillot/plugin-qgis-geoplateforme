@@ -262,9 +262,6 @@
      <property name="documentTitle">
       <string/>
      </property>
-     <property name="markdown">
-      <string/>
-     </property>
      <property name="placeholderText">
       <string>Abstract *</string>
      </property>

@@ -41,11 +41,9 @@ class StoredData:
 
     def zoom_levels(self) -> List:
         zoom_levels = []
-        self.type_infos["levels"] = 0
-        if self.type_infos["levels"] != 0:
-            zoom_levels = [self.type_infos["levels"][-1], self.type_infos["levels"][0]]
-
-        return zoom_levels
+        if self.type_infos["levels"]:
+            zoom_levels = self.type_infos["levels"]
+            return zoom_levels
 
 
 class StoredDataRequestManager:

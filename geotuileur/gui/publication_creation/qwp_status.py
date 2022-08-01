@@ -65,8 +65,6 @@ class PublicationStatut(QWizardPage):
         # Getting zoom levels parameters
         manager = StoredDataRequestManager()
         try:
-            # zoom_levels = [self.type_infos["levels"][-1], self.type_infos["levels"][0]]
-
             stored_data_levels = manager.get_stored_data(datastore_id, stored_data)
             zoom_levels = stored_data_levels.zoom_levels()
             bottom = zoom_levels[-1]

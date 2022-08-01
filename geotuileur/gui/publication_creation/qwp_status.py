@@ -104,7 +104,7 @@ class PublicationStatut(QWizardPage):
             self.url_data = url_data
             self.url_publication = (
                 "https://qlf-portail-gpf-beta.ign.fr/viewer?tiles_url=https://qlf-vt-gpf-beta.ign.fr/"
-                + str(url_data[31:47])
+                + str(url_data[31::])
             )
             manager = StoredDataRequestManager()
             manager.add_tags(

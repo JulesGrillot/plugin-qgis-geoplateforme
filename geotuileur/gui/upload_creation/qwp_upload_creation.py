@@ -231,7 +231,7 @@ class UploadCreationPageWizard(QWizardPage):
                 if stored_data.status == "GENERATED":
                     self.upload_check_timer.stop()
                     self.loading_movie.stop()
-                    self.lbl_step_text.setText(self.tr("Votre données est prête"))
+                    self.lbl_step_text.setText(self.tr("Votre donnée est prête"))
                     pixmap = QPixmap(
                         str(
                             DIR_PLUGIN_ROOT

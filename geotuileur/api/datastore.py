@@ -2,8 +2,6 @@
 import json
 import logging
 
-from numpy import empty
-
 # PyQGIS
 from qgis.core import QgsBlockingNetworkRequest
 from qgis.PyQt.QtCore import QUrl

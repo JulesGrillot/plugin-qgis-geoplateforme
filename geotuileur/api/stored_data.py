@@ -39,6 +39,12 @@ class StoredData:
             ]
         return tables
 
+    def zoom_levels(self) -> List:
+        zoom_levels = []
+        if self.type_infos["levels"]:
+            zoom_levels = self.type_infos["levels"]
+        return zoom_levels
+
 
 class StoredDataRequestManager:
     class ReadStoredDataException(Exception):

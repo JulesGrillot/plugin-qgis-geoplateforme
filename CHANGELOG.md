@@ -16,6 +16,19 @@ Unreleased
 
 -->
 
+## 0.6.0 - 2022-07-27
+
+- Add configuration and offering processing and .ui for publication
+- refactoring of Authentication dialog
+- refactoring of text validators
+- end of sprint 3 (the second of active development)
+
+## 0.5.1 - 2022-07-07
+
+- Change client id from `guichet` to `geotuileur-qgis-plugin` to fix #81
+- plugin has been renamed from `Vectiler` to `Geotuileur` (alternatively `Géotuileur`)
+- plugin's metadata are complete
+
 ## 0.5.0 - 2022-06-30
 
 - Switch to .json for processing parameters : See #72 #76 #73

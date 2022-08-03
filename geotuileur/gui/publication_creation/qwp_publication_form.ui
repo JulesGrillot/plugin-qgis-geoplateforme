@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>wzp_publication_form</class>
+ <widget class="QWizardPage" name="wzp_publication_form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>839</width>
+    <height>493</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Publication Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="7" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>466</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="6" column="0">
+    <widget class="PublicationForm" name="wdg_publication_form" native="true"/>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="lbl_datastore">
+     <property name="styleSheet">
+      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+     </property>
+     <property name="text">
+      <string>Espace de travail</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="lbl_stored_data">
+     <property name="styleSheet">
+      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+     </property>
+     <property name="text">
+      <string>Jeux de données</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="DatastoreComboBox" name="cbx_datastore"/>
+   </item>
+   <item row="5" column="0">
+    <widget class="StoredDataComboBox" name="cbx_stored_data"/>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>DatastoreComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">geotuileur.gui.cbx_datastore</header>
+  </customwidget>
+  <customwidget>
+   <class>PublicationForm</class>
+   <extends>QWidget</extends>
+   <header location="global">geotuileur.gui.publication_creation.wdg_publication_form.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>StoredDataComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">geotuileur.gui.cbx_stored_data</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

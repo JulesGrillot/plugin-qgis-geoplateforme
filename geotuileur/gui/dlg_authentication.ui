@@ -10,6 +10,12 @@
     <height>259</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>400</width>
+    <height>250</height>
+   </size>
+  </property>
   <property name="maximumSize">
    <size>
     <width>800</width>
@@ -28,50 +34,10 @@
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
   </property>
+  <property name="sizeGripEnabled">
+   <bool>true</bool>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="5" column="0">
-    <widget class="QCheckBox" name="chb_memory">
-     <property name="toolTip">
-      <string>Do not ask for my credentials for the next 30 minutes</string>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
-     <property name="text">
-      <string>Remember me</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="4">
-    <widget class="QLabel" name="lbl_mdpTitle">
-     <property name="styleSheet">
-      <string notr="true">font: 75 15pt &quot;Ubuntu Condensed&quot;;</string>
-     </property>
-     <property name="text">
-      <string>Password</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="3">
-    <widget class="QCommandLinkButton" name="clb_forgot">
-     <property name="focusPolicy">
-      <enum>Qt::NoFocus</enum>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
-font: italic 11pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
-     <property name="text">
-      <string>Forgotten password</string>
-     </property>
-     <property name="icon">
-      <iconset theme="link">
-       <normaloff>../toolbelt</normaloff>../toolbelt</iconset>
-     </property>
-    </widget>
-   </item>
    <item row="5" column="1" colspan="2">
     <spacer name="horizontalSpacer">
      <property name="orientation">
@@ -85,8 +51,124 @@ color: rgb(52, 101, 164);</string>
      </property>
     </spacer>
    </item>
+   <item row="2" column="0" colspan="4">
+    <widget class="QLabel" name="lbl_user_password">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 75 15pt &quot;Ubuntu Condensed&quot;;</string>
+     </property>
+     <property name="text">
+      <string>Password</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="4">
+    <widget class="QLineEdit" name="lne_user_email">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="inputMethodHints">
+      <set>Qt::ImhEmailCharactersOnly</set>
+     </property>
+     <property name="text">
+      <string notr="true"/>
+     </property>
+     <property name="dragEnabled">
+      <bool>false</bool>
+     </property>
+     <property name="placeholderText">
+      <string>firstname.name@gis-is-what-i-do.com</string>
+     </property>
+     <property name="clearButtonEnabled">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="4">
+    <widget class="QLabel" name="lbl_user_email">
+     <property name="minimumSize">
+      <size>
+       <width>250</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 75 15pt &quot;Ubuntu Condensed&quot;;</string>
+     </property>
+     <property name="inputMethodHints">
+      <set>Qt::ImhHiddenText</set>
+     </property>
+     <property name="text">
+      <string>Username or email</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QCheckBox" name="chb_memory">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Do not ask for my credentials for the next 30 minutes</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+     </property>
+     <property name="text">
+      <string>Remember me</string>
+     </property>
+    </widget>
+   </item>
    <item row="4" column="0" colspan="4">
-    <widget class="QPushButton" name="btn_connection">
+    <widget class="QPushButton" name="btn_log_in">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>50</height>
+      </size>
+     </property>
      <property name="cursor">
       <cursorShape>PointingHandCursor</cursorShape>
      </property>
@@ -97,7 +179,7 @@ color: rgb(52, 101, 164);</string>
       <string notr="true"/>
      </property>
      <property name="autoFillBackground">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(114, 159, 207);
@@ -114,28 +196,73 @@ font: 75 15pt &quot;Ubuntu Condensed&quot;;</string>
      </property>
     </widget>
    </item>
+   <item row="5" column="3">
+    <widget class="QPushButton" name="btn_forgotten_password">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
+font: italic 11pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+     </property>
+     <property name="text">
+      <string>Forgotten password</string>
+     </property>
+     <property name="icon">
+      <iconset theme="link">
+       <normaloff>../toolbelt</normaloff>../toolbelt</iconset>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
    <item row="3" column="0" colspan="4">
-    <widget class="QgsPasswordLineEdit" name="ple_mdpEdit">
+    <widget class="QgsPasswordLineEdit" name="ple_user_password">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>50</height>
+      </size>
+     </property>
      <property name="text">
       <string/>
      </property>
     </widget>
    </item>
-   <item row="0" column="0" colspan="4">
-    <widget class="QLabel" name="lbl_userTitle">
-     <property name="styleSheet">
-      <string notr="true">font: 75 15pt &quot;Ubuntu Condensed&quot;;</string>
-     </property>
-     <property name="inputMethodHints">
-      <set>Qt::ImhHiddenText</set>
-     </property>
-     <property name="text">
-      <string>Username or email</string>
-     </property>
-    </widget>
-   </item>
    <item row="6" column="0" colspan="4">
-    <widget class="QCommandLinkButton" name="clb_url">
+    <widget class="QPushButton" name="btn_sign_in">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>50</height>
+      </size>
+     </property>
      <property name="focusPolicy">
       <enum>Qt::TabFocus</enum>
      </property>
@@ -149,23 +276,13 @@ color: rgb(52, 101, 164);</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="4">
-    <widget class="QLineEdit" name="lbl_userEdit">
-     <property name="inputMethodHints">
-      <set>Qt::ImhNone</set>
-     </property>
-     <property name="text">
-      <string notr="true"/>
-     </property>
-     <property name="placeholderText">
-      <string>firstname.name@gis-is-what-i-do.com</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
+   <item row="8" column="0" colspan="4">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::MinimumExpanding</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
@@ -185,12 +302,12 @@ color: rgb(52, 101, 164);</string>
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>lbl_userEdit</tabstop>
-  <tabstop>ple_mdpEdit</tabstop>
-  <tabstop>btn_connection</tabstop>
+  <tabstop>lne_user_email</tabstop>
+  <tabstop>ple_user_password</tabstop>
+  <tabstop>btn_log_in</tabstop>
   <tabstop>chb_memory</tabstop>
-  <tabstop>clb_forgot</tabstop>
-  <tabstop>clb_url</tabstop>
+  <tabstop>btn_forgotten_password</tabstop>
+  <tabstop>btn_sign_in</tabstop>
  </tabstops>
  <resources/>
  <connections/>

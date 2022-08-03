@@ -1,8 +1,12 @@
 # standard
 import os
 
-from qgis.PyQt import QtCore, QtGui, uic
+# PyQGIS
+from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtWidgets import QMessageBox, QSlider, QWizardPage
+
+# Plugin
+from geotuileur.gui.lne_validators import alphanum_qval
 
 
 class TileGenerationEditionPageWizard(QWizardPage):
@@ -55,9 +59,7 @@ class TileGenerationEditionPageWizard(QWizardPage):
         self._stored_data_updated()
 
         # To avoid some characters
-        rx = QtCore.QRegExp("[a-z-A-Z-0-9-_]+")
-        validator = QtGui.QRegExpValidator(rx)
-        self.lne_flux.setValidator(validator)
+        self.lne_flux.setValidator(alphanum_qval)
 
         # Define zoom levels range
         self.levels_range_slider.setMinimum(self.MIN_ZOOM_LEVEL)

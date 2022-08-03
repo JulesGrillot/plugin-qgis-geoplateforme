@@ -118,7 +118,7 @@ class UploadCreationPageWizard(QWizardPage):
             params = {UploadCreationAlgorithm.INPUT_JSON: filename}
 
             self.lbl_step_text.setText(
-                self.tr("Vérification et intégration des données en cours")
+                self.tr("Checking and integration of your data in progress")
             )
             self.lbl_step_icon.setMovie(self.loading_movie)
             self.loading_movie.start()
@@ -231,7 +231,9 @@ class UploadCreationPageWizard(QWizardPage):
                 if stored_data.status == "GENERATED":
                     self.upload_check_timer.stop()
                     self.loading_movie.stop()
-                    self.lbl_step_text.setText(self.tr("Votre donnée est prête"))
+                    self.lbl_step_text.setText(
+                        self.tr("Your data has been stored on the remote storage.")
+                    )
                     pixmap = QPixmap(
                         str(
                             DIR_PLUGIN_ROOT

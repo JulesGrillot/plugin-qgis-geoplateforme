@@ -608,26 +608,6 @@
 <context>
     <name>UploadEditionPageWizard</name>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.ui" line="14"/>
-        <source>WizardPage</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="30"/>
-        <source>Composez votre flux à partir de vos données</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="46"/>
-        <source>Cochez les attributs à conserver dans votre flux de tuiles vectorielles. Ces attributs seront notamment accessibles au clic sur une carte par vos utilisateurs. En limitant le nombre d&apos;attributs, vous allégez le volume des tuiles et améliorez la fluidité d&apos;affichage. Ne conservez que les attributs utiles à vos utilisateurs. Si vous ne conservez aucun attribut, vos tuiles vectorielles ne contiendront que des géométries et les possibilités de symbolisation seront limitées.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="60"/>
-        <source>Choisissez les attributs des tables</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../../gui/upload_creation/qwp_upload_edition.ui" line="62"/>
         <source>Datastore:</source>
         <translation>Espace de travail :</translation>
@@ -676,6 +656,31 @@
         <location filename="../../gui/tile_creation/qwp_tile_generation_edition.ui" line="113"/>
         <source>Max and min zoom levels:</source>
         <translation>Niveaux de zoom :</translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="14"/>
+        <source>Tile generation layers and attributes</source>
+        <translation>Attributs à conserver dans les tuiles</translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="33"/>
+        <source>Customize your vector tiles service</source>
+        <translation>Composez votre flux à partir de vos données</translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="49"/>
+        <source>Check the attributes you want to keep in your vector tile flow. These attributes will be accessible to your users when they click on a map. By limiting the number of attributes, you can lighten the volume of the tiles and improve the fluidity of the display. Keep only the attributes that are useful to your users. If you don&apos;t keep any attributes, your vector tiles will only contain geometry and symbolization possibilities will be limited.</source>
+        <translation>Cochez les attributs à conserver dans votre flux de tuiles vectorielles. Ces attributs seront notamment accessibles au clic sur une carte par vos utilisateurs. En limitant le nombre d&apos;attributs, vous allégez le volume des tuiles et améliorez la fluidité d&apos;affichage. Ne conservez que les attributs utiles à vos utilisateurs. Si vous ne conservez aucun attribut, vos tuiles vectorielles ne contiendront que des géométries et les possibilités de symbolisation seront limitées.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="63"/>
+        <source>Select feature attributes</source>
+        <translation>Choisissez les attributs à conserver pour chaque table</translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.ui" line="14"/>
+        <source>Generation - Generalization options</source>
+        <translation>Génération des tuiles - Options de généralisation</translation>
     </message>
 </context>
 <context>

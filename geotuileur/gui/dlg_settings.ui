@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>GeotuileurSettingsForm</class>
+ <widget class="QWidget" name="GeotuileurSettingsForm">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -41,7 +41,7 @@
       <locale language="English" country="UnitedStates"/>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;PluginTitle - Version X.X.X&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>PluginTitle - Version X.X.X</string>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -51,6 +51,9 @@
      </property>
      <property name="wordWrap">
       <bool>true</bool>
+     </property>
+     <property name="margin">
+      <number>2</number>
      </property>
      <property name="openExternalLinks">
       <bool>false</bool>
@@ -285,6 +288,12 @@
         </property>
         <property name="text">
          <string>Géotuileur portal:</string>
+        </property>
+        <property name="textFormat">
+         <enum>Qt::PlainText</enum>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
         </property>
        </widget>
       </item>

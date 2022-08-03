@@ -12,6 +12,7 @@ class StoredDataProxyModel(QSortFilterProxyModel):
         self.filter_type = []
         self.tags = []
         self.forbidden_tags = []
+        self.status = []
         self.forbidden_status = []
 
     def set_filter_type(self, filter_type: List) -> None:
@@ -32,15 +33,6 @@ class StoredDataProxyModel(QSortFilterProxyModel):
         """
         self.tags = tags
 
-    def set_forbidden_status(self, status: List[StoredDataStatus]) -> None:
-        """
-        Define filter of forbidden status for stored data
-
-        Args:
-            status: forbidden stored data status
-        """
-        self.forbidden_status = status
-
     def set_forbidden_tags(self, forbidden_tags: List[str]) -> None:
         """
         Define filter of forbidden tags for stored data tags key
@@ -49,6 +41,24 @@ class StoredDataProxyModel(QSortFilterProxyModel):
             forbidden_tags: forbidden stored data tags key
         """
         self.forbidden_tags = forbidden_tags
+
+    def set_expected_status(self, status: List[StoredDataStatus]) -> None:
+        """
+        Define filter of expected tags for stored data tags key
+
+        Args:
+            status: expected stored data status
+        """
+        self.status = status
+
+    def set_forbidden_status(self, status: List[StoredDataStatus]) -> None:
+        """
+        Define filter of forbidden status for stored data
+
+        Args:
+            status: forbidden stored data status
+        """
+        self.forbidden_status = status
 
     def filterAcceptsRow(self, source_row: int, source_parent: QModelIndex) -> bool:
         """
@@ -87,13 +97,16 @@ class StoredDataProxyModel(QSortFilterProxyModel):
                     result &= tag not in available_tags
 
         # Check stored data status
-        if len(self.forbidden_status) and result:
+        if (len(self.status) or len(self.forbidden_status)) and result:
             status_index = self.sourceModel().index(
                 source_row, StoredDataListModel.STATUS_COL, source_parent
             )
             status_value = self.sourceModel().data(status_index, Qt.DisplayRole)
             if status_value:
                 status = StoredDataStatus[status_value]
-                result &= status not in self.forbidden_status
+                if len(self.forbidden_status):
+                    result &= status not in self.forbidden_status
+                if len(self.status):
+                    result &= status in self.status
 
         return result

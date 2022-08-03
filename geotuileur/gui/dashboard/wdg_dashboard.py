@@ -1,8 +1,9 @@
 import os
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtWidgets import QWidget
+from qgis.PyQt.QtWidgets import QAbstractItemView, QWidget
 
+from geotuileur.api.stored_data import StoredDataStatus
 from geotuileur.gui.mdl_stored_data import StoredDataListModel
 from geotuileur.gui.proxy_model_stored_data import StoredDataProxyModel
 
@@ -29,19 +30,33 @@ class DashboardWidget(QWidget):
 
         # Action to finish
         self.proxy_mdl_action_to_finish = self._create_proxy_model(
-            expected_tags=["upload_id"], forbidden_tags=["pyramid_id", "tms_url"]
+            expected_tags=["upload_id"],
+            forbidden_tags=["pyramid_id", "tms_url"],
+            expected_status=[],
         )
         self.tbv_actions_to_finish.setModel(self.proxy_mdl_action_to_finish)
+        self.tbv_actions_to_finish.verticalHeader().setVisible(False)
+        self.tbv_actions_to_finish.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
         # Running actions
-        # TODO running actions need filter on stored data status : for now display all stored_data
-        self.tbl_running_actions.setModel(self.mdl_stored_data)
+        self.proxy_mdl_running_action = self._create_proxy_model(
+            expected_tags=[],
+            forbidden_tags=[],
+            expected_status=[StoredDataStatus.GENERATING],
+        )
+        self.tbl_running_actions.setModel(self.proxy_mdl_running_action)
+        self.tbl_running_actions.verticalHeader().setVisible(False)
+        self.tbl_running_actions.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
         # Publicated tiles
         self.proxy_mdl_publicated_tiles = self._create_proxy_model(
-            expected_tags=["upload_id", "tms_url"], forbidden_tags=[]
+            expected_tags=["upload_id", "tms_url"],
+            forbidden_tags=[],
+            expected_status=[],
         )
         self.tbl_publicated_tiles.setModel(self.proxy_mdl_publicated_tiles)
+        self.tbl_publicated_tiles.verticalHeader().setVisible(False)
+        self.tbl_publicated_tiles.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
         self._datastore_updated()
@@ -54,7 +69,10 @@ class DashboardWidget(QWidget):
         self._datastore_updated()
 
     def _create_proxy_model(
-        self, expected_tags: [str], forbidden_tags: [str]
+        self,
+        expected_tags: [str],
+        forbidden_tags: [str],
+        expected_status: [StoredDataStatus],
     ) -> StoredDataProxyModel:
         """
         Create StoredDataProxyModel with filters
@@ -62,6 +80,7 @@ class DashboardWidget(QWidget):
         Args:
             expected_tags: [str] expected tag filter
             forbidden_tags: [str] forbidden tag filter
+            expected_status: [StoredDataStatus] expected status filter
 
         Returns: StoredDataProxyModel
 
@@ -71,6 +90,7 @@ class DashboardWidget(QWidget):
 
         proxy_mdl.set_expected_tags(expected_tags)
         proxy_mdl.set_forbidden_tags(forbidden_tags)
+        proxy_mdl.set_expected_status(expected_status)
 
         return proxy_mdl
 

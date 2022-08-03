@@ -29,6 +29,8 @@ email_qreg = QRegularExpression(
 email_qval = QRegularExpressionValidator(email_qreg)
 
 # URL
-# url_qreg = QRegularExpression("^https://[a-zA-ZS-.---_-]*")
-url_qreg = QRegularExpression(r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+")
+url_qreg = QRegularExpression(
+    "^https?://(?:[-\w.\/]|(?:%[\da-fA-F]{2}))+",
+    QRegularExpression.UseUnicodePropertiesOption,
+)
 url_qval = QRegularExpressionValidator(url_qreg)

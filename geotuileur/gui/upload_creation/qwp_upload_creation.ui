@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>WizardPage</string>
   </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="1">
     <widget class="QLabel" name="lbl_step_icon">

@@ -542,39 +542,49 @@
         <translation type="obsolete">Consulter les détails pour plus d&apos;informations</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.ui" line="14"/>
-        <source>WizardPage</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../gui/upload_creation/qwp_upload_creation.ui" line="23"/>
         <source>IconLabel</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_creation.ui" line="47"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../gui/publication_creation/qwp_status.ui" line="24"/>
-        <source>Adresse du flux de données</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../gui/publication_creation/qwp_status.ui" line="41"/>
+        <source>Go</source>
+        <translation>Ouvrir dans le navigateur</translation>
     </message>
     <message>
-        <location filename="../../gui/publication_creation/qwp_status.ui" line="38"/>
-        <source>Publication URL :</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.ui" line="14"/>
+        <source>Uploading dataset</source>
+        <translation>Téléversement des données</translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.ui" line="14"/>
+        <source>Vector tiles generation</source>
+        <translation>Génération des tuiles vectorielles</translation>
+    </message>
+    <message>
+        <location filename="../../gui/publication_creation/qwp_status.ui" line="14"/>
+        <source>Publication result</source>
+        <translation>Résultat de la publication</translation>
+    </message>
+    <message>
+        <location filename="../../gui/publication_creation/qwp_status.ui" line="34"/>
+        <source>Vector tile endpoint URL:</source>
+        <translation>URL du flux de données :</translation>
     </message>
     <message>
         <location filename="../../gui/publication_creation/qwp_status.ui" line="52"/>
-        <source>Go</source>
-        <translation type="unfinished"></translation>
+        <source>Public link to the map viewer:</source>
+        <translation>URL publique du visualiseur cartographique :</translation>
     </message>
     <message>
-        <location filename="../../gui/publication_creation/qwp_status.ui" line="63"/>
-        <source>Lien public vers la carte</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../gui/publication_creation/qwp_status.ui" line="66"/>
+        <source>Publication URL:</source>
+        <translation>URL de publication :</translation>
     </message>
 </context>
 <context>
@@ -598,69 +608,74 @@
 <context>
     <name>UploadEditionPageWizard</name>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.ui" line="14"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.ui" line="14"/>
         <source>WizardPage</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.ui" line="38"/>
-        <source>Espace de travail</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.ui" line="24"/>
-        <source>Choisissez le niveau de zoom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.ui" line="52"/>
-        <source>Jeux de donnÃ©es</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.ui" line="92"/>
-        <source>Nommez votre flux :  </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="30"/>
         <source>Composez votre flux à partir de vos données</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="46"/>
         <source>Cochez les attributs à conserver dans votre flux de tuiles vectorielles. Ces attributs seront notamment accessibles au clic sur une carte par vos utilisateurs. En limitant le nombre d&apos;attributs, vous allégez le volume des tuiles et améliorez la fluidité d&apos;affichage. Ne conservez que les attributs utiles à vos utilisateurs. Si vous ne conservez aucun attribut, vos tuiles vectorielles ne contiendront que des géométries et les possibilités de symbolisation seront limitées.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="60"/>
         <source>Choisissez les attributs des tables</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_edition.ui" line="62"/>
         <source>Datastore:</source>
-        <translation type="unfinished"></translation>
+        <translation>Espace de travail :</translation>
     </message>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_edition.ui" line="73"/>
         <source>Pick a local dataset to import:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner une donnée locale :</translation>
     </message>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_edition.ui" line="84"/>
         <source>Name your dataset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom du jeu de données distant :</translation>
     </message>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_edition.ui" line="95"/>
         <source>List of datasets to import:</source>
-        <translation type="unfinished"></translation>
+        <translation>Liste des données sélectionnées à importer :</translation>
     </message>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_edition.ui" line="134"/>
         <source>Select the SRS to use:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner la projection de vos données :</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.ui" line="14"/>
+        <source>Uploading form</source>
+        <translation>Formulaire de téléversement</translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.ui" line="14"/>
+        <source>Generation form</source>
+        <translation>Générer un flux</translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.ui" line="67"/>
+        <source>Service name:</source>
+        <translation>Nom du flux :</translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.ui" line="89"/>
+        <source>Dataset:</source>
+        <translation>Jeu de données :</translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.ui" line="113"/>
+        <source>Max and min zoom levels:</source>
+        <translation>Niveaux de zoom :</translation>
     </message>
 </context>
 <context>
@@ -691,37 +706,42 @@
     <message>
         <location filename="../../gui/user/wdg_user.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Paramètres</translation>
+        <translation type="obsolete">Paramètres</translation>
     </message>
     <message>
-        <location filename="../../gui/user/wdg_user.ui" line="29"/>
+        <location filename="../../gui/user/wdg_user.ui" line="32"/>
         <source>First name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Prénom :</translation>
     </message>
     <message>
-        <location filename="../../gui/user/wdg_user.ui" line="55"/>
+        <location filename="../../gui/user/wdg_user.ui" line="58"/>
         <source>Last name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom :</translation>
     </message>
     <message>
-        <location filename="../../gui/user/wdg_user.ui" line="81"/>
+        <location filename="../../gui/user/wdg_user.ui" line="84"/>
         <source>Email:</source>
-        <translation type="unfinished"></translation>
+        <translation>Email :</translation>
     </message>
     <message>
-        <location filename="../../gui/user/wdg_user.ui" line="107"/>
+        <location filename="../../gui/user/wdg_user.ui" line="110"/>
         <source>Registration date:</source>
-        <translation type="unfinished"></translation>
+        <translation>Date de création du compte :</translation>
     </message>
     <message>
-        <location filename="../../gui/user/wdg_user.ui" line="133"/>
+        <location filename="../../gui/user/wdg_user.ui" line="136"/>
         <source>ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>Identifiant :</translation>
     </message>
     <message>
-        <location filename="../../gui/user/wdg_user.ui" line="159"/>
+        <location filename="../../gui/user/wdg_user.ui" line="162"/>
         <source>Datastores</source>
-        <translation type="unfinished"></translation>
+        <translation>Espaces de travail</translation>
+    </message>
+    <message>
+        <location filename="../../gui/user/wdg_user.ui" line="14"/>
+        <source>User informations</source>
+        <translation>Mon compte</translation>
     </message>
 </context>
 <context>
@@ -802,7 +822,7 @@
     <message>
         <location filename="../../gui/publication_creation/wdg_publication_form.ui" line="102"/>
         <source>Inform your users about the legal notice to show if they use your flux. Example &quot;IGN source BDTOPOÂ®&quot;. This legal notice will be show below the map in the form of a link that points to the URL.</source>
-        <translation>Informez vos utilisateurs des mentions à faire figurer sur les cartes lorsqu&apos;ils utilisent votre flux. Exemple : &quot;source IGN BDTOPO®&quot;. Ce texte sera affiché au bas des cartes sous forme de lien cliquable pointant vers l&apos;URL indiquée.</translation>
+        <translation>Informez vos utilisateurs des mentions à faire figurer sur les cartes lorsqu&apos;ils utilisent votre flux. Exemple : &amp;quot;source IGN BDTOPO®&amp;quot;. Ce texte sera affiché au bas des cartes sous forme de lien cliquable pointant vers l&apos;URL indiquée.</translation>
     </message>
     <message>
         <location filename="../../gui/publication_creation/wdg_publication_form.ui" line="161"/>

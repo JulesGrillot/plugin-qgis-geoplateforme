@@ -3,7 +3,11 @@ from qgis.PyQt.QtCore import QObject, QSize, Qt, QVariant
 from qgis.PyQt.QtGui import QPixmap, QStandardItemModel
 
 from geotuileur.__about__ import DIR_PLUGIN_ROOT
-from geotuileur.api.stored_data import StoredData, StoredDataRequestManager
+from geotuileur.api.stored_data import (
+    StoredData,
+    StoredDataRequestManager,
+    StoredDataStatus,
+)
 from geotuileur.toolbelt import PlgLogger
 
 
@@ -43,17 +47,32 @@ class StoredDataListModel(QStandardItemModel):
             type_ = self.data(
                 self.index(index.row(), self.TYPE_COL), QtCore.Qt.DisplayRole
             )
-            if type_ == "VECTOR-DB":
-                filepath = str(
-                    DIR_PLUGIN_ROOT / "resources" / "images" / "dashboard" / "db.png"
-                )
-            elif type_ == "ROK4-PYRAMID-VECTOR":
-                filepath = str(
-                    DIR_PLUGIN_ROOT / "resources" / "images" / "dashboard" / "tiles.png"
-                )
-            result = QPixmap(filepath).scaled(
-                QSize(32, 32), Qt.KeepAspectRatio, Qt.SmoothTransformation
+            status_value = self.data(
+                self.index(index.row(), self.STATUS_COL), QtCore.Qt.DisplayRole
             )
+            status = StoredDataStatus[status_value]
+
+            filename_suffix = ""
+            if status == StoredDataStatus.UNSTABLE:
+                filename_suffix = "-unstable"
+            elif status == StoredDataStatus.GENERATED:
+                filename_suffix = "-generated"
+
+            filename = ""
+            if status == StoredDataStatus.GENERATING:
+                filename = "generating.png"
+            elif type_ == "VECTOR-DB":
+                filename = f"db{filename_suffix}.png"
+            elif type_ == "ROK4-PYRAMID-VECTOR":
+                filename = f"tiles{filename_suffix}.png"
+
+            if filename:
+                filepath = str(
+                    DIR_PLUGIN_ROOT / "resources" / "images" / "dashboard" / filename
+                )
+                result = QPixmap(filepath).scaled(
+                    QSize(32, 32), Qt.KeepAspectRatio, Qt.SmoothTransformation
+                )
         return result
 
     def set_datastore(self, datastore: str) -> None:
@@ -80,7 +99,7 @@ class StoredDataListModel(QStandardItemModel):
         self.insertRow(row)
 
         self.setData(self.index(row, self.NAME_COL), stored_data.name)
-        self.setData(self.index(row, self.NAME_COL), stored_data.tags, Qt.UserRole)
+        self.setData(self.index(row, self.NAME_COL), stored_data, Qt.UserRole)
         self.setData(self.index(row, self.ID_COL), stored_data.id)
         self.setData(self.index(row, self.TYPE_COL), stored_data.type)
         self.setData(self.index(row, self.STATUS_COL), stored_data.status)

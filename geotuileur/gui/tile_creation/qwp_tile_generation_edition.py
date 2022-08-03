@@ -6,6 +6,7 @@ from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtWidgets import QMessageBox, QSlider, QWizardPage
 
 # Plugin
+from geotuileur.api.stored_data import StoredDataStatus, StoredDataStep
 from geotuileur.gui.lne_validators import alphanum_qval
 
 
@@ -49,8 +50,8 @@ class TileGenerationEditionPageWizard(QWizardPage):
 
         # Only display stored data ready for pyramid generation
         self.cbx_stored_data.set_filter_type(["VECTOR-DB"])
-        self.cbx_stored_data.set_expected_tags(["upload_id", "proc_int_id"])
-        self.cbx_stored_data.set_forbidden_tags(["pyramid_id"])
+        self.cbx_stored_data.set_visible_steps([StoredDataStep.TILE_GENERATION])
+        self.cbx_stored_data.set_visible_status([StoredDataStatus.GENERATED])
 
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
         self._datastore_updated()

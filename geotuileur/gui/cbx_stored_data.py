@@ -2,7 +2,7 @@ from typing import List
 
 from qgis.PyQt.QtWidgets import QComboBox
 
-from geotuileur.api.stored_data import StoredDataStatus
+from geotuileur.api.stored_data import StoredDataStatus, StoredDataStep
 from geotuileur.gui.mdl_stored_data import StoredDataListModel
 from geotuileur.gui.proxy_model_stored_data import StoredDataProxyModel
 
@@ -24,7 +24,7 @@ class StoredDataComboBox(QComboBox):
         self.proxy_model_stored_data = StoredDataProxyModel(self)
         self.proxy_model_stored_data.setSourceModel(self.mdl_stored_data)
         # By default we can't display UNSTABLE and DELETED
-        self.proxy_model_stored_data.set_forbidden_status(
+        self.proxy_model_stored_data.set_invisible_status(
             [StoredDataStatus.UNSTABLE, StoredDataStatus.DELETED]
         )
         self.setModel(self.proxy_model_stored_data)
@@ -38,23 +38,23 @@ class StoredDataComboBox(QComboBox):
         """
         self.proxy_model_stored_data.set_filter_type(filter_type)
 
-    def set_expected_tags(self, tags: List[str]) -> None:
+    def set_visible_steps(self, steps: [StoredDataStep]) -> None:
         """
-        Define filter of expected tags for stored data tags key
+        Define filter of visible steps for stored data
 
         Args:
-            tags: expected stored data tags key
+            steps: List[StoredDataStep] visible step list
         """
-        self.proxy_model_stored_data.set_expected_tags(tags)
+        self.proxy_model_stored_data.set_visible_steps(steps)
 
-    def set_forbidden_tags(self, forbidden_tags: List[str]) -> None:
+    def set_visible_status(self, status: List[StoredDataStatus]) -> None:
         """
-        Define filter of forbidden tags for stored data tags key
+        Define filter of visible status for stored data
 
         Args:
-            forbidden_tags: forbidden stored data tags key
+            status: List[StoredDataStatus] visible status list
         """
-        self.proxy_model_stored_data.set_forbidden_tags(forbidden_tags)
+        self.proxy_model_stored_data.set_visible_status(status)
 
     def set_datastore(self, datastore: str) -> None:
         """

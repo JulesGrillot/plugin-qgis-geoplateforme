@@ -5,6 +5,8 @@ import os
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QMessageBox, QWizardPage
 
+from geotuileur.api.stored_data import StoredDataStatus, StoredDataStep
+
 
 class PublicationFormPageWizard(QWizardPage):
     def __init__(self, parent=None):
@@ -24,9 +26,8 @@ class PublicationFormPageWizard(QWizardPage):
 
         # Only display pyramid generation ready for publication
         self.cbx_stored_data.set_filter_type(["ROK4-PYRAMID-VECTOR"])
-        self.cbx_stored_data.set_expected_tags(
-            ["upload_id", "proc_int_id", "pyramid_id"]
-        )
+        self.cbx_stored_data.set_visible_steps([StoredDataStep.TILE_PUBLICATION])
+        self.cbx_stored_data.set_visible_status([StoredDataStatus.GENERATED])
 
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
 

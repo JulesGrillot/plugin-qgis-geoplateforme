@@ -3,7 +3,7 @@ import os
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QAbstractItemView, QWidget
 
-from geotuileur.api.stored_data import StoredDataStatus
+from geotuileur.api.stored_data import StoredDataStatus, StoredDataStep
 from geotuileur.gui.mdl_stored_data import StoredDataListModel
 from geotuileur.gui.proxy_model_stored_data import StoredDataProxyModel
 
@@ -30,9 +30,12 @@ class DashboardWidget(QWidget):
 
         # Action to finish
         self.proxy_mdl_action_to_finish = self._create_proxy_model(
-            expected_tags=["upload_id"],
-            forbidden_tags=["pyramid_id", "tms_url"],
-            expected_status=[],
+            visible_steps=[
+                StoredDataStep.TILE_GENERATION,
+                StoredDataStep.TILE_SAMPLE,
+                StoredDataStep.TILE_PUBLICATION,
+            ],
+            visible_status=[StoredDataStatus.GENERATED],
         )
         self.tbv_actions_to_finish.setModel(self.proxy_mdl_action_to_finish)
         self.tbv_actions_to_finish.verticalHeader().setVisible(False)
@@ -40,9 +43,8 @@ class DashboardWidget(QWidget):
 
         # Running actions
         self.proxy_mdl_running_action = self._create_proxy_model(
-            expected_tags=[],
-            forbidden_tags=[],
-            expected_status=[StoredDataStatus.GENERATING],
+            visible_steps=[],
+            visible_status=[StoredDataStatus.GENERATING],
         )
         self.tbl_running_actions.setModel(self.proxy_mdl_running_action)
         self.tbl_running_actions.verticalHeader().setVisible(False)
@@ -50,9 +52,8 @@ class DashboardWidget(QWidget):
 
         # Publicated tiles
         self.proxy_mdl_publicated_tiles = self._create_proxy_model(
-            expected_tags=["upload_id", "tms_url"],
-            forbidden_tags=[],
-            expected_status=[],
+            visible_steps=[StoredDataStep.PUBLISHED],
+            visible_status=[StoredDataStatus.GENERATED],
         )
         self.tbl_publicated_tiles.setModel(self.proxy_mdl_publicated_tiles)
         self.tbl_publicated_tiles.verticalHeader().setVisible(False)
@@ -70,17 +71,15 @@ class DashboardWidget(QWidget):
 
     def _create_proxy_model(
         self,
-        expected_tags: [str],
-        forbidden_tags: [str],
-        expected_status: [StoredDataStatus],
+        visible_steps: [StoredDataStep],
+        visible_status: [StoredDataStatus],
     ) -> StoredDataProxyModel:
         """
         Create StoredDataProxyModel with filters
 
         Args:
-            expected_tags: [str] expected tag filter
-            forbidden_tags: [str] forbidden tag filter
-            expected_status: [StoredDataStatus] expected status filter
+            visible_steps: [StoredDataStep] visible stored data steps
+            visible_status: [StoredDataStatus] visible stored data status
 
         Returns: StoredDataProxyModel
 
@@ -88,9 +87,8 @@ class DashboardWidget(QWidget):
         proxy_mdl = StoredDataProxyModel(self)
         proxy_mdl.setSourceModel(self.mdl_stored_data)
 
-        proxy_mdl.set_expected_tags(expected_tags)
-        proxy_mdl.set_forbidden_tags(forbidden_tags)
-        proxy_mdl.set_expected_status(expected_status)
+        proxy_mdl.set_visible_steps(visible_steps)
+        proxy_mdl.set_visible_status(visible_status)
 
         return proxy_mdl
 

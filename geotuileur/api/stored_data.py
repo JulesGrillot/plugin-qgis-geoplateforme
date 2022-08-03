@@ -12,6 +12,20 @@ from qgis.PyQt.QtNetwork import QNetworkRequest
 from geotuileur.toolbelt import PlgLogger, PlgOptionsManager
 
 
+class StoredDataStep(Enum):
+    UNDEFINED = "UNDEFINED"
+
+    # Steps for VECTOR-DB type
+    DATABASE_INTEGRATION = "DATABASE_INTEGRATION"
+    TILE_GENERATION = "TILE_GENERATION"
+    TILE_CREATED = "TILE_CREATED"
+
+    # Steps for ROK4-PYRAMID-VECTOR type
+    TILE_SAMPLE = "TILE_SAMPLE"
+    TILE_PUBLICATION = "TILE_PUBLICATION"
+    PUBLISHED = "PUBLISHED"
+
+
 class StoredDataStatus(Enum):
     CREATED = "CREATED"
     GENERATING = "GENERATING"
@@ -54,6 +68,64 @@ class StoredData:
         if self.type_infos["levels"]:
             zoom_levels = self.type_infos["levels"]
         return zoom_levels
+
+    def get_current_step(self) -> StoredDataStep:
+        """
+        Define current stored data step from available tags.
+
+        Returns: StoredDataStep
+
+        """
+        if self.type == "VECTOR-DB":
+            result = self._get_vector_db_step()
+        elif self.type == "ROK4-PYRAMID-VECTOR":
+
+            result = self._get_pyramid_step()
+
+        else:
+            result = StoredDataStep.UNDEFINED
+        return result
+
+    def _get_vector_db_step(self) -> StoredDataStep:
+        """
+        Define current stored data step for vector-db from available tags.
+
+        Returns: StoredDataStep
+
+        """
+        if self.tags:
+            if "upload_id" in self.tags and "proc_int_id" in self.tags:
+                if "pyramid_id" in self.tags:
+                    result = StoredDataStep.TILE_CREATED
+                else:
+                    result = StoredDataStep.TILE_GENERATION
+            else:
+                result = StoredDataStep.DATABASE_INTEGRATION
+        else:
+            result = StoredDataStep.DATABASE_INTEGRATION
+        return result
+
+    def _get_pyramid_step(self) -> StoredDataStep:
+        """
+        Define current stored data step for pyramid from available tags.
+
+        Returns: StoredDataStep
+
+        """
+        result = StoredDataStep.UNDEFINED
+        if self.tags:
+            if (
+                "upload_id" in self.tags
+                and "proc_int_id" in self.tags
+                and "vectordb_id" in self.tags
+                and "proc_pyr_creat_id" in self.tags
+            ):
+                result = StoredDataStep.TILE_PUBLICATION
+                if "is_sample" in self.tags:
+                    result = StoredDataStep.TILE_SAMPLE
+                elif "tms_url" in self.tags:
+                    result = StoredDataStep.PUBLISHED
+        return result
 
 
 class StoredDataRequestManager:

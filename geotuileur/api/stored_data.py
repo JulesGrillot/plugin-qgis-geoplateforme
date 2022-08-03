@@ -2,6 +2,7 @@ import json
 import math
 import re
 from dataclasses import dataclass
+from enum import Enum
 from typing import List
 
 from qgis.core import QgsBlockingNetworkRequest
@@ -9,6 +10,15 @@ from qgis.PyQt.QtCore import QByteArray, QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 from geotuileur.toolbelt import PlgLogger, PlgOptionsManager
+
+
+class StoredDataStatus(Enum):
+    CREATED = "CREATED"
+    GENERATING = "GENERATING"
+    GENERATED = "GENERATED"
+    UNSTABLE = "UNSTABLE"
+    MODIFYING = "MODIFYING"
+    DELETED = "DELETED"
 
 
 @dataclass

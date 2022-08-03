@@ -2,6 +2,7 @@ from typing import List
 
 from qgis.PyQt.QtWidgets import QComboBox
 
+from geotuileur.api.stored_data import StoredDataStatus
 from geotuileur.gui.mdl_stored_data import StoredDataListModel
 from geotuileur.gui.proxy_model_stored_data import StoredDataProxyModel
 
@@ -22,6 +23,10 @@ class StoredDataComboBox(QComboBox):
         self.mdl_stored_data = StoredDataListModel(self)
         self.proxy_model_stored_data = StoredDataProxyModel(self)
         self.proxy_model_stored_data.setSourceModel(self.mdl_stored_data)
+        # By default we can't display UNSTABLE and DELETED
+        self.proxy_model_stored_data.set_forbidden_status(
+            [StoredDataStatus.UNSTABLE, StoredDataStatus.DELETED]
+        )
         self.setModel(self.proxy_model_stored_data)
 
     def set_filter_type(self, filter_type: []) -> None:

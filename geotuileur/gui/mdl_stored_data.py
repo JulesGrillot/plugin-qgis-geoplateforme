@@ -11,7 +11,7 @@ class StoredDataListModel(QStandardItemModel):
     NAME_COL = 0
     ID_COL = 1
     TYPE_COL = 2
-    STATUT_COL = 3
+    STATUS_COL = 3
 
     def __init__(self, parent: QObject = None):
         """
@@ -83,4 +83,4 @@ class StoredDataListModel(QStandardItemModel):
         self.setData(self.index(row, self.NAME_COL), stored_data.tags, Qt.UserRole)
         self.setData(self.index(row, self.ID_COL), stored_data.id)
         self.setData(self.index(row, self.TYPE_COL), stored_data.type)
-        self.setData(self.index(row, self.STATUT_COL), stored_data.status)
+        self.setData(self.index(row, self.STATUS_COL), stored_data.status)

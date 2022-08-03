@@ -2,6 +2,7 @@ from typing import List
 
 from qgis.PyQt.QtCore import QModelIndex, QObject, QSortFilterProxyModel, Qt
 
+from geotuileur.api.stored_data import StoredDataStatus
 from geotuileur.gui.mdl_stored_data import StoredDataListModel
 
 
@@ -11,6 +12,7 @@ class StoredDataProxyModel(QSortFilterProxyModel):
         self.filter_type = []
         self.tags = []
         self.forbidden_tags = []
+        self.forbidden_status = []
 
     def set_filter_type(self, filter_type: List) -> None:
         """
@@ -29,6 +31,15 @@ class StoredDataProxyModel(QSortFilterProxyModel):
             tags: expected stored data tags key
         """
         self.tags = tags
+
+    def set_forbidden_status(self, status: List[StoredDataStatus]) -> None:
+        """
+        Define filter of forbidden status for stored data
+
+        Args:
+            status: forbidden stored data status
+        """
+        self.forbidden_status = status
 
     def set_forbidden_tags(self, forbidden_tags: List[str]) -> None:
         """
@@ -74,5 +85,15 @@ class StoredDataProxyModel(QSortFilterProxyModel):
 
                 for tag in self.forbidden_tags:
                     result &= tag not in available_tags
+
+        # Check stored data status
+        if len(self.forbidden_status) and result:
+            status_index = self.sourceModel().index(
+                source_row, StoredDataListModel.STATUS_COL, source_parent
+            )
+            status_value = self.sourceModel().data(status_index, Qt.DisplayRole)
+            if status_value:
+                status = StoredDataStatus[status_value]
+                result &= status not in self.forbidden_status
 
         return result

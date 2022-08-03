@@ -79,9 +79,7 @@ class StoredData:
         if self.type == "VECTOR-DB":
             result = self._get_vector_db_step()
         elif self.type == "ROK4-PYRAMID-VECTOR":
-
             result = self._get_pyramid_step()
-
         else:
             result = StoredDataStep.UNDEFINED
         return result

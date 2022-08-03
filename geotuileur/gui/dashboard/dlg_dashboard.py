@@ -18,6 +18,7 @@ class DashboardDialog(QDialog):
             os.path.join(os.path.dirname(__file__), "dlg_dashboard.ui"),
             self,
         )
+        self.setWindowTitle(self.tr("Dashboard"))
 
     def refresh(self) -> None:
         """

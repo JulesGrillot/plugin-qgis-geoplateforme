@@ -35,7 +35,7 @@ class DashboardWidget(QWidget):
                 StoredDataStep.TILE_SAMPLE,
                 StoredDataStep.TILE_PUBLICATION,
             ],
-            visible_status=[StoredDataStatus.GENERATED],
+            visible_status=[StoredDataStatus.GENERATED, StoredDataStatus.UNSTABLE],
         )
         self.tbv_actions_to_finish.setModel(self.proxy_mdl_action_to_finish)
         self.tbv_actions_to_finish.verticalHeader().setVisible(False)

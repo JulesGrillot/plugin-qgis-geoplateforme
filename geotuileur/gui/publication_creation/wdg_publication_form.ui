@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>wdg_publication_form</class>
+ <widget class="QWidget" name="wdg_publication_form">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -99,7 +99,7 @@
       <string notr="true">color: rgb(46, 52, 54)</string>
      </property>
      <property name="text">
-      <string>Inform your users about the legal notice to show if they use your flux. Example &quot;IGN source BDTOPO®&quot;. This legal notice will be show below the map in the form of a  link that points to the  URL</string>
+      <string>Inform your users about the legal notice to show if they use your flux. Example &quot;IGN source BDTOPO®&quot;. This legal notice will be show below the map in the form of a link that points to the URL.</string>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -137,7 +137,7 @@
       <string notr="true"/>
      </property>
      <property name="placeholderText">
-      <string>https:// *</string>
+      <string notr="true">https:// *</string>
      </property>
     </widget>
    </item>

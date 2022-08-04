@@ -46,7 +46,6 @@ class GeotuileurPlugin:
         translator = plg_translation_mngr.get_translator()
         if translator:
             QCoreApplication.installTranslator(translator)
-        self.tr = plg_translation_mngr.tr
         self.plg_settings = PlgOptionsManager()
 
         self.options_factory = None
@@ -116,7 +115,7 @@ class GeotuileurPlugin:
         # Help
         self.action_help = QAction(
             QIcon(":/images/themes/default/mActionHelpContents.svg"),
-            self.tr("Help", context="GeotuileurPlugin"),
+            self.tr("Help"),
             self.iface.mainWindow(),
         )
         self.action_help.triggered.connect(
@@ -181,6 +180,18 @@ class GeotuileurPlugin:
         # remove actions
         del self.action_settings
         del self.action_help
+
+    def tr(self, message):
+        """Get the translation for a string using Qt translation API.
+        We implement this ourselves since we do not inherit QObject.
+
+        :param message: String for translation.
+        :type message: str, QString
+
+        :returns: Translated version of message.
+        :rtype: QString
+        """
+        return QCoreApplication.translate(self.__class__.__name__, message)
 
     def tile_creation(self) -> None:
         """

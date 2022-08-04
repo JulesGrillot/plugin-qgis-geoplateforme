@@ -12,7 +12,9 @@
     "editor.wordWrapColumn": 88,
     "files.associations": {
         "./requirements/*.txt": "pip-requirements",
-        "metadata.txt": "ini"
+        "metadata.txt": "ini",
+        "**/*.ts": "xml",
+        "**/*.ui": "xml"
     },
     // Formatter
     "python.formatting.provider": "black",

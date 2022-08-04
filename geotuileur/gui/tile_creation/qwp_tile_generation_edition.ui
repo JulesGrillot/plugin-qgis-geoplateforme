@@ -6,67 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>492</width>
-    <height>454</height>
+    <width>567</width>
+    <height>238</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>WizardPage</string>
+   <string>Generation form</string>
+  </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="6" column="0">
-    <widget class="QLabel" name="lbl_zoom">
-     <property name="styleSheet">
-      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
-     <property name="text">
-      <string>Choisissez le niveau de zoom</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="StoredDataComboBox" name="cbx_stored_data"/>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="lbl_datastore">
-     <property name="styleSheet">
-      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
-     <property name="text">
-      <string>Espace de travail</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
+   <item row="1" column="1">
     <widget class="DatastoreComboBox" name="cbx_datastore"/>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="lbl_stored_data">
-     <property name="styleSheet">
-      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
-     <property name="text">
-      <string>Jeux de données</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLineEdit" name="lne_flux">
-     <property name="inputMethodHints">
-      <set>Qt::ImhLatinOnly</set>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="dragEnabled">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="0">
+   <item row="9" column="1">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -79,7 +33,28 @@ color: rgb(52, 101, 164);</string>
      </property>
     </spacer>
    </item>
-   <item row="4" column="0">
+   <item row="8" column="1">
+    <widget class="QgsScaleRangeWidget" name="srw_zoom">
+     <property name="cursor">
+      <cursorShape>ArrowCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 75 8pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="RangeSlider" name="levels_range_slider" native="true">
+     <property name="cursor">
+      <cursorShape>ClosedHandCursor</cursorShape>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="StoredDataComboBox" name="cbx_stored_data"/>
+   </item>
+   <item row="5" column="0">
     <widget class="QLabel" name="lbl_flux">
      <property name="autoFillBackground">
       <bool>true</bool>
@@ -89,20 +64,55 @@ color: rgb(52, 101, 164);</string>
 color: rgb(52, 101, 164);</string>
      </property>
      <property name="text">
-      <string>Nommez votre flux :  </string>
+      <string>Service name:</string>
      </property>
     </widget>
    </item>
-   <item row="8" column="0">
-    <widget class="QgsScaleRangeWidget" name="srw_zoom">
+   <item row="1" column="0">
+    <widget class="QLabel" name="lbl_datastore">
      <property name="styleSheet">
-      <string notr="true">font: 75 8pt &quot;Ubuntu Condensed&quot;;
+      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
 color: rgb(52, 101, 164);</string>
      </property>
+     <property name="text">
+      <string>Datastore:</string>
+     </property>
     </widget>
    </item>
-   <item row="7" column="0">
-    <widget class="RangeSlider" name="levels_range_slider" native="true"/>
+   <item row="3" column="0">
+    <widget class="QLabel" name="lbl_stored_data">
+     <property name="styleSheet">
+      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+     </property>
+     <property name="text">
+      <string>Dataset:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLineEdit" name="lne_flux">
+     <property name="inputMethodHints">
+      <set>Qt::ImhLatinOnly</set>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="dragEnabled">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0" rowspan="2">
+    <widget class="QLabel" name="lbl_zoom">
+     <property name="styleSheet">
+      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+     </property>
+     <property name="text">
+      <string>Max and min zoom levels:</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

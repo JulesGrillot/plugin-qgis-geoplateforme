@@ -21,10 +21,16 @@ class UploadCreationAlgorithm(QgsProcessingAlgorithm):
 
     CREATED_UPLOAD_ID = "CREATED_UPLOAD_ID"
 
-    def tr(self, string):
-        return QCoreApplication.translate(
-            "Create an upload for IGN Geotuileur platform", string
-        )
+    def tr(self, message: str) -> str:
+        """Get the translation for a string using Qt translation API.
+
+        :param message: string to be translated.
+        :type message: str
+
+        :returns: Translated version of message.
+        :rtype: str
+        """
+        return QCoreApplication.translate(self.__class__.__name__, message)
 
     def createInstance(self):
         return UploadCreationAlgorithm()

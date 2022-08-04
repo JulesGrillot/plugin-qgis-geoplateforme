@@ -38,10 +38,16 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
     URL_TITLE = "title"
     VISIBILITY = "visibility"
 
-    def tr(self, string):
-        return QCoreApplication.translate(
-            "Create an publication for IGN Geotuileur platform", string
-        )
+    def tr(self, message: str) -> str:
+        """Get the translation for a string using Qt translation API.
+
+        :param message: string to be translated.
+        :type message: str
+
+        :returns: Translated version of message.
+        :rtype: str
+        """
+        return QCoreApplication.translate(self.__class__.__name__, message)
 
     def createInstance(self):
         return UploadPublicationAlgorithm()

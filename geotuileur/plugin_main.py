@@ -6,12 +6,13 @@
 
 # standard
 from functools import partial
+from pathlib import Path
 
 # PyQGIS
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsSettings
 from qgis.gui import QgisInterface
 from qgis.PyQt.Qt import QUrl
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, QLocale, QTranslator
 from qgis.PyQt.QtGui import QDesktopServices, QIcon
 from qgis.PyQt.QtWidgets import QAction, QToolBar
 
@@ -26,7 +27,7 @@ from geotuileur.gui.tile_creation.wzd_tile_creation import TileCreationWizard
 from geotuileur.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
 from geotuileur.gui.user.dlg_user import UserDialog
 from geotuileur.processing import GeotuileurProvider
-from geotuileur.toolbelt import PlgLogger, PlgOptionsManager, PlgTranslator
+from geotuileur.toolbelt import PlgLogger, PlgOptionsManager
 
 
 class GeotuileurPlugin:
@@ -41,12 +42,20 @@ class GeotuileurPlugin:
         self.log = PlgLogger().log
         self.provider = None
 
-        # translation
-        plg_translation_mngr = PlgTranslator()
-        translator = plg_translation_mngr.get_translator()
-        if translator:
-            QCoreApplication.installTranslator(translator)
-        self.tr = plg_translation_mngr.tr
+        # initialize the locale
+        self.locale: str = QgsSettings().value("locale/userLocale", QLocale().name())[
+            0:2
+        ]
+        locale_path: Path = (
+            DIR_PLUGIN_ROOT / f"resources/i18n/{__title__.lower()}_{self.locale}.qm"
+        )
+        self.log(message=f"Translation: {self.locale}, {locale_path}", log_level=4)
+        if locale_path.exists():
+            self.translator = QTranslator()
+            self.translator.load(str(locale_path.resolve()))
+            QCoreApplication.installTranslator(self.translator)
+
+        # plugin settings
         self.plg_settings = PlgOptionsManager()
 
         self.options_factory = None
@@ -116,7 +125,7 @@ class GeotuileurPlugin:
         # Help
         self.action_help = QAction(
             QIcon(":/images/themes/default/mActionHelpContents.svg"),
-            self.tr("Help", context="GeotuileurPlugin"),
+            self.tr("Help"),
             self.iface.mainWindow(),
         )
         self.action_help.triggered.connect(
@@ -181,6 +190,18 @@ class GeotuileurPlugin:
         # remove actions
         del self.action_settings
         del self.action_help
+
+    def tr(self, message):
+        """Get the translation for a string using Qt translation API.
+        We implement this ourselves since we do not inherit QObject.
+
+        :param message: String for translation.
+        :type message: str, QString
+
+        :returns: Translated version of message.
+        :rtype: QString
+        """
+        return QCoreApplication.translate(self.__class__.__name__, message)
 
     def tile_creation(self) -> None:
         """
@@ -262,27 +283,3 @@ class GeotuileurPlugin:
         self.action_import.setEnabled(enabled)
         self.action_tile_create.setEnabled(enabled)
         self.action_publication.setEnabled(enabled)
-
-    def run(self):
-        """Main process.
-
-        :raises Exception: if there is no item in the feed
-        """
-        try:
-            self.log(
-                message=self.tr(
-                    text="Everything ran OK.",
-                    context="GeotuileurPlugin",
-                ),
-                log_level=3,
-                push=False,
-            )
-        except Exception as err:
-            self.log(
-                message=self.tr(
-                    text="Houston, we've got a problem: {}".format(err),
-                    context="GeotuileurPlugin",
-                ),
-                log_level=2,
-                push=True,
-            )

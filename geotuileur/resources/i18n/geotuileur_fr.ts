@@ -36,12 +36,12 @@
     <message>
         <location filename="../../gui/dlg_authentication.py" line="104"/>
         <source>Welcome {user.first_name} {user.last_name}!</source>
-        <translation type="obsolete">Bienvenue {user.first_name} {user.last_name} !</translation>
+        <translation>Bienvenue {user.first_name} {user.last_name} !</translation>
     </message>
     <message>
         <location filename="../../gui/dlg_authentication.py" line="112"/>
         <source>Invalid connection parameters: {exc}</source>
-        <translation type="obsolete">Les paramètres de connexion sont invalides : {exc}</translation>
+        <translation>Les paramètres de connexion sont invalides : {exc}</translation>
     </message>
     <message>
         <location filename="../../gui/dlg_authentication.ui" line="26"/>
@@ -94,7 +94,7 @@
     <message>
         <location filename="../../gui/dlg_settings.py" line="160"/>
         <source>Welcome</source>
-        <translation type="obsolete">Bienvenue</translation>
+        <translation>Bienvenue</translation>
     </message>
     <message>
         <location filename="../../gui/dlg_settings.py" line="172"/>
@@ -104,7 +104,12 @@
     <message>
         <location filename="../../gui/dlg_settings.py" line="160"/>
         <source>Welcome {user.first_name} {user.last_name} !</source>
-        <translation type="obsolete">Bienvenue {user.first_name} {user.last_name}!</translation>
+        <translation type="obsolete">Bienvenue {user.first_name} {user.last_name} !</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dlg_settings.py" line="160"/>
+        <source>Welcome {user.first_name} {user.last_name}!</source>
+        <translation>Bienvenue {user.first_name} {user.last_name} !</translation>
     </message>
 </context>
 <context>
@@ -112,12 +117,12 @@
     <message>
         <location filename="../../gui/mdl_datastore.py" line="21"/>
         <source>Name</source>
-        <translation type="obsolete">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <location filename="../../gui/mdl_datastore.py" line="21"/>
         <source>id</source>
-        <translation type="obsolete">Identifiant</translation>
+        <translation>Identifiant</translation>
     </message>
 </context>
 <context>
@@ -125,22 +130,22 @@
     <message>
         <location filename="../../gui/mdl_execution_list.py" line="21"/>
         <source>Name</source>
-        <translation type="obsolete">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <location filename="../../gui/mdl_execution_list.py" line="21"/>
         <source>Status</source>
-        <translation type="obsolete">Statut</translation>
+        <translation>Statut</translation>
     </message>
     <message>
         <location filename="../../gui/mdl_execution_list.py" line="21"/>
         <source>Start</source>
-        <translation type="obsolete">Début</translation>
+        <translation>Début</translation>
     </message>
     <message>
         <location filename="../../gui/mdl_execution_list.py" line="21"/>
         <source>Finish</source>
-        <translation type="obsolete">Fin</translation>
+        <translation>Fin</translation>
     </message>
 </context>
 <context>
@@ -244,32 +249,32 @@
 <context>
     <name>GeotuileurPlugin</name>
     <message>
-        <location filename="../../plugin_main.py" line="117"/>
+        <location filename="../../plugin_main.py" line="116"/>
         <source>Help</source>
         <translation>Documentation</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="127"/>
+        <location filename="../../plugin_main.py" line="126"/>
         <source>Settings</source>
         <translation>Paramètres</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="81"/>
+        <location filename="../../plugin_main.py" line="80"/>
         <source>Login</source>
         <translation>S&apos;authentifier</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="89"/>
+        <location filename="../../plugin_main.py" line="88"/>
         <source>Create a new upload</source>
         <translation>Téléverser des données</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="97"/>
+        <location filename="../../plugin_main.py" line="96"/>
         <source>Tile creation</source>
         <translation>Générer des tuiles</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="105"/>
+        <location filename="../../plugin_main.py" line="104"/>
         <source>Publication</source>
         <translation>Publication</translation>
     </message>
@@ -279,7 +284,7 @@
     <message>
         <location filename="../../processing/provider.py" line="67"/>
         <source>Geotuileur - Tools</source>
-        <translation type="obsolete">Geotuileur - Outillage</translation>
+        <translation>Geotuileur - Outillage</translation>
     </message>
 </context>
 <context>
@@ -371,16 +376,37 @@
     </message>
 </context>
 <context>
-    <name>ResultCode</name>
+    <name>PublicationFormCreation</name>
     <message>
-        <location filename="../../processing/check_layer.py" line="42"/>
-        <source>Check layers for IGN Geotuileur</source>
-        <translation type="obsolete">Vérifier les couches pour IGN Geotuileur</translation>
+        <location filename="../../gui/publication_creation/wzd_publication_creation.py" line="23"/>
+        <source>Publication creation</source>
+        <translation>Date de publication</translation>
+    </message>
+</context>
+<context>
+    <name>PublicationFormPageWizard</name>
+    <message>
+        <location filename="../../gui/publication_creation/qwp_publication_form.py" line="52"/>
+        <source>Missing informations.</source>
+        <translation>Informations manquantes.</translation>
     </message>
     <message>
-        <location filename="../../processing/check_layer.py" line="57"/>
+        <location filename="../../gui/publication_creation/qwp_publication_form.py" line="52"/>
+        <source>Please fill all fields.</source>
+        <translation>Merci de renseigner tous les champs.</translation>
+    </message>
+</context>
+<context>
+    <name>ResultCode</name>
+    <message>
+        <location filename="../../processing/check_layer.py" line="50"/>
+        <source>Check layers for IGN Geotuileur</source>
+        <translation>Vérifier les couches pour IGN Geotuileur</translation>
+    </message>
+    <message>
+        <location filename="../../processing/check_layer.py" line="65"/>
         <source>Input layers</source>
-        <translation type="obsolete">Couches en entrée</translation>
+        <translation>Couches en entrée</translation>
     </message>
 </context>
 <context>
@@ -388,25 +414,25 @@
     <message>
         <location filename="../../gui/mdl_stored_data.py" line="22"/>
         <source>Name</source>
-        <translation type="obsolete">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <location filename="../../gui/mdl_stored_data.py" line="22"/>
         <source>id</source>
-        <translation type="obsolete">Identifiant</translation>
+        <translation>Identifiant</translation>
     </message>
     <message>
         <location filename="../../gui/mdl_stored_data.py" line="22"/>
         <source>Type</source>
-        <translation type="obsolete">Type</translation>
+        <translation>Type</translation>
     </message>
 </context>
 <context>
     <name>TileCreationAlgorithm</name>
     <message>
-        <location filename="../../processing/tile_creation.py" line="41"/>
+        <location filename="../../processing/tile_creation.py" line="49"/>
         <source>Ask for tile creation</source>
-        <translation type="obsolete">Générer des tuiles</translation>
+        <translation>Générer des tuiles</translation>
     </message>
     <message>
         <location filename="../../processing/tile_creation.py" line="53"/>
@@ -449,9 +475,32 @@
         <translation type="obsolete">Attributs</translation>
     </message>
     <message>
-        <location filename="../../processing/tile_creation.py" line="78"/>
+        <location filename="../../processing/tile_creation.py" line="86"/>
         <source>Input .json file</source>
-        <translation type="obsolete">Fichier JSON en entrée</translation>
+        <translation>Fichier JSON en entrée</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tile_creation.py" line="61"/>
+        <source>Tile creation in geotuileur platform.
+Input parameters are defined in a .json file.
+Available parameters:
+{
+    &quot;{self.STORED_DATA_NAME}&quot;: wanted stored data name (str),
+    &quot;{self.DATASTORE}&quot;: datastore id (str),
+    &quot;{self.VECTOR_DB_STORED_DATA_ID}&quot;: vector db stored data is used for tile creation (str),
+    &quot;{self.TIPPECANOE_OPTIONS}&quot;: tippecanoe option for tile creation (str),
+    &quot;{self.TMS}&quot;: tile matrix set (str) available options are &quot;PM&quot; or &quot;4326&quot;,
+    &quot;{self.BOTTOM_LEVEL}&quot;: tile bottom level (str), value between 1 and 21,
+    &quot;{self.TOP_LEVEL}&quot;: tile top level (str), value between 1 and 21,
+    &quot;{self.COMPOSITION}&quot;: table composition ([]): define attributes and levels for each table,
+        [&quot;{self.TABLE}&quot;: (str) table name,
+         &quot;{self.ATTRIBUTES}&quot;: (str) attributes list as a string with &quot;,&quot; separator,
+         &quot;{self.TOP_LEVEL}&quot;: tile top level (str), value between 1 and 21,
+         &quot;{self.TOP_LEVEL}&quot;: tile top level (str), value between 1 and 21,
+        ]    &quot;{self.BBOX}&quot;: bounding box of sample generation ([x_min,x_max,y_min,y_max]): define bounding box, if used is_sample tag added to created stored data,
+}
+Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -459,30 +508,30 @@
     <message>
         <location filename="../../gui/tile_creation/wzd_tile_creation.py" line="30"/>
         <source>Tile creation</source>
-        <translation type="obsolete">Générer des tuiles</translation>
+        <translation>Générer des tuiles</translation>
     </message>
 </context>
 <context>
     <name>TileGenerationEditionPageWizard</name>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="96"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="98"/>
         <source>No datastore selected.</source>
-        <translation type="obsolete">Aucun espace de stockage sélectionné.</translation>
+        <translation>Aucun espace de stockage sélectionné.</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="96"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="98"/>
         <source>Please select a datastore</source>
-        <translation type="obsolete">Merci de sélectionner un espace de stockage</translation>
+        <translation>Merci de sélectionner un espace de stockage</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="104"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="106"/>
         <source>No stored data selected.</source>
-        <translation type="obsolete">Aucune donnée stockée sélectionnée.</translation>
+        <translation>Aucune donnée stockée sélectionnée.</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="104"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="106"/>
         <source>Please select a stored data</source>
-        <translation type="obsolete">Merci de sélectionner une donnée stockée</translation>
+        <translation>Merci de sélectionner une donnée stockée</translation>
     </message>
 </context>
 <context>
@@ -499,29 +548,112 @@
     </message>
 </context>
 <context>
+    <name>TileGenerationGeneralizationPageWizard</name>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="78"/>
+        <source>Simplification de données hétérogènes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="79"/>
+        <source>Toutes les formes sont simplifiées.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="84"/>
+        <source>Simplification de réseau</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="85"/>
+        <source>Toutes les formes sont simplifiées et les nœuds du réseau sont conservés.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="92"/>
+        <source>Simplification de données linéaires autres</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="93"/>
+        <source>Les petits objets sont supprimés.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="98"/>
+        <source>Schématisation de données surfaciques</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="99"/>
+        <source>Les formes sont simplifiées en conservant une couverture du territoire.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="106"/>
+        <source>Sélection de données surfaciques</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="107"/>
+        <source>Les données les plus représentatives sont conservées et les plus petites supprimées. Ce choix est pertinent si 3 attributs ou moins sont conservés à l&apos;étape précédente.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="116"/>
+        <source>Fusion attributaire de données surfaciques</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="117"/>
+        <source>Les objets qui ont les mêmes valeurs d’attribut sont fusionnés tout en simplifiant les formes et en supprimant les petites surfaces. Ce choix est pertinent si 3 attributs ou moins sont conservés à l&apos;étape précédente.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="126"/>
+        <source>Harmonisation de données surfaciques</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="127"/>
+        <source>Les formes sont simplifiées en conservant les limites partagées entre deux surfaces.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>TileGenerationStatusPageWizard</name>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="187"/>
         <source>Tile creation failed</source>
-        <translation type="obsolete">La génération des tuiles a échoué</translation>
+        <translation>La génération des tuiles a échoué</translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="263"/>
         <source>Check details for more informations</source>
-        <translation type="obsolete">Consulter les détails pour plus d&apos;informations</translation>
+        <translation>Consulter les détails pour plus d&apos;informations</translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="263"/>
         <source>Stored data check status failed</source>
-        <translation type="obsolete">La vérification du statut des données stockées a échoué</translation>
+        <translation>La vérification du statut des données stockées a échoué</translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="163"/>
+        <source>Generating in progress</source>
+        <translation>Génération en cours</translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="223"/>
+        <source>Your tiles are ready.</source>
+        <translation>Les tuiles ont été générées.</translation>
     </message>
 </context>
 <context>
     <name>UploadCreationAlgorithm</name>
     <message>
-        <location filename="../../processing/upload_creation.py" line="36"/>
+        <location filename="../../processing/upload_creation.py" line="42"/>
         <source>Create upload</source>
-        <translation type="obsolete">Téléverser des données</translation>
+        <translation>Téléverser des données</translation>
     </message>
     <message>
         <location filename="../../processing/upload_creation.py" line="54"/>
@@ -529,17 +661,32 @@
         <translation type="obsolete">Identifiant de l&apos;espace de stockage</translation>
     </message>
     <message>
-        <location filename="../../processing/upload_creation.py" line="63"/>
+        <location filename="../../processing/upload_creation.py" line="69"/>
         <source>Input .json file</source>
-        <translation type="obsolete">Fichier JSON en entrée</translation>
+        <translation>Fichier JSON en entrée</translation>
+    </message>
+    <message>
+        <location filename="../../processing/upload_creation.py" line="54"/>
+        <source>Create upload in geotuileur platform.
+Input parameters are defined in a .json file.
+Available parameters:
+{
+    &quot;{self.DATASTORE}&quot;: datastore id (str),
+    &quot;{self.NAME}&quot;: wanted upload name (str),
+    &quot;{self.DESCRIPTION}&quot;: upload description (str),
+    &quot;{self.FILES}&quot;: upload full file path list [str],
+    &quot;{self.SRS}&quot;: upload SRS (str) must be in IGNF or EPSG repository,
+}
+Returns created upload id in {self.CREATED_UPLOAD_ID} results</source>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>UploadCreationPageWizard</name>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="306"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="308"/>
         <source>Check details for more informations</source>
-        <translation type="obsolete">Consulter les détails pour plus d&apos;informations</translation>
+        <translation>Consulter les détails pour plus d&apos;informations</translation>
     </message>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_creation.ui" line="23"/>
@@ -586,6 +733,64 @@
         <source>Publication URL:</source>
         <translation>URL de publication :</translation>
     </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="120"/>
+        <source>Checking and integration of your data in progress</source>
+        <translation>Vérification et intégration des données en cours</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="145"/>
+        <source>Upload creation failed</source>
+        <translation>L&apos;envoi des données a échoué</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="194"/>
+        <source>Upload check status failed</source>
+        <translation>La vérification du statut de chargement a échoué</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="234"/>
+        <source>Your data has been stored on the remote storage.</source>
+        <translation>Vos données ont été chargées dans l&apos;espace de stockage distant.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="257"/>
+        <source>Stored data database integration check failed</source>
+        <translation>La vérification d&apos;intégrité des données en base a échoué</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="308"/>
+        <source>Database integration failed</source>
+        <translation>L&apos;intégration des données dans la base distante a échoué</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="328"/>
+        <source>Upload not finished.</source>
+        <translation>Chargement inachevé.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="328"/>
+        <source>Upload not finished. You must wait for data upload before closing this dialog.</source>
+        <translation>Le chargement des données est toujours en cours. Merci d&apos;attendre la fin du téléversement avant de fermer la fenêtre.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="337"/>
+        <source>Database integration not finished.</source>
+        <translation>Intégration des données en base inachevée.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="337"/>
+        <source>Database integration not finished. You must wait for database integration before closing this dialog.</source>
+        <translation>L&apos;intégration des données dans la base distante est toujours en cours. Merci d&apos;attendre la fin du téléversement avant de fermer la fenêtre.</translation>
+    </message>
+</context>
+<context>
+    <name>UploadCreationWizard</name>
+    <message>
+        <location filename="../../gui/upload_creation/wzd_upload_creation.py" line="20"/>
+        <source>Upload creation</source>
+        <translation>Envoyer des données</translation>
+    </message>
 </context>
 <context>
     <name>UploadDatabaseIntegrationAlgorithm</name>
@@ -600,9 +805,27 @@
         <translation type="obsolete">Identifiant de l&apos;espace de stockage</translation>
     </message>
     <message>
-        <location filename="../../processing/upload_database_integration.py" line="58"/>
+        <location filename="../../processing/upload_database_integration.py" line="66"/>
         <source>Input .json file</source>
-        <translation type="obsolete">Fichier JSON en entrée</translation>
+        <translation>Fichier JSON en entrée</translation>
+    </message>
+    <message>
+        <location filename="../../processing/upload_database_integration.py" line="41"/>
+        <source>Integrate upload in database</source>
+        <translation>Intégrer les données dans la base distante</translation>
+    </message>
+    <message>
+        <location filename="../../processing/upload_database_integration.py" line="53"/>
+        <source>Integration of geotuileur platform upload in database.
+Input parameters are defined in a .json file.
+Available parameters:
+{
+    &quot;{self.STORED_DATA_NAME}&quot;: wanted stored data name (str),
+    &quot;{self.DATASTORE}&quot;: datastore id (str),
+    &quot;{self.UPLOAD}&quot;: upload id (str),
+}
+Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -682,6 +905,115 @@
         <source>Generation - Generalization options</source>
         <translation>Génération des tuiles - Options de généralisation</translation>
     </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="56"/>
+        <source>No name defined.</source>
+        <translation>Aucun nom défini.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="56"/>
+        <source>Please define data name</source>
+        <translation>Merci de spécifier un nom</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="62"/>
+        <source>No SRS defined.</source>
+        <translation>Système de projection manquant.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="62"/>
+        <source>Please define SRS</source>
+        <translation>Merci de spécifier un système de projection</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="83"/>
+        <source>Invalid layers:
+</source>
+        <translation>Couches invalides:
+</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="95"/>
+        <source>Invalid layers list are available in details.</source>
+        <translation>La liste des couches invalides est disponible dans les détails.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="97"/>
+        <source>Invalid layers</source>
+        <translation>Couches invalides</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="85"/>
+        <source>- CRS mismatch
+</source>
+        <translation>- incohérence dans le système de projection
+</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="87"/>
+        <source>- invalid layer name
+</source>
+        <translation>- nom de couche invalide
+</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="89"/>
+        <source>- invalid file name
+</source>
+        <translation>- nom de fichier invalide
+</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="91"/>
+        <source>- invalid field name
+</source>
+        <translation>- nom d&apos;attribut invalide
+</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="93"/>
+        <source>- invalid layer type
+</source>
+        <translation>- type de couche invalide
+</translation>
+    </message>
+</context>
+<context>
+    <name>UploadPublicationAlgorithm</name>
+    <message>
+        <location filename="../../processing/upload_publication.py" line="59"/>
+        <source>Create configuration</source>
+        <translation>Créer une configuration</translation>
+    </message>
+    <message>
+        <location filename="../../processing/upload_publication.py" line="72"/>
+        <source>Publication in geotuileur platform.
+Input parameters are defined in a .json file.
+Available parameters:
+{
+    &quot;{self.TYPE_DATA}&quot;: wanted  type data  (str),
+    &quot;{self.DATASTORE}&quot;: wanted  datastore  (str),
+    &quot;{self.METADATA}&quot;: wanted  metadata (str),
+    &quot;{self.NAME}&quot;: wanted datastore name (str),
+    &quot;{self.LAYER_NAME}&quot;:wanted  layer name (str),
+    &quot;{self.KEYWORDS}&quot;: wanted keywords (str),
+    &quot;{self.STORED_DATA}&quot;:wanted stored data name (str),
+    &quot;{self.BOTTOM_LEVEL}&quot;: bottom level (int), value between 1 and 21,
+    &quot;{self.TOP_LEVEL}&quot;: top level (int), value between 1 and 21,
+    &quot;{self.TITLE}&quot;: title (str) ,
+    &quot;{self.ABSTRACT}&quot;: little abstract (str) ,
+    &quot;{self.URL_TITLE}&quot;: url title  (str),
+    &quot;{self.URL_ATTRIBUTION}&quot;: url attribution (str) ,
+    &quot;{self.VISIBILITY}&quot;: Publication visibility  (str) ,
+}
+Returns created configuration id in {self.PUBLICATION_URL} results</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../processing/upload_publication.py" line="98"/>
+        <source>Input .json file</source>
+        <translation>Fichier JSON en entrée</translation>
+    </message>
 </context>
 <context>
     <name>UserDialog</name>
@@ -691,19 +1023,19 @@
         <translation>Se déconnecter</translation>
     </message>
     <message>
-        <location filename="../../gui/user/dlg_user.ui" line="20"/>
+        <location filename="../../gui/user/dlg_user.py" line="37"/>
         <source>User informations</source>
         <translation>Mon compte</translation>
     </message>
     <message>
         <location filename="../../gui/user/dlg_user.py" line="49"/>
         <source>Unavailable user</source>
-        <translation type="obsolete">Utilisateur indéfini</translation>
+        <translation>Utilisateur indéfini</translation>
     </message>
     <message>
         <location filename="../../gui/user/dlg_user.py" line="49"/>
-        <source>Can&apos;t define connected user : {exc}</source>
-        <translation type="obsolete">Imposse d&apos;identifier l&apos;utilisateur connecté : {exc}</translation>
+        <source>Unable to identify the logged in user: {exc}</source>
+        <translation>Imposse d&apos;identifier l&apos;utilisateur connecté : {exc}</translation>
     </message>
 </context>
 <context>

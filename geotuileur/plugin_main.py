@@ -6,12 +6,13 @@
 
 # standard
 from functools import partial
+from pathlib import Path
 
 # PyQGIS
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsSettings
 from qgis.gui import QgisInterface
 from qgis.PyQt.Qt import QUrl
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, QLocale, QTranslator
 from qgis.PyQt.QtGui import QDesktopServices, QIcon
 from qgis.PyQt.QtWidgets import QAction, QToolBar
 
@@ -26,7 +27,7 @@ from geotuileur.gui.tile_creation.wzd_tile_creation import TileCreationWizard
 from geotuileur.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
 from geotuileur.gui.user.dlg_user import UserDialog
 from geotuileur.processing import GeotuileurProvider
-from geotuileur.toolbelt import PlgLogger, PlgOptionsManager, PlgTranslator
+from geotuileur.toolbelt import PlgLogger, PlgOptionsManager
 
 
 class GeotuileurPlugin:
@@ -41,11 +42,20 @@ class GeotuileurPlugin:
         self.log = PlgLogger().log
         self.provider = None
 
-        # translation
-        plg_translation_mngr = PlgTranslator()
-        translator = plg_translation_mngr.get_translator()
-        if translator:
-            QCoreApplication.installTranslator(translator)
+        # initialize the locale
+        self.locale: str = QgsSettings().value("locale/userLocale", QLocale().name())[
+            0:2
+        ]
+        locale_path: Path = (
+            DIR_PLUGIN_ROOT / f"resources/i18n/{__title__.lower()}_{self.locale}.qm"
+        )
+        self.log(message=f"Translation: {self.locale}, {locale_path}", log_level=4)
+        if locale_path.exists():
+            self.translator = QTranslator()
+            self.translator.load(str(locale_path.resolve()))
+            QCoreApplication.installTranslator(self.translator)
+
+        # plugin settings
         self.plg_settings = PlgOptionsManager()
 
         self.options_factory = None

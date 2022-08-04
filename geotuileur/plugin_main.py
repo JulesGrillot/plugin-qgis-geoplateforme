@@ -136,12 +136,15 @@ class GeotuileurPlugin:
         )
 
         # -- Menu
-        self.iface.addPluginToMenu(__title__, self.action_authentication)
-        self.iface.addPluginToMenu(__title__, self.action_settings)
-        self.iface.addPluginToMenu(__title__, self.action_help)
+        self.iface.addPluginToWebMenu(__title__, self.action_authentication)
+        self.iface.addPluginToWebMenu(__title__, self.action_import)
+        self.iface.addPluginToWebMenu(__title__, self.action_tile_create)
+        self.iface.addPluginToWebMenu(__title__, self.action_publication)
+        self.iface.addPluginToWebMenu(__title__, self.action_settings)
+        self.iface.addPluginToWebMenu(__title__, self.action_help)
 
         # -- Toolbar
-        self.toolbar = QToolBar("Geotuileur toolbar")
+        self.toolbar = QToolBar("GeotuileurToolbar")
         self.iface.addToolBar(self.toolbar)
         self.toolbar.addAction(self.action_authentication)
         self.toolbar.addAction(self.action_import)
@@ -159,9 +162,12 @@ class GeotuileurPlugin:
     def unload(self):
         """Cleans up when plugin is disabled/uninstalled."""
         # -- Clean up menu
-        self.iface.removePluginMenu(__title__, self.action_authentication)
-        self.iface.removePluginMenu(__title__, self.action_help)
-        self.iface.removePluginMenu(__title__, self.action_settings)
+        self.iface.removePluginWebMenu(__title__, self.action_authentication)
+        self.iface.removePluginWebMenu(__title__, self.action_import)
+        self.iface.removePluginWebMenu(__title__, self.action_tile_create)
+        self.iface.removePluginWebMenu(__title__, self.action_publication)
+        self.iface.removePluginWebMenu(__title__, self.action_help)
+        self.iface.removePluginWebMenu(__title__, self.action_settings)
 
         # remove toolbar :
         self.toolbar.deleteLater()

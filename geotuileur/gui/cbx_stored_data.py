@@ -29,6 +29,20 @@ class StoredDataComboBox(QComboBox):
         )
         self.setModel(self.proxy_model_stored_data)
 
+    def set_stored_data_id(self, stored_data_id: str) -> None:
+        """
+        Define current index from stored data id
+
+        Args:
+            stored_data_id: (str) stored data id
+        """
+        row = self.mdl_stored_data.get_stored_data_row(stored_data_id)
+        if row != -1:
+            row = self.proxy_model_stored_data.mapFromSource(
+                self.mdl_stored_data.index(row, self.mdl_stored_data.NAME_COL)
+            ).row()
+            self.setCurrentIndex(row)
+
     def set_filter_type(self, filter_type: []) -> None:
         """
         Define filter of expected stored data type

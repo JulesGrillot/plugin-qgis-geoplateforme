@@ -16,6 +16,17 @@ Unreleased
 
 -->
 
+## 0.7.0 - 2022-08-04
+
+- Add first version of Dashboard - !37
+- Feature/get endpoint - !54
+- Refactoring translation - !59
+- Add zoom levels parameters - !55
+- Improve displayed datetime using localization - !60
+- Move plugin to web menu and add actions - !61
+- Fix URL regex - !57
+- Minor bug fixes
+
 ## 0.6.0 - 2022-07-27
 
 - Add configuration and offering processing and .ui for publication

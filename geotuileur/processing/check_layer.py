@@ -29,8 +29,16 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
         INVALID_FIELD_NAME = 8
         INVALID_LAYER_TYPE = 16
 
-    def tr(self, string):
-        return QCoreApplication.translate("Check layers for IGN Geotuileur", string)
+    def tr(self, message: str) -> str:
+        """Get the translation for a string using Qt translation API.
+
+        :param message: string to be translated.
+        :type message: str
+
+        :returns: Translated version of message.
+        :rtype: str
+        """
+        return QCoreApplication.translate(self.__class__.__name__, message)
 
     def createInstance(self):
         return CheckLayerAlgorithm()

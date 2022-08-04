@@ -28,8 +28,16 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
 
     CREATED_STORED_DATA_ID = "CREATED_STORED_DATA_ID"
 
-    def tr(self, string):
-        return QCoreApplication.translate("Ask for tile creation", string)
+    def tr(self, message: str) -> str:
+        """Get the translation for a string using Qt translation API.
+
+        :param message: string to be translated.
+        :type message: str
+
+        :returns: Translated version of message.
+        :rtype: str
+        """
+        return QCoreApplication.translate(self.__class__.__name__, message)
 
     def createInstance(self):
         return TileCreationAlgorithm()

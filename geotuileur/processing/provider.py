@@ -77,13 +77,12 @@ class GeotuileurProvider(QgsProcessingProvider):
     def tr(self, message: str) -> str:
         """Get the translation for a string using Qt translation API.
 
-        :param message: String for translation.
-        :type message: str, QString
+        :param message: string to be translated.
+        :type message: str
 
         :returns: Translated version of message.
         :rtype: str
         """
-        # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate(self.__class__.__name__, message)
 
     def versionInfo(self) -> str:

@@ -45,6 +45,7 @@ class TableRelation:
 @dataclass
 class StoredData:
     id: str
+    datastore_id: str
     name: str
     type: str
     status: str
@@ -289,7 +290,11 @@ class StoredDataRequestManager:
         """
         data = self.get_stored_data_json(datastore, stored_data)
         result = StoredData(
-            id=data["_id"], name=data["name"], type=data["type"], status=data["status"]
+            id=data["_id"],
+            datastore_id=datastore,
+            name=data["name"],
+            type=data["type"],
+            status=data["status"],
         )
         if "tags" in data:
             result.tags = data["tags"]

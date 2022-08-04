@@ -76,6 +76,24 @@ class TileGenerationEditionPageWizard(QWizardPage):
         self._levels_range_updated()
         self.srw_zoom.setEnabled(False)
 
+    def set_datastore_id(self, datastore_id: str) -> None:
+        """
+        Define current datastore from datastore id
+
+        Args:
+            datastore_id: (str) datastore id
+        """
+        self.cbx_datastore.set_datastore_id(datastore_id)
+
+    def set_stored_data_id(self, stored_data_id: str) -> None:
+        """
+        Define current stored data from stored data id
+
+        Args:
+            stored_data_id: (str) stored data id
+        """
+        self.cbx_stored_data.set_stored_data_id(stored_data_id)
+
     def initializePage(self) -> None:
         """
         Initialize page before show.

@@ -18,6 +18,17 @@ class DatastoreComboBox(QComboBox):
         self.mdl_datastore = DatastoreListModel()
         self.setModel(self.mdl_datastore)
 
+    def set_datastore_id(self, datastore_id: str) -> None:
+        """
+        Define current index from datastore id
+
+        Args:
+            datastore_id: (str) datastore id
+        """
+        row = self.mdl_datastore.get_datastore_row(datastore_id)
+        if row != -1:
+            self.setCurrentIndex(row)
+
     def current_datastore_name(self) -> str:
         """
         Get current selected datastore name

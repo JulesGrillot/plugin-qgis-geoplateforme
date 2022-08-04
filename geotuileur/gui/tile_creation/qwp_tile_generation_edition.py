@@ -6,6 +6,7 @@ from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtWidgets import QMessageBox, QSlider, QWizardPage
 
 # Plugin
+from geotuileur.api.stored_data import StoredDataStatus, StoredDataStep
 from geotuileur.gui.lne_validators import alphanum_qval
 
 
@@ -49,8 +50,8 @@ class TileGenerationEditionPageWizard(QWizardPage):
 
         # Only display stored data ready for pyramid generation
         self.cbx_stored_data.set_filter_type(["VECTOR-DB"])
-        self.cbx_stored_data.set_expected_tags(["upload_id", "proc_int_id"])
-        self.cbx_stored_data.set_forbidden_tags(["pyramid_id"])
+        self.cbx_stored_data.set_visible_steps([StoredDataStep.TILE_GENERATION])
+        self.cbx_stored_data.set_visible_status([StoredDataStatus.GENERATED])
 
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
         self._datastore_updated()
@@ -74,6 +75,24 @@ class TileGenerationEditionPageWizard(QWizardPage):
         self.levels_range_slider.sliderMoved.connect(self._levels_range_updated)
         self._levels_range_updated()
         self.srw_zoom.setEnabled(False)
+
+    def set_datastore_id(self, datastore_id: str) -> None:
+        """
+        Define current datastore from datastore id
+
+        Args:
+            datastore_id: (str) datastore id
+        """
+        self.cbx_datastore.set_datastore_id(datastore_id)
+
+    def set_stored_data_id(self, stored_data_id: str) -> None:
+        """
+        Define current stored data from stored data id
+
+        Args:
+            stored_data_id: (str) stored data id
+        """
+        self.cbx_stored_data.set_stored_data_id(stored_data_id)
 
     def initializePage(self) -> None:
         """

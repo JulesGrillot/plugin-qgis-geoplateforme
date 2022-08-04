@@ -4,36 +4,6 @@
 <context>
     <name>AuthenticationDialog</name>
     <message>
-        <location filename="../../gui/dlg_authentication.py" line="98"/>
-        <source>Invalid connection</source>
-        <translation type="obsolete">Connexion invalide</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_authentication.py" line="89"/>
-        <source>Invalid connection parameters : {check}</source>
-        <translation type="obsolete">Les paramètres de connexion sont invalides : {check}</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_authentication.py" line="100"/>
-        <source>Error</source>
-        <translation type="obsolete">Erreur</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_authentication.py" line="100"/>
-        <source>ERROR - Invalid user data received. Expected dict, not {type(data)}</source>
-        <translation type="obsolete">ERREUR - L&apos;information reçue sur l&apos;utilisateur n&apos;est pas conforme au format attendu. Un dictionnaire est attendu,non {type(data)}</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_authentication.py" line="91"/>
-        <source>Welcome</source>
-        <translation type="obsolete">Bienvenue</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_authentication.py" line="108"/>
-        <source>Welcome {data[&quot;first_name&quot;]} {data[&quot;last_name&quot;]} !</source>
-        <translation type="obsolete">Bienvenue {data[&amp;quot;first_name&amp;quot;]} {data[&amp;quot;last_name&amp;quot;]} !</translation>
-    </message>
-    <message>
         <location filename="../../gui/dlg_authentication.py" line="104"/>
         <source>Welcome {user.first_name} {user.last_name}!</source>
         <translation>Bienvenue {user.first_name} {user.last_name} !</translation>
@@ -97,19 +67,65 @@
         <translation>Bienvenue</translation>
     </message>
     <message>
-        <location filename="../../gui/dlg_settings.py" line="172"/>
-        <source>Welcome {data[&quot;first_name&quot;]} {data[&quot;last_name&quot;]} !</source>
-        <translation type="obsolete">Bienvenue {data[&amp;quot;first_name&amp;quot;]} {data[&amp;quot;last_name&amp;quot;]} !</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_settings.py" line="160"/>
-        <source>Welcome {user.first_name} {user.last_name} !</source>
-        <translation type="obsolete">Bienvenue {user.first_name} {user.last_name} !</translation>
-    </message>
-    <message>
         <location filename="../../gui/dlg_settings.py" line="160"/>
         <source>Welcome {user.first_name} {user.last_name}!</source>
         <translation>Bienvenue {user.first_name} {user.last_name} !</translation>
+    </message>
+</context>
+<context>
+    <name>DashboardDialog</name>
+    <message>
+        <location filename="../../gui/dashboard/dlg_dashboard.py" line="21"/>
+        <source>Dashboard</source>
+        <translation>Tableau de bord</translation>
+    </message>
+</context>
+<context>
+    <name>DashboardWidget</name>
+    <message>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="153"/>
+        <source>Replace data</source>
+        <translation>Remplacer les données</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="159"/>
+        <source>Manage styles</source>
+        <translation>Gérer les styles</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="163"/>
+        <source>Update publication informations</source>
+        <translation>Modifier les informations de publication</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="169"/>
+        <source>Unpublish</source>
+        <translation>Dépublier</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="20"/>
+        <source>Running actions</source>
+        <translation>En cours</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="32"/>
+        <source>Actions to finish</source>
+        <translation>Mes actions à terminer</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="47"/>
+        <source>Publicated tiles</source>
+        <translation>Mes flux publiés</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="63"/>
+        <source>Datastore</source>
+        <translation>Espace de stockage</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="14"/>
+        <source>Dashboard</source>
+        <translation>Tableau de bord</translation>
     </message>
 </context>
 <context>
@@ -149,134 +165,41 @@
     </message>
 </context>
 <context>
-    <name>Form</name>
-    <message>
-        <location filename="../../gui/dlg_settings.ui" line="14"/>
-        <source>Form</source>
-        <translation type="obsolete">Paramètres</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_settings.ui" line="44"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;PluginTitle - Version X.X.X&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&amp;lt;html&amp;gt;&amp;lt;head/&amp;gt;&amp;lt;body&amp;gt;&amp;lt;p align=&amp;quot;center&amp;quot;&amp;gt;&amp;lt;span style=&amp;quot; font-weight:600;&amp;quot;&amp;gt;Titre du plugin - Version X.X.X&amp;lt;/span&amp;gt;&amp;lt;/p&amp;gt;&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_settings.ui" line="72"/>
-        <source>Service settings</source>
-        <translation type="obsolete">Paramètres du service Géotuileur</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_settings.ui" line="90"/>
-        <source>Client ID:</source>
-        <translation type="obsolete">Client ID :</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_settings.ui" line="147"/>
-        <source>Authentication realm:</source>
-        <translation type="obsolete">Royaume d&apos;authentification :</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_settings.ui" line="207"/>
-        <source>Check connection settings</source>
-        <translation type="obsolete">Vérifier les paramètres de connexion</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_settings.ui" line="227"/>
-        <source>Account:</source>
-        <translation type="obsolete">Compte :</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_settings.ui" line="265"/>
-        <source>Vector tile service:</source>
-        <translation type="obsolete">URL du service de tuiles :</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_settings.ui" line="287"/>
-        <source>GÃ©otuileur portal:</source>
-        <translation type="obsolete">URL du portail du Géotuileur :</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_settings.ui" line="306"/>
-        <source>Authentication:</source>
-        <translation type="obsolete">URL du service d&apos;authentification :</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_settings.ui" line="313"/>
-        <source>API EntrepÃ´t endpoint:</source>
-        <translation type="obsolete">URL de l&apos;API Entrepôt :</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_settings.ui" line="335"/>
-        <source>Miscellaneous</source>
-        <translation type="obsolete">Divers</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_settings.ui" line="356"/>
-        <source>Enable debug mode.</source>
-        <translation type="obsolete">Activer le mode debug.</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_settings.ui" line="365"/>
-        <source>Debug mode (degraded performances)</source>
-        <translation type="obsolete">Mode débogage (performances dégradées)</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_settings.ui" line="415"/>
-        <source>Version used to save settings:</source>
-        <translation type="obsolete">Version utilisée pour sauvegarder les paramètres :</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_settings.ui" line="437"/>
-        <source>Help</source>
-        <translation type="obsolete">Documentation</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_settings.ui" line="459"/>
-        <source>Report an issue</source>
-        <translation type="obsolete">Signaler un problème</translation>
-    </message>
-    <message>
-        <location filename="../../gui/publication_creation/wdg_publication_form.ui" line="14"/>
-        <source>Publication Widget</source>
-        <translation type="obsolete">Publication du flux</translation>
-    </message>
-    <message>
-        <location filename="../../gui/publication_creation/wdg_publication_form.ui" line="247"/>
-        <source>Title *</source>
-        <translation type="obsolete">Titre *</translation>
-    </message>
-</context>
-<context>
     <name>GeotuileurPlugin</name>
     <message>
-        <location filename="../../plugin_main.py" line="116"/>
+        <location filename="../../plugin_main.py" line="146"/>
         <source>Help</source>
         <translation>Documentation</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="126"/>
+        <location filename="../../plugin_main.py" line="156"/>
         <source>Settings</source>
         <translation>Paramètres</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="80"/>
+        <location filename="../../plugin_main.py" line="93"/>
         <source>Login</source>
         <translation>S&apos;authentifier</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="88"/>
+        <location filename="../../plugin_main.py" line="118"/>
         <source>Create a new upload</source>
         <translation>Téléverser des données</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="96"/>
+        <location filename="../../plugin_main.py" line="126"/>
         <source>Tile creation</source>
         <translation>Générer des tuiles</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="104"/>
+        <location filename="../../plugin_main.py" line="134"/>
         <source>Publication</source>
         <translation>Publication</translation>
+    </message>
+    <message>
+        <location filename="../../plugin_main.py" line="102"/>
+        <source>Dashboard</source>
+        <translation>Tableau de bord</translation>
     </message>
 </context>
 <context>
@@ -289,11 +212,6 @@
 </context>
 <context>
     <name>GeotuileurSettingsForm</name>
-    <message>
-        <location filename="../../gui/dlg_settings.ui" line="44"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;PluginTitle - Version X.X.X&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&amp;lt;html&amp;gt;&amp;lt;head/&amp;gt;&amp;lt;body&amp;gt;&amp;lt;p align=&amp;quot;center&amp;quot;&amp;gt;&amp;lt;span style=&amp;quot; font-weight:600;&amp;quot;&amp;gt;Titre du plugin - Version X.X.X&amp;lt;/span&amp;gt;&amp;lt;/p&amp;gt;&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;</translation>
-    </message>
     <message>
         <location filename="../../gui/dlg_settings.ui" line="75"/>
         <source>Service settings</source>
@@ -326,7 +244,7 @@
     </message>
     <message>
         <location filename="../../gui/dlg_settings.ui" line="290"/>
-        <source>Géotuileur portal:</source>
+        <source>GÃ©otuileur portal:</source>
         <translation>URL du portail du Géotuileur :</translation>
     </message>
     <message>
@@ -336,7 +254,7 @@
     </message>
     <message>
         <location filename="../../gui/dlg_settings.ui" line="322"/>
-        <source>API Entrepôt endpoint:</source>
+        <source>API EntrepÃ´t endpoint:</source>
         <translation>URL de l&apos;API Entrepôt :</translation>
     </message>
     <message>
@@ -386,12 +304,12 @@
 <context>
     <name>PublicationFormPageWizard</name>
     <message>
-        <location filename="../../gui/publication_creation/qwp_publication_form.py" line="52"/>
+        <location filename="../../gui/publication_creation/qwp_publication_form.py" line="71"/>
         <source>Missing informations.</source>
         <translation>Informations manquantes.</translation>
     </message>
     <message>
-        <location filename="../../gui/publication_creation/qwp_publication_form.py" line="52"/>
+        <location filename="../../gui/publication_creation/qwp_publication_form.py" line="71"/>
         <source>Please fill all fields.</source>
         <translation>Merci de renseigner tous les champs.</translation>
     </message>
@@ -412,19 +330,64 @@
 <context>
     <name>StoredDataListModel</name>
     <message>
-        <location filename="../../gui/mdl_stored_data.py" line="22"/>
+        <location filename="../../gui/mdl_stored_data.py" line="35"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../../gui/mdl_stored_data.py" line="22"/>
+        <location filename="../../gui/mdl_stored_data.py" line="35"/>
         <source>id</source>
         <translation>Identifiant</translation>
     </message>
     <message>
-        <location filename="../../gui/mdl_stored_data.py" line="22"/>
+        <location filename="../../gui/mdl_stored_data.py" line="35"/>
         <source>Type</source>
         <translation>Type</translation>
+    </message>
+    <message>
+        <location filename="../../gui/mdl_stored_data.py" line="35"/>
+        <source>Status</source>
+        <translation>Statut</translation>
+    </message>
+    <message>
+        <location filename="../../gui/mdl_stored_data.py" line="35"/>
+        <source>Action</source>
+        <translation>Action</translation>
+    </message>
+    <message>
+        <location filename="../../gui/mdl_stored_data.py" line="35"/>
+        <source>Delete</source>
+        <translation>Suppression</translation>
+    </message>
+    <message>
+        <location filename="../../gui/mdl_stored_data.py" line="138"/>
+        <source>Report</source>
+        <translation>Rapport</translation>
+    </message>
+    <message>
+        <location filename="../../gui/mdl_stored_data.py" line="35"/>
+        <source>Other actions</source>
+        <translation>Autres actions</translation>
+    </message>
+    <message>
+        <location filename="../../gui/mdl_stored_data.py" line="126"/>
+        <source>Progress</source>
+        <translation>En cours</translation>
+    </message>
+    <message>
+        <location filename="../../gui/mdl_stored_data.py" line="130"/>
+        <source>Generate</source>
+        <translation>Générer</translation>
+    </message>
+    <message>
+        <location filename="../../gui/mdl_stored_data.py" line="136"/>
+        <source>View</source>
+        <translation>Voir</translation>
+    </message>
+    <message>
+        <location filename="../../gui/mdl_stored_data.py" line="134"/>
+        <source>Publish</source>
+        <translation>Publier</translation>
     </message>
 </context>
 <context>
@@ -433,46 +396,6 @@
         <location filename="../../processing/tile_creation.py" line="49"/>
         <source>Ask for tile creation</source>
         <translation>Générer des tuiles</translation>
-    </message>
-    <message>
-        <location filename="../../processing/tile_creation.py" line="53"/>
-        <source>Stored data name</source>
-        <translation type="obsolete">Nom du jeu de données stocké</translation>
-    </message>
-    <message>
-        <location filename="../../processing/tile_creation.py" line="60"/>
-        <source>Upload datastore</source>
-        <translation type="obsolete">Identifiant de l&apos;espace de stockage</translation>
-    </message>
-    <message>
-        <location filename="../../processing/tile_creation.py" line="68"/>
-        <source>Vector DB stored data id for tile generation</source>
-        <translation type="obsolete">Identifiant des données vectorielles stockées pour la génération des tuiles</translation>
-    </message>
-    <message>
-        <location filename="../../processing/tile_creation.py" line="76"/>
-        <source>Tippecanoe options</source>
-        <translation type="obsolete">Options pour les tuiles (Tippecanoe)</translation>
-    </message>
-    <message>
-        <location filename="../../processing/tile_creation.py" line="84"/>
-        <source>Tile Matrix Set</source>
-        <translation type="obsolete">Matrice des tuiles</translation>
-    </message>
-    <message>
-        <location filename="../../processing/tile_creation.py" line="93"/>
-        <source>Bottom level</source>
-        <translation type="obsolete">Niveau minimum</translation>
-    </message>
-    <message>
-        <location filename="../../processing/tile_creation.py" line="104"/>
-        <source>Top level</source>
-        <translation type="obsolete">Niveau maximum</translation>
-    </message>
-    <message>
-        <location filename="../../processing/tile_creation.py" line="115"/>
-        <source>Attributes</source>
-        <translation type="obsolete">Attributs</translation>
     </message>
     <message>
         <location filename="../../processing/tile_creation.py" line="86"/>
@@ -514,109 +437,96 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
 <context>
     <name>TileGenerationEditionPageWizard</name>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="98"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="117"/>
         <source>No datastore selected.</source>
         <translation>Aucun espace de stockage sélectionné.</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="98"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="117"/>
         <source>Please select a datastore</source>
         <translation>Merci de sélectionner un espace de stockage</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="106"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="125"/>
         <source>No stored data selected.</source>
         <translation>Aucune donnée stockée sélectionnée.</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="106"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="125"/>
         <source>Please select a stored data</source>
         <translation>Merci de sélectionner une donnée stockée</translation>
-    </message>
-</context>
-<context>
-    <name>TileGenerationFieldsSelectionPageWizard</name>
-    <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.py" line="64"/>
-        <source>Stored data read failed</source>
-        <translation type="obsolete">La lecture de la donnée stockée a échoué</translation>
-    </message>
-    <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.py" line="64"/>
-        <source>Check details for more informations</source>
-        <translation type="obsolete">Consulter les détails pour plus d&apos;informations</translation>
     </message>
 </context>
 <context>
     <name>TileGenerationGeneralizationPageWizard</name>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="78"/>
-        <source>Simplification de données hétérogènes</source>
+        <source>Simplification de donnÃ©es hÃ©tÃ©rogÃ¨nes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="79"/>
-        <source>Toutes les formes sont simplifiées.</source>
+        <source>Toutes les formes sont simplifiÃ©es.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="84"/>
-        <source>Simplification de réseau</source>
+        <source>Simplification de rÃ©seau</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="85"/>
-        <source>Toutes les formes sont simplifiées et les nœuds du réseau sont conservés.</source>
+        <source>Toutes les formes sont simplifiÃ©es et les nÅuds du rÃ©seau sont conservÃ©s.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="92"/>
-        <source>Simplification de données linéaires autres</source>
+        <source>Simplification de donnÃ©es linÃ©aires autres</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="93"/>
-        <source>Les petits objets sont supprimés.</source>
+        <source>Les petits objets sont supprimÃ©s.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="98"/>
-        <source>Schématisation de données surfaciques</source>
+        <source>SchÃ©matisation de donnÃ©es surfaciques</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="99"/>
-        <source>Les formes sont simplifiées en conservant une couverture du territoire.</source>
+        <source>Les formes sont simplifiÃ©es en conservant une couverture du territoire.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="106"/>
-        <source>Sélection de données surfaciques</source>
+        <source>SÃ©lection de donnÃ©es surfaciques</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="107"/>
-        <source>Les données les plus représentatives sont conservées et les plus petites supprimées. Ce choix est pertinent si 3 attributs ou moins sont conservés à l&apos;étape précédente.</source>
+        <source>Les donnÃ©es les plus reprÃ©sentatives sont conservÃ©es et les plus petites supprimÃ©es. Ce choix est pertinent si 3 attributs ou moins sont conservÃ©s Ã&#xa0; l&apos;Ã©tape prÃ©cÃ©dente.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="116"/>
-        <source>Fusion attributaire de données surfaciques</source>
+        <source>Fusion attributaire de donnÃ©es surfaciques</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="117"/>
-        <source>Les objets qui ont les mêmes valeurs d’attribut sont fusionnés tout en simplifiant les formes et en supprimant les petites surfaces. Ce choix est pertinent si 3 attributs ou moins sont conservés à l&apos;étape précédente.</source>
+        <source>Les objets qui ont les mÃªmes valeurs dâattribut sont fusionnÃ©s tout en simplifiant les formes et en supprimant les petites surfaces. Ce choix est pertinent si 3 attributs ou moins sont conservÃ©s Ã&#xa0; l&apos;Ã©tape prÃ©cÃ©dente.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="126"/>
-        <source>Harmonisation de données surfaciques</source>
+        <source>Harmonisation de donnÃ©es surfaciques</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="127"/>
-        <source>Les formes sont simplifiées en conservant les limites partagées entre deux surfaces.</source>
+        <source>Les formes sont simplifiÃ©es en conservant les limites partagÃ©es entre deux surfaces.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -654,11 +564,6 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
         <location filename="../../processing/upload_creation.py" line="42"/>
         <source>Create upload</source>
         <translation>Téléverser des données</translation>
-    </message>
-    <message>
-        <location filename="../../processing/upload_creation.py" line="54"/>
-        <source>Upload datastore</source>
-        <translation type="obsolete">Identifiant de l&apos;espace de stockage</translation>
     </message>
     <message>
         <location filename="../../processing/upload_creation.py" line="69"/>
@@ -794,16 +699,6 @@ Returns created upload id in {self.CREATED_UPLOAD_ID} results</source>
 </context>
 <context>
     <name>UploadDatabaseIntegrationAlgorithm</name>
-    <message>
-        <location filename="../../processing/upload_database_integration.py" line="43"/>
-        <source>Stored data name</source>
-        <translation type="obsolete">Nom du jeu de données stocké</translation>
-    </message>
-    <message>
-        <location filename="../../processing/upload_database_integration.py" line="50"/>
-        <source>Upload datastore</source>
-        <translation type="obsolete">Identifiant de l&apos;espace de stockage</translation>
-    </message>
     <message>
         <location filename="../../processing/upload_database_integration.py" line="66"/>
         <source>Input .json file</source>
@@ -1041,11 +936,6 @@ Returns created configuration id in {self.PUBLICATION_URL} results</source>
 <context>
     <name>UserWidget</name>
     <message>
-        <location filename="../../gui/user/wdg_user.ui" line="14"/>
-        <source>Form</source>
-        <translation type="obsolete">Paramètres</translation>
-    </message>
-    <message>
         <location filename="../../gui/user/wdg_user.ui" line="32"/>
         <source>First name:</source>
         <translation>Prénom :</translation>
@@ -1079,64 +969,6 @@ Returns created configuration id in {self.PUBLICATION_URL} results</source>
         <location filename="../../gui/user/wdg_user.ui" line="14"/>
         <source>User informations</source>
         <translation>Mon compte</translation>
-    </message>
-</context>
-<context>
-    <name>dlg_title</name>
-    <message>
-        <location filename="../../gui/dlg_authentication.ui" line="20"/>
-        <source>Login</source>
-        <translation type="obsolete">S&apos;authentifier</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_authentication.ui" line="39"/>
-        <source>Se souvenir de moi</source>
-        <translation type="obsolete">Se souvenir de moir</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_authentication.ui" line="26"/>
-        <source>Authentication</source>
-        <translation type="obsolete">Authentification</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_authentication.ui" line="147"/>
-        <source>Do not ask for my credentials for the next 30 minutes</source>
-        <translation type="obsolete">Ne pas me demander de m&apos;authentifier pour les 30 prochaines minutes</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_authentication.ui" line="154"/>
-        <source>Remember me</source>
-        <translation type="obsolete">Se souvenir de moi</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_authentication.ui" line="72"/>
-        <source>Password</source>
-        <translation type="obsolete">Mot de passe</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_authentication.ui" line="222"/>
-        <source>Forgotten password</source>
-        <translation type="obsolete">Mot de passe oublié</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_authentication.ui" line="189"/>
-        <source>Log in</source>
-        <translation type="obsolete">Se connecter</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_authentication.ui" line="128"/>
-        <source>Username or email</source>
-        <translation type="obsolete">Identifiant ou adresse email</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_authentication.ui" line="275"/>
-        <source>New here? Don&apos;t have an account yet? Click me to sign-in!</source>
-        <translation type="obsolete">Vous découvrez ce service ? Pas encore de compte ? Cliquez-ici pour vous enregistrer !</translation>
-    </message>
-    <message>
-        <location filename="../../gui/dlg_authentication.ui" line="100"/>
-        <source>firstname.name@gis-is-what-i-do.com</source>
-        <translation type="obsolete">prenom.nom@la-geomatique-est-mon-metier.fr</translation>
     </message>
 </context>
 <context>

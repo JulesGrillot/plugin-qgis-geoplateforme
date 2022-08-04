@@ -1,5 +1,7 @@
 FORMS = ../../gui/dlg_settings.ui \
     ../../gui/dlg_authentication.ui \
+    ../../gui/dashboard/dlg_dashboard.ui \
+    ../../gui/dashboard/wdg_dashboard.ui \
     ../../gui/publication_creation/qwp_publication_form.ui \
     ../../gui/publication_creation/qwp_status.ui \
     ../../gui/publication_creation/wdg_publication_form.ui \
@@ -33,6 +35,8 @@ SOURCES= ../../plugin_main.py \
     ../../gui/mdl_execution_list.py \
     ../../gui/mdl_stored_data.py \
     ../../gui/proxy_model_stored_data.py \
+    ../../gui/dashboard/dlg_dashboard.py \
+    ../../gui/dashboard/wdg_dashboard.py \
     ../../gui/publication_creation/qwp_publication_form.py \
     ../../gui/publication_creation/qwp_status.py \
     ../../gui/publication_creation/wdg_publication_form.py \
@@ -58,7 +62,6 @@ SOURCES= ../../plugin_main.py \
     ../../toolbelt/check_state_model.py \
     ../../toolbelt/log_handler.py \
     ../../toolbelt/preferences.py \
-    ../../toolbelt/range_slider.py \
-    ../../toolbelt/translator.py
+    ../../toolbelt/range_slider.py
 
 TRANSLATIONS = geotuileur_fr.ts

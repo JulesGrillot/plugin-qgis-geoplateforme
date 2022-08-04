@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DashboardWidget</class>
+ <widget class="QWidget" name="DashboardWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>577</width>
+    <height>429</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dashboard</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="3" column="0" colspan="2">
+    <widget class="QgsCollapsibleGroupBox" name="gbb_running_actions">
+     <property name="title">
+      <string>Running actions</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QTableView" name="tbl_running_actions"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QgsCollapsibleGroupBox" name="gpb_actions_to_finish">
+     <property name="title">
+      <string>Actions to finish</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QTableView" name="tbv_actions_to_finish"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="DatastoreComboBox" name="cbx_datastore"/>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QgsCollapsibleGroupBox" name="gbp_publicated_tiles">
+     <property name="title">
+      <string>Publicated tiles</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0">
+       <widget class="QTableView" name="tbl_publicated_tiles"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="lbl_datastore">
+     <property name="styleSheet">
+      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
+color: rgb(52, 101, 164);</string>
+     </property>
+     <property name="text">
+      <string>Datastore</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DatastoreComboBox</class>
+   <extends>QComboBox</extends>
+   <header>geotuileur.gui.cbx_datastore</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

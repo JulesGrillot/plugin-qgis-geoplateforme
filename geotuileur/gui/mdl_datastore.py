@@ -21,6 +21,23 @@ class DatastoreListModel(QStandardItemModel):
         self.setHorizontalHeaderLabels([self.tr("Name"), self.tr("id")])
         self.refresh()
 
+    def get_datastore_row(self, datastore_id: str) -> int:
+        """
+        Get datastore row from datastore id, returns -1 if datastore not available
+
+        Args:
+            datastore_id: (str) datastore id
+
+        Returns: (int) datastore id row, -1 if datastore not available
+
+        """
+        result = -1
+        for row in range(0, self.rowCount()):
+            if self.data(self.index(row, self.ID_COL)) == datastore_id:
+                result = row
+                break
+        return result
+
     def refresh(self) -> None:
         """
         Refresh QStandardItemModel data with current user datastore

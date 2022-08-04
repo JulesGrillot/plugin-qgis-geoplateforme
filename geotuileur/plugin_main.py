@@ -18,6 +18,7 @@ from qgis.PyQt.QtWidgets import QAction, QToolBar
 
 # project
 from geotuileur.__about__ import DIR_PLUGIN_ROOT, __title__, __uri_homepage__
+from geotuileur.gui.dashboard.dlg_dashboard import DashboardDialog
 from geotuileur.gui.dlg_authentication import AuthenticationDialog
 from geotuileur.gui.dlg_settings import PlgOptionsFactory
 from geotuileur.gui.publication_creation.wzd_publication_creation import (
@@ -63,8 +64,10 @@ class GeotuileurPlugin:
         self.action_settings = None
 
         self.toolbar = None
+        self.dlg_dashboard = None
 
         self.action_authentication = None
+        self.action_dashboard = None
         self.action_import = None
         self.action_tile_create = None
         self.action_publication = None
@@ -93,6 +96,23 @@ class GeotuileurPlugin:
             self.iface.mainWindow(),
         )
         self.action_authentication.triggered.connect(self.authentication)
+
+        # Dashboard
+        self.dlg_dashboard = DashboardDialog(self.iface.mainWindow())
+        self.action_dashboard = QAction(
+            QIcon(
+                str(
+                    DIR_PLUGIN_ROOT
+                    / "resources"
+                    / "images"
+                    / "datastore"
+                    / "bac-a-sable.svg"
+                )
+            ),
+            self.tr("Dashboard"),
+            self.iface.mainWindow(),
+        )
+        self.action_dashboard.triggered.connect(self.display_dashboard)
 
         # Import
         self.action_import = QAction(
@@ -146,6 +166,7 @@ class GeotuileurPlugin:
 
         # -- Menu
         self.iface.addPluginToWebMenu(__title__, self.action_authentication)
+        self.iface.addPluginToWebMenu(__title__, self.action_dashboard)
         self.iface.addPluginToWebMenu(__title__, self.action_import)
         self.iface.addPluginToWebMenu(__title__, self.action_tile_create)
         self.iface.addPluginToWebMenu(__title__, self.action_publication)
@@ -156,6 +177,7 @@ class GeotuileurPlugin:
         self.toolbar = QToolBar("GeotuileurToolbar")
         self.iface.addToolBar(self.toolbar)
         self.toolbar.addAction(self.action_authentication)
+        self.toolbar.addAction(self.action_dashboard)
         self.toolbar.addAction(self.action_import)
         self.toolbar.addAction(self.action_tile_create)
         self.toolbar.addAction(self.action_publication)
@@ -172,6 +194,7 @@ class GeotuileurPlugin:
         """Cleans up when plugin is disabled/uninstalled."""
         # -- Clean up menu
         self.iface.removePluginWebMenu(__title__, self.action_authentication)
+        self.iface.removePluginWebMenu(__title__, self.action_dashboard)
         self.iface.removePluginWebMenu(__title__, self.action_import)
         self.iface.removePluginWebMenu(__title__, self.action_tile_create)
         self.iface.removePluginWebMenu(__title__, self.action_publication)
@@ -283,3 +306,12 @@ class GeotuileurPlugin:
         self.action_import.setEnabled(enabled)
         self.action_tile_create.setEnabled(enabled)
         self.action_publication.setEnabled(enabled)
+
+    def display_dashboard(self) -> None:
+        """
+        Display dashboard dialog
+
+        """
+        if self.dlg_dashboard is not None:
+            self.dlg_dashboard.refresh()
+            self.dlg_dashboard.show()

@@ -1,7 +1,9 @@
+from enum import Enum
 from typing import List
 
 from qgis.PyQt.QtCore import QModelIndex, QObject, QSortFilterProxyModel, Qt
 
+from geotuileur.api.stored_data import StoredDataStatus, StoredDataStep
 from geotuileur.gui.mdl_stored_data import StoredDataListModel
 
 
@@ -9,8 +11,9 @@ class StoredDataProxyModel(QSortFilterProxyModel):
     def __init__(self, parent: QObject = None):
         super().__init__(parent)
         self.filter_type = []
-        self.tags = []
-        self.forbidden_tags = []
+        self.visible_status = []
+        self.invisible_status = []
+        self.steps = []
 
     def set_filter_type(self, filter_type: List) -> None:
         """
@@ -21,23 +24,32 @@ class StoredDataProxyModel(QSortFilterProxyModel):
         """
         self.filter_type = filter_type
 
-    def set_expected_tags(self, tags: List[str]) -> None:
+    def set_visible_steps(self, steps: [StoredDataStep]) -> None:
         """
-        Define filter of expected tags for stored data tags key
+        Define filter of visible steps for stored data
 
         Args:
-            tags: expected stored data tags key
+            steps: List[StoredDataStep] visible step list
         """
-        self.tags = tags
+        self.steps = steps
 
-    def set_forbidden_tags(self, forbidden_tags: List[str]) -> None:
+    def set_visible_status(self, status: List[StoredDataStatus]) -> None:
         """
-        Define filter of forbidden tags for stored data tags key
+        Define filter of visible status for stored data
 
         Args:
-            forbidden_tags: forbidden stored data tags key
+            status: List[StoredDataStatus] visible status list
         """
-        self.forbidden_tags = forbidden_tags
+        self.visible_status = status
+
+    def set_invisible_status(self, status: List[StoredDataStatus]) -> None:
+        """
+        Define filter of inviseble status for stored data
+
+        Args:
+            status: List[StoredDataStatus] invisible status list
+        """
+        self.invisible_status = status
 
     def filterAcceptsRow(self, source_row: int, source_parent: QModelIndex) -> bool:
         """
@@ -57,21 +69,30 @@ class StoredDataProxyModel(QSortFilterProxyModel):
             type_index = self.sourceModel().index(
                 source_row, StoredDataListModel.TYPE_COL, source_parent
             )
-            type_value = self.sourceModel().data(type_index)
+            type_value = self.sourceModel().data(type_index, Qt.DisplayRole)
 
             result = type_value in self.filter_type
 
-        # Check stored data flags
-        if (len(self.tags) or len(self.forbidden_tags)) and result:
+        # Check stored data status
+        if (len(self.visible_status) or len(self.invisible_status)) and result:
+            status_index = self.sourceModel().index(
+                source_row, StoredDataListModel.STATUS_COL, source_parent
+            )
+            status_value = self.sourceModel().data(status_index, Qt.DisplayRole)
+            if status_value:
+                status = StoredDataStatus[status_value]
+                if len(self.invisible_status):
+                    result &= status not in self.invisible_status
+                if len(self.visible_status):
+                    result &= status in self.visible_status
+
+        # Check stored data step
+        if len(self.steps) and result:
             name_index = self.sourceModel().index(
                 source_row, StoredDataListModel.NAME_COL, source_parent
             )
-            tags = self.sourceModel().data(name_index, Qt.UserRole)
-            available_tags = tags.keys()
-            for tag in self.tags:
-                result &= tag in available_tags
-
-            for tag in self.forbidden_tags:
-                result &= tag not in available_tags
+            stored_data = self.sourceModel().data(name_index, Qt.UserRole)
+            if stored_data:
+                result = stored_data.get_current_step() in self.steps
 
         return result

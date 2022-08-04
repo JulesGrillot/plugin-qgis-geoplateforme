@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>dlg_title</class>
- <widget class="QDialog" name="dlg_title">
+ <class>AuthenticationDialog</class>
+ <widget class="QDialog" name="AuthenticationDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>445</width>
-    <height>259</height>
+    <height>250</height>
    </rect>
   </property>
   <property name="minimumSize">

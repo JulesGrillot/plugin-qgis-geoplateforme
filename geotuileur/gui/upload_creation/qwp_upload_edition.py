@@ -80,7 +80,7 @@ class UploadEditionPageWizard(QWizardPage):
 
         if result_code != CheckLayerAlgorithm.ResultCode.VALID:
             valid = False
-            error_string = self.tr("Invalid layers :\n")
+            error_string = self.tr("Invalid layers:\n")
             if CheckLayerAlgorithm.ResultCode.CRS_MISMATCH in result_code:
                 error_string += self.tr("- CRS mismatch\n")
             if CheckLayerAlgorithm.ResultCode.INVALID_LAYER_NAME in result_code:

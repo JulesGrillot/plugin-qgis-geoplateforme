@@ -32,5 +32,5 @@ class UserWidget(QWidget):
         self.lne_first_name.setText(user.first_name)
         self.lne_last_name.setText(user.last_name)
         self.lne_email.setText(user.email)
-        self.lne_registration_date.setText(user.creation)
+        self.lne_registration_date.setText(user.creation_as_localized_datetime)
         self.lne_id.setText(user._id)

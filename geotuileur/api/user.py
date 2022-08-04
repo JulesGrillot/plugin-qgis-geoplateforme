@@ -9,7 +9,7 @@ from dataclasses import dataclass
 # PyQGIS
 from qgis.core import QgsBlockingNetworkRequest
 from qgis.PyQt.Qt import QUrl
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, QDateTime, Qt
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # project
@@ -94,6 +94,20 @@ class User:
         for communities in data["communities_member"]:
             res.communities_member.append(CommunitiesMember.from_json(communities))
         return res
+
+    @property
+    def creation_as_localized_datetime(self) -> str:
+        """Try to convert raw creation date as localized datetime using Qt.
+
+        :return: localized date time (or raw creation string if conversion fails)
+        :rtype: str
+        """
+        try:
+            dt = QDateTime.fromString(self.creation, Qt.ISODate)
+            return dt.toString(Qt.DefaultLocaleLongDate)
+        except Exception as exc:
+            logger.error(f"Datetime parseing failded. Trace: {exc}")
+            return self.creation
 
 
 class UserRequestsManager:

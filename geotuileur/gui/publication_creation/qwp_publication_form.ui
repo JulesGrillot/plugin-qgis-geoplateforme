@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Publication Form</string>
   </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="7" column="0">
     <spacer name="verticalSpacer">
@@ -37,7 +40,7 @@
 color: rgb(52, 101, 164);</string>
      </property>
      <property name="text">
-      <string>Espace de travail</string>
+      <string>Datastore</string>
      </property>
     </widget>
    </item>
@@ -48,7 +51,7 @@ color: rgb(52, 101, 164);</string>
 color: rgb(52, 101, 164);</string>
      </property>
      <property name="text">
-      <string>Jeux de données</string>
+      <string>Dataset</string>
      </property>
     </widget>
    </item>

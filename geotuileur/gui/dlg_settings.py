@@ -160,7 +160,7 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
             QMessageBox.information(
                 self,
                 self.tr("Welcome"),
-                self.tr(f"Welcome {user.first_name} {user.last_name} !"),
+                self.tr(f"Welcome {user.first_name} {user.last_name}!"),
             )
 
         except UserRequestsManager.UnavailableUserException as exc:

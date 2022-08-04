@@ -262,27 +262,3 @@ class GeotuileurPlugin:
         self.action_import.setEnabled(enabled)
         self.action_tile_create.setEnabled(enabled)
         self.action_publication.setEnabled(enabled)
-
-    def run(self):
-        """Main process.
-
-        :raises Exception: if there is no item in the feed
-        """
-        try:
-            self.log(
-                message=self.tr(
-                    text="Everything ran OK.",
-                    context="GeotuileurPlugin",
-                ),
-                log_level=3,
-                push=False,
-            )
-        except Exception as err:
-            self.log(
-                message=self.tr(
-                    text="Houston, we've got a problem: {}".format(err),
-                    context="GeotuileurPlugin",
-                ),
-                log_level=2,
-                push=True,
-            )

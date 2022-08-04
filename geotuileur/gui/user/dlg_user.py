@@ -49,7 +49,7 @@ class UserDialog(QDialog):
             QMessageBox.warning(
                 self,
                 self.tr("Unavailable user"),
-                self.tr(f"Can't define connected user : {exc}"),
+                self.tr(f"Unable to identify the logged in user: {exc}"),
             )
 
     def _disconnect(self) -> None:

@@ -2,7 +2,7 @@ import os
 
 from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtCore import QModelIndex
-from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtGui import QCursor, QGuiApplication
 from qgis.PyQt.QtWidgets import QAbstractItemView, QAction, QMenu, QWidget
 
 from geotuileur.api.stored_data import StoredData, StoredDataStatus, StoredDataStep
@@ -206,9 +206,11 @@ class DashboardWidget(QWidget):
         Args:
             stored_data: (StoredData) stored data to generate tile
         """
+        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
         publication_wizard = TileCreationWizard(self)
         publication_wizard.set_datastore_id(stored_data.datastore_id)
         publication_wizard.set_stored_data_id(stored_data.id)
+        QGuiApplication.restoreOverrideCursor()
         publication_wizard.show()
 
     def _publish_wizard(self, stored_data: StoredData) -> None:
@@ -218,9 +220,11 @@ class DashboardWidget(QWidget):
         Args:
             stored_data: (StoredData) stored data to publish
         """
+        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
         publication_wizard = PublicationFormCreation(self)
         publication_wizard.set_datastore_id(stored_data.datastore_id)
         publication_wizard.set_stored_data_id(stored_data.id)
+        QGuiApplication.restoreOverrideCursor()
         publication_wizard.show()
 
     def _view_tile(self, stored_data: StoredData) -> None:

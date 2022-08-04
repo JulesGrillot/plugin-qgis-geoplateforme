@@ -17,13 +17,13 @@ SOURCES= ../../plugin_main.py \
     ../../api/check.py \
     ../../api/client.py \
     ../../api/configuration.py \
-    ../../api/datastore.py
+    ../../api/datastore.py \
     ../../api/execution.py \
-    ../../api/offering.py
+    ../../api/offering.py \
     ../../api/processing.py \
     ../../api/stored_data.py \
     ../../api/upload.py \
-    ../../api/user.py
+    ../../api/user.py \
     # GUI
     ../../gui/cbx_datastore.py \
     ../../gui/cbx_stored_data.py \

@@ -17,6 +17,7 @@ from geotuileur.api.processing import (
     ExecutionStatus,
     ProcessingRequestManager,
 )
+from geotuileur.api.utils import as_localized_datetime
 from geotuileur.toolbelt import PlgLogger
 
 
@@ -47,12 +48,18 @@ class ExecutionLogWidget(QWidget):
         self.lbl_execution_name.setText(execution.name)
         status = ExecutionStatus(execution.status)
         self.lbl_execution_status.setPixmap(self._get_execution_status_icon(status))
-
-        # TODO : display in correct date time
-        self.lbl_execution_time.setText(execution.creation)
+        self.lbl_execution_time.setText(as_localized_datetime(execution.creation))
         try:
             manager = ProcessingRequestManager()
-            logs = manager.get_execution_logs(self.datastore, execution.id)
+            logs = self.tr(f"Execution ID :{execution.id}\n")
+            if execution.output:
+                if "stored_data" in execution.output:
+                    logs += self.tr(
+                        f"Output stored data ID :{execution.output['stored_data']['_id']}\n"
+                    )
+
+            logs += self.tr("Logs:\n")
+            logs += manager.get_execution_logs(self.datastore, execution.id)
             self.tbw_logs.setPlainText(logs)
         except ProcessingRequestManager.UnavailableExecutionException as exc:
             self.tbw_logs.setPlainText(self.tr(f"Can't define execution logs : {exc}"))
@@ -63,12 +70,12 @@ class ExecutionLogWidget(QWidget):
         self.lbl_execution_status.setPixmap(
             self._get_check_execution_status_icon(status)
         )
-
-        # TODO : display in correct date time
-        self.lbl_execution_time.setText(execution.creation)
+        self.lbl_execution_time.setText(as_localized_datetime(execution.creation))
         try:
             manager = CheckRequestManager()
-            logs = manager.get_execution_logs(self.datastore, execution.id)
+            logs = self.tr(f"Execution ID :{execution.id}\n")
+            logs += self.tr("Logs:\n")
+            logs += manager.get_execution_logs(self.datastore, execution.id)
             self.tbw_logs.setPlainText(logs)
         except CheckRequestManager.UnavailableExecutionException as exc:
             self.tbw_logs.setPlainText(self.tr(f"Can't define execution logs : {exc}"))

@@ -83,22 +83,22 @@
 <context>
     <name>DashboardWidget</name>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="153"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="154"/>
         <source>Replace data</source>
         <translation>Remplacer les données</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="159"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="160"/>
         <source>Manage styles</source>
         <translation>Gérer les styles</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="163"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="164"/>
         <source>Update publication informations</source>
         <translation>Modifier les informations de publication</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="169"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="170"/>
         <source>Unpublish</source>
         <translation>Dépublier</translation>
     </message>
@@ -144,24 +144,63 @@
 <context>
     <name>ExecutionListModel</name>
     <message>
-        <location filename="../../gui/mdl_execution_list.py" line="21"/>
+        <location filename="../../gui/mdl_execution_list.py" line="22"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../../gui/mdl_execution_list.py" line="21"/>
+        <location filename="../../gui/mdl_execution_list.py" line="22"/>
         <source>Status</source>
         <translation>Statut</translation>
     </message>
     <message>
-        <location filename="../../gui/mdl_execution_list.py" line="21"/>
+        <location filename="../../gui/mdl_execution_list.py" line="22"/>
         <source>Start</source>
         <translation>Début</translation>
     </message>
     <message>
-        <location filename="../../gui/mdl_execution_list.py" line="21"/>
+        <location filename="../../gui/mdl_execution_list.py" line="22"/>
         <source>Finish</source>
         <translation>Fin</translation>
+    </message>
+</context>
+<context>
+    <name>ExecutionLogWidget</name>
+    <message>
+        <location filename="../../gui/report/wdg_execution_log.ui" line="87"/>
+        <source>Logs</source>
+        <translation>Détails techniques</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/wdg_execution_log.py" line="86"/>
+        <source>Execution ID :{0}
+</source>
+        <translation>Identifiant de l&apos;execution :{0}
+</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/wdg_execution_log.py" line="63"/>
+        <source>Output stored data ID :{0}
+</source>
+        <translation>Identifiant de la données en sortie  :{0}
+</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/wdg_execution_log.py" line="87"/>
+        <source>Logs:
+</source>
+        <translation>Journal:
+</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/wdg_execution_log.ui" line="14"/>
+        <source>Execution logs</source>
+        <translation>Journal d&apos;execution</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/wdg_execution_log.py" line="91"/>
+        <source>Can&apos;t define execution logs : {0}</source>
+        <translation>Impossible de définir le journal d&apos;execution : {0}</translation>
     </message>
 </context>
 <context>
@@ -312,6 +351,34 @@
         <location filename="../../gui/publication_creation/qwp_publication_form.py" line="71"/>
         <source>Please fill all fields.</source>
         <translation>Merci de renseigner tous les champs.</translation>
+    </message>
+</context>
+<context>
+    <name>ReportDialog</name>
+    <message>
+        <location filename="../../gui/report/dlg_report.ui" line="32"/>
+        <source>Name</source>
+        <translation>Nom</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/dlg_report.ui" line="68"/>
+        <source>ID</source>
+        <translation>Identifiant</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/dlg_report.py" line="30"/>
+        <source>Report</source>
+        <translation>Rapport</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/dlg_report.py" line="63"/>
+        <source>Can&apos;t define upload logs : {0}</source>
+        <translation>Impossible de définir le journal du téléversement : {0}</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/dlg_report.py" line="100"/>
+        <source>Can&apos;t define execution logs : {0}</source>
+        <translation>Impossible de définir le journal d&apos;execution : {0}</translation>
     </message>
 </context>
 <context>
@@ -538,12 +605,12 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
         <translation>La génération des tuiles a échoué</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="263"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="265"/>
         <source>Check details for more informations</source>
         <translation>Consulter les détails pour plus d&apos;informations</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="263"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="265"/>
         <source>Stored data check status failed</source>
         <translation>La vérification du statut des données stockées a échoué</translation>
     </message>
@@ -553,7 +620,7 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
         <translation>Génération en cours</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="223"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="226"/>
         <source>Your tiles are ready.</source>
         <translation>Les tuiles ont été générées.</translation>
     </message>
@@ -871,6 +938,29 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
 </source>
         <translation>- type de couche invalide
 </translation>
+    </message>
+</context>
+<context>
+    <name>UploadLogWidget</name>
+    <message>
+        <location filename="../../gui/report/wdg_upload_log.ui" line="60"/>
+        <source>Logs</source>
+        <translation>Détails techniques</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/wdg_upload_log.py" line="56"/>
+        <source>Can&apos;t define execution logs : {0}</source>
+        <translation>Impossible de définir le journal d&apos;execution : {0}</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/wdg_upload_log.ui" line="14"/>
+        <source>Upload logs</source>
+        <translation>Journal de téléversement</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/wdg_upload_log.ui" line="53"/>
+        <source>Upload</source>
+        <translation>Téléversement du fichier</translation>
     </message>
 </context>
 <context>

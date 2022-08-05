@@ -1,16 +1,34 @@
 import json
 import logging
 from dataclasses import dataclass
+from enum import Enum
 
 from qgis.core import QgsBlockingNetworkRequest
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 from geotuileur.api.client import NetworkRequestsManager
-from geotuileur.api.execution import Execution
+from geotuileur.api.utils import qgs_blocking_get_request
 from geotuileur.toolbelt import PlgLogger, PlgOptionsManager
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class CheckExecution:
+    id: str
+    status: str
+    name: str
+    creation: str
+    start: str
+    finish: str
+
+
+class CheckExecutionStatus(Enum):
+    WAITING = "WAITING"
+    PROGRESS = "PROGRESS"
+    SUCCESS = "SUCCESS"
+    FAILURE = "FAILURE"
 
 
 @dataclass
@@ -47,7 +65,7 @@ class CheckRequestManager:
             f"{self.plg_settings.base_url_api_entrepot}/datastores/{datastore}/checks"
         )
 
-    def get_execution(self, datastore: str, exec_id: str) -> Execution:
+    def get_execution(self, datastore: str, exec_id: str) -> CheckExecution:
         """
         Get execution.
 
@@ -55,44 +73,48 @@ class CheckRequestManager:
             datastore: (str) datastore id
             exec_id: (str) execution id
 
-        Returns: Execution execution if execution available, raise UnavailableExecutionException otherwise
+        Returns: CheckExecution execution if execution available, raise UnavailableExecutionException otherwise
         """
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(
             QUrl(f"{self.get_base_url(datastore)}/executions/{exec_id}")
         )
 
-        # headers
-        req.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
-
-        # send request
-        resp = self.ntwk_requester_blk.get(req, forceRefresh=True)
-
-        # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
-            raise self.UnavailableExecutionException(
-                f"Error while fetching execution : {self.ntwk_requester_blk.errorMessage()}"
-            )
-
-        # check response
-        req_reply = self.ntwk_requester_blk.reply()
-        if (
-            not req_reply.rawHeader(b"Content-Type")
-            == "application/json; charset=utf-8"
-        ):
-            raise self.UnavailableExecutionException(
-                "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
-                    req_reply.rawHeader(b"Content-type")
-                )
-            )
-
-        data = json.loads(req_reply.content().data().decode("utf-8"))
-        execution = Execution(
-            id=data["_id"], status=data["status"], name=data["check"]["name"]
+        req_reply = qgs_blocking_get_request(
+            self.ntwk_requester_blk, req, self.UnavailableExecutionException
         )
-        if "start" in data:
-            execution.start = data["start"]
-        if "finish" in data:
-            execution.finish = data["finish"]
+        data = json.loads(req_reply.content().data().decode("utf-8"))
+        execution = CheckExecution(
+            id=data["_id"],
+            status=data["status"],
+            name=data["check"]["name"],
+            creation=data["creation"],
+            start=data["start"],
+            finish=data["finish"],
+        )
 
         return execution
+
+    def get_execution_logs(self, datastore: str, exec_id: str) -> str:
+        """
+        Get execution logs.
+
+        Args:
+            datastore: (str) datastore id
+            exec_id: (str) execution id
+
+        Returns: (str) Execution logs if execution available, raise UnavailableExecutionException otherwise
+        """
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+        req = QNetworkRequest(
+            QUrl(f"{self.get_base_url(datastore)}/executions/{exec_id}/logs")
+        )
+
+        req_reply = qgs_blocking_get_request(
+            self.ntwk_requester_blk,
+            req,
+            self.UnavailableExecutionException,
+            expected_type="plain/text; charset=utf-8",
+        )
+        data = req_reply.content().data().decode("utf-8")
+        return data

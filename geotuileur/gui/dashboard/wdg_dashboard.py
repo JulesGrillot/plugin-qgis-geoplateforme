@@ -11,6 +11,7 @@ from geotuileur.gui.proxy_model_stored_data import StoredDataProxyModel
 from geotuileur.gui.publication_creation.wzd_publication_creation import (
     PublicationFormCreation,
 )
+from geotuileur.gui.report.dlg_report import ReportDialog
 from geotuileur.gui.tile_creation.wzd_tile_creation import TileCreationWizard
 from geotuileur.toolbelt import PlgLogger
 
@@ -188,7 +189,9 @@ class DashboardWidget(QWidget):
         Args:
             stored_data: (StoredData) stored data to publish
         """
-        self.log("Stored data report not implemented yet", push=True)
+        dialog = ReportDialog(self)
+        dialog.set_stored_data(stored_data)
+        dialog.show()
 
     def _tile_sample_wizard(self, stored_data: StoredData) -> None:
         """

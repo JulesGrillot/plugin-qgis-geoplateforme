@@ -93,7 +93,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
 
         """
         self.created_stored_data_id = ""
-        self.mdl_execution_list.set_execution_list([])
+        self.mdl_execution_list.clear_executions()
         self.create_tile()
 
     def validatePage(self) -> bool:
@@ -197,6 +197,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
         Check tile creation status
 
         """
+        self.mdl_execution_list.clear_executions()
         if self.created_stored_data_id:
             try:
                 upload_manager = UploadRequestManager()
@@ -210,10 +211,12 @@ class TileGenerationStatusPageWizard(QWizardPage):
                     datastore=datastore_id, stored_data=self.created_stored_data_id
                 )
 
-                execution_list = []
                 if stored_data.tags and "upload_id" in stored_data.tags.keys():
-                    execution_list = upload_manager.get_upload_checks_execution(
+                    check_execution_list = upload_manager.get_upload_checks_execution(
                         datastore=datastore_id, upload=stored_data.tags["upload_id"]
+                    )
+                    self.mdl_execution_list.set_check_execution_list(
+                        check_execution_list
                     )
 
                 # Stop timer if stored_data generated
@@ -236,13 +239,12 @@ class TileGenerationStatusPageWizard(QWizardPage):
                     stored_data.tags is not None
                     and "proc_pyr_creat_id" in stored_data.tags.keys()
                 ):
-                    execution_list.append(
-                        processing_manager.get_execution(
-                            datastore=datastore_id,
-                            exec_id=stored_data.tags["proc_pyr_creat_id"],
-                        )
+                    execution = processing_manager.get_execution(
+                        datastore=datastore_id,
+                        exec_id=stored_data.tags["proc_pyr_creat_id"],
                     )
-                self.mdl_execution_list.set_execution_list(execution_list)
+
+                    self.mdl_execution_list.set_execution_list([execution])
             except StoredDataRequestManager.UnavailableStoredData as exc:
                 msgBox = QMessageBox(
                     QMessageBox.Warning,

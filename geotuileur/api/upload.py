@@ -1,6 +1,7 @@
 import json
 import logging
 from dataclasses import dataclass
+from enum import Enum
 from typing import List
 
 import requests
@@ -13,20 +14,33 @@ from qgis.PyQt.QtNetwork import (
     QNetworkRequest,
 )
 
-from geotuileur.api.check import CheckRequestManager
+from geotuileur.api.check import CheckExecution, CheckRequestManager
 from geotuileur.api.client import NetworkRequestsManager
-from geotuileur.api.execution import Execution
+from geotuileur.api.utils import qgs_blocking_get_request
 from geotuileur.toolbelt import PlgLogger, PlgOptionsManager
 
 logger = logging.getLogger(__name__)
 
 
+class UploadStatus(Enum):
+    CREATED = "CREATED"
+    GENERATING = "GENERATING"
+    UNSTABLE = "UNSTABLE"
+    OPEN = "OPEN"
+    CLOSED = "CLOSED"
+    CHECKING = "CHECKING"
+    MODIFYING = "MODIFYING"
+    DELETED = "DELETED"
+
+
 @dataclass
 class Upload:
     id: str
+    datastore_id: str
     name: str
     description: str
     srs: str
+    status: str
 
 
 class UploadRequestManager:
@@ -107,9 +121,40 @@ class UploadRequestManager:
         data = json.loads(req_reply.content().data().decode("utf-8"))
         return data["status"]
 
+    def get_upload(self, datastore: str, upload: str) -> Upload:
+        """
+        Get upload.
+
+        Args:
+            datastore: (str) datastore id
+            upload: (str) upload id
+
+        Returns: (upload) Upload if available, raise UnavailableUploadException otherwise
+
+        """
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+        req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{upload}"))
+
+        req_reply = qgs_blocking_get_request(
+            self.ntwk_requester_blk, req, self.UnavailableUploadException
+        )
+        data = json.loads(req_reply.content().data().decode("utf-8"))
+        return self._upload_from_json(data, datastore)
+
+    @staticmethod
+    def _upload_from_json(data, datastore: str) -> Upload:
+        return Upload(
+            id=data["_id"],
+            datastore_id=datastore,
+            name=data["name"],
+            description=data["description"],
+            srs=data["srs"],
+            status=data["status"],
+        )
+
     def get_upload_checks_execution(
         self, datastore: str, upload: str
-    ) -> List[Execution]:
+    ) -> List[CheckExecution]:
         """
         Get upload checks execution.
 
@@ -220,12 +265,7 @@ class UploadRequestManager:
             )
 
         data = json.loads(req_reply.content().data().decode("utf-8"))
-        return Upload(
-            name=data["name"],
-            id=data["_id"],
-            description=data["description"],
-            srs=data["srs"],
-        )
+        return self._upload_from_json(data, datastore)
 
     @staticmethod
     def get_qgis_proxy_params_str() -> str:

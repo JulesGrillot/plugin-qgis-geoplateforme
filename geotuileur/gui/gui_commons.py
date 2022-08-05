@@ -37,7 +37,7 @@ class GuiCommonUtils:
         # Refine the log message
         if custom_log_header:
             log_msg = custom_log_header
-        elif wdg_source.buddy():
+        elif isinstance(wdg_source, QLabel) and wdg_source.buddy():
             log_msg = wdg_source.buddy().text()
         else:
             log_msg = wdg_source.objectName()

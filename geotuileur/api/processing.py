@@ -25,10 +25,13 @@ class Execution:
     id: str
     status: str
     name: str
-    creation: datetime = None
-    launch: datetime = None
-    start: datetime = None
-    finish: datetime = None
+    creation: str
+    launch: str
+    start: str
+    finish: str
+    parameters: dict
+    inputs: dict
+    output: dict
 
 
 @dataclass
@@ -217,23 +220,23 @@ class ProcessingRequestManager:
             self.ntwk_requester_blk, req, self.UnavailableExecutionException
         )
         data = json.loads(req_reply.content().data().decode("utf-8"))
-        execution_list = [self._execution_from_json(execution) for execution in data]
+        execution_list = [self.get_execution(datastore, e["_id"]) for e in data]
         return execution_list
 
     @staticmethod
     def _execution_from_json(data) -> Execution:
         execution = Execution(
-            id=data["_id"], status=data["status"], name=data["processing"]["name"]
+            id=data["_id"],
+            status=data["status"],
+            name=data["processing"]["name"],
+            creation=data["creation"],
+            launch=data["launch"],
+            start=data["start"],
+            finish=data["finish"],
+            parameters=data["parameters"],
+            inputs=data["inputs"],
+            output=data["output"],
         )
-
-        if "creation" in data:
-            execution.creation = data["creation"]
-        if "launch" in data:
-            execution.launch = data["launch"]
-        if "start" in data:
-            execution.start = data["start"]
-        if "finish" in data:
-            execution.finish = data["finish"]
         return execution
 
     def get_execution_logs(self, datastore: str, exec_id: str) -> str:

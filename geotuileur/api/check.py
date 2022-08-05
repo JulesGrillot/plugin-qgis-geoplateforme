@@ -20,9 +20,9 @@ class CheckExecution:
     id: str
     status: str
     name: str
-    creation: datetime = None
-    start: datetime = None
-    finish: datetime = None
+    creation: str
+    start: str
+    finish: str
 
 
 class CheckExecutionStatus(Enum):
@@ -86,15 +86,13 @@ class CheckRequestManager:
         )
         data = json.loads(req_reply.content().data().decode("utf-8"))
         execution = CheckExecution(
-            id=data["_id"], status=data["status"], name=data["check"]["name"]
+            id=data["_id"],
+            status=data["status"],
+            name=data["check"]["name"],
+            creation=data["creation"],
+            start=data["start"],
+            finish=data["finish"],
         )
-
-        if "creation" in data:
-            execution.creation = data["creation"]
-        if "start" in data:
-            execution.start = data["start"]
-        if "finish" in data:
-            execution.finish = data["finish"]
 
         return execution
 

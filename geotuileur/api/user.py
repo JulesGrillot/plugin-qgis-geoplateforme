@@ -9,10 +9,11 @@ from dataclasses import dataclass
 # PyQGIS
 from qgis.core import QgsBlockingNetworkRequest
 from qgis.PyQt.Qt import QUrl
-from qgis.PyQt.QtCore import QCoreApplication, QDateTime, Qt
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # project
+from geotuileur.api.utils import as_localized_datetime
 from geotuileur.toolbelt.log_handler import PlgLogger
 from geotuileur.toolbelt.preferences import PlgOptionsManager
 
@@ -102,12 +103,7 @@ class User:
         :return: localized date time (or raw creation string if conversion fails)
         :rtype: str
         """
-        try:
-            dt = QDateTime.fromString(self.creation, Qt.ISODate)
-            return dt.toString(Qt.DefaultLocaleLongDate)
-        except Exception as exc:
-            logger.error(f"Datetime parseing failded. Trace: {exc}")
-            return self.creation
+        return as_localized_datetime(self.creation)
 
 
 class UserRequestsManager:

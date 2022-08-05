@@ -1,5 +1,10 @@
+import logging
+
 from qgis.core import QgsBlockingNetworkRequest, QgsNetworkReplyContent
+from qgis.PyQt.QtCore import QDateTime, Qt
 from qgis.PyQt.QtNetwork import QNetworkRequest
+
+logger = logging.getLogger(__name__)
 
 
 def send_qgs_blocking_request(
@@ -26,3 +31,17 @@ def send_qgs_blocking_request(
             f"Response mime-type is '{content_type}' not '{expected_type}' as required."
         )
     return req_reply
+
+
+def as_localized_datetime(date: str) -> str:
+    """Try to convert raw creation date as localized datetime using Qt.
+
+    :return: localized date time (or raw creation string if conversion fails)
+    :rtype: str
+    """
+    try:
+        dt = QDateTime.fromString(date, Qt.ISODate)
+        return dt.toString(Qt.DefaultLocaleLongDate)
+    except Exception as exc:
+        logger.error(f"Datetime parseing failded. Trace: {exc}")
+        return date

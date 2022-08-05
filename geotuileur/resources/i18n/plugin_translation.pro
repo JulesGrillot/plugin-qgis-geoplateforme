@@ -5,6 +5,9 @@ FORMS = ../../gui/dlg_settings.ui \
     ../../gui/publication_creation/qwp_publication_form.ui \
     ../../gui/publication_creation/qwp_status.ui \
     ../../gui/publication_creation/wdg_publication_form.ui \
+    ../../gui/report/dlg_report.ui \
+    ../../gui/report/wdg_execution_log.ui \
+    ../../gui/report/wdg_upload_log.ui \
     ../../gui/tile_creation/qwp_tile_generation_edition.ui \
     ../../gui/tile_creation/qwp_tile_generation_fields_selection.ui \
     ../../gui/tile_creation/qwp_tile_generation_generalization.ui \
@@ -26,6 +29,7 @@ SOURCES= ../../plugin_main.py \
     ../../api/stored_data.py \
     ../../api/upload.py \
     ../../api/user.py \
+    ../../api/utils.py \
     # GUI
     ../../gui/cbx_datastore.py \
     ../../gui/cbx_stored_data.py \
@@ -41,6 +45,9 @@ SOURCES= ../../plugin_main.py \
     ../../gui/publication_creation/qwp_status.py \
     ../../gui/publication_creation/wdg_publication_form.py \
     ../../gui/publication_creation/wzd_publication_creation.py \
+    ../../gui/report/dlg_report.py \
+    ../../gui/report/wdg_execution_log.py \
+    ../../gui/report/wdg_upload_log.py \
     ../../gui/tile_creation/qwp_tile_generation_edition.py \
     ../../gui/tile_creation/qwp_tile_generation_fields_selection.py \
     ../../gui/tile_creation/qwp_tile_generation_generalization.py \

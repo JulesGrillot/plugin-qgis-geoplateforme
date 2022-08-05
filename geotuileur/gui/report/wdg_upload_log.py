@@ -53,7 +53,9 @@ class UploadLogWidget(QWidget):
                 widget.set_check_execution(execution)
                 self.vlayout_checks.addWidget(widget)
         except UploadRequestManager.UnavailableUploadException as exc:
-            self.log(self.tr(f"Can't define execution logs : {exc}"), push=True)
+            self.log(
+                self.tr("Can't define execution logs : {0}").format(exc), push=True
+            )
 
     @staticmethod
     def _get_status_icon(status: UploadStatus) -> QPixmap:

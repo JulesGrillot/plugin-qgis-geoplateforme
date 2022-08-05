@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Upload logs</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
@@ -50,7 +50,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string notr="true">Upload</string>
+         <string>Upload</string>
         </property>
        </widget>
       </item>

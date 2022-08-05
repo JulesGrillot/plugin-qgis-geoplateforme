@@ -57,18 +57,20 @@ class ExecutionLogWidget(QWidget):
         self.lbl_execution_time.setText(as_localized_datetime(execution.creation))
         try:
             manager = ProcessingRequestManager()
-            logs = self.tr(f"Execution ID :{execution.id}\n")
+            logs = self.tr("Execution ID :{0}\n").format(execution.id)
             if execution.output:
                 if "stored_data" in execution.output:
-                    logs += self.tr(
-                        f"Output stored data ID :{execution.output['stored_data']['_id']}\n"
+                    logs += self.tr("Output stored data ID :{0}\n").format(
+                        execution.output["stored_data"]["_id"]
                     )
 
             logs += self.tr("Logs:\n")
             logs += manager.get_execution_logs(self.datastore, execution.id)
             self.tbw_logs.setPlainText(logs)
         except ProcessingRequestManager.UnavailableExecutionException as exc:
-            self.tbw_logs.setPlainText(self.tr(f"Can't define execution logs : {exc}"))
+            self.tbw_logs.setPlainText(
+                self.tr("Can't define execution logs : {0}").format(exc)
+            )
 
     def set_check_execution(self, execution: CheckExecution) -> None:
         """
@@ -85,12 +87,14 @@ class ExecutionLogWidget(QWidget):
         self.lbl_execution_time.setText(as_localized_datetime(execution.creation))
         try:
             manager = CheckRequestManager()
-            logs = self.tr(f"Execution ID :{execution.id}\n")
+            logs = self.tr("Execution ID :{0}\n").format(execution.id)
             logs += self.tr("Logs:\n")
             logs += manager.get_execution_logs(self.datastore, execution.id)
             self.tbw_logs.setPlainText(logs)
         except CheckRequestManager.UnavailableExecutionException as exc:
-            self.tbw_logs.setPlainText(self.tr(f"Can't define execution logs : {exc}"))
+            self.tbw_logs.setPlainText(
+                self.tr("Can't define execution logs : {0}").format(exc)
+            )
 
     @staticmethod
     def _get_execution_status_icon(status: ExecutionStatus) -> QPixmap:

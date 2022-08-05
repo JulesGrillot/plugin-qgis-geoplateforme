@@ -60,7 +60,9 @@ class ReportDialog(QDialog):
                 widget.set_upload(upload)
                 self.vlayout_execution.addWidget(widget)
             except UploadRequestManager.UnavailableUploadException as exc:
-                self.log(self.tr(f"Can't define upload logs : {exc}"), push=True)
+                self.log(
+                    self.tr("Can't define upload logs : {0}").format(exc), push=True
+                )
 
     def _add_vectordb_stored_data_logs(self, stored_data: StoredData) -> None:
         """
@@ -78,7 +80,9 @@ class ReportDialog(QDialog):
                 )
                 self._add_stored_data_execution_logs(vectordb_stored_data)
             except StoredDataRequestManager.UnavailableStoredData as exc:
-                self.log(self.tr(f"Can't define execution logs : {exc}"), push=True)
+                self.log(
+                    self.tr("Can't define execution logs : {0}").format(exc), push=True
+                )
 
     def _add_stored_data_execution_logs(self, stored_data: StoredData) -> None:
         """
@@ -97,4 +101,6 @@ class ReportDialog(QDialog):
                 widget.set_processing_execution(execution)
                 self.vlayout_execution.addWidget(widget)
         except ProcessingRequestManager.UnavailableExecutionException as exc:
-            self.log(self.tr(f"Can't define execution logs : {exc}"), push=True)
+            self.log(
+                self.tr("Can't define execution logs : {0}").format(exc), push=True
+            )

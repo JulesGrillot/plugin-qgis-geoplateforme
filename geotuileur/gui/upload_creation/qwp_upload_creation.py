@@ -19,8 +19,8 @@ from qgis.PyQt.QtGui import QMovie, QPixmap
 from qgis.PyQt.QtWidgets import QHeaderView, QMessageBox, QWizardPage
 
 from geotuileur.__about__ import DIR_PLUGIN_ROOT
-from geotuileur.api.execution import Execution
-from geotuileur.api.processing import ProcessingRequestManager
+from geotuileur.api.check import CheckExecution
+from geotuileur.api.processing import Execution, ProcessingRequestManager
 from geotuileur.api.stored_data import StoredDataRequestManager
 from geotuileur.api.upload import UploadRequestManager
 from geotuileur.gui.mdl_execution_list import ExecutionListModel
@@ -93,7 +93,7 @@ class UploadCreationPageWizard(QWizardPage):
         self.created_upload_id = ""
         self.created_stored_data_id = ""
 
-        self.mdl_execution_list.set_execution_list([])
+        self.mdl_execution_list.clear_executions()
         self.upload()
 
     def upload(self) -> None:
@@ -156,14 +156,14 @@ class UploadCreationPageWizard(QWizardPage):
         Check upload status and run database integration if upload closed
 
         """
-        execution_list = self._check_upload_creation()
+        self.mdl_execution_list.clear_executions()
+        self.mdl_execution_list.set_check_execution_list(self._check_upload_creation())
 
-        if self.created_stored_data_id:
-            execution_list.append(self._check_stored_data_creation())
+        execution = self._check_stored_data_creation()
+        if execution:
+            self.mdl_execution_list.set_execution_list([execution])
 
-        self.mdl_execution_list.set_execution_list(execution_list)
-
-    def _check_upload_creation(self) -> List[Execution]:
+    def _check_upload_creation(self) -> List[CheckExecution]:
         """
         Check if upload creation check are done and return checks execution.
         Il upload is closed, launch database integration

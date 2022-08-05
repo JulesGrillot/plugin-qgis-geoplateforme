@@ -1,7 +1,8 @@
 from qgis.PyQt.QtCore import QObject
 from qgis.PyQt.QtGui import QStandardItemModel
 
-from geotuileur.api.execution import Execution
+from geotuileur.api.check import CheckExecution
+from geotuileur.api.processing import Execution
 
 
 class ExecutionListModel(QStandardItemModel):
@@ -12,7 +13,7 @@ class ExecutionListModel(QStandardItemModel):
 
     def __init__(self, parent: QObject = None):
         """
-        QStandardItemModel override for execution map display as a tree
+        QStandardItemModel override for execution or check execution display
 
         Args:
             parent: QObject
@@ -22,6 +23,14 @@ class ExecutionListModel(QStandardItemModel):
             [self.tr("Name"), self.tr("Status"), self.tr("Start"), self.tr("Finish")]
         )
 
+    def clear_executions(self) -> None:
+        """
+        Remove execution and check execution rows
+
+        """
+        while self.rowCount():
+            self.removeRow(0)
+
     def set_execution_list(self, execution_list: [Execution]) -> None:
         """
         Define display execution list
@@ -29,13 +38,36 @@ class ExecutionListModel(QStandardItemModel):
         Args:
             execution_list: execution list
         """
-        while self.rowCount():
-            self.removeRow(0)
 
         for executions in execution_list:
             self._insert_execution(executions)
 
     def _insert_execution(self, execution: Execution) -> None:
+        """
+        Insert executions and status
+
+        Args:
+            execution: Execution execution
+        """
+        row = self.rowCount()
+        self.insertRow(row)
+        self.setData(self.index(row, self.NAME_COL), execution.name)
+        self.setData(self.index(row, self.STATUS_COL), execution.status)
+        self.setData(self.index(row, self.START_COL), execution.start)
+        self.setData(self.index(row, self.FINISH_COL), execution.finish)
+
+    def set_check_execution_list(self, execution_list: [CheckExecution]) -> None:
+        """
+        Define display execution list
+
+        Args:
+            execution_list: execution list
+        """
+
+        for executions in execution_list:
+            self._insert_check_execution(executions)
+
+    def _insert_check_execution(self, execution: CheckExecution) -> None:
         """
         Insert executions and status
 

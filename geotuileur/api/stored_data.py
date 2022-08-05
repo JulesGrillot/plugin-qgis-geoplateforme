@@ -51,10 +51,12 @@ class StoredData:
     status: str
     tags: dict = None
     type_infos: dict = None
+    size: int = 0
+    srs: str = ""
 
     def get_tables(self) -> List[TableRelation]:
         tables = []
-        if self.type_infos:
+        if self.type_infos and "relations" in self.type_infos:
             tables = [
                 TableRelation(
                     relation["name"], relation["attributes"], relation["primary_key"]
@@ -66,7 +68,7 @@ class StoredData:
 
     def zoom_levels(self) -> List:
         zoom_levels = []
-        if self.type_infos["levels"]:
+        if self.type_infos and "levels" in self.type_infos:
             zoom_levels = self.type_infos["levels"]
         return zoom_levels
 
@@ -300,6 +302,10 @@ class StoredDataRequestManager:
             result.tags = data["tags"]
         if "type_infos" in data:
             result.type_infos = data["type_infos"]
+        if "size" in data:
+            result.size = data["size"]
+        if "srs" in data:
+            result.size = data["srs"]
         return result
 
     def get_stored_data_json(self, datastore: str, stored_data: str) -> dict:

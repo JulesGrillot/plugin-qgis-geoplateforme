@@ -1,6 +1,10 @@
 from qgis.PyQt.QtCore import QObject, Qt
 
-from geotuileur.api.stored_data import StoredDataRequestManager, TableRelation
+from geotuileur.api.stored_data import (
+    StoredData,
+    StoredDataRequestManager,
+    TableRelation,
+)
 from geotuileur.toolbelt import PlgLogger
 from geotuileur.toolbelt.check_state_model import CheckStateModel
 
@@ -33,10 +37,20 @@ class TableRelationTreeModel(CheckStateModel):
             self._insert_table_relations(stored_data.get_tables())
         except StoredDataRequestManager.ReadStoredDataException as exc:
             self.log(
-                f"Error while getting stored data informations: {exc}",
+                self.tr("Error while getting stored data informations: {0}").format(
+                    exc
+                ),
                 log_level=2,
                 push=False,
             )
+
+    def set_stored_data_tables(self, stored_data: StoredData) -> None:
+        """
+        Refresh QStandardItemModel data with current stored data
+
+        """
+        self.removeRows(0, self.rowCount())
+        self._insert_table_relations(stored_data.get_tables())
 
     def get_selected_table_attributes(self) -> {str: [str]}:
         """

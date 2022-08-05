@@ -30,7 +30,7 @@ class UserWidget(QWidget):
         self.mdl_datastore = DatastoreListModel(self)
         self.tbv_datastore.setModel(self.mdl_datastore)
 
-        # show only icon on copy button
+        # customize copy button
         self.btn_copy_id.setText("")
         self.btn_copy_id.setIcon(QIcon(QgsApplication.iconPath("mActionEditCopy.svg")))
         self.btn_copy_id.pressed.connect(
@@ -41,6 +41,14 @@ class UserWidget(QWidget):
         )
         self.lbl_id_value.installEventFilter(self)
         self.lbl_id_value.setBuddy(self.lbl_id)
+
+        # connect also email LineEdit
+        self.lne_email.selectionChanged.connect(
+            partial(
+                self.gui_utils.copy_widget_txt_to_clipboard,
+                wdg_source=self.lne_email,
+            )
+        )
 
     def eventFilter(self, source: QWidget, event: QEvent) -> bool:
         """Custom event filter to handle special user actions. Can override any widget

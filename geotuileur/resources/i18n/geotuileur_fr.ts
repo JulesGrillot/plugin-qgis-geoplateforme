@@ -284,7 +284,7 @@
     <message>
         <location filename="../../gui/dlg_settings.ui" line="290"/>
         <source>GÃ©otuileur portal:</source>
-        <translation>URL du portail du Géotuileur :</translation>
+        <translation type="unfinished">URL du portail du Géotuileur :</translation>
     </message>
     <message>
         <location filename="../../gui/dlg_settings.ui" line="315"/>
@@ -294,7 +294,7 @@
     <message>
         <location filename="../../gui/dlg_settings.ui" line="322"/>
         <source>API EntrepÃ´t endpoint:</source>
-        <translation>URL de l&apos;API Entrepôt :</translation>
+        <translation type="unfinished">URL de l&apos;API Entrepôt :</translation>
     </message>
     <message>
         <location filename="../../gui/dlg_settings.ui" line="344"/>
@@ -1031,27 +1031,27 @@ Returns created configuration id in {self.PUBLICATION_URL} results</source>
         <translation>Prénom :</translation>
     </message>
     <message>
-        <location filename="../../gui/user/wdg_user.ui" line="58"/>
+        <location filename="../../gui/user/wdg_user.ui" line="78"/>
         <source>Last name:</source>
         <translation>Nom :</translation>
     </message>
     <message>
-        <location filename="../../gui/user/wdg_user.ui" line="84"/>
+        <location filename="../../gui/user/wdg_user.ui" line="188"/>
         <source>Email:</source>
         <translation>Email :</translation>
     </message>
     <message>
-        <location filename="../../gui/user/wdg_user.ui" line="110"/>
+        <location filename="../../gui/user/wdg_user.ui" line="120"/>
         <source>Registration date:</source>
         <translation>Date de création du compte :</translation>
     </message>
     <message>
-        <location filename="../../gui/user/wdg_user.ui" line="136"/>
+        <location filename="../../gui/user/wdg_user.ui" line="104"/>
         <source>ID:</source>
         <translation>Identifiant :</translation>
     </message>
     <message>
-        <location filename="../../gui/user/wdg_user.ui" line="162"/>
+        <location filename="../../gui/user/wdg_user.ui" line="136"/>
         <source>Datastores</source>
         <translation>Espaces de travail</translation>
     </message>
@@ -1059,6 +1059,16 @@ Returns created configuration id in {self.PUBLICATION_URL} results</source>
         <location filename="../../gui/user/wdg_user.ui" line="14"/>
         <source>User informations</source>
         <translation>Mon compte</translation>
+    </message>
+    <message>
+        <location filename="../../gui/user/wdg_user.ui" line="243"/>
+        <source>Click me to copy the related content</source>
+        <translation>Double-cliquer pour copier le contenu correspondant</translation>
+    </message>
+    <message>
+        <location filename="../../gui/user/wdg_user.ui" line="218"/>
+        <source>Copy</source>
+        <translation>Copier</translation>
     </message>
 </context>
 <context>
@@ -1081,7 +1091,7 @@ Returns created configuration id in {self.PUBLICATION_URL} results</source>
     <message>
         <location filename="../../gui/publication_creation/wdg_publication_form.ui" line="102"/>
         <source>Inform your users about the legal notice to show if they use your flux. Example &quot;IGN source BDTOPOÂ®&quot;. This legal notice will be show below the map in the form of a link that points to the URL.</source>
-        <translation>Informez vos utilisateurs des mentions à faire figurer sur les cartes lorsqu&apos;ils utilisent votre flux. Exemple : &amp;quot;source IGN BDTOPO®&amp;quot;. Ce texte sera affiché au bas des cartes sous forme de lien cliquable pointant vers l&apos;URL indiquée.</translation>
+        <translation>Informez vos utilisateurs des mentions à faire figurer sur les cartes lorsqu&apos;ils utilisent votre flux. Ce texte sera affiché au bas des cartes sous forme de lien cliquable pointant vers l&apos;URL indiquée.</translation>
     </message>
     <message>
         <location filename="../../gui/publication_creation/wdg_publication_form.ui" line="161"/>

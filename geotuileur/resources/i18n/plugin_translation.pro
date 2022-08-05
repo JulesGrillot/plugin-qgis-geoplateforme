@@ -35,6 +35,7 @@ SOURCES= ../../plugin_main.py \
     ../../gui/cbx_stored_data.py \
     ../../gui/dlg_authentication.py \
     ../../gui/dlg_settings.py \
+    ../../gui/gui_commons.py \
     ../../gui/mdl_datastore.py \
     ../../gui/mdl_execution_list.py \
     ../../gui/mdl_stored_data.py \

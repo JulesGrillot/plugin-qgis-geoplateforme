@@ -1,12 +1,34 @@
 import json
 from dataclasses import dataclass
+from datetime import datetime
+from enum import Enum
 
 from qgis.core import QgsBlockingNetworkRequest
 from qgis.PyQt.QtCore import QByteArray, QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
-from geotuileur.api.execution import Execution
+from geotuileur.api.utils import send_qgs_blocking_request
 from geotuileur.toolbelt import PlgLogger, PlgOptionsManager
+
+
+class ExecutionStatus(Enum):
+    CREATED = "CREATED"
+    WAITING = "WAITING"
+    PROGRESS = "PROGRESS"
+    SUCCESS = "SUCCESS"
+    FAILURE = "FAILURE"
+    ABORTED = "ABORTED"
+
+
+@dataclass
+class Execution:
+    id: str
+    status: str
+    name: str
+    creation: datetime = None
+    launch: datetime = None
+    start: datetime = None
+    finish: datetime = None
 
 
 @dataclass
@@ -20,6 +42,9 @@ class ProcessingRequestManager:
         pass
 
     class UnavailableExecutionException(Exception):
+        pass
+
+    class UnavailableStoredDataException(Exception):
         pass
 
     class CreateProcessingException(Exception):
@@ -65,30 +90,9 @@ class ProcessingRequestManager:
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}"))
 
-        # headers
-        req.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
-
-        # send request
-        resp = self.ntwk_requester_blk.get(req, forceRefresh=True)
-
-        # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
-            raise self.UnavailableProcessingException(
-                f"Error while fetching processing : {self.ntwk_requester_blk.errorMessage()}"
-            )
-
-        # check response
-        req_reply = self.ntwk_requester_blk.reply()
-        if (
-            not req_reply.rawHeader(b"Content-Type")
-            == "application/json; charset=utf-8"
-        ):
-            raise self.UnavailableProcessingException(
-                "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
-                    req_reply.rawHeader(b"Content-type")
-                )
-            )
-
+        req_reply = send_qgs_blocking_request(
+            self.ntwk_requester_blk, req, self.UnavailableProcessingException
+        )
         processing_list = json.loads(req_reply.content().data().decode("utf-8"))
         for processing in processing_list:
             if processing["name"] == name:
@@ -182,38 +186,76 @@ class ProcessingRequestManager:
             QUrl(f"{self.get_base_url(datastore)}/executions/{exec_id}")
         )
 
-        # headers
-        req.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
-
-        # send request
-        resp = self.ntwk_requester_blk.get(req, forceRefresh=True)
-
-        # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
-            raise self.UnavailableExecutionException(
-                f"Error while fetching execution : {self.ntwk_requester_blk.errorMessage()}"
-            )
-
-        # check response
-        req_reply = self.ntwk_requester_blk.reply()
-        if (
-            not req_reply.rawHeader(b"Content-Type")
-            == "application/json; charset=utf-8"
-        ):
-            raise self.UnavailableExecutionException(
-                "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
-                    req_reply.rawHeader(b"Content-type")
-                )
-            )
-
+        req_reply = send_qgs_blocking_request(
+            self.ntwk_requester_blk, req, self.UnavailableExecutionException
+        )
         data = json.loads(req_reply.content().data().decode("utf-8"))
 
+        execution = self._execution_from_json(data)
+        return execution
+
+    def get_stored_data_executions(
+        self, datastore: str, stored_data: str
+    ) -> [Execution]:
+        """
+        Get stored data execution.
+
+        Args:
+            datastore: (str) datastore id
+            stored_data: (str) stored data id
+
+        Returns: [Execution] list of execution if stored data available, raise UnavailableExecutionException otherwise
+        """
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+        req = QNetworkRequest(
+            QUrl(
+                f"{self.get_base_url(datastore)}/executions/?output_stored_data={stored_data}"
+            )
+        )
+
+        req_reply = send_qgs_blocking_request(
+            self.ntwk_requester_blk, req, self.UnavailableExecutionException
+        )
+        data = json.loads(req_reply.content().data().decode("utf-8"))
+        execution_list = [self._execution_from_json(execution) for execution in data]
+        return execution_list
+
+    @staticmethod
+    def _execution_from_json(data) -> Execution:
         execution = Execution(
             id=data["_id"], status=data["status"], name=data["processing"]["name"]
         )
 
+        if "creation" in data:
+            execution.creation = data["creation"]
+        if "launch" in data:
+            execution.launch = data["launch"]
         if "start" in data:
             execution.start = data["start"]
         if "finish" in data:
             execution.finish = data["finish"]
         return execution
+
+    def get_execution_logs(self, datastore: str, exec_id: str) -> str:
+        """
+        Get execution logs.
+
+        Args:
+            datastore: (str) datastore id
+            exec_id: (str) execution id
+
+        Returns: (str) Execution logs if execution available, raise UnavailableExecutionException otherwise
+        """
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+        req = QNetworkRequest(
+            QUrl(f"{self.get_base_url(datastore)}/executions/{exec_id}/logs")
+        )
+
+        req_reply = send_qgs_blocking_request(
+            self.ntwk_requester_blk,
+            req,
+            self.UnavailableExecutionException,
+            expected_type="plain/text; charset=utf-8",
+        )
+        data = req_reply.content().data().decode("utf-8")
+        return data

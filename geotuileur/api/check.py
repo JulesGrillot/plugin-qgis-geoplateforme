@@ -1,7 +1,6 @@
 import json
 import logging
 from dataclasses import dataclass
-from datetime import datetime
 from enum import Enum
 
 from qgis.core import QgsBlockingNetworkRequest
@@ -9,7 +8,7 @@ from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 from geotuileur.api.client import NetworkRequestsManager
-from geotuileur.api.utils import send_qgs_blocking_request
+from geotuileur.api.utils import qgs_blocking_get_request
 from geotuileur.toolbelt import PlgLogger, PlgOptionsManager
 
 logger = logging.getLogger(__name__)
@@ -81,7 +80,7 @@ class CheckRequestManager:
             QUrl(f"{self.get_base_url(datastore)}/executions/{exec_id}")
         )
 
-        req_reply = send_qgs_blocking_request(
+        req_reply = qgs_blocking_get_request(
             self.ntwk_requester_blk, req, self.UnavailableExecutionException
         )
         data = json.loads(req_reply.content().data().decode("utf-8"))
@@ -111,7 +110,7 @@ class CheckRequestManager:
             QUrl(f"{self.get_base_url(datastore)}/executions/{exec_id}/logs")
         )
 
-        req_reply = send_qgs_blocking_request(
+        req_reply = qgs_blocking_get_request(
             self.ntwk_requester_blk,
             req,
             self.UnavailableExecutionException,

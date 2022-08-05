@@ -7,7 +7,7 @@ from qgis.core import QgsBlockingNetworkRequest
 from qgis.PyQt.QtCore import QByteArray, QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
-from geotuileur.api.utils import send_qgs_blocking_request
+from geotuileur.api.utils import qgs_blocking_get_request
 from geotuileur.toolbelt import PlgLogger, PlgOptionsManager
 
 
@@ -93,7 +93,7 @@ class ProcessingRequestManager:
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}"))
 
-        req_reply = send_qgs_blocking_request(
+        req_reply = qgs_blocking_get_request(
             self.ntwk_requester_blk, req, self.UnavailableProcessingException
         )
         processing_list = json.loads(req_reply.content().data().decode("utf-8"))
@@ -189,7 +189,7 @@ class ProcessingRequestManager:
             QUrl(f"{self.get_base_url(datastore)}/executions/{exec_id}")
         )
 
-        req_reply = send_qgs_blocking_request(
+        req_reply = qgs_blocking_get_request(
             self.ntwk_requester_blk, req, self.UnavailableExecutionException
         )
         data = json.loads(req_reply.content().data().decode("utf-8"))
@@ -216,7 +216,7 @@ class ProcessingRequestManager:
             )
         )
 
-        req_reply = send_qgs_blocking_request(
+        req_reply = qgs_blocking_get_request(
             self.ntwk_requester_blk, req, self.UnavailableExecutionException
         )
         data = json.loads(req_reply.content().data().decode("utf-8"))
@@ -254,7 +254,7 @@ class ProcessingRequestManager:
             QUrl(f"{self.get_base_url(datastore)}/executions/{exec_id}/logs")
         )
 
-        req_reply = send_qgs_blocking_request(
+        req_reply = qgs_blocking_get_request(
             self.ntwk_requester_blk,
             req,
             self.UnavailableExecutionException,

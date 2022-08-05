@@ -44,7 +44,13 @@ class ExecutionLogWidget(QWidget):
         else:
             self.tbw_logs.setFontFamily("monospace")
 
-    def set_processing_execution(self, execution: Execution):
+    def set_processing_execution(self, execution: Execution) -> None:
+        """
+        Define visible processing execution
+
+        Args:
+            execution: (Execution)
+        """
         self.lbl_execution_name.setText(execution.name)
         status = ExecutionStatus(execution.status)
         self.lbl_execution_status.setPixmap(self._get_execution_status_icon(status))
@@ -64,7 +70,13 @@ class ExecutionLogWidget(QWidget):
         except ProcessingRequestManager.UnavailableExecutionException as exc:
             self.tbw_logs.setPlainText(self.tr(f"Can't define execution logs : {exc}"))
 
-    def set_check_execution(self, execution: CheckExecution):
+    def set_check_execution(self, execution: CheckExecution) -> None:
+        """
+        Define visible check execution
+
+        Args:
+            execution: (CheckExecution)
+        """
         self.lbl_execution_name.setText(execution.name)
         status = CheckExecutionStatus(execution.status)
         self.lbl_execution_status.setPixmap(

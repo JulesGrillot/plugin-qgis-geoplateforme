@@ -34,6 +34,12 @@ class UploadLogWidget(QWidget):
             self.tbw_logs.setFontFamily("monospace")
 
     def set_upload(self, upload: Upload) -> None:
+        """
+        Define visible upload
+
+        Args:
+            upload: (Upload)
+        """
         status = UploadStatus(upload.status)
         self.lbl_status.setPixmap(self._get_status_icon(status))
 
@@ -49,7 +55,8 @@ class UploadLogWidget(QWidget):
         except UploadRequestManager.UnavailableUploadException as exc:
             self.log(self.tr(f"Can't define execution logs : {exc}"), push=True)
 
-    def _get_status_icon(self, status: UploadStatus) -> QPixmap:
+    @staticmethod
+    def _get_status_icon(status: UploadStatus) -> QPixmap:
         if status == UploadStatus.CREATED:
             result = QIcon(QgsApplication.iconPath("mTaskQueued.svg")).pixmap(
                 QSize(16, 16)

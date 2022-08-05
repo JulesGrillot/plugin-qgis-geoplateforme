@@ -7,12 +7,24 @@ from qgis.PyQt.QtNetwork import QNetworkRequest
 logger = logging.getLogger(__name__)
 
 
-def send_qgs_blocking_request(
+def qgs_blocking_get_request(
     ntwk_requester_blk: QgsBlockingNetworkRequest,
     req: QNetworkRequest,
     exception_type: type,
     expected_type: str = "application/json; charset=utf-8",
 ) -> QgsNetworkReplyContent:
+    """
+    Send GET request with QgsBlockingNetworkRequest and check for expected type
+
+    Args:
+        ntwk_requester_blk: (QgsBlockingNetworkRequest)
+        req: (QNetworkRequest)
+        exception_type: (type) exception type raised if error
+        expected_type: (str) expected content type
+
+    Returns: QgsNetworkReplyContent
+
+    """
     # headers
     req.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
 

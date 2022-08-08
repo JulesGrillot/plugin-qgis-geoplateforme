@@ -11,7 +11,7 @@ from qgis.PyQt.QtWidgets import (
 )
 
 from geotuileur.api.datastore import DatastoreRequestManager
-from geotuileur.api.stored_data import StorageType, StoredData
+from geotuileur.api.stored_data import StorageType, StoredData, StoredDataRequestManager
 from geotuileur.gui.mdl_stored_data import StoredDataListModel
 from geotuileur.gui.proxy_model_stored_data import StoredDataProxyModel
 from geotuileur.gui.report.dlg_report import ReportDialog
@@ -83,9 +83,7 @@ class StorageReportDialog(QDialog):
         tbv.verticalHeader().setVisible(False)
         tbv.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
-        # Remove some columns*
-        tbv.setColumnHidden(self.mdl_stored_data.ID_COL, True)
-        tbv.setColumnHidden(self.mdl_stored_data.TYPE_COL, True)
+        # Remove some columns
         tbv.setColumnHidden(self.mdl_stored_data.STATUS_COL, True)
         tbv.setColumnHidden(self.mdl_stored_data.ACTION_COL, True)
         tbv.setColumnHidden(self.mdl_stored_data.OTHER_ACTIONS_COL, True)
@@ -184,7 +182,21 @@ class StorageReportDialog(QDialog):
         Args:
             stored_data: (StoredData) stored data to delete
         """
-        self.log("Stored data delete not implemented yet", push=True)
+        try:
+            manager = StoredDataRequestManager()
+            manager.delete(
+                datastore=stored_data.datastore_id, stored_data=stored_data.id
+            )
+            row = self.mdl_stored_data.get_stored_data_row(stored_data.id)
+            self.mdl_stored_data.removeRow(row)
+        except StoredDataRequestManager.DeleteStoredDataException as exc:
+            self.log(
+                self.tr("Stored data {0} delete error : {1}").format(
+                    stored_data.id, exc
+                ),
+                log_level=1,
+                push=True,
+            )
 
     def _show_report(self, stored_data: StoredData) -> None:
         """

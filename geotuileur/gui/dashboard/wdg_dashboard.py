@@ -5,7 +5,12 @@ from qgis.PyQt.QtCore import QModelIndex
 from qgis.PyQt.QtGui import QCursor, QGuiApplication
 from qgis.PyQt.QtWidgets import QAbstractItemView, QAction, QMenu, QWidget
 
-from geotuileur.api.stored_data import StoredData, StoredDataStatus, StoredDataStep
+from geotuileur.api.stored_data import (
+    StoredData,
+    StoredDataRequestManager,
+    StoredDataStatus,
+    StoredDataStep,
+)
 from geotuileur.gui.mdl_stored_data import StoredDataListModel
 from geotuileur.gui.proxy_model_stored_data import StoredDataProxyModel
 from geotuileur.gui.publication_creation.wzd_publication_creation import (
@@ -180,7 +185,21 @@ class DashboardWidget(QWidget):
         Args:
             stored_data: (StoredData) stored data to delete
         """
-        self.log("Stored data delete not implemented yet", push=True)
+        try:
+            manager = StoredDataRequestManager()
+            manager.delete(
+                datastore=stored_data.datastore_id, stored_data=stored_data.id
+            )
+            row = self.mdl_stored_data.get_stored_data_row(stored_data.id)
+            self.mdl_stored_data.removeRow(row)
+        except StoredDataRequestManager.DeleteStoredDataException as exc:
+            self.log(
+                self.tr("Stored data {0} delete error : {1}").format(
+                    stored_data.id, exc
+                ),
+                log_level=1,
+                push=True,
+            )
 
     def _show_report(self, stored_data: StoredData) -> None:
         """

@@ -1,9 +1,8 @@
-from enum import Enum
 from typing import List
 
 from qgis.PyQt.QtCore import QModelIndex, QObject, QSortFilterProxyModel, Qt
 
-from geotuileur.api.stored_data import StoredDataStatus, StoredDataStep
+from geotuileur.api.stored_data import StorageType, StoredDataStatus, StoredDataStep
 from geotuileur.gui.mdl_stored_data import StoredDataListModel
 
 
@@ -14,6 +13,7 @@ class StoredDataProxyModel(QSortFilterProxyModel):
         self.visible_status = []
         self.invisible_status = []
         self.steps = []
+        self.storage_types = []
 
     def set_filter_type(self, filter_type: List) -> None:
         """
@@ -32,6 +32,15 @@ class StoredDataProxyModel(QSortFilterProxyModel):
             steps: List[StoredDataStep] visible step list
         """
         self.steps = steps
+
+    def set_visible_storage_type(self, storage_types: [StorageType]) -> None:
+        """
+        Define filter of visible storage type for stored data
+
+        Args:
+            storage_types: List[StorageType] visible storage type list
+        """
+        self.storage_types = storage_types
 
     def set_visible_status(self, status: List[StoredDataStatus]) -> None:
         """
@@ -94,5 +103,14 @@ class StoredDataProxyModel(QSortFilterProxyModel):
             stored_data = self.sourceModel().data(name_index, Qt.UserRole)
             if stored_data:
                 result = stored_data.get_current_step() in self.steps
+
+        # Check stored data storage types
+        if len(self.storage_types) and result:
+            name_index = self.sourceModel().index(
+                source_row, StoredDataListModel.NAME_COL, source_parent
+            )
+            stored_data = self.sourceModel().data(name_index, Qt.UserRole)
+            if stored_data:
+                result = stored_data.get_storage_type() in self.storage_types
 
         return result

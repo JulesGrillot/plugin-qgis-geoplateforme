@@ -1,7 +1,7 @@
 import os
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtWidgets import QDialog, QWidget
+from qgis.PyQt.QtWidgets import QAbstractItemView, QDialog, QHeaderView, QWidget
 
 from geotuileur.api.processing import ProcessingRequestManager
 from geotuileur.api.stored_data import StoredData, StoredDataRequestManager
@@ -33,10 +33,16 @@ class ReportDialog(QDialog):
 
         self.mdl_stored_data_details = StoredDataDetailsModel(self)
         self.tbv_details.setModel(self.mdl_stored_data_details)
+        self.tbv_details.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tbv_details.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
         self.mdl_table_relation = TableRelationTreeModel(self)
+        self.mdl_table_relation.check_state_enabled = False
         self.trv_table_relation.setModel(self.mdl_table_relation)
         self.trv_table_relation.setSortingEnabled(True)
+
+        self.trv_table_relation.header().setSectionResizeMode(QHeaderView.Stretch)
+        self.trv_table_relation.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
     def set_stored_data(self, stored_data: StoredData) -> None:
         """

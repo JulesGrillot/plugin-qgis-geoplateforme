@@ -1,6 +1,10 @@
 from qgis.PyQt.QtCore import QObject, Qt
 
-from geotuileur.api.stored_data import StoredDataRequestManager, TableRelation
+from geotuileur.api.stored_data import (
+    StoredData,
+    StoredDataRequestManager,
+    TableRelation,
+)
 from geotuileur.toolbelt import PlgLogger
 from geotuileur.toolbelt.check_state_model import CheckStateModel
 
@@ -19,6 +23,7 @@ class TableRelationTreeModel(CheckStateModel):
         super().__init__(parent)
         self.log = PlgLogger().log
         self.setHorizontalHeaderLabels([self.tr("Name"), self.tr("Attribute type")])
+        self.check_state_enabled = True
 
     def set_stored_data(self, datastore: str, stored_data: str) -> None:
         """
@@ -33,10 +38,20 @@ class TableRelationTreeModel(CheckStateModel):
             self._insert_table_relations(stored_data.get_tables())
         except StoredDataRequestManager.ReadStoredDataException as exc:
             self.log(
-                f"Error while getting stored data informations: {exc}",
+                self.tr("Error while getting stored data informations: {0}").format(
+                    exc
+                ),
                 log_level=2,
                 push=False,
             )
+
+    def set_stored_data_tables(self, stored_data: StoredData) -> None:
+        """
+        Refresh QStandardItemModel data with current stored data
+
+        """
+        self.removeRows(0, self.rowCount())
+        self._insert_table_relations(stored_data.get_tables())
 
     def get_selected_table_attributes(self) -> {str: [str]}:
         """
@@ -52,7 +67,10 @@ class TableRelationTreeModel(CheckStateModel):
             result[table] = []
             for table_attribute in range(0, self.rowCount(table_index)):
                 attribute_index = self.index(row, self.NAME_COL, table_index)
-                if self.data(attribute_index, Qt.CheckStateRole) == Qt.Checked:
+                if (
+                    not self.check_state_enabled
+                    or self.data(attribute_index, Qt.CheckStateRole) == Qt.Checked
+                ):
                     result[table].append(self.data(attribute_index))
         return result
 
@@ -76,11 +94,12 @@ class TableRelationTreeModel(CheckStateModel):
         row = self.rowCount()
         self.insertRow(row)
         table_index = self.index(row, self.NAME_COL)
-        self.setData(
-            self.index(row, self.NAME_COL),
-            Qt.Unchecked,
-            Qt.CheckStateRole,
-        )
+        if self.check_state_enabled:
+            self.setData(
+                self.index(row, self.NAME_COL),
+                Qt.Unchecked,
+                Qt.CheckStateRole,
+            )
         self.insertColumns(0, self.columnCount(), table_index)
 
         self.setData(table_index, table_relation.name)
@@ -90,9 +109,10 @@ class TableRelationTreeModel(CheckStateModel):
                 row = self.rowCount(table_index)
                 self.insertRow(row, table_index)
                 self.setData(self.index(row, self.NAME_COL, table_index), attribute)
-                self.setData(
-                    self.index(row, self.NAME_COL, table_index),
-                    Qt.Unchecked,
-                    Qt.CheckStateRole,
-                )
+                if self.check_state_enabled:
+                    self.setData(
+                        self.index(row, self.NAME_COL, table_index),
+                        Qt.Unchecked,
+                        Qt.CheckStateRole,
+                    )
                 self.setData(self.index(row, self.TYPE_COL, table_index), val)

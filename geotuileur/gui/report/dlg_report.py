@@ -1,11 +1,13 @@
 import os
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtWidgets import QDialog, QWidget
+from qgis.PyQt.QtWidgets import QAbstractItemView, QDialog, QHeaderView, QWidget
 
 from geotuileur.api.processing import ProcessingRequestManager
 from geotuileur.api.stored_data import StoredData, StoredDataRequestManager
 from geotuileur.api.upload import UploadRequestManager
+from geotuileur.gui.mdl_table_relation import TableRelationTreeModel
+from geotuileur.gui.report.mdl_stored_data_details import StoredDataDetailsModel
 from geotuileur.gui.report.wdg_execution_log import ExecutionLogWidget
 from geotuileur.gui.report.wdg_upload_log import UploadLogWidget
 from geotuileur.toolbelt import PlgLogger
@@ -29,6 +31,19 @@ class ReportDialog(QDialog):
 
         self.setWindowTitle(self.tr("Report"))
 
+        self.mdl_stored_data_details = StoredDataDetailsModel(self)
+        self.tbv_details.setModel(self.mdl_stored_data_details)
+        self.tbv_details.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tbv_details.setEditTriggers(QAbstractItemView.NoEditTriggers)
+
+        self.mdl_table_relation = TableRelationTreeModel(self)
+        self.mdl_table_relation.check_state_enabled = False
+        self.trv_table_relation.setModel(self.mdl_table_relation)
+        self.trv_table_relation.setSortingEnabled(True)
+
+        self.trv_table_relation.header().setSectionResizeMode(QHeaderView.Stretch)
+        self.trv_table_relation.setEditTriggers(QAbstractItemView.NoEditTriggers)
+
     def set_stored_data(self, stored_data: StoredData) -> None:
         """
         Define displayed stored data
@@ -36,12 +51,17 @@ class ReportDialog(QDialog):
         Args:
             stored_data: StoredData
         """
-        self.lne_name.setText(stored_data.name)
-        self.lne_id.setText(stored_data.id)
-
+        self._set_stored_data_details(stored_data)
         self._add_upload_log(stored_data)
         self._add_vectordb_stored_data_logs(stored_data)
         self._add_stored_data_execution_logs(stored_data)
+
+    def _set_stored_data_details(self, stored_data: StoredData) -> None:
+        self.lne_name.setText(stored_data.name)
+        self.lne_id.setText(stored_data.id)
+        self.mdl_stored_data_details.set_stored_data(stored_data)
+        self.gpx_data_structure.setVisible(len(stored_data.get_tables()) != 0)
+        self.mdl_table_relation.set_stored_data_tables(stored_data)
 
     def _add_upload_log(self, stored_data: StoredData) -> None:
         """

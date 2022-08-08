@@ -8,6 +8,7 @@ FORMS = ../../gui/dlg_settings.ui \
     ../../gui/report/dlg_report.ui \
     ../../gui/report/wdg_execution_log.ui \
     ../../gui/report/wdg_upload_log.ui \
+    ../../gui/storage/dlg_storage_report.ui \
     ../../gui/tile_creation/qwp_tile_generation_edition.ui \
     ../../gui/tile_creation/qwp_tile_generation_fields_selection.ui \
     ../../gui/tile_creation/qwp_tile_generation_generalization.ui \
@@ -51,6 +52,7 @@ SOURCES= ../../plugin_main.py \
     ../../gui/report/wdg_upload_log.py \
     ../../gui/report/mdl_upload_details.py \
     ../../gui/report/mdl_stored_data_details.py \
+    ../../gui/storage/dlg_storage_report.py \
     ../../gui/tile_creation/qwp_tile_generation_edition.py \
     ../../gui/tile_creation/qwp_tile_generation_fields_selection.py \
     ../../gui/tile_creation/qwp_tile_generation_generalization.py \

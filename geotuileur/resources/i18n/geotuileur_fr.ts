@@ -206,39 +206,44 @@
 <context>
     <name>GeotuileurPlugin</name>
     <message>
-        <location filename="../../plugin_main.py" line="146"/>
+        <location filename="../../plugin_main.py" line="160"/>
         <source>Help</source>
         <translation>Documentation</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="156"/>
+        <location filename="../../plugin_main.py" line="170"/>
         <source>Settings</source>
         <translation>Paramètres</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="93"/>
+        <location filename="../../plugin_main.py" line="96"/>
         <source>Login</source>
         <translation>S&apos;authentifier</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="118"/>
+        <location filename="../../plugin_main.py" line="132"/>
         <source>Create a new upload</source>
         <translation>Téléverser des données</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="126"/>
+        <location filename="../../plugin_main.py" line="140"/>
         <source>Tile creation</source>
         <translation>Générer des tuiles</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="134"/>
+        <location filename="../../plugin_main.py" line="148"/>
         <source>Publication</source>
         <translation>Publication</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="102"/>
+        <location filename="../../plugin_main.py" line="105"/>
         <source>Dashboard</source>
         <translation>Tableau de bord</translation>
+    </message>
+    <message>
+        <location filename="../../plugin_main.py" line="124"/>
+        <source>Storage report</source>
+        <translation>Gérer mon espace</translation>
     </message>
 </context>
 <context>
@@ -415,6 +420,69 @@
         <location filename="../../processing/check_layer.py" line="65"/>
         <source>Input layers</source>
         <translation>Couches en entrée</translation>
+    </message>
+</context>
+<context>
+    <name>StorageReportDialog</name>
+    <message>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="14"/>
+        <source>Storage report</source>
+        <translation>Gérer mon espace</translation>
+    </message>
+    <message>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="32"/>
+        <source>Datastore</source>
+        <translation>Espace de stockage</translation>
+    </message>
+    <message>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="57"/>
+        <source>Data integrated in database</source>
+        <translation>Données intégrées en base</translation>
+    </message>
+    <message>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="71"/>
+        <source>This is space used by data in PostgresSQL server in your datastore. This is intermediate data that are not visible by users.</source>
+        <translation>Il s&apos;agit de l&apos;espace occupé par des données sur les serveurs PostgreSQL de votre espace de travail. Il s&apos;agit de données intérmédiaires qui ne sont pas directement visibles de vos utilisateurs.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="252"/>
+        <source>List</source>
+        <translation>Liste</translation>
+    </message>
+    <message>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="111"/>
+        <source>Data integrated as file</source>
+        <translation>Données intégrées sous forme de fichiers</translation>
+    </message>
+    <message>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="125"/>
+        <source>This space is used by Géotuileur for vector tiles pyramid file storage.</source>
+        <translation>Cet espace est utilisé par le Géotuileur pour le stockage des pyramides de tuiles vectorielles.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="165"/>
+        <source>Mass storage</source>
+        <translation>Stockage de masse</translation>
+    </message>
+    <message>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="179"/>
+        <source>This space is used by Géotuileur for vector tiles pyramid storage. It&apos;s more efficient that file storage.</source>
+        <translation>Cet espace est utilisé par le Géotuileur pour le stockage des pyramides de tuiles vectorielles. Il est plus performant que le stockage sous forme de fichiers.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="219"/>
+        <source>Upload</source>
+        <translation>Données déposées</translation>
+    </message>
+    <message>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="239"/>
+        <source>This space is used by raw data that you uploaded (.csv, geopackage files). This files should be deleted when database integration is sucessful. Some files could be left when integration fail.</source>
+        <translation>Il s&apos;agit de l&apos;espace occupé par les fichiers de données bruts que vous avez téléversés (fichiers csv, geopackage...). Ces fichiers sont normalement supprimés dès l&apos;intégration en base réussie de vos données. Il est possible qu&apos;il reste des traces de fichiers dans cet espace lorsque les intégrations en base ont échoué.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/storage/dlg_storage_report.py" line="139"/>
+        <source>Can&apos;t define datastore &apos;{0}&apos; from requests : {1}</source>
+        <translation>Impossible de definir l&apos;espace de travail &apos;{0}&apos; depuis une requete : {1}</translation>
     </message>
 </context>
 <context>
@@ -1037,7 +1105,7 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
         <translation>Détails techniques</translation>
     </message>
     <message>
-        <location filename="../../gui/report/wdg_upload_log.py" line="54"/>
+        <location filename="../../gui/report/wdg_upload_log.py" line="55"/>
         <source>Can&apos;t define execution logs : {0}</source>
         <translation>Impossible de définir le journal d&apos;execution : {0}</translation>
     </message>

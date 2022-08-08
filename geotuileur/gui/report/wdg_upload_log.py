@@ -1,13 +1,13 @@
 import os
-import sys
 
 from qgis.core import QgsApplication
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QIcon, QPixmap
-from qgis.PyQt.QtWidgets import QWidget
+from qgis.PyQt.QtWidgets import QAbstractItemView, QWidget
 
 from geotuileur.api.upload import Upload, UploadRequestManager, UploadStatus
+from geotuileur.gui.report.mdl_upload_details import UploadDetailsTreeModel
 from geotuileur.gui.report.wdg_execution_log import ExecutionLogWidget
 from geotuileur.toolbelt import PlgLogger
 
@@ -27,11 +27,9 @@ class UploadLogWidget(QWidget):
             os.path.join(os.path.dirname(__file__), "wdg_upload_log.ui"),
             self,
         )
-
-        if sys.platform.startswith("win"):
-            self.tbw_logs.setFontFamily("Courier New")
-        else:
-            self.tbw_logs.setFontFamily("monospace")
+        self.mdl_upload_details = UploadDetailsTreeModel(self)
+        self.trv_upload_details.setModel(self.mdl_upload_details)
+        self.trv_upload_details.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
     def set_upload(self, upload: Upload) -> None:
         """
@@ -42,6 +40,7 @@ class UploadLogWidget(QWidget):
         """
         status = UploadStatus(upload.status)
         self.lbl_status.setPixmap(self._get_status_icon(status))
+        self.mdl_upload_details.set_upload(upload)
 
         try:
             manager = UploadRequestManager()

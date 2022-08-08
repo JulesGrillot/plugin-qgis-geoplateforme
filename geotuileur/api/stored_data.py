@@ -148,6 +148,9 @@ class StoredDataRequestManager:
     class ReadStoredDataException(Exception):
         pass
 
+    class DeleteStoredDataException(Exception):
+        pass
+
     class UnavailableStoredData(Exception):
         pass
 
@@ -363,6 +366,29 @@ class StoredDataRequestManager:
             )
 
         return json.loads(req_reply.content().data().decode("utf-8"))
+
+    def delete(self, datastore: str, stored_data: str) -> None:
+        """
+        Delete a stored data. Raise DeleteStoredDataException if an error occurs
+
+        Args:
+            datastore: (str) datastore id
+            stored_data: (str) stored data id
+        """
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+        req_delete = QNetworkRequest(
+            QUrl(f"{self.get_base_url(datastore)}/{stored_data}")
+        )
+        # send request
+        resp = self.ntwk_requester_blk.deleteResource(req_delete)
+
+        # check response
+        if resp != QgsBlockingNetworkRequest.NoError:
+            req_reply = self.ntwk_requester_blk.reply()
+            data = json.loads(req_reply.content().data().decode("utf-8"))
+            raise self.DeleteStoredDataException(
+                f"Error while deleting stored_data : {self.ntwk_requester_blk.errorMessage()}. Reply error: {data}"
+            )
 
     def add_tags(self, datastore: str, stored_data: str, tags: dict) -> None:
         """

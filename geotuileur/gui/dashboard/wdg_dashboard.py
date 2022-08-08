@@ -1,5 +1,6 @@
 import os
 
+from qgis.core import QgsProject, QgsVectorTileLayer
 from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtCore import QCoreApplication, QModelIndex
 from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon
@@ -270,7 +271,16 @@ class DashboardWidget(QWidget):
         Args:
             stored_data: (StoredData) stored data to be viewed
         """
-        self.log("Tile view not implemented yet", push=True)
+        if stored_data.tags and "tms_url" in stored_data.tags:
+            tms_url = stored_data.tags["tms_url"]
+            zoom_levels = stored_data.zoom_levels()
+            bottom = zoom_levels[-1]
+            top = zoom_levels[0]
+            layer = QgsVectorTileLayer(
+                path=f"type=xyz&url={tms_url}/%7Bz%7D/%7Bx%7D/%7By%7D.pbf&zmax={bottom}&zmin={top}",
+                baseName=self.tr("Vector tile : {0}").format(stored_data.name),
+            )
+            QgsProject.instance().addMapLayer(layer)
 
     def _replace_data_wizard(self, stored_data: StoredData) -> None:
         """

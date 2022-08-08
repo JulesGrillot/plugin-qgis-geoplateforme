@@ -21,16 +21,13 @@
     <widget class="QTreeView" name="tw_table_relation"/>
    </item>
    <item row="0" column="0">
-    <widget class="QLabel" name="lbl_attributes">
-     <property name="autoFillBackground">
-      <bool>true</bool>
-     </property>
+    <widget class="QLabel" name="lbl_choose">
      <property name="styleSheet">
       <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
 color: rgb(52, 101, 164);</string>
      </property>
      <property name="text">
-      <string>Customize your vector tiles service</string>
+      <string>Select feature attributes</string>
      </property>
     </widget>
    </item>
@@ -50,17 +47,6 @@ color: rgb(52, 101, 164);</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="lbl_choose">
-     <property name="styleSheet">
-      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
-     <property name="text">
-      <string>Select feature attributes</string>
      </property>
     </widget>
    </item>

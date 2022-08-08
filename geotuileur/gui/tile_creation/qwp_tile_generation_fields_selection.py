@@ -24,6 +24,7 @@ class TileGenerationFieldsSelectionPageWizard(QWizardPage):
         """
 
         super().__init__(parent)
+        self.setTitle(self.tr("Customize your vector tiles service"))
         self.qwp_tile_generation_edition = qwp_tile_generation_edition
 
         uic.loadUi(

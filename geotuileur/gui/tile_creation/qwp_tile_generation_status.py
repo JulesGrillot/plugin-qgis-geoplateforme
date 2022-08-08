@@ -54,6 +54,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
         """
 
         super().__init__(parent)
+        self.setTitle(self.tr("Generating in progress"))
         self.qwp_tile_generation_edition = qwp_tile_generation_edition
         self.qwp_tile_generation_fields_selection = qwp_tile_generation_fields_selection
         self.qwp_tile_generation_generalization = qwp_tile_generation_generalization
@@ -160,7 +161,6 @@ class TileGenerationStatusPageWizard(QWizardPage):
             json.dump(data, file)
             params = {TileCreationAlgorithm.INPUT_JSON: filename}
 
-            self.lbl_step_text.setText(self.tr("Generating in progress"))
             self.lbl_step_icon.setMovie(self.loading_movie)
             self.loading_movie.start()
 
@@ -223,7 +223,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
                 if stored_data.status == "GENERATED":
                     self.create_tile_check_timer.stop()
                     self.loading_movie.stop()
-                    self.lbl_step_text.setText(self.tr("Your tiles are ready."))
+                    self.setTitle(self.tr("Your tiles are ready."))
                     pixmap = QPixmap(
                         str(
                             DIR_PLUGIN_ROOT

@@ -46,6 +46,7 @@ class UploadCreationPageWizard(QWizardPage):
         """
 
         super().__init__(parent)
+        self.setTitle(self.tr("Checking and integration of your data in progress"))
         self.log = PlgLogger().log
         self.qwp_upload_edition = qwp_upload_edition
 
@@ -116,10 +117,6 @@ class UploadCreationPageWizard(QWizardPage):
         with open(filename, "w") as file:
             json.dump(data, file)
             params = {UploadCreationAlgorithm.INPUT_JSON: filename}
-
-            self.lbl_step_text.setText(
-                self.tr("Checking and integration of your data in progress")
-            )
             self.lbl_step_icon.setMovie(self.loading_movie)
             self.loading_movie.start()
 
@@ -231,7 +228,7 @@ class UploadCreationPageWizard(QWizardPage):
                 if stored_data.status == "GENERATED":
                     self.upload_check_timer.stop()
                     self.loading_movie.stop()
-                    self.lbl_step_text.setText(
+                    self.setTitle(
                         self.tr("Your data has been stored on the remote storage.")
                     )
                     pixmap = QPixmap(

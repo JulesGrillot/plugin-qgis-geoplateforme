@@ -305,7 +305,7 @@ class StoredDataRequestManager:
         if "size" in data:
             result.size = data["size"]
         if "srs" in data:
-            result.size = data["srs"]
+            result.srs = data["srs"]
         return result
 
     def get_stored_data_json(self, datastore: str, stored_data: str) -> dict:

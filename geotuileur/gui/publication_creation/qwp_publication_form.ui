@@ -17,7 +17,42 @@
    <locale language="English" country="UnitedStates"/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="7" column="0">
+   <item row="1" column="1">
+    <widget class="DatastoreComboBox" name="cbx_datastore"/>
+   </item>
+   <item row="5" column="1">
+    <widget class="StoredDataComboBox" name="cbx_stored_data"/>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="lbl_stored_data">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Dataset</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="lbl_datastore">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Datastore</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="2">
+    <widget class="PublicationForm" name="wdg_publication_form" native="true"/>
+   </item>
+   <item row="7" column="0" colspan="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -30,55 +65,24 @@
      </property>
     </spacer>
    </item>
-   <item row="6" column="0">
-    <widget class="PublicationForm" name="wdg_publication_form" native="true"/>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="lbl_datastore">
-     <property name="styleSheet">
-      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
-     <property name="text">
-      <string>Datastore</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="lbl_stored_data">
-     <property name="styleSheet">
-      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
-     <property name="text">
-      <string>Dataset</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="DatastoreComboBox" name="cbx_datastore"/>
-   </item>
-   <item row="5" column="0">
-    <widget class="StoredDataComboBox" name="cbx_stored_data"/>
-   </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
    <class>DatastoreComboBox</class>
    <extends>QComboBox</extends>
-   <header location="global">geotuileur.gui.cbx_datastore</header>
+   <header>geotuileur.gui.cbx_datastore</header>
+  </customwidget>
+  <customwidget>
+   <class>StoredDataComboBox</class>
+   <extends>QComboBox</extends>
+   <header>geotuileur.gui.cbx_stored_data</header>
   </customwidget>
   <customwidget>
    <class>PublicationForm</class>
    <extends>QWidget</extends>
    <header location="global">geotuileur.gui.publication_creation.wdg_publication_form.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>StoredDataComboBox</class>
-   <extends>QComboBox</extends>
-   <header location="global">geotuileur.gui.cbx_stored_data</header>
   </customwidget>
  </customwidgets>
  <resources/>

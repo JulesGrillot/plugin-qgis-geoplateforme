@@ -32,10 +32,6 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="styleSheet">
-      <string notr="true">font: 75 11pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
      <property name="text">
       <string>Vector tile endpoint URL:</string>
      </property>
@@ -55,10 +51,6 @@ color: rgb(52, 101, 164);</string>
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">font: 75 11pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
      </property>
      <property name="text">
       <string>Public link to the map viewer:</string>

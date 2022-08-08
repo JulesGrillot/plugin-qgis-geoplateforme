@@ -41,6 +41,8 @@ class Upload:
     description: str
     srs: str
     status: str
+    size: int = 0
+    tags: dict = None
 
 
 class UploadRequestManager:
@@ -143,7 +145,7 @@ class UploadRequestManager:
 
     @staticmethod
     def _upload_from_json(data, datastore: str) -> Upload:
-        return Upload(
+        upload = Upload(
             id=data["_id"],
             datastore_id=datastore,
             name=data["name"],
@@ -151,6 +153,11 @@ class UploadRequestManager:
             srs=data["srs"],
             status=data["status"],
         )
+        if "size" in data:
+            upload.size = data["size"]
+        if "tags" in data:
+            upload.tags = data["tags"]
+        return upload
 
     def get_upload_checks_execution(
         self, datastore: str, upload: str

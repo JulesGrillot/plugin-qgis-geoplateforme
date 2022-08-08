@@ -27,11 +27,11 @@ class Execution:
     name: str
     creation: str
     launch: str
-    start: str
-    finish: str
     parameters: dict
     inputs: dict
     output: dict
+    start: str = ""
+    finish: str = ""
 
 
 @dataclass
@@ -231,12 +231,15 @@ class ProcessingRequestManager:
             name=data["processing"]["name"],
             creation=data["creation"],
             launch=data["launch"],
-            start=data["start"],
-            finish=data["finish"],
             parameters=data["parameters"],
             inputs=data["inputs"],
             output=data["output"],
         )
+
+        if "start" in data:
+            execution.start = data["start"]
+        if "finish" in data:
+            execution.finish = data["finish"]
         return execution
 
     def get_execution_logs(self, datastore: str, exec_id: str) -> str:

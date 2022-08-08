@@ -26,10 +26,10 @@ class Execution:
     status: str
     name: str
     creation: str
-    launch: str
     parameters: dict
     inputs: dict
     output: dict
+    launch: str = ""
     start: str = ""
     finish: str = ""
 
@@ -230,12 +230,12 @@ class ProcessingRequestManager:
             status=data["status"],
             name=data["processing"]["name"],
             creation=data["creation"],
-            launch=data["launch"],
             parameters=data["parameters"],
             inputs=data["inputs"],
             output=data["output"],
         )
-
+        if "launch" in data:
+            execution.launch = data["launch"]
         if "start" in data:
             execution.start = data["start"]
         if "finish" in data:

@@ -20,8 +20,8 @@ class CheckExecution:
     status: str
     name: str
     creation: str
-    start: str
-    finish: str
+    start: str = ""
+    finish: str = ""
 
 
 class CheckExecutionStatus(Enum):
@@ -89,9 +89,12 @@ class CheckRequestManager:
             status=data["status"],
             name=data["check"]["name"],
             creation=data["creation"],
-            start=data["start"],
-            finish=data["finish"],
         )
+
+        if "start" in data:
+            execution.start = data["start"]
+        if "finish" in data:
+            execution.finish = data["finish"]
 
         return execution
 

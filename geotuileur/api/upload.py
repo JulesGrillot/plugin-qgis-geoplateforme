@@ -41,6 +41,8 @@ class Upload:
     description: str
     srs: str
     status: str
+    size: int = 0
+    tags: dict = None
 
 
 class UploadRequestManager:
@@ -54,6 +56,9 @@ class UploadRequestManager:
         pass
 
     class FileUploadException(Exception):
+        pass
+
+    class UnavailableUploadFileTreeException(Exception):
         pass
 
     def __init__(self):
@@ -143,7 +148,7 @@ class UploadRequestManager:
 
     @staticmethod
     def _upload_from_json(data, datastore: str) -> Upload:
-        return Upload(
+        upload = Upload(
             id=data["_id"],
             datastore_id=datastore,
             name=data["name"],
@@ -151,6 +156,11 @@ class UploadRequestManager:
             srs=data["srs"],
             status=data["status"],
         )
+        if "size" in data:
+            upload.size = data["size"]
+        if "tags" in data:
+            upload.tags = data["tags"]
+        return upload
 
     def get_upload_checks_execution(
         self, datastore: str, upload: str
@@ -407,3 +417,23 @@ class UploadRequestManager:
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
             raise self.UploadClosingException({self.ntwk_requester_blk.errorMessage()})
+
+    def get_upload_file_tree(self, datastore: str, upload: str) -> dict:
+        """
+        Get upload file tree.
+
+        Args:
+            datastore: (str) datastore id
+            upload: (str) upload id
+
+        Returns: (dict) Upload file tree if available, raise UnavailableUploadFileTreeException otherwise
+
+        """
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+        req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{upload}/tree"))
+
+        req_reply = qgs_blocking_get_request(
+            self.ntwk_requester_blk, req, self.UnavailableUploadFileTreeException
+        )
+        data = json.loads(req_reply.content().data().decode("utf-8"))
+        return data

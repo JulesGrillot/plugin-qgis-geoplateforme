@@ -172,7 +172,7 @@
         <translation>Détails techniques</translation>
     </message>
     <message>
-        <location filename="../../gui/report/wdg_execution_log.py" line="86"/>
+        <location filename="../../gui/report/wdg_execution_log.py" line="90"/>
         <source>Execution ID :{0}
 </source>
         <translation>Identifiant de l&apos;execution :{0}
@@ -186,7 +186,7 @@
 </translation>
     </message>
     <message>
-        <location filename="../../gui/report/wdg_execution_log.py" line="87"/>
+        <location filename="../../gui/report/wdg_execution_log.py" line="91"/>
         <source>Logs:
 </source>
         <translation>Journal:
@@ -198,7 +198,7 @@
         <translation>Journal d&apos;execution</translation>
     </message>
     <message>
-        <location filename="../../gui/report/wdg_execution_log.py" line="91"/>
+        <location filename="../../gui/report/wdg_execution_log.py" line="95"/>
         <source>Can&apos;t define execution logs : {0}</source>
         <translation>Impossible de définir le journal d&apos;execution : {0}</translation>
     </message>
@@ -335,12 +335,12 @@
 <context>
     <name>GuiCommonUtils</name>
     <message>
-        <location filename="../../gui/gui_commons.py" line="51"/>
+        <location filename="../../gui/gui_commons.py" line="56"/>
         <source> content has been copied into the clipboard.</source>
         <translation> contenu copié dans le presse-papiers.</translation>
     </message>
     <message>
-        <location filename="../../gui/gui_commons.py" line="75"/>
+        <location filename="../../gui/gui_commons.py" line="82"/>
         <source>Double-click me to copy my content into the clipboard.</source>
         <translation>Double-cliquer pour copier le contenu correspondant.</translation>
     </message>
@@ -369,29 +369,39 @@
 <context>
     <name>ReportDialog</name>
     <message>
-        <location filename="../../gui/report/dlg_report.ui" line="32"/>
+        <location filename="../../gui/report/dlg_report.ui" line="54"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.ui" line="68"/>
+        <location filename="../../gui/report/dlg_report.ui" line="32"/>
         <source>ID</source>
         <translation>Identifiant</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="30"/>
+        <location filename="../../gui/report/dlg_report.py" line="32"/>
         <source>Report</source>
         <translation>Rapport</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="63"/>
+        <location filename="../../gui/report/dlg_report.py" line="83"/>
         <source>Can&apos;t define upload logs : {0}</source>
         <translation>Impossible de définir le journal du téléversement : {0}</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="100"/>
+        <location filename="../../gui/report/dlg_report.py" line="124"/>
         <source>Can&apos;t define execution logs : {0}</source>
         <translation>Impossible de définir le journal d&apos;execution : {0}</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/dlg_report.ui" line="68"/>
+        <source>Data details</source>
+        <translation>Détails sur les données</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/dlg_report.ui" line="110"/>
+        <source>Data structure</source>
+        <translation>Structure des données</translation>
     </message>
 </context>
 <context>
@@ -405,6 +415,34 @@
         <location filename="../../processing/check_layer.py" line="65"/>
         <source>Input layers</source>
         <translation>Couches en entrée</translation>
+    </message>
+</context>
+<context>
+    <name>StoredDataDetailsModel</name>
+    <message>
+        <location filename="../../gui/report/mdl_stored_data_details.py" line="19"/>
+        <source>Name</source>
+        <translation>Nom</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/mdl_stored_data_details.py" line="19"/>
+        <source>Value</source>
+        <translation>Valeur</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/mdl_stored_data_details.py" line="33"/>
+        <source>Size</source>
+        <translation>Taille</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/mdl_stored_data_details.py" line="35"/>
+        <source>SRS</source>
+        <translation>Projection</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/mdl_stored_data_details.py" line="37"/>
+        <source>Pyramid levels</source>
+        <translation>Niveaux de pyramide</translation>
     </message>
 </context>
 <context>
@@ -804,6 +842,44 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
     </message>
 </context>
 <context>
+    <name>UploadDetailsTreeModel</name>
+    <message>
+        <location filename="../../gui/report/mdl_upload_details.py" line="34"/>
+        <source>Name</source>
+        <translation>Nom</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/mdl_upload_details.py" line="25"/>
+        <source>Value</source>
+        <translation>Valeur</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/mdl_upload_details.py" line="35"/>
+        <source>ID</source>
+        <translation>Identifiant</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/mdl_upload_details.py" line="36"/>
+        <source>SRS</source>
+        <translation>Projection</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/mdl_upload_details.py" line="37"/>
+        <source>Size</source>
+        <translation>Taille</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/mdl_upload_details.py" line="39"/>
+        <source>Upload content</source>
+        <translation>Contenu des fichiers livrés</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/mdl_upload_details.py" line="65"/>
+        <source>Can&apos;t define upload &apos;{0}&apos; file tree : {1}</source>
+        <translation>Impossible de définir l&apos;arbre des fichiers pour la livraison &apos;{0&apos;} : {1}</translation>
+    </message>
+</context>
+<context>
     <name>UploadEditionPageWizard</name>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_edition.ui" line="62"/>
@@ -961,7 +1037,7 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
         <translation>Détails techniques</translation>
     </message>
     <message>
-        <location filename="../../gui/report/wdg_upload_log.py" line="56"/>
+        <location filename="../../gui/report/wdg_upload_log.py" line="54"/>
         <source>Can&apos;t define execution logs : {0}</source>
         <translation>Impossible de définir le journal d&apos;execution : {0}</translation>
     </message>
@@ -1073,16 +1149,6 @@ Returns created configuration id in {self.PUBLICATION_URL} results</source>
         <source>User informations</source>
         <translation>Mon compte</translation>
     </message>
-    <message>
-        <location filename="../../gui/user/wdg_user.ui" line="243"/>
-        <source>Click me to copy the related content</source>
-        <translation type="obsolete">Double-cliquer pour copier le contenu correspondant</translation>
-    </message>
-    <message>
-        <location filename="../../gui/user/wdg_user.ui" line="218"/>
-        <source>Copy</source>
-        <translation type="obsolete">Copier</translation>
-    </message>
 </context>
 <context>
     <name>wdg_publication_form</name>
@@ -1104,7 +1170,7 @@ Returns created configuration id in {self.PUBLICATION_URL} results</source>
     <message>
         <location filename="../../gui/publication_creation/wdg_publication_form.ui" line="102"/>
         <source>Inform your users about the legal notice to show if they use your flux. Example &quot;IGN source BDTOPOÂ®&quot;. This legal notice will be show below the map in the form of a link that points to the URL.</source>
-        <translation type="unfinished">Informez vos utilisateurs des mentions à faire figurer sur les cartes lorsqu&apos;ils utilisent votre flux. Ce texte sera affiché au bas des cartes sous forme de lien cliquable pointant vers l&apos;URL indiquée.</translation>
+        <translation>Informez vos utilisateurs des mentions à faire figurer sur les cartes lorsqu&apos;ils utilisent votre flux. Ce texte sera affiché au bas des cartes sous forme de lien cliquable pointant vers l&apos;URL indiquée.</translation>
     </message>
     <message>
         <location filename="../../gui/publication_creation/wdg_publication_form.ui" line="161"/>

@@ -63,11 +63,11 @@
          <bool>true</bool>
         </property>
         <property name="collapsed">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
          <item row="0" column="0">
-          <widget class="QTextBrowser" name="tbw_logs"/>
+          <widget class="QTreeView" name="trv_upload_details"/>
          </item>
         </layout>
        </widget>

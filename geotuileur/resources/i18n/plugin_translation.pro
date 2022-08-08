@@ -49,6 +49,8 @@ SOURCES= ../../plugin_main.py \
     ../../gui/report/dlg_report.py \
     ../../gui/report/wdg_execution_log.py \
     ../../gui/report/wdg_upload_log.py \
+    ../../gui/report/mdl_upload_details.py \
+    ../../gui/report/mdl_stored_data_details.py \
     ../../gui/tile_creation/qwp_tile_generation_edition.py \
     ../../gui/tile_creation/qwp_tile_generation_fields_selection.py \
     ../../gui/tile_creation/qwp_tile_generation_generalization.py \

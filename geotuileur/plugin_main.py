@@ -24,6 +24,7 @@ from geotuileur.gui.dlg_settings import PlgOptionsFactory
 from geotuileur.gui.publication_creation.wzd_publication_creation import (
     PublicationFormCreation,
 )
+from geotuileur.gui.storage.dlg_storage_report import StorageReportDialog
 from geotuileur.gui.tile_creation.wzd_tile_creation import TileCreationWizard
 from geotuileur.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
 from geotuileur.gui.user.dlg_user import UserDialog
@@ -65,9 +66,11 @@ class GeotuileurPlugin:
 
         self.toolbar = None
         self.dlg_dashboard = None
+        self.dlg_storage_report = None
 
         self.action_authentication = None
         self.action_dashboard = None
+        self.action_storage_report = None
         self.action_import = None
         self.action_tile_create = None
         self.action_publication = None
@@ -113,6 +116,15 @@ class GeotuileurPlugin:
             self.iface.mainWindow(),
         )
         self.action_dashboard.triggered.connect(self.display_dashboard)
+
+        # Storage report
+        self.dlg_storage_report = StorageReportDialog(self.iface.mainWindow())
+        self.action_storage_report = QAction(
+            QIcon(QgsApplication.iconPath("mIconAuxiliaryStorage.svg")),
+            self.tr("Storage report"),
+            self.iface.mainWindow(),
+        )
+        self.action_storage_report.triggered.connect(self.display_storage_report)
 
         # Import
         self.action_import = QAction(
@@ -167,6 +179,7 @@ class GeotuileurPlugin:
         # -- Menu
         self.iface.addPluginToWebMenu(__title__, self.action_authentication)
         self.iface.addPluginToWebMenu(__title__, self.action_dashboard)
+        self.iface.addPluginToWebMenu(__title__, self.action_storage_report)
         self.iface.addPluginToWebMenu(__title__, self.action_import)
         self.iface.addPluginToWebMenu(__title__, self.action_tile_create)
         self.iface.addPluginToWebMenu(__title__, self.action_publication)
@@ -178,6 +191,7 @@ class GeotuileurPlugin:
         self.iface.addToolBar(self.toolbar)
         self.toolbar.addAction(self.action_authentication)
         self.toolbar.addAction(self.action_dashboard)
+        self.toolbar.addAction(self.action_storage_report)
         self.toolbar.addAction(self.action_import)
         self.toolbar.addAction(self.action_tile_create)
         self.toolbar.addAction(self.action_publication)
@@ -195,6 +209,7 @@ class GeotuileurPlugin:
         # -- Clean up menu
         self.iface.removePluginWebMenu(__title__, self.action_authentication)
         self.iface.removePluginWebMenu(__title__, self.action_dashboard)
+        self.iface.removePluginWebMenu(__title__, self.action_storage_report)
         self.iface.removePluginWebMenu(__title__, self.action_import)
         self.iface.removePluginWebMenu(__title__, self.action_tile_create)
         self.iface.removePluginWebMenu(__title__, self.action_publication)
@@ -315,3 +330,12 @@ class GeotuileurPlugin:
         if self.dlg_dashboard is not None:
             self.dlg_dashboard.refresh()
             self.dlg_dashboard.show()
+
+    def display_storage_report(self) -> None:
+        """
+        Display storage report dialog
+
+        """
+        if self.dlg_storage_report is not None:
+            self.dlg_storage_report.refresh()
+            self.dlg_storage_report.show()

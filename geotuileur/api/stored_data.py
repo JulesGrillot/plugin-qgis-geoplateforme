@@ -12,6 +12,14 @@ from qgis.PyQt.QtNetwork import QNetworkRequest
 from geotuileur.toolbelt import PlgLogger, PlgOptionsManager
 
 
+class StorageType(Enum):
+    UNDEFINED = "UNDEFINED"
+    FILESYSTEM = "FILESYSTEM"
+    POSTGRESQL = "POSTGRESQL"
+    POSTGRESQL_DYN = "POSTGRESQL-DYN"
+    S3 = "S3"
+
+
 class StoredDataStep(Enum):
     UNDEFINED = "UNDEFINED"
 
@@ -53,6 +61,13 @@ class StoredData:
     type_infos: dict = None
     size: int = 0
     srs: str = ""
+    storage: dict = None
+
+    def get_storage_type(self) -> StorageType:
+        result = StorageType.UNDEFINED
+        if self.storage and "type" in self.storage:
+            result = StorageType[self.storage["type"]]
+        return result
 
     def get_tables(self) -> List[TableRelation]:
         tables = []
@@ -306,6 +321,8 @@ class StoredDataRequestManager:
             result.size = data["size"]
         if "srs" in data:
             result.srs = data["srs"]
+        if "storage" in data:
+            result.storage = data["storage"]
         return result
 
     def get_stored_data_json(self, datastore: str, stored_data: str) -> dict:

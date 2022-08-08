@@ -1,6 +1,7 @@
 # standard
 import json
 import logging
+from dataclasses import dataclass
 
 # PyQGIS
 from qgis.core import QgsBlockingNetworkRequest
@@ -8,19 +9,39 @@ from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # project
+from geotuileur.api.utils import qgs_blocking_get_request
 from geotuileur.toolbelt.log_handler import PlgLogger
 from geotuileur.toolbelt.preferences import PlgOptionsManager
 
 logger = logging.getLogger(__name__)
 
 
+@dataclass
+class Datastore:
+    id: str
+    name: str
+    technical_name: str
+    storages: dict
+
+    def get_storage_use_and_quota(self, storage_type: str) -> (int, int):
+        result = (0, 0)
+        for data in self.storages["data"]:
+            if data["type"] == storage_type:
+                result = (data["use"], data["quota"])
+                break
+        return result
+
+
 class DatastoreRequestManager:
+    class UnavailableDatastoreException(Exception):
+        pass
+
     class UnavailableEndpointException(Exception):
         pass
 
     def __init__(self):
         """
-        Helper for Endpoint request
+        Helper for datastore request
 
         """
         self.log = PlgLogger().log
@@ -39,41 +60,53 @@ class DatastoreRequestManager:
         """
         return f"{self.plg_settings.base_url_api_entrepot}/datastores/{datastore}"
 
+    def get_datastore(self, datastore: str) -> Datastore:
+        """
+        Get datastore by id
+
+        Args:
+            datastore: (str) datastore id
+
+        Returns: Datastore data, raise UnavailableDatastoreException otherwise
+        """
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+        req = QNetworkRequest(QUrl(self.get_base_url(datastore)))
+
+        req_reply = qgs_blocking_get_request(
+            self.ntwk_requester_blk,
+            req,
+            self.UnavailableDatastoreException,
+            expected_type="application/json; charset=utf-8",
+        )
+
+        data = json.loads(req_reply.content().data().decode("utf-8"))
+        result = Datastore(
+            id=data["_id"],
+            name=data["name"],
+            technical_name=data["technical_name"],
+            storages=data["storages"],
+        )
+        return result
+
     def get_endpoint(self, datastore: str, data_type: str) -> str:
         """
         Get the endpoint for publication
 
         Args:
-            datastores: (str), data_type: (str)
+            datastore: (str)
+            data_type: (str)
 
-
+        Returns: first available endpoint id for data_type, raise UnavailableEndpointException otherwise
         """
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req_get = QNetworkRequest(QUrl(self.get_base_url(datastore)))
+        req = QNetworkRequest(QUrl(self.get_base_url(datastore)))
 
-        # headers
-        req_get.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
-
-        # send request
-        resp = self.ntwk_requester_blk.get(req_get)
-
-        # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
-            raise self.UnavailableEndpointException(
-                f"Error while endpoint publication : "
-                f"{self.ntwk_requester_blk.errorMessage()}"
-            )
-        # check response type
-        req_reply = self.ntwk_requester_blk.reply()
-        if (
-            not req_reply.rawHeader(b"Content-Type")
-            == "application/json; charset=utf-8"
-        ):
-            raise self.UnavailableEndpointException(
-                "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
-                    req_reply.rawHeader(b"Content-type")
-                )
-            )
+        req_reply = qgs_blocking_get_request(
+            self.ntwk_requester_blk,
+            req,
+            self.UnavailableEndpointException,
+            expected_type="application/json; charset=utf-8",
+        )
 
         data = json.loads(req_reply.content().data().decode("utf-8"))
         for i in range(0, len(data["endpoints"])):

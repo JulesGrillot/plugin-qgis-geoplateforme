@@ -3,7 +3,7 @@ import os
 from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtCore import QModelIndex
 from qgis.PyQt.QtGui import QCursor, QGuiApplication
-from qgis.PyQt.QtWidgets import QAbstractItemView, QAction, QMenu, QWidget
+from qgis.PyQt.QtWidgets import QAbstractItemView, QAction, QHeaderView, QMenu, QWidget
 
 from geotuileur.api.stored_data import StoredData, StoredDataStatus, StoredDataStep
 from geotuileur.gui.mdl_stored_data import StoredDataListModel
@@ -47,6 +47,12 @@ class DashboardWidget(QWidget):
             visible_status=[StoredDataStatus.GENERATED, StoredDataStatus.UNSTABLE],
         )
         self.tbv_actions_to_finish.setModel(self.proxy_mdl_action_to_finish)
+        self.tbv_actions_to_finish.horizontalHeader().setSectionResizeMode(
+            QHeaderView.Stretch
+        )
+        self.tbv_actions_to_finish.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.Interactive
+        )
         self.tbv_actions_to_finish.verticalHeader().setVisible(False)
         self.tbv_actions_to_finish.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tbv_actions_to_finish.setColumnHidden(
@@ -62,6 +68,12 @@ class DashboardWidget(QWidget):
             visible_status=[StoredDataStatus.GENERATING],
         )
         self.tbl_running_actions.setModel(self.proxy_mdl_running_action)
+        self.tbl_running_actions.horizontalHeader().setSectionResizeMode(
+            QHeaderView.Stretch
+        )
+        self.tbl_running_actions.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.Interactive
+        )
         self.tbl_running_actions.verticalHeader().setVisible(False)
         self.tbl_running_actions.setColumnHidden(
             self.mdl_stored_data.OTHER_ACTIONS_COL, True
@@ -77,6 +89,12 @@ class DashboardWidget(QWidget):
             visible_status=[StoredDataStatus.GENERATED],
         )
         self.tbl_publicated_tiles.setModel(self.proxy_mdl_publicated_tiles)
+        self.tbl_publicated_tiles.horizontalHeader().setSectionResizeMode(
+            QHeaderView.Stretch
+        )
+        self.tbl_publicated_tiles.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.Interactive
+        )
         self.tbl_publicated_tiles.verticalHeader().setVisible(False)
         self.tbl_publicated_tiles.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tbl_publicated_tiles.clicked.connect(

@@ -27,10 +27,10 @@ class StoredDataDetailsModel(QStandardItemModel):
         """
         while self.rowCount():
             self.removeRow(0)
-        print(stored_data)
 
         if stored_data.size:
-            self._insert_value(self.tr("Size"), str(stored_data.size))
+            # Display in Mo
+            self._insert_value(self.tr("Size"), str(f"{stored_data.size/1e6} Mo"))
         if stored_data.srs:
             self._insert_value(self.tr("SRS"), stored_data.srs)
         if len(stored_data.zoom_levels()) != 0:

@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>473</width>
-    <height>308</height>
+    <width>630</width>
+    <height>500</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>630</width>
+    <height>500</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Report</string>
@@ -70,6 +76,9 @@
      <property name="collapsed">
       <bool>true</bool>
      </property>
+     <property name="saveCollapsedState">
+      <bool>false</bool>
+     </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
        <widget class="QTableView" name="tbv_details">
@@ -111,6 +120,9 @@
      </property>
      <property name="collapsed">
       <bool>true</bool>
+     </property>
+     <property name="saveCollapsedState">
+      <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="0" column="0">

@@ -35,6 +35,7 @@ class PublicationStatut(QWizardPage):
         """
 
         super().__init__(parent)
+        self.setTitle(self.tr("Publication URL"))
         self.url_data = ""
         self.qwp_publication_form = qwp_publication_form
         uic.loadUi(os.path.join(os.path.dirname(__file__), "qwp_status.ui"), self)

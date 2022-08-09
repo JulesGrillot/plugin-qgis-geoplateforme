@@ -2,6 +2,7 @@ import re
 from enum import IntFlag
 from typing import List
 
+from osgeo import ogr
 from qgis.core import (
     QgsMapLayer,
     QgsProcessing,
@@ -10,6 +11,7 @@ from qgis.core import (
     QgsProcessingParameterMultipleLayers,
     QgsVectorLayer,
 )
+from qgis.PyQt import QtCore
 from qgis.PyQt.QtCore import QCoreApplication
 
 
@@ -72,7 +74,21 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
         )
 
     def processAlgorithm(self, parameters, context, feedback):
-        layers = self.parameterAsLayerList(parameters, self.INPUT_LAYERS, context)
+        input_layers = self.parameterAsLayerList(parameters, self.INPUT_LAYERS, context)
+        layers = []
+
+        # Load layers from geopackage
+        for layer in input_layers:
+            filename = layer.dataProvider().dataSourceUri()
+            fileinfo = QtCore.QFileInfo(filename)
+            if fileinfo.exists() and fileinfo.suffix() == "gpkg":
+                gpkg_layers = [l.GetName() for l in ogr.Open(filename)]
+                for layer_name in gpkg_layers:
+                    layers.append(
+                        QgsVectorLayer(f"{filename}|layername={layer_name}", layer_name)
+                    )
+            else:
+                layers.append(layer)
 
         result_code = self.ResultCode.VALID
 

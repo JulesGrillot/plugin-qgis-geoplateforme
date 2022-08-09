@@ -1,10 +1,14 @@
+import json
 import os
+import tempfile
 
+from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
 from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtCore import QModelIndex
 from qgis.PyQt.QtGui import QCursor, QGuiApplication
 from qgis.PyQt.QtWidgets import QAbstractItemView, QAction, QMenu, QWidget
 
+from geotuileur.__about__ import __title_clean__
 from geotuileur.api.stored_data import StoredData, StoredDataStatus, StoredDataStep
 from geotuileur.gui.mdl_stored_data import StoredDataListModel
 from geotuileur.gui.proxy_model_stored_data import StoredDataProxyModel
@@ -13,6 +17,8 @@ from geotuileur.gui.publication_creation.wzd_publication_creation import (
 )
 from geotuileur.gui.report.dlg_report import ReportDialog
 from geotuileur.gui.tile_creation.wzd_tile_creation import TileCreationWizard
+from geotuileur.processing import GeotuileurProvider
+from geotuileur.processing.delete_publication import DepublicationAlgorithm
 from geotuileur.toolbelt import PlgLogger
 
 
@@ -273,7 +279,23 @@ class DashboardWidget(QWidget):
         Args:
             stored_data: (StoredData) stored data
         """
-        self.log("Unpublish not implemented yet", push=True)
+        data = {
+            DepublicationAlgorithm.DATASTORE: stored_data.datastore_id,
+            DepublicationAlgorithm.STORED_DATA: stored_data.id,
+        }
+        filename = tempfile.NamedTemporaryFile(
+            prefix=f"qgis_{__title_clean__}_", suffix=".json"
+        ).name
+        with open(filename, "w") as file:
+            json.dump(data, file)
+        algo_str = f"{GeotuileurProvider().id()}:{DepublicationAlgorithm().name()}"
+        alg = QgsApplication.processingRegistry().algorithmById(algo_str)
+        params = {DepublicationAlgorithm.INPUT_JSON: filename}
+
+        context = QgsProcessingContext()
+        self.feedback = QgsProcessingFeedback()
+
+        alg.run(parameters=params, context=context, feedback=self.feedback)
 
     def _create_proxy_model(
         self,

@@ -3,7 +3,7 @@ import os
 from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtCore import QModelIndex
 from qgis.PyQt.QtGui import QCursor, QGuiApplication
-from qgis.PyQt.QtWidgets import QAbstractItemView, QAction, QHeaderView, QMenu, QWidget
+from qgis.PyQt.QtWidgets import QAbstractItemView, QAction, QMenu, QTableView, QWidget
 
 from geotuileur.api.stored_data import StoredData, StoredDataStatus, StoredDataStep
 from geotuileur.gui.mdl_stored_data import StoredDataListModel
@@ -38,7 +38,8 @@ class DashboardWidget(QWidget):
         # Create proxy model for each table
 
         # Action to finish
-        self.proxy_mdl_action_to_finish = self._create_proxy_model(
+        self._init_table_view(
+            tbv=self.tbv_actions_to_finish,
             visible_steps=[
                 StoredDataStep.TILE_GENERATION,
                 StoredDataStep.TILE_SAMPLE,
@@ -46,63 +47,52 @@ class DashboardWidget(QWidget):
             ],
             visible_status=[StoredDataStatus.GENERATED, StoredDataStatus.UNSTABLE],
         )
-        self.tbv_actions_to_finish.setModel(self.proxy_mdl_action_to_finish)
-        self.tbv_actions_to_finish.horizontalHeader().setSectionResizeMode(
-            QHeaderView.Stretch
-        )
-        self.tbv_actions_to_finish.horizontalHeader().setSectionResizeMode(
-            0, QHeaderView.Interactive
-        )
-        self.tbv_actions_to_finish.verticalHeader().setVisible(False)
-        self.tbv_actions_to_finish.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tbv_actions_to_finish.setColumnHidden(
             self.mdl_stored_data.OTHER_ACTIONS_COL, True
         )
-        self.tbv_actions_to_finish.clicked.connect(
-            lambda index: self._item_clicked(index, self.proxy_mdl_action_to_finish)
-        )
 
         # Running actions
-        self.proxy_mdl_running_action = self._create_proxy_model(
+        self._init_table_view(
+            tbv=self.tbl_running_actions,
             visible_steps=[],
             visible_status=[StoredDataStatus.GENERATING],
         )
-        self.tbl_running_actions.setModel(self.proxy_mdl_running_action)
-        self.tbl_running_actions.horizontalHeader().setSectionResizeMode(
-            QHeaderView.Stretch
-        )
-        self.tbl_running_actions.horizontalHeader().setSectionResizeMode(
-            0, QHeaderView.Interactive
-        )
-        self.tbl_running_actions.verticalHeader().setVisible(False)
         self.tbl_running_actions.setColumnHidden(
             self.mdl_stored_data.OTHER_ACTIONS_COL, True
         )
-        self.tbl_running_actions.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.tbl_running_actions.clicked.connect(
-            lambda index: self._item_clicked(index, self.proxy_mdl_running_action)
-        )
 
         # Publicated tiles
-        self.proxy_mdl_publicated_tiles = self._create_proxy_model(
+        self._init_table_view(
+            tbv=self.tbl_publicated_tiles,
             visible_steps=[StoredDataStep.PUBLISHED],
             visible_status=[StoredDataStatus.GENERATED],
-        )
-        self.tbl_publicated_tiles.setModel(self.proxy_mdl_publicated_tiles)
-        self.tbl_publicated_tiles.horizontalHeader().setSectionResizeMode(
-            QHeaderView.Stretch
-        )
-        self.tbl_publicated_tiles.horizontalHeader().setSectionResizeMode(
-            0, QHeaderView.Interactive
-        )
-        self.tbl_publicated_tiles.verticalHeader().setVisible(False)
-        self.tbl_publicated_tiles.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.tbl_publicated_tiles.clicked.connect(
-            lambda index: self._item_clicked(index, self.proxy_mdl_publicated_tiles)
         )
 
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
         self._datastore_updated()
+
+    def _init_table_view(
+        self,
+        tbv: QTableView,
+        visible_steps: [StoredDataStep],
+        visible_status: [StoredDataStatus],
+    ) -> None:
+        """
+        Initialization of a table view for specific stored data steps and status visibility
+
+        Args:
+            tbv:  QTableView table view
+            visible_steps: [StoredDataStep] visible stored data steps
+            visible_status: [StoredDataStatus] visible stored data status
+        """
+        proxy_mdl = self._create_proxy_model(
+            visible_steps=visible_steps,
+            visible_status=visible_status,
+        )
+        tbv.setModel(proxy_mdl)
+        tbv.verticalHeader().setVisible(False)
+        tbv.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        tbv.clicked.connect(lambda index: self._item_clicked(index, proxy_mdl))
 
     def refresh(self):
         """

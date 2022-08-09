@@ -18,7 +18,6 @@ class DepublicationAlgorithm(QgsProcessingAlgorithm):
     INPUT_JSON = "INPUT_JSON"
     DATASTORE = "datastore"
     STORED_DATA = "stored data"
-    OFFERING_ID = "offering_id"
 
     def tr(self, string):
         return QCoreApplication.translate(
@@ -75,7 +74,7 @@ class DepublicationAlgorithm(QgsProcessingAlgorithm):
         # Getting offerings
         try:
             offering_id_manager = OfferingsRequestManager()
-            offering_id = offering_id_manager.get_offerings(datastore, stored_data)
+            offering_ids = offering_id_manager.get_offerings_id(datastore, stored_data)
         except OfferingsRequestManager.UnavailableOfferingsException as exc:
             raise QgsProcessingException(f"exc depublication : {exc}")
 
@@ -84,10 +83,6 @@ class DepublicationAlgorithm(QgsProcessingAlgorithm):
             depublication_manager = DepublicationRequestManager()
             print(depublication_manager)
 
-            depublication_manager.delete_publication(datastore, offering_id)
-        except DepublicationRequestManager.UnavailableDepublicationException as exc:
+            depublication_manager.delete_publication(datastore, offering_ids)
+        except OfferingsRequestManager.UnavailableOfferingsException as exc:
             raise QgsProcessingException(f"exc depublication : {exc}")
-
-        return {
-            self.OFFERING_ID: str(offering_id),
-        }

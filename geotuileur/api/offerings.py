@@ -7,6 +7,8 @@ from qgis.core import QgsBlockingNetworkRequest
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
+from geotuileur.api.utils import qgs_blocking_get_request
+
 # project
 from geotuileur.toolbelt.log_handler import PlgLogger
 from geotuileur.toolbelt.preferences import PlgOptionsManager
@@ -20,7 +22,7 @@ class OfferingsRequestManager:
 
     def __init__(self):
         """
-        Helper for offering request
+        Helper for get offerings request
 
         """
         self.log = PlgLogger().log
@@ -29,60 +31,37 @@ class OfferingsRequestManager:
 
     def get_base_url(self, datastore: str) -> str:
         """
-        Get base url for offering
+        Get base url for offerings
 
         Args:
-            datastore: (str) configuration : (str)
+            datastore: (str)
 
-        Returns: url for offering
+        Returns: url for offerings
         """
         return f"{self.plg_settings.base_url_api_entrepot}/datastores/{datastore}"
 
-    def get_offerings(self, datastore: str, stored_data: str):
+    def get_offerings_id(self, datastore: str, stored_data: str) -> list:
         """
-        Create offering on Geotuileur entrepot
+        Get offerings id for a specific stored data on Geotuileur entrepot
 
         Args:
-            configuration_id: (str) datastore_id :(str)
-            visibility :(str) endpoint : (str)
+            datastore id :(str)
+            stored data id : (str)
 
         """
 
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req_get = QNetworkRequest(
+        req = QNetworkRequest(
             QUrl(f"{self.get_base_url(datastore)}/offerings?stored_data={stored_data}")
         )
 
-        #'''cf méthode qgs_blocking_get_request'''
         # headers
-        req_get.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
-
-        # send request
-        resp = self.ntwk_requester_blk.get(req_get, forceRefresh=True)
-
-        # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
-            raise self.UnavailableOfferingsException(
-                f"Error while fetching processing : {self.ntwk_requester_blk.errorMessage()}"
-            )
-
-        # check response
-        req_reply = self.ntwk_requester_blk.reply()
-        if (
-            not req_reply.rawHeader(b"Content-Type")
-            == "application/json; charset=utf-8"
-        ):
-            raise self.UnavailableOfferingsException(
-                "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
-                    req_reply.rawHeader(b"Content-type")
-                )
-            )
-
-        # encode data
-
+        req_reply = qgs_blocking_get_request(
+            self.ntwk_requester_blk, req, self.UnavailableOfferingsException
+        )
         data = json.loads(req_reply.content().data().decode("utf-8"))
+        offering_ids = []
+        for offering in data:
+            offering_ids = offering["_id"]
 
-        offering_id = []
-        for i in range(0, len(data)):
-            offering_id = data[i]["_id"]
-        return offering_id
+        return offering_ids

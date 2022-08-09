@@ -10,7 +10,7 @@ from geotuileur.api.stored_data import (
     StoredDataStatus,
     StoredDataStep,
 )
-from geotuileur.api.utils import as_localized_datetime
+from geotuileur.api.utils import as_datetime
 from geotuileur.toolbelt import PlgLogger
 
 
@@ -169,7 +169,7 @@ class StoredDataListModel(QStandardItemModel):
         self.setData(self.index(row, self.NAME_COL), stored_data, Qt.UserRole)
         self.setData(
             self.index(row, self.DATE_COL),
-            as_localized_datetime(stored_data.get_last_event_date()),
+            as_datetime(stored_data.get_last_event_date()),
         )
         self.setData(self.index(row, self.ID_COL), stored_data.id)
         self.setData(self.index(row, self.TYPE_COL), stored_data.type)

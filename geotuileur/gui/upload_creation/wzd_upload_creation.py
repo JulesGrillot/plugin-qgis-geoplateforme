@@ -25,6 +25,7 @@ class UploadCreationWizard(QWizard):
         )
         self.addPage(self.qwp_upload_edition)
         self.addPage(self.qwp_upload_creation)
+        self.setOption(QWizard.NoBackButtonOnStartPage, True)
         self.setOption(QWizard.NoCancelButtonOnLastPage, True)
 
     def closeEvent(self, event: QCloseEvent) -> None:

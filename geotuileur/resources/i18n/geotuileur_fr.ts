@@ -83,47 +83,47 @@
 <context>
     <name>DashboardWidget</name>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="154"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="162"/>
         <source>Replace data</source>
         <translation>Remplacer les données</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="160"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="168"/>
         <source>Manage styles</source>
         <translation>Gérer les styles</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="164"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="172"/>
         <source>Update publication informations</source>
         <translation>Modifier les informations de publication</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="170"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="178"/>
         <source>Unpublish</source>
         <translation>Dépublier</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="20"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="72"/>
         <source>Running actions</source>
         <translation>En cours</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="32"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="60"/>
         <source>Actions to finish</source>
         <translation>Mes actions à terminer</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="47"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="84"/>
         <source>Publicated tiles</source>
         <translation>Mes flux publiés</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="63"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="50"/>
         <source>Datastore</source>
         <translation>Espace de stockage</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="14"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="20"/>
         <source>Dashboard</source>
         <translation>Tableau de bord</translation>
     </message>
@@ -206,12 +206,12 @@
 <context>
     <name>GeotuileurPlugin</name>
     <message>
-        <location filename="../../plugin_main.py" line="160"/>
+        <location filename="../../plugin_main.py" line="158"/>
         <source>Help</source>
         <translation>Documentation</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="170"/>
+        <location filename="../../plugin_main.py" line="168"/>
         <source>Settings</source>
         <translation>Paramètres</translation>
     </message>
@@ -221,17 +221,17 @@
         <translation>S&apos;authentifier</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="132"/>
+        <location filename="../../plugin_main.py" line="130"/>
         <source>Create a new upload</source>
         <translation>Téléverser des données</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="140"/>
+        <location filename="../../plugin_main.py" line="138"/>
         <source>Tile creation</source>
         <translation>Générer des tuiles</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="148"/>
+        <location filename="../../plugin_main.py" line="146"/>
         <source>Publication</source>
         <translation>Publication</translation>
     </message>
@@ -241,7 +241,7 @@
         <translation>Tableau de bord</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="124"/>
+        <location filename="../../plugin_main.py" line="122"/>
         <source>Storage report</source>
         <translation>Gérer mon espace</translation>
     </message>
@@ -361,25 +361,38 @@
 <context>
     <name>PublicationFormPageWizard</name>
     <message>
-        <location filename="../../gui/publication_creation/qwp_publication_form.py" line="71"/>
+        <location filename="../../gui/publication_creation/qwp_publication_form.py" line="72"/>
         <source>Missing informations.</source>
         <translation>Informations manquantes.</translation>
     </message>
     <message>
-        <location filename="../../gui/publication_creation/qwp_publication_form.py" line="71"/>
+        <location filename="../../gui/publication_creation/qwp_publication_form.py" line="72"/>
         <source>Please fill all fields.</source>
         <translation>Merci de renseigner tous les champs.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/publication_creation/qwp_publication_form.py" line="22"/>
+        <source>Describe and publish your tiles</source>
+        <translation>Décrivez et publiez votre flux</translation>
+    </message>
+</context>
+<context>
+    <name>PublicationStatut</name>
+    <message>
+        <location filename="../../gui/publication_creation/qwp_status.py" line="38"/>
+        <source>Publication URL</source>
+        <translation>URL de publication</translation>
     </message>
 </context>
 <context>
     <name>ReportDialog</name>
     <message>
-        <location filename="../../gui/report/dlg_report.ui" line="54"/>
+        <location filename="../../gui/report/dlg_report.ui" line="60"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.ui" line="32"/>
+        <location filename="../../gui/report/dlg_report.ui" line="38"/>
         <source>ID</source>
         <translation>Identifiant</translation>
     </message>
@@ -399,12 +412,12 @@
         <translation>Impossible de définir le journal d&apos;execution : {0}</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.ui" line="68"/>
+        <location filename="../../gui/report/dlg_report.ui" line="74"/>
         <source>Data details</source>
         <translation>Détails sur les données</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.ui" line="110"/>
+        <location filename="../../gui/report/dlg_report.ui" line="119"/>
         <source>Data structure</source>
         <translation>Structure des données</translation>
     </message>
@@ -440,49 +453,49 @@
         <translation>Données intégrées en base</translation>
     </message>
     <message>
-        <location filename="../../gui/storage/dlg_storage_report.ui" line="71"/>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="77"/>
         <source>This is space used by data in PostgresSQL server in your datastore. This is intermediate data that are not visible by users.</source>
         <translation>Il s&apos;agit de l&apos;espace occupé par des données sur les serveurs PostgreSQL de votre espace de travail. Il s&apos;agit de données intérmédiaires qui ne sont pas directement visibles de vos utilisateurs.</translation>
     </message>
     <message>
-        <location filename="../../gui/storage/dlg_storage_report.ui" line="252"/>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="273"/>
         <source>List</source>
         <translation>Liste</translation>
     </message>
     <message>
-        <location filename="../../gui/storage/dlg_storage_report.ui" line="111"/>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="120"/>
         <source>Data integrated as file</source>
         <translation>Données intégrées sous forme de fichiers</translation>
     </message>
     <message>
-        <location filename="../../gui/storage/dlg_storage_report.ui" line="125"/>
-        <source>This space is used by Géotuileur for vector tiles pyramid file storage.</source>
-        <translation>Cet espace est utilisé par le Géotuileur pour le stockage des pyramides de tuiles vectorielles.</translation>
-    </message>
-    <message>
-        <location filename="../../gui/storage/dlg_storage_report.ui" line="165"/>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="180"/>
         <source>Mass storage</source>
         <translation>Stockage de masse</translation>
     </message>
     <message>
-        <location filename="../../gui/storage/dlg_storage_report.ui" line="179"/>
-        <source>This space is used by Géotuileur for vector tiles pyramid storage. It&apos;s more efficient that file storage.</source>
-        <translation>Cet espace est utilisé par le Géotuileur pour le stockage des pyramides de tuiles vectorielles. Il est plus performant que le stockage sous forme de fichiers.</translation>
-    </message>
-    <message>
-        <location filename="../../gui/storage/dlg_storage_report.ui" line="219"/>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="240"/>
         <source>Upload</source>
         <translation>Données déposées</translation>
     </message>
     <message>
-        <location filename="../../gui/storage/dlg_storage_report.ui" line="239"/>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="260"/>
         <source>This space is used by raw data that you uploaded (.csv, geopackage files). This files should be deleted when database integration is sucessful. Some files could be left when integration fail.</source>
         <translation>Il s&apos;agit de l&apos;espace occupé par les fichiers de données bruts que vous avez téléversés (fichiers csv, geopackage...). Ces fichiers sont normalement supprimés dès l&apos;intégration en base réussie de vos données. Il est possible qu&apos;il reste des traces de fichiers dans cet espace lorsque les intégrations en base ont échoué.</translation>
     </message>
     <message>
-        <location filename="../../gui/storage/dlg_storage_report.py" line="139"/>
+        <location filename="../../gui/storage/dlg_storage_report.py" line="146"/>
         <source>Can&apos;t define datastore &apos;{0}&apos; from requests : {1}</source>
         <translation>Impossible de definir l&apos;espace de travail &apos;{0}&apos; depuis une requete : {1}</translation>
+    </message>
+    <message>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="140"/>
+        <source>This space is used by Géotuileur for vector tiles pyramid file storage.</source>
+        <translation>Cet espace est utilisé par le Géotuileur pour le stockage des pyramides de tuiles vectorielles.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="200"/>
+        <source>This space is used by Géotuileur for vector tiles pyramid storage. It&apos;s more efficient that file storage.</source>
+        <translation>Cet espace est utilisé par le Géotuileur pour le stockage des pyramides de tuiles vectorielles. Il est plus performant que le stockage sous forme de fichiers.</translation>
     </message>
 </context>
 <context>
@@ -623,97 +636,115 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
 <context>
     <name>TileGenerationEditionPageWizard</name>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="117"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="118"/>
         <source>No datastore selected.</source>
         <translation>Aucun espace de stockage sélectionné.</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="117"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="118"/>
         <source>Please select a datastore</source>
         <translation>Merci de sélectionner un espace de stockage</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="125"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="126"/>
         <source>No stored data selected.</source>
         <translation>Aucune donnée stockée sélectionnée.</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="125"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="126"/>
         <source>Please select a stored data</source>
         <translation>Merci de sélectionner une donnée stockée</translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="45"/>
+        <source>Define tile parameters</source>
+        <translation>Paramétrez votre flux</translation>
+    </message>
+</context>
+<context>
+    <name>TileGenerationFieldsSelectionPageWizard</name>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.py" line="27"/>
+        <source>Customize your vector tiles service</source>
+        <translation>Composez votre flux</translation>
     </message>
 </context>
 <context>
     <name>TileGenerationGeneralizationPageWizard</name>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="78"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="79"/>
         <source>Simplification de donnÃ©es hÃ©tÃ©rogÃ¨nes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="79"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="80"/>
         <source>Toutes les formes sont simplifiÃ©es.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="84"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="85"/>
         <source>Simplification de rÃ©seau</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="85"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="86"/>
         <source>Toutes les formes sont simplifiÃ©es et les nÅuds du rÃ©seau sont conservÃ©s.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="92"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="93"/>
         <source>Simplification de donnÃ©es linÃ©aires autres</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="93"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="94"/>
         <source>Les petits objets sont supprimÃ©s.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="98"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="99"/>
         <source>SchÃ©matisation de donnÃ©es surfaciques</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="99"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="100"/>
         <source>Les formes sont simplifiÃ©es en conservant une couverture du territoire.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="106"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="107"/>
         <source>SÃ©lection de donnÃ©es surfaciques</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="107"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="108"/>
         <source>Les donnÃ©es les plus reprÃ©sentatives sont conservÃ©es et les plus petites supprimÃ©es. Ce choix est pertinent si 3 attributs ou moins sont conservÃ©s Ã&#xa0; l&apos;Ã©tape prÃ©cÃ©dente.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="116"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="117"/>
         <source>Fusion attributaire de donnÃ©es surfaciques</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="117"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="118"/>
         <source>Les objets qui ont les mÃªmes valeurs dâattribut sont fusionnÃ©s tout en simplifiant les formes et en supprimant les petites surfaces. Ce choix est pertinent si 3 attributs ou moins sont conservÃ©s Ã&#xa0; l&apos;Ã©tape prÃ©cÃ©dente.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="126"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="127"/>
         <source>Harmonisation de donnÃ©es surfaciques</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="127"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="128"/>
         <source>Les formes sont simplifiÃ©es en conservant les limites partagÃ©es entre deux surfaces.</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="66"/>
+        <source>Select generalization option</source>
+        <translation>Choisissez une option de généralisation</translation>
     </message>
 </context>
 <context>
@@ -734,7 +765,7 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
         <translation>La vérification du statut des données stockées a échoué</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="163"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="57"/>
         <source>Generating in progress</source>
         <translation>Génération en cours</translation>
     </message>
@@ -775,22 +806,17 @@ Returns created upload id in {self.CREATED_UPLOAD_ID} results</source>
 <context>
     <name>UploadCreationPageWizard</name>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="308"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="305"/>
         <source>Check details for more informations</source>
         <translation>Consulter les détails pour plus d&apos;informations</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.ui" line="23"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.ui" line="39"/>
         <source>IconLabel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.ui" line="47"/>
-        <source>TextLabel</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../gui/publication_creation/qwp_status.ui" line="41"/>
+        <location filename="../../gui/publication_creation/qwp_status.ui" line="43"/>
         <source>Go</source>
         <translation>Ouvrir dans le navigateur</translation>
     </message>
@@ -810,67 +836,62 @@ Returns created upload id in {self.CREATED_UPLOAD_ID} results</source>
         <translation>Résultat de la publication</translation>
     </message>
     <message>
-        <location filename="../../gui/publication_creation/qwp_status.ui" line="34"/>
+        <location filename="../../gui/publication_creation/qwp_status.ui" line="36"/>
         <source>Vector tile endpoint URL:</source>
         <translation>URL du flux de données :</translation>
     </message>
     <message>
-        <location filename="../../gui/publication_creation/qwp_status.ui" line="52"/>
+        <location filename="../../gui/publication_creation/qwp_status.ui" line="56"/>
         <source>Public link to the map viewer:</source>
         <translation>URL publique du visualiseur cartographique :</translation>
     </message>
     <message>
-        <location filename="../../gui/publication_creation/qwp_status.ui" line="66"/>
-        <source>Publication URL:</source>
-        <translation>URL de publication :</translation>
-    </message>
-    <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="120"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="49"/>
         <source>Checking and integration of your data in progress</source>
         <translation>Vérification et intégration des données en cours</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="145"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="142"/>
         <source>Upload creation failed</source>
         <translation>L&apos;envoi des données a échoué</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="194"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="191"/>
         <source>Upload check status failed</source>
         <translation>La vérification du statut de chargement a échoué</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="234"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="231"/>
         <source>Your data has been stored on the remote storage.</source>
         <translation>Vos données ont été chargées dans l&apos;espace de stockage distant.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="257"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="254"/>
         <source>Stored data database integration check failed</source>
         <translation>La vérification d&apos;intégrité des données en base a échoué</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="308"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="305"/>
         <source>Database integration failed</source>
         <translation>L&apos;intégration des données dans la base distante a échoué</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="328"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="325"/>
         <source>Upload not finished.</source>
         <translation>Chargement inachevé.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="328"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="325"/>
         <source>Upload not finished. You must wait for data upload before closing this dialog.</source>
         <translation>Le chargement des données est toujours en cours. Merci d&apos;attendre la fin du téléversement avant de fermer la fenêtre.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="337"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="334"/>
         <source>Database integration not finished.</source>
         <translation>Intégration des données en base inachevée.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="337"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="334"/>
         <source>Database integration not finished. You must wait for database integration before closing this dialog.</source>
         <translation>L&apos;intégration des données dans la base distante est toujours en cours. Merci d&apos;attendre la fin du téléversement avant de fermer la fenêtre.</translation>
     </message>
@@ -950,27 +971,27 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
 <context>
     <name>UploadEditionPageWizard</name>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.ui" line="62"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.ui" line="58"/>
         <source>Datastore:</source>
         <translation>Espace de travail :</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.ui" line="73"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.ui" line="65"/>
         <source>Pick a local dataset to import:</source>
         <translation>Sélectionner une donnée locale :</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.ui" line="84"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.ui" line="72"/>
         <source>Name your dataset:</source>
         <translation>Nom du jeu de données distant :</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.ui" line="95"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.ui" line="79"/>
         <source>List of datasets to import:</source>
         <translation>Liste des données sélectionnées à importer :</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.ui" line="134"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.ui" line="86"/>
         <source>Select the SRS to use:</source>
         <translation>Sélectionner la projection de vos données :</translation>
     </message>
@@ -985,17 +1006,17 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
         <translation>Générer un flux</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.ui" line="67"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.ui" line="59"/>
         <source>Service name:</source>
         <translation>Nom du flux :</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.ui" line="89"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.ui" line="73"/>
         <source>Dataset:</source>
         <translation>Jeu de données :</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.ui" line="113"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.ui" line="93"/>
         <source>Max and min zoom levels:</source>
         <translation>Niveaux de zoom :</translation>
     </message>
@@ -1005,17 +1026,12 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
         <translation>Attributs à conserver dans les tuiles</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="33"/>
-        <source>Customize your vector tiles service</source>
-        <translation>Composez votre flux à partir de vos données</translation>
-    </message>
-    <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="49"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="47"/>
         <source>Check the attributes you want to keep in your vector tile flow. These attributes will be accessible to your users when they click on a map. By limiting the number of attributes, you can lighten the volume of the tiles and improve the fluidity of the display. Keep only the attributes that are useful to your users. If you don&apos;t keep any attributes, your vector tiles will only contain geometry and symbolization possibilities will be limited.</source>
         <translation>Cochez les attributs à conserver dans votre flux de tuiles vectorielles. Ces attributs seront notamment accessibles au clic sur une carte par vos utilisateurs. En limitant le nombre d&apos;attributs, vous allégez le volume des tuiles et améliorez la fluidité d&apos;affichage. Ne conservez que les attributs utiles à vos utilisateurs. Si vous ne conservez aucun attribut, vos tuiles vectorielles ne contiendront que des géométries et les possibilités de symbolisation seront limitées.</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="63"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="26"/>
         <source>Select feature attributes</source>
         <translation>Choisissez les attributs à conserver pour chaque table</translation>
     </message>
@@ -1025,76 +1041,81 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
         <translation>Génération des tuiles - Options de généralisation</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="56"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="57"/>
         <source>No name defined.</source>
         <translation>Aucun nom défini.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="56"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="57"/>
         <source>Please define data name</source>
         <translation>Merci de spécifier un nom</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="62"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="63"/>
         <source>No SRS defined.</source>
         <translation>Système de projection manquant.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="62"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="63"/>
         <source>Please define SRS</source>
         <translation>Merci de spécifier un système de projection</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="83"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="84"/>
         <source>Invalid layers:
 </source>
         <translation>Couches invalides:
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="95"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="96"/>
         <source>Invalid layers list are available in details.</source>
         <translation>La liste des couches invalides est disponible dans les détails.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="97"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="98"/>
         <source>Invalid layers</source>
         <translation>Couches invalides</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="85"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="86"/>
         <source>- CRS mismatch
 </source>
         <translation>- incohérence dans le système de projection
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="87"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="88"/>
         <source>- invalid layer name
 </source>
         <translation>- nom de couche invalide
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="89"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="90"/>
         <source>- invalid file name
 </source>
         <translation>- nom de fichier invalide
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="91"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="92"/>
         <source>- invalid field name
 </source>
         <translation>- nom d&apos;attribut invalide
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="93"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="94"/>
         <source>- invalid layer type
 </source>
         <translation>- type de couche invalide
 </translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="27"/>
+        <source>Upload data</source>
+        <translation>Déposez votre fichier de données</translation>
     </message>
 </context>
 <context>
@@ -1274,12 +1295,12 @@ Returns created configuration id in {self.PUBLICATION_URL} results</source>
         <translation>Formulaire de publication</translation>
     </message>
     <message>
-        <location filename="../../gui/publication_creation/qwp_publication_form.ui" line="43"/>
+        <location filename="../../gui/publication_creation/qwp_publication_form.ui" line="48"/>
         <source>Datastore</source>
         <translation>Espace de stockage</translation>
     </message>
     <message>
-        <location filename="../../gui/publication_creation/qwp_publication_form.ui" line="54"/>
+        <location filename="../../gui/publication_creation/qwp_publication_form.ui" line="35"/>
         <source>Dataset</source>
         <translation>Jeu de données</translation>
     </message>

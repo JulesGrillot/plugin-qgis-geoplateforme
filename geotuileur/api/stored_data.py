@@ -62,6 +62,13 @@ class StoredData:
     size: int = 0
     srs: str = ""
     storage: dict = None
+    last_event: dict = None
+
+    def get_last_event_date(self) -> str:
+        result = ""
+        if self.last_event and "date" in self.last_event:
+            result = self.last_event["date"]
+        return result
 
     def get_storage_type(self) -> StorageType:
         result = StorageType.UNDEFINED
@@ -323,6 +330,8 @@ class StoredDataRequestManager:
             result.srs = data["srs"]
         if "storage" in data:
             result.storage = data["storage"]
+        if "last_event" in data:
+            result.last_event = data["last_event"]
         return result
 
     def get_stored_data_json(self, datastore: str, stored_data: str) -> dict:

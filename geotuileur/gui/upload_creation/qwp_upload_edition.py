@@ -14,6 +14,12 @@ from geotuileur.processing.check_layer import CheckLayerAlgorithm
 
 
 class UploadEditionPageWizard(QWizardPage):
+    SUPPORTED_SUFFIX = [
+        {"name": "GeoPackage", "suffix": "gpkg"},
+        {"name": "Archive", "suffix": "zip"},
+        {"name": "CSV", "suffix": "csv"},
+    ]
+
     def __init__(self, parent=None):
 
         """
@@ -37,7 +43,11 @@ class UploadEditionPageWizard(QWizardPage):
 
         self.shortcut_close = QShortcut(QtGui.QKeySequence("Del"), self)
         self.shortcut_close.activated.connect(self.shortcut_del)
-
+        filter_strings = [
+            f"{suffix['name']} (*.{suffix['suffix']})"
+            for suffix in self.SUPPORTED_SUFFIX
+        ]
+        self.flw_files_put.setFilter(";;".join(filter_strings))
         self.flw_files_put.fileChanged.connect(self.add_file_path)
         self.flw_files_put.setStorageMode(QgsFileWidget.GetMultipleFiles)
 
@@ -125,7 +135,10 @@ class UploadEditionPageWizard(QWizardPage):
             self._add_file_path_to_list(path)
 
     def _add_file_path_to_list(self, savepath):
-        if QtCore.QFileInfo(savepath).exists():
+        file_info = QtCore.QFileInfo(savepath)
+        if file_info.exists() and file_info.suffix() in [
+            suffix["suffix"] for suffix in self.SUPPORTED_SUFFIX
+        ]:
             items = self.lvw_import_data.findItems(
                 savepath, QtCore.Qt.MatchCaseSensitive
             )

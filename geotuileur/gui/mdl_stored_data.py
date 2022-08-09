@@ -10,18 +10,20 @@ from geotuileur.api.stored_data import (
     StoredDataStatus,
     StoredDataStep,
 )
+from geotuileur.api.utils import as_localized_datetime
 from geotuileur.toolbelt import PlgLogger
 
 
 class StoredDataListModel(QStandardItemModel):
     NAME_COL = 0
-    ID_COL = 1
-    TYPE_COL = 2
-    STATUS_COL = 3
-    ACTION_COL = 4
-    DELETE_COL = 5
-    REPORT_COL = 6
-    OTHER_ACTIONS_COL = 7
+    DATE_COL = 1
+    ID_COL = 2
+    TYPE_COL = 3
+    STATUS_COL = 4
+    ACTION_COL = 5
+    DELETE_COL = 6
+    REPORT_COL = 7
+    OTHER_ACTIONS_COL = 8
 
     def __init__(self, parent: QObject = None):
         """
@@ -35,6 +37,7 @@ class StoredDataListModel(QStandardItemModel):
         self.setHorizontalHeaderLabels(
             [
                 self.tr("Name"),
+                self.tr("Date"),
                 self.tr("id"),
                 self.tr("Type"),
                 self.tr("Status"),
@@ -164,6 +167,10 @@ class StoredDataListModel(QStandardItemModel):
 
         self.setData(self.index(row, self.NAME_COL), stored_data.name)
         self.setData(self.index(row, self.NAME_COL), stored_data, Qt.UserRole)
+        self.setData(
+            self.index(row, self.DATE_COL),
+            as_localized_datetime(stored_data.get_last_event_date()),
+        )
         self.setData(self.index(row, self.ID_COL), stored_data.id)
         self.setData(self.index(row, self.TYPE_COL), stored_data.type)
         self.setData(self.index(row, self.STATUS_COL), stored_data.status)

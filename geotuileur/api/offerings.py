@@ -20,6 +20,9 @@ class OfferingsRequestManager:
     class UnavailableOfferingsException(Exception):
         pass
 
+    class UnavailableConfigurationsException(Exception):
+        pass
+
     def __init__(self):
         """
         Helper for get offerings request
@@ -59,9 +62,29 @@ class OfferingsRequestManager:
         req_reply = qgs_blocking_get_request(
             self.ntwk_requester_blk, req, self.UnavailableOfferingsException
         )
+
         data = json.loads(req_reply.content().data().decode("utf-8"))
         offering_ids = []
         for offering in data:
             offering_ids = offering["_id"]
 
         return offering_ids
+
+    def get_configurations_id(self, datastore: str, stored_data: str) -> list:
+
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+        req = QNetworkRequest(
+            QUrl(
+                f"{self.get_base_url(datastore)}/configurations?stored_data={stored_data}"
+            )
+        )
+        # headers
+        req_reply = qgs_blocking_get_request(
+            self.ntwk_requester_blk, req, self.UnavailableConfigurationsException
+        )
+        data = json.loads(req_reply.content().data().decode("utf-8"))
+        configuration_ids = []
+        for configuration in data:
+            configuration_ids = configuration["_id"]
+
+        return configuration_ids

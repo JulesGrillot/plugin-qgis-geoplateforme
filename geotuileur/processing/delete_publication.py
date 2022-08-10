@@ -50,8 +50,6 @@ class DepublicationAlgorithm(QgsProcessingAlgorithm):
             "{\n"
             f'    "{self.DATASTORE}": datastore id (str),\n'
             f'    "{self.STORED_DATA}": stored data(str),\n'
-            f"Returns created configuration id in {self.OFFERING_ID} results"
-            "}\n"
         )
 
     def initAlgorithm(self, config=None):
@@ -66,23 +64,32 @@ class DepublicationAlgorithm(QgsProcessingAlgorithm):
         filename = self.parameterAsFile(parameters, self.INPUT_JSON, context)
 
         # load processing depublication from the JSON
+
         with open(filename, "r") as file:
             data = json.load(file)
             datastore = data.get(self.DATASTORE)
             stored_data = data.get(self.STORED_DATA)
 
-        # Getting offerings
+            # Getting and delete offering
+
         try:
             offering_id_manager = OfferingsRequestManager()
             offering_ids = offering_id_manager.get_offerings_id(datastore, stored_data)
+            configuration_id_manager = OfferingsRequestManager()
+            configuration_ids = configuration_id_manager.get_configurations_id(
+                datastore, stored_data
+            )
+
         except OfferingsRequestManager.UnavailableOfferingsException as exc:
             raise QgsProcessingException(f"exc depublication : {exc}")
 
-        # Delete publication
+        # Getting and delete configuration
         try:
             depublication_manager = DepublicationRequestManager()
-            print(depublication_manager)
-
             depublication_manager.delete_publication(datastore, offering_ids)
-        except OfferingsRequestManager.UnavailableOfferingsException as exc:
-            raise QgsProcessingException(f"exc depublication : {exc}")
+            deconfiguration_manager = DepublicationRequestManager()
+            deconfiguration_manager.delete_configuration(datastore, configuration_ids)
+
+        except OfferingsRequestManager.UnavailableConfigurationsException as exc:
+            raise QgsProcessingException(f"exc deconfiguration  : {exc}")
+        return {}

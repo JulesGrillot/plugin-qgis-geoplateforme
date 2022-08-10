@@ -135,6 +135,8 @@ class StoredDataListModel(QStandardItemModel):
                         result = self.tr("View")
                     elif current_step == StoredDataStep.TILE_PUBLICATION:
                         result = self.tr("Publish")
+                    elif current_step == StoredDataStep.TILE_UPDATE:
+                        result = self.tr("Compare")
                     elif current_step == StoredDataStep.PUBLISHED:
                         result = self.tr("View")
                 else:

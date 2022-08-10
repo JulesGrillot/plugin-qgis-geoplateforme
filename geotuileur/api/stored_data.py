@@ -31,6 +31,7 @@ class StoredDataStep(Enum):
     # Steps for ROK4-PYRAMID-VECTOR type
     TILE_SAMPLE = "TILE_SAMPLE"
     TILE_PUBLICATION = "TILE_PUBLICATION"
+    TILE_UPDATE = "TILE_UPDATE"
     PUBLISHED = "PUBLISHED"
 
 
@@ -146,7 +147,9 @@ class StoredData:
                 result = StoredDataStep.TILE_PUBLICATION
                 if "is_sample" in self.tags:
                     result = StoredDataStep.TILE_SAMPLE
-                elif "tms_url" in self.tags:
+                elif "initial_pyramid_id" in self.tags:
+                    result = StoredDataStep.TILE_UPDATE
+                elif "published" in self.tags:
                     result = StoredDataStep.PUBLISHED
         return result
 

@@ -47,6 +47,7 @@ class DashboardWidget(QWidget):
             visible_steps=[
                 StoredDataStep.TILE_GENERATION,
                 StoredDataStep.TILE_SAMPLE,
+                StoredDataStep.TILE_UPDATE,
                 StoredDataStep.TILE_PUBLICATION,
             ],
             visible_status=[StoredDataStatus.GENERATED, StoredDataStatus.UNSTABLE],
@@ -164,6 +165,8 @@ class DashboardWidget(QWidget):
                 self._generate_tile_wizard(stored_data)
             elif current_step == StoredDataStep.TILE_SAMPLE:
                 self._tile_sample_wizard(stored_data)
+            elif current_step == StoredDataStep.TILE_UPDATE:
+                self._compare(stored_data)
             elif current_step == StoredDataStep.TILE_PUBLICATION:
                 self._publish_wizard(stored_data)
             elif current_step == StoredDataStep.PUBLISHED:
@@ -315,6 +318,15 @@ class DashboardWidget(QWidget):
         wizard.set_datastore_id(self.cbx_datastore.current_datastore_id())
         QGuiApplication.restoreOverrideCursor()
         wizard.show()
+
+    def _compare(self, stored_data: StoredData) -> None:
+        """
+        Compare update with initial stored data
+
+        Args:
+            stored_data: (StoredData) stored data
+        """
+        self.log("Compare not implemented yet", push=True)
 
     def _unpublish(self, stored_data: StoredData) -> None:
         """

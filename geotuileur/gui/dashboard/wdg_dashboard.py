@@ -1,8 +1,8 @@
 import os
 
 from qgis.PyQt import QtCore, uic
-from qgis.PyQt.QtCore import QModelIndex
-from qgis.PyQt.QtGui import QCursor, QGuiApplication
+from qgis.PyQt.QtCore import QCoreApplication, QModelIndex
+from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon
 from qgis.PyQt.QtWidgets import QAbstractItemView, QAction, QMenu, QTableView, QWidget
 
 from geotuileur.api.stored_data import StoredData, StoredDataStatus, StoredDataStep
@@ -13,6 +13,7 @@ from geotuileur.gui.publication_creation.wzd_publication_creation import (
 )
 from geotuileur.gui.report.dlg_report import ReportDialog
 from geotuileur.gui.tile_creation.wzd_tile_creation import TileCreationWizard
+from geotuileur.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
 from geotuileur.toolbelt import PlgLogger
 
 
@@ -69,6 +70,16 @@ class DashboardWidget(QWidget):
         )
 
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
+
+        self.btn_refresh.clicked.connect(self.refresh)
+        self.btn_refresh.setIcon(QIcon(":/images/themes/default/mActionRefresh.svg"))
+
+        self.btn_create.clicked.connect(self._create)
+        self.btn_create.setIcon(QIcon(":/images/themes/default/mActionAdd.svg"))
+
+        self.btn_update.clicked.connect(self._update)
+        self.btn_update.setIcon(QIcon(":/images/themes/default/mActionRedo.svg"))
+
         self._datastore_updated()
 
     def _init_table_view(
@@ -94,12 +105,20 @@ class DashboardWidget(QWidget):
         tbv.setEditTriggers(QAbstractItemView.NoEditTriggers)
         tbv.clicked.connect(lambda index: self._item_clicked(index, proxy_mdl))
 
-    def refresh(self):
+    def refresh(self) -> None:
         """
         Force refresh of stored data model
 
         """
+        # Disable refresh button : must processEvents so user can't click while updating
+        self.btn_refresh.setEnabled(False)
+        QCoreApplication.processEvents()
+
+        # Update datastore content
         self._datastore_updated()
+
+        # Enable new refresh
+        self.btn_refresh.setEnabled(True)
 
     def _item_clicked(
         self, index: QModelIndex, proxy_model: StoredDataProxyModel
@@ -274,6 +293,22 @@ class DashboardWidget(QWidget):
         """
         self.log("Publish information update not implemented yet", push=True)
 
+    def _create(self) -> None:
+        """
+        Show upload creation wizard with current datastore
+
+        """
+        import_wizard = UploadCreationWizard(self)
+        import_wizard.set_datastore_id(self.cbx_datastore.current_datastore_id())
+        import_wizard.show()
+
+    def _update(self) -> None:
+        """
+        Show update wizard with current datastore
+
+        """
+        self.log("Replace data wizard not implemented yet", push=True)
+
     def _unpublish(self, stored_data: StoredData) -> None:
         """
         Unpublish a stored data
@@ -311,6 +346,7 @@ class DashboardWidget(QWidget):
         Update stored data combobox when datastore is updated
 
         """
+        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
         self.mdl_stored_data.set_datastore(self.cbx_datastore.current_datastore_id())
 
         self.tbv_actions_to_finish.resizeRowsToContents()
@@ -321,3 +357,4 @@ class DashboardWidget(QWidget):
 
         self.tbl_publicated_tiles.resizeRowsToContents()
         self.tbl_publicated_tiles.resizeColumnsToContents()
+        QGuiApplication.restoreOverrideCursor()

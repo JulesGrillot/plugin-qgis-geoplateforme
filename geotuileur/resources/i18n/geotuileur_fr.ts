@@ -83,42 +83,42 @@
 <context>
     <name>DashboardWidget</name>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="162"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="184"/>
         <source>Replace data</source>
         <translation>Remplacer les données</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="168"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="190"/>
         <source>Manage styles</source>
         <translation>Gérer les styles</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="172"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="194"/>
         <source>Update publication informations</source>
         <translation>Modifier les informations de publication</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="178"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="200"/>
         <source>Unpublish</source>
         <translation>Dépublier</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="72"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="38"/>
         <source>Running actions</source>
         <translation>En cours</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="60"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="81"/>
         <source>Actions to finish</source>
         <translation>Mes actions à terminer</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="84"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="50"/>
         <source>Publicated tiles</source>
         <translation>Mes flux publiés</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="50"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="74"/>
         <source>Datastore</source>
         <translation>Espace de stockage</translation>
     </message>
@@ -126,6 +126,21 @@
         <location filename="../../gui/dashboard/wdg_dashboard.ui" line="20"/>
         <source>Dashboard</source>
         <translation>Tableau de bord</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="98"/>
+        <source>Refresh</source>
+        <translation>Rafraichir</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="105"/>
+        <source>Create</source>
+        <translation>Créer un nouveau flux</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="112"/>
+        <source>Update</source>
+        <translation>Mettre à jour un flux</translation>
     </message>
 </context>
 <context>
@@ -425,12 +440,12 @@
 <context>
     <name>ResultCode</name>
     <message>
-        <location filename="../../processing/check_layer.py" line="50"/>
+        <location filename="../../processing/check_layer.py" line="52"/>
         <source>Check layers for IGN Geotuileur</source>
         <translation>Vérifier les couches pour IGN Geotuileur</translation>
     </message>
     <message>
-        <location filename="../../processing/check_layer.py" line="65"/>
+        <location filename="../../processing/check_layer.py" line="67"/>
         <source>Input layers</source>
         <translation>Couches en entrée</translation>
     </message>
@@ -489,13 +504,13 @@
     </message>
     <message>
         <location filename="../../gui/storage/dlg_storage_report.ui" line="140"/>
-        <source>This space is used by Géotuileur for vector tiles pyramid file storage.</source>
-        <translation>Cet espace est utilisé par le Géotuileur pour le stockage des pyramides de tuiles vectorielles.</translation>
+        <source>This space is used by GÃ©otuileur for vector tiles pyramid file storage.</source>
+        <translation type="unfinished">Cet espace est utilisé par le Géotuileur pour le stockage des pyramides de tuiles vectorielles.</translation>
     </message>
     <message>
         <location filename="../../gui/storage/dlg_storage_report.ui" line="200"/>
-        <source>This space is used by Géotuileur for vector tiles pyramid storage. It&apos;s more efficient that file storage.</source>
-        <translation>Cet espace est utilisé par le Géotuileur pour le stockage des pyramides de tuiles vectorielles. Il est plus performant que le stockage sous forme de fichiers.</translation>
+        <source>This space is used by GÃ©otuileur for vector tiles pyramid storage. It&apos;s more efficient that file storage.</source>
+        <translation type="unfinished">Cet espace est utilisé par le Géotuileur pour le stockage des pyramides de tuiles vectorielles. Il est plus performant que le stockage sous forme de fichiers.</translation>
     </message>
 </context>
 <context>
@@ -529,64 +544,69 @@
 <context>
     <name>StoredDataListModel</name>
     <message>
-        <location filename="../../gui/mdl_stored_data.py" line="35"/>
+        <location filename="../../gui/mdl_stored_data.py" line="37"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../../gui/mdl_stored_data.py" line="35"/>
+        <location filename="../../gui/mdl_stored_data.py" line="37"/>
         <source>id</source>
         <translation>Identifiant</translation>
     </message>
     <message>
-        <location filename="../../gui/mdl_stored_data.py" line="35"/>
+        <location filename="../../gui/mdl_stored_data.py" line="37"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../../gui/mdl_stored_data.py" line="35"/>
+        <location filename="../../gui/mdl_stored_data.py" line="37"/>
         <source>Status</source>
         <translation>Statut</translation>
     </message>
     <message>
-        <location filename="../../gui/mdl_stored_data.py" line="35"/>
+        <location filename="../../gui/mdl_stored_data.py" line="37"/>
         <source>Action</source>
         <translation>Action</translation>
     </message>
     <message>
-        <location filename="../../gui/mdl_stored_data.py" line="35"/>
+        <location filename="../../gui/mdl_stored_data.py" line="37"/>
         <source>Delete</source>
         <translation>Suppression</translation>
     </message>
     <message>
-        <location filename="../../gui/mdl_stored_data.py" line="138"/>
+        <location filename="../../gui/mdl_stored_data.py" line="141"/>
         <source>Report</source>
         <translation>Rapport</translation>
     </message>
     <message>
-        <location filename="../../gui/mdl_stored_data.py" line="35"/>
+        <location filename="../../gui/mdl_stored_data.py" line="37"/>
         <source>Other actions</source>
         <translation>Autres actions</translation>
     </message>
     <message>
-        <location filename="../../gui/mdl_stored_data.py" line="126"/>
+        <location filename="../../gui/mdl_stored_data.py" line="129"/>
         <source>Progress</source>
         <translation>En cours</translation>
     </message>
     <message>
-        <location filename="../../gui/mdl_stored_data.py" line="130"/>
+        <location filename="../../gui/mdl_stored_data.py" line="133"/>
         <source>Generate</source>
         <translation>Générer</translation>
     </message>
     <message>
-        <location filename="../../gui/mdl_stored_data.py" line="136"/>
+        <location filename="../../gui/mdl_stored_data.py" line="139"/>
         <source>View</source>
         <translation>Voir</translation>
     </message>
     <message>
-        <location filename="../../gui/mdl_stored_data.py" line="134"/>
+        <location filename="../../gui/mdl_stored_data.py" line="137"/>
         <source>Publish</source>
         <translation>Publier</translation>
+    </message>
+    <message>
+        <location filename="../../gui/mdl_stored_data.py" line="37"/>
+        <source>Date</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1036,84 +1056,84 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
         <translation>Choisissez les attributs à conserver pour chaque table</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.ui" line="14"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.ui" line="20"/>
         <source>Generation - Generalization options</source>
         <translation>Génération des tuiles - Options de généralisation</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="57"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="76"/>
         <source>No name defined.</source>
         <translation>Aucun nom défini.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="57"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="76"/>
         <source>Please define data name</source>
         <translation>Merci de spécifier un nom</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="63"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="82"/>
         <source>No SRS defined.</source>
         <translation>Système de projection manquant.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="63"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="82"/>
         <source>Please define SRS</source>
         <translation>Merci de spécifier un système de projection</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="84"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="103"/>
         <source>Invalid layers:
 </source>
         <translation>Couches invalides:
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="96"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="115"/>
         <source>Invalid layers list are available in details.</source>
         <translation>La liste des couches invalides est disponible dans les détails.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="98"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="117"/>
         <source>Invalid layers</source>
         <translation>Couches invalides</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="86"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="105"/>
         <source>- CRS mismatch
 </source>
         <translation>- incohérence dans le système de projection
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="88"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="107"/>
         <source>- invalid layer name
 </source>
         <translation>- nom de couche invalide
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="90"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="109"/>
         <source>- invalid file name
 </source>
         <translation>- nom de fichier invalide
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="92"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="111"/>
         <source>- invalid field name
 </source>
         <translation>- nom d&apos;attribut invalide
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="94"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="113"/>
         <source>- invalid layer type
 </source>
         <translation>- type de couche invalide
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="27"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="33"/>
         <source>Upload data</source>
         <translation>Déposez votre fichier de données</translation>
     </message>
@@ -1144,17 +1164,21 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
 <context>
     <name>UploadPublicationAlgorithm</name>
     <message>
-        <location filename="../../processing/upload_publication.py" line="59"/>
+        <location filename="../../processing/upload_publication.py" line="58"/>
         <source>Create configuration</source>
         <translation>Créer une configuration</translation>
     </message>
     <message>
-        <location filename="../../processing/upload_publication.py" line="72"/>
+        <location filename="../../processing/upload_publication.py" line="96"/>
+        <source>Input .json file</source>
+        <translation>Fichier JSON en entrée</translation>
+    </message>
+    <message>
+        <location filename="../../processing/upload_publication.py" line="71"/>
         <source>Publication in geotuileur platform.
 Input parameters are defined in a .json file.
 Available parameters:
 {
-    &quot;{self.TYPE_DATA}&quot;: wanted  type data  (str),
     &quot;{self.DATASTORE}&quot;: wanted  datastore  (str),
     &quot;{self.METADATA}&quot;: wanted  metadata (str),
     &quot;{self.NAME}&quot;: wanted datastore name (str),
@@ -1170,12 +1194,7 @@ Available parameters:
     &quot;{self.VISIBILITY}&quot;: Publication visibility  (str) ,
 }
 Returns created configuration id in {self.PUBLICATION_URL} results</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../processing/upload_publication.py" line="98"/>
-        <source>Input .json file</source>
-        <translation>Fichier JSON en entrée</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -36,7 +36,7 @@
    <item row="1" column="1">
     <widget class="QLabel" name="lbl_step_icon">
      <property name="text">
-      <string>IconLabel</string>
+      <string notr="true">&lt;IconLabel&gt;</string>
      </property>
     </widget>
    </item>

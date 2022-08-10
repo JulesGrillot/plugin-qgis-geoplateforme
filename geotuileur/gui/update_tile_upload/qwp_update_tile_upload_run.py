@@ -155,7 +155,7 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
         else:
             msgBox = QMessageBox(
                 QMessageBox.Warning,
-                self.tr("Update tile update failed"),
+                self.tr("Update tile upload failed"),
                 self.tr("Check details for more informations"),
             )
             msgBox.setDetailedText(self.update_feedback.textLog())

@@ -919,6 +919,120 @@ Returns created stored data in {self.CREATED_STORED_DATA_ID} results</source>
     </message>
 </context>
 <context>
+    <name>UpdateTileUploadEditionPageWizard</name>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_edition.ui" line="14"/>
+        <source>Uploading form</source>
+        <translation>Formulaire de téléversement</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_edition.ui" line="29"/>
+        <source>Datastore:</source>
+        <translation>Espace de travail :</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_edition.ui" line="45"/>
+        <source>Dataset:</source>
+        <translation>Jeu de données :</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_edition.py" line="23"/>
+        <source>Update tile upload data</source>
+        <translation>Mise à jour contenu d&apos;un flux</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_edition.py" line="88"/>
+        <source>No stored data defined.</source>
+        <translation>Aucune donnée stockée sélectionnée.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_edition.py" line="88"/>
+        <source>Please define stored data</source>
+        <translation>Merci de sélectionner une donnée stockée</translation>
+    </message>
+</context>
+<context>
+    <name>UpdateTileUploadRunPageWizard</name>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.ui" line="14"/>
+        <source>Uploading dataset</source>
+        <translation>Téléversement des données</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="53"/>
+        <source>Checking and integration of your data in progress</source>
+        <translation>Vérification et intégration des données en cours</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="149"/>
+        <source>Your data has been stored on the remote storage.</source>
+        <translation>Vos données ont été chargées dans l&apos;espace de stockage distant.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="156"/>
+        <source>Update tile upload failed</source>
+        <translation>Mise à jour contenu d&apos;un flux à échoué</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="298"/>
+        <source>Check details for more informations</source>
+        <translation>Consulter les détails pour plus d&apos;informations</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="209"/>
+        <source>Upload check status failed</source>
+        <translation>La vérification du statut de chargement a échoué</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="253"/>
+        <source>Stored data database integration check failed</source>
+        <translation>La vérification d&apos;intégrité des données en base a échoué</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="298"/>
+        <source>Stored data pyramid creation check failed</source>
+        <translation>La vérification de création de la pyramide a échoué</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="318"/>
+        <source>Upload not finished.</source>
+        <translation>Chargement inachevé.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="318"/>
+        <source>Upload not finished. You must wait for data upload before closing this dialog.</source>
+        <translation>Le chargement des données est toujours en cours. Merci d&apos;attendre la fin du téléversement avant de fermer la fenêtre.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="327"/>
+        <source>Database integration not finished.</source>
+        <translation>Intégration des données en base inachevée.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="327"/>
+        <source>Database integration not finished. You must wait for database integration before closing this dialog.</source>
+        <translation>L&apos;intégration des données dans la base distante est toujours en cours. Merci d&apos;attendre la fin du téléversement avant de fermer la fenêtre.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="337"/>
+        <source>Tile creation not finished.</source>
+        <translation>Génération des tuiles inachevée.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="337"/>
+        <source>Tile creation not finished. You must wait for tile creation before closing this dialog.</source>
+        <translation>Génération des tuiles inachevée  Merci d&apos;attendre la génération avant de fermer la fenêtre.</translation>
+    </message>
+</context>
+<context>
+    <name>UpdateTileUploadWizard</name>
+    <message>
+        <location filename="../../gui/update_tile_upload/wzd_update_tile_upload.py" line="26"/>
+        <source>Update tile upload</source>
+        <translation>Mise à jour contenu d&apos;un flux</translation>
+    </message>
+</context>
+<context>
     <name>UploadCreationAlgorithm</name>
     <message>
         <location filename="../../processing/upload_creation.py" line="42"/>
@@ -1356,7 +1470,7 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="21"/>
+        <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="20"/>
         <source>Upload data</source>
         <translation>Déposez votre fichier de données</translation>
     </message>

@@ -86,7 +86,9 @@ class UpdateTileUploadEditionPageWizard(QWizardPage):
         if valid and not self.cbx_stored_data.current_stored_data_id():
             valid = False
             QMessageBox.warning(
-                self, self.tr("No stored data defined."), self.tr("Please stored data")
+                self,
+                self.tr("No stored data defined."),
+                self.tr("Please define stored data"),
             )
 
         return valid

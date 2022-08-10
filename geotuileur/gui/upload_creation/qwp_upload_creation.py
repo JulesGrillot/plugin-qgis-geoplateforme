@@ -108,10 +108,10 @@ class UploadCreationPageWizard(QWizardPage):
 
         data = {
             UploadCreationAlgorithm.DATASTORE: self.qwp_upload_edition.cbx_datastore.current_datastore_id(),
-            UploadCreationAlgorithm.NAME: self.qwp_upload_edition.lne_data.text(),
-            UploadCreationAlgorithm.DESCRIPTION: self.qwp_upload_edition.lne_data.text(),
-            UploadCreationAlgorithm.SRS: self.qwp_upload_edition.psw_projection.crs().authid(),
-            UploadCreationAlgorithm.FILES: self.qwp_upload_edition.get_filenames(),
+            UploadCreationAlgorithm.NAME: self.qwp_upload_edition.wdg_upload_creation.get_name(),
+            UploadCreationAlgorithm.DESCRIPTION: self.qwp_upload_edition.wdg_upload_creation.get_name(),
+            UploadCreationAlgorithm.SRS: self.qwp_upload_edition.wdg_upload_creation.get_crs(),
+            UploadCreationAlgorithm.FILES: self.qwp_upload_edition.wdg_upload_creation.get_filenames(),
         }
         filename = tempfile.NamedTemporaryFile(suffix=".json").name
         with open(filename, "w") as file:
@@ -278,7 +278,7 @@ class UploadCreationPageWizard(QWizardPage):
             data = {
                 UploadDatabaseIntegrationAlgorithm.DATASTORE: self.qwp_upload_edition.cbx_datastore.current_datastore_id(),
                 UploadDatabaseIntegrationAlgorithm.UPLOAD: self.created_upload_id,
-                UploadDatabaseIntegrationAlgorithm.STORED_DATA_NAME: self.qwp_upload_edition.lne_data.text(),
+                UploadDatabaseIntegrationAlgorithm.STORED_DATA_NAME: self.qwp_upload_edition.wdg_upload_creation.get_name(),
             }
             filename = tempfile.NamedTemporaryFile(suffix=".json").name
             with open(filename, "w") as file:

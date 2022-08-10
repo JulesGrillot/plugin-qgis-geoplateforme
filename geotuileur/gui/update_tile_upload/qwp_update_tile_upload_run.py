@@ -114,9 +114,9 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
         data = {
             UpdateTileUploadAlgorithm.DATASTORE: self.qwp_upload_edition.cbx_datastore.current_datastore_id(),
             UpdateTileUploadAlgorithm.STORED_DATA: self.qwp_upload_edition.cbx_stored_data.current_stored_data_id(),
-            UpdateTileUploadAlgorithm.NAME: self.qwp_upload_edition.lne_data.text(),
-            UpdateTileUploadAlgorithm.SRS: self.qwp_upload_edition.psw_projection.crs().authid(),
-            UpdateTileUploadAlgorithm.FILES: self.qwp_upload_edition.get_filenames(),
+            UpdateTileUploadAlgorithm.NAME: self.qwp_upload_edition.wdg_upload_creation.get_name(),
+            UpdateTileUploadAlgorithm.SRS: self.qwp_upload_edition.wdg_upload_creation.get_crs(),
+            UpdateTileUploadAlgorithm.FILES: self.qwp_upload_edition.wdg_upload_creation.get_filenames(),
         }
         filename = tempfile.NamedTemporaryFile(suffix=".json").name
         with open(filename, "w") as file:

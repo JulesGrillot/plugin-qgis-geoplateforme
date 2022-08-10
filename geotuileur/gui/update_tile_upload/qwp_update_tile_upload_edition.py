@@ -8,6 +8,7 @@ from qgis.PyQt import QtCore, QtGui, uic
 from qgis.PyQt.QtWidgets import QAbstractItemView, QMessageBox, QShortcut, QWizardPage
 
 # Plugin
+from geotuileur.api.stored_data import StoredDataStep
 from geotuileur.gui.lne_validators import alphanum_qval
 from geotuileur.processing import GeotuileurProvider
 from geotuileur.processing.check_layer import CheckLayerAlgorithm
@@ -30,7 +31,7 @@ class UpdateTileUploadEditionPageWizard(QWizardPage):
         """
 
         super().__init__(parent)
-        self.setTitle(self.tr("Update tile Upload data"))
+        self.setTitle(self.tr("Update tile upload data"))
 
         uic.loadUi(
             os.path.join(
@@ -53,6 +54,9 @@ class UpdateTileUploadEditionPageWizard(QWizardPage):
         self.flw_files_put.setFilter(";;".join(filter_strings))
         self.flw_files_put.fileChanged.connect(self.add_file_path)
         self.flw_files_put.setStorageMode(QgsFileWidget.GetMultipleFiles)
+
+        # Only display published stored data
+        self.cbx_stored_data.set_visible_steps([StoredDataStep.PUBLISHED])
 
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
         self._datastore_updated()
@@ -105,6 +109,12 @@ class UpdateTileUploadEditionPageWizard(QWizardPage):
 
         """
         valid = self._check_input_layers()
+
+        if valid and not self.cbx_stored_data.current_stored_data_id():
+            valid = False
+            QMessageBox.warning(
+                self, self.tr("No stored data defined."), self.tr("Please stored data")
+            )
 
         if valid and len(self.lne_data.text()) == 0:
             valid = False

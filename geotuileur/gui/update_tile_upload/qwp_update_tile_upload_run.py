@@ -27,12 +27,10 @@ from geotuileur.gui.mdl_execution_list import ExecutionListModel
 from geotuileur.gui.update_tile_upload.qwp_update_tile_upload_edition import (
     UpdateTileUploadEditionPageWizard,
 )
-from geotuileur.gui.upload_creation.qwp_upload_edition import UploadEditionPageWizard
 from geotuileur.processing import GeotuileurProvider
-from geotuileur.processing.tile_creation import TileCreationAlgorithm
-from geotuileur.processing.upload_creation import UploadCreationAlgorithm
-from geotuileur.processing.upload_database_integration import (
-    UploadDatabaseIntegrationAlgorithm,
+from geotuileur.processing.update_tile_upload import (
+    UpdateTileUploadAlgorithm,
+    UpdateTileUploadProcessingFeedback,
 )
 from geotuileur.toolbelt import PlgLogger
 
@@ -45,7 +43,7 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
     ):
 
         """
-        QWizardPage to define create upload to geotuileur platform
+        QWizardPage to update tile upload in geotuileur platform
 
         Args:
             parent: parent QObject
@@ -63,24 +61,24 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
 
         self.tbw_errors.setVisible(False)
 
-        # Task ID and feedback for upload creation
-        self.upload_task_id = None
-        self.upload_feedback = QgsProcessingFeedback()
-
-        # Processing results
-        self.processing_failed = False
+        # Task ID and feedback for update
+        self.update_task_id = None
         self.created_upload_id = ""
         self.created_vector_db_stored_data_id = ""
         self.created_pyramid_stored_data_id = ""
+        self.update_feedback = UpdateTileUploadProcessingFeedback()
 
-        # Timer for upload check after upload creation
+        # Processing results
+        self.processing_failed = False
+
+        # Timer for update check
         self.loading_movie = QMovie(
             str(DIR_PLUGIN_ROOT / "resources" / "images" / "loading.gif"),
             QByteArray(),
             self,
         )
-        self.upload_check_timer = QTimer(self)
-        self.upload_check_timer.timeout.connect(self.check_upload_status)
+        self.update_check_timer = QTimer(self)
+        self.update_check_timer.timeout.connect(self.check_update_status)
 
         # Model for executions display
         self.mdl_execution_list = ExecutionListModel(self)
@@ -95,46 +93,48 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
 
         """
         self.tbw_errors.setVisible(False)
-        self.upload_task_id = None
+        self.update_task_id = None
+        self.created_pyramid_stored_data_id = None
 
         # Processing results
         self.processing_failed = False
-        self.created_upload_id = ""
-        self.created_vector_db_stored_data_id = ""
 
         self.mdl_execution_list.clear_executions()
-        self.upload()
+        self.update()
 
-    def upload(self) -> None:
+    def update(self) -> None:
         """
         Run UploadCreationAlgorithm with UploadEditionPageWizard parameters
 
         """
-        self.log("Launch UploadCreationAlgorithm")
-        algo_str = f"{GeotuileurProvider().id()}:{UploadCreationAlgorithm().name()}"
+        self.log("Launch UpdateTileUploadAlgorithm")
+        algo_str = f"{GeotuileurProvider().id()}:{UpdateTileUploadAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
         data = {
-            UploadCreationAlgorithm.DATASTORE: self.qwp_upload_edition.cbx_datastore.current_datastore_id(),
-            UploadCreationAlgorithm.NAME: self.qwp_upload_edition.lne_data.text(),
-            UploadCreationAlgorithm.DESCRIPTION: self.qwp_upload_edition.lne_data.text(),
-            UploadCreationAlgorithm.SRS: self.qwp_upload_edition.psw_projection.crs().authid(),
-            UploadCreationAlgorithm.FILES: self.qwp_upload_edition.get_filenames(),
+            UpdateTileUploadAlgorithm.DATASTORE: self.qwp_upload_edition.cbx_datastore.current_datastore_id(),
+            UpdateTileUploadAlgorithm.STORED_DATA: self.qwp_upload_edition.cbx_stored_data.current_stored_data_id(),
+            UpdateTileUploadAlgorithm.NAME: self.qwp_upload_edition.lne_data.text(),
+            UpdateTileUploadAlgorithm.SRS: self.qwp_upload_edition.psw_projection.crs().authid(),
+            UpdateTileUploadAlgorithm.FILES: self.qwp_upload_edition.get_filenames(),
         }
         filename = tempfile.NamedTemporaryFile(suffix=".json").name
         with open(filename, "w") as file:
             json.dump(data, file)
-            params = {UploadCreationAlgorithm.INPUT_JSON: filename}
+            params = {UpdateTileUploadAlgorithm.INPUT_JSON: filename}
             self.lbl_step_icon.setMovie(self.loading_movie)
             self.loading_movie.start()
 
-            self.upload_task_id = self._run_alg(
-                alg, params, self.upload_feedback, self.upload_finished
+            self.update_task_id = self._run_alg(
+                alg, params, self.update_feedback, self.update_finished
             )
 
-    def upload_finished(self, context, successful, results):
+            # Run timer for update check
+            self.update_check_timer.start(self.STATUS_CHECK_INTERVAL)
+
+    def update_finished(self, context, successful, results):
         """
-        Callback executed when UploadCreationAlgorithm is finished
+        Callback executed when UpdateTileUploadAlgorithm is finished
 
         Args:
             context:  algorithm context
@@ -142,23 +142,32 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
             results: algorithm results
         """
         if successful:
-            self.created_upload_id = results[UploadCreationAlgorithm.CREATED_UPLOAD_ID]
-
-            # Run timer for upload check
-            self.upload_check_timer.start(self.STATUS_CHECK_INTERVAL)
+            self.created_pyramid_stored_data_id = results[
+                UpdateTileUploadAlgorithm.CREATED_STORED_DATA_ID
+            ]
+            self.loading_movie.stop()
+            self.setTitle(self.tr("Your data has been stored on the remote storage."))
+            pixmap = QPixmap(
+                str(DIR_PLUGIN_ROOT / "resources" / "images" / "icons" / "Done.svg")
+            )
+            self.lbl_step_icon.setMovie(QMovie())
+            self.lbl_step_icon.setPixmap(pixmap)
         else:
             msgBox = QMessageBox(
                 QMessageBox.Warning,
-                self.tr("Upload creation failed"),
+                self.tr("Update tile update failed"),
                 self.tr("Check details for more informations"),
             )
-            msgBox.setDetailedText(self.upload_feedback.textLog())
+            msgBox.setDetailedText(self.update_feedback.textLog())
             msgBox.exec()
-            self._report_processing_error(self.upload_feedback.textLog())
+            self._report_processing_error(self.update_feedback.textLog())
 
-    def check_upload_status(self):
+        # Emit completeChanged to update finish button
+        self.completeChanged.emit()
+
+    def check_update_status(self):
         """
-        Check upload status and run database integration if upload closed
+        Check update status
 
         """
         self.mdl_execution_list.clear_executions()
@@ -184,23 +193,17 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
 
         """
         execution_list = []
-        if self.created_upload_id:
+        if self.update_feedback.created_upload_id:
+            self.created_upload_id = self.update_feedback.created_upload_id
             try:
                 manager = UploadRequestManager()
                 datastore_id = (
                     self.qwp_upload_edition.cbx_datastore.current_datastore_id()
                 )
-                status = manager.get_upload_status(
-                    datastore=datastore_id, upload=self.created_upload_id
-                )
 
                 execution_list = manager.get_upload_checks_execution(
                     datastore=datastore_id, upload=self.created_upload_id
                 )
-
-                # Run database integration
-                if status == "CLOSED":
-                    self.integrate()
 
             except UploadRequestManager.UnavailableUploadException as exc:
                 msgBox = QMessageBox(
@@ -221,7 +224,10 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
 
         """
         execution = None
-        if self.created_vector_db_stored_data_id:
+        if self.update_feedback.created_vector_db_id:
+            self.created_vector_db_stored_data_id = (
+                self.update_feedback.created_vector_db_id
+            )
             try:
                 stored_data_manager = StoredDataRequestManager()
                 processing_manager = ProcessingRequestManager()
@@ -240,18 +246,10 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
                     execution = processing_manager.get_execution(
                         datastore=datastore_id, exec_id=stored_data.tags["proc_int_id"]
                     )
-                # Stop timer if stored_data generated
-                if stored_data.status == "GENERATED":
-                    self.tile_creation()
-            except ProcessingRequestManager.UnavailableProcessingException as exc:
-                msgBox = QMessageBox(
-                    QMessageBox.Warning,
-                    self.tr("Stored data database integration check failed"),
-                    self.tr("Check details for more informations"),
-                )
-                msgBox.setDetailedText(str(exc))
-                msgBox.exec()
-            except StoredDataRequestManager.UnavailableStoredData as exc:
+            except (
+                ProcessingRequestManager.UnavailableProcessingException,
+                StoredDataRequestManager.UnavailableStoredData,
+            ) as exc:
                 msgBox = QMessageBox(
                     QMessageBox.Warning,
                     self.tr("Stored data database integration check failed"),
@@ -290,49 +288,13 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
                         datastore=datastore_id,
                         exec_id=stored_data.tags["proc_pyr_creat_id"],
                     )
-                # Stop timer if stored_data generated
+
                 if stored_data.status == "GENERATED":
-
-                    try:
-                        initial_stored_data_id = (
-                            self.qwp_upload_edition.cbx_stored_data.current_stored_data_id()
-                        )
-                        # Update stored data tags
-                        manager = StoredDataRequestManager()
-                        manager.add_tags(
-                            datastore=datastore_id,
-                            stored_data=self.created_pyramid_stored_data_id,
-                            tags={"initial_pyramid_id": initial_stored_data_id},
-                        )
-                    except StoredDataRequestManager.AddTagException as exc:
-                        pass
-                        # raise QgsProcessingException(f"exc tag update url : {exc}")
-
-                    self.upload_check_timer.stop()
-                    self.loading_movie.stop()
-                    self.setTitle(
-                        self.tr("Your data has been stored on the remote storage.")
-                    )
-                    pixmap = QPixmap(
-                        str(
-                            DIR_PLUGIN_ROOT
-                            / "resources"
-                            / "images"
-                            / "icons"
-                            / "Done.svg"
-                        )
-                    )
-                    self.lbl_step_icon.setMovie(QMovie())
-                    self.lbl_step_icon.setPixmap(pixmap)
-            except ProcessingRequestManager.UnavailableProcessingException as exc:
-                msgBox = QMessageBox(
-                    QMessageBox.Warning,
-                    self.tr("Stored data pyramid creation check failed"),
-                    self.tr("Check details for more informations"),
-                )
-                msgBox.setDetailedText(str(exc))
-                msgBox.exec()
-            except StoredDataRequestManager.UnavailableStoredData as exc:
+                    self.update_check_timer.stop()
+            except (
+                ProcessingRequestManager.UnavailableProcessingException,
+                StoredDataRequestManager.UnavailableStoredData,
+            ) as exc:
                 msgBox = QMessageBox(
                     QMessageBox.Warning,
                     self.tr("Stored data pyramid creation check failed"),
@@ -341,148 +303,6 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
                 msgBox.setDetailedText(str(exc))
                 msgBox.exec()
         return execution
-
-    def integrate(self):
-        """
-        Run UploadDatabaseIntegrationAlgorithm
-
-        """
-        # Run database integration only if created upload available and no integrate task running
-        if self.created_upload_id and not self.created_vector_db_stored_data_id:
-
-            # Stop timer for upload check during processing to avoid multiple integration launch
-            self.upload_check_timer.stop()
-
-            self.log("Launch UploadDatabaseIntegrationAlgorithm")
-            algo_str = f"{GeotuileurProvider().id()}:{UploadDatabaseIntegrationAlgorithm().name()}"
-            alg = QgsApplication.processingRegistry().algorithmById(algo_str)
-
-            data = {
-                UploadDatabaseIntegrationAlgorithm.DATASTORE: self.qwp_upload_edition.cbx_datastore.current_datastore_id(),
-                UploadDatabaseIntegrationAlgorithm.UPLOAD: self.created_upload_id,
-                UploadDatabaseIntegrationAlgorithm.STORED_DATA_NAME: self.qwp_upload_edition.lne_data.text(),
-            }
-            filename = tempfile.NamedTemporaryFile(suffix=".json").name
-            with open(filename, "w") as file:
-                json.dump(data, file)
-
-            params = {UploadDatabaseIntegrationAlgorithm.INPUT_JSON: filename}
-
-            context = QgsProcessingContext()
-            feedback = QgsProcessingFeedback()
-            results, successful = alg.run(params, context, feedback)
-
-            if successful:
-                self.created_vector_db_stored_data_id = results[
-                    UploadDatabaseIntegrationAlgorithm.CREATED_STORED_DATA_ID
-                ]
-
-                # Start timer for upload check
-                self.upload_check_timer.start(self.STATUS_CHECK_INTERVAL)
-                self.loading_movie.start()
-
-                # Emit completeChanged to update finish button
-                self.completeChanged.emit()
-            else:
-                msgBox = QMessageBox(
-                    QMessageBox.Warning,
-                    self.tr("Database integration failed"),
-                    self.tr("Check details for more informations"),
-                )
-                msgBox.setDetailedText(feedback.textLog())
-                msgBox.exec()
-                self._report_processing_error(feedback.textLog())
-
-    def _get_pyramid_creation_params(self, datastore, initial_stored_data_id):
-        try:
-            manager = StoredDataRequestManager()
-            initial_stored_data = manager.get_stored_data(
-                datastore, initial_stored_data_id
-            )
-        except StoredDataRequestManager.UnavailableStoredData as exc:
-            pass
-            # raise QgsProcessingException(f"Stored data read failed : {exc}")
-        # Get pyramid creation execution parameters
-        if initial_stored_data.tags and "proc_pyr_creat_id" in initial_stored_data.tags:
-            execution_id = initial_stored_data.tags["proc_pyr_creat_id"]
-
-            proc_manager = ProcessingRequestManager()
-            execution = proc_manager.get_execution(datastore, execution_id)
-            exec_param = execution.parameters
-        else:
-            pass
-            # raise QgsProcessingException(f'Invalid stored data. Must have a "proc_pyr_creat_id" tag.')
-        return exec_param
-
-    def tile_creation(self):
-        """
-        Run UploadDatabaseIntegrationAlgorithm
-
-        """
-        # Run tile integration only if created vector db available and no tile creation task running
-        if (
-            self.created_vector_db_stored_data_id
-            and not self.created_pyramid_stored_data_id
-        ):
-
-            datastore = self.qwp_upload_edition.cbx_datastore.current_datastore_id()
-            initial_stored_data_id = (
-                self.qwp_upload_edition.cbx_stored_data.current_stored_data_id()
-            )
-
-            # Get pyramid creation parameters
-            exec_param = self._get_pyramid_creation_params(
-                datastore, initial_stored_data_id
-            )
-
-            # Stop timer for upload check during processing to avoid multiple tile creation launch
-            self.upload_check_timer.stop()
-
-            self.log("Launch TileCreationAlgorithm")
-            algo_str = f"{GeotuileurProvider().id()}:{TileCreationAlgorithm().name()}"
-            alg = QgsApplication.processingRegistry().algorithmById(algo_str)
-            data = {
-                TileCreationAlgorithm.DATASTORE: datastore,
-                TileCreationAlgorithm.VECTOR_DB_STORED_DATA_ID: self.created_vector_db_stored_data_id,
-                TileCreationAlgorithm.STORED_DATA_NAME: self.qwp_upload_edition.lne_data.text(),
-                TileCreationAlgorithm.TMS: exec_param["tms"],
-                TileCreationAlgorithm.BOTTOM_LEVEL: exec_param["bottom_level"],
-                TileCreationAlgorithm.TOP_LEVEL: exec_param["top_level"],
-                TileCreationAlgorithm.COMPOSITION: exec_param["composition"],
-            }
-            if "tippecanoe_options" in exec_param:
-                data[TileCreationAlgorithm.TIPPECANOE_OPTIONS] = exec_param[
-                    "tippecanoe_options"
-                ]
-            filename = tempfile.NamedTemporaryFile(suffix=".json").name
-            with open(filename, "w") as file:
-                json.dump(data, file)
-            params = {TileCreationAlgorithm.INPUT_JSON: filename}
-
-            context = QgsProcessingContext()
-            feedback = QgsProcessingFeedback()
-            results, successful = alg.run(params, context, feedback)
-
-            if successful:
-                self.created_pyramid_stored_data_id = results[
-                    TileCreationAlgorithm.CREATED_STORED_DATA_ID
-                ]
-
-                # Start timer for upload check
-                self.upload_check_timer.start(self.STATUS_CHECK_INTERVAL)
-                self.loading_movie.start()
-
-                # Emit completeChanged to update finish button
-                self.completeChanged.emit()
-            else:
-                msgBox = QMessageBox(
-                    QMessageBox.Warning,
-                    self.tr("Tile creation failed"),
-                    self.tr("Check details for more informations"),
-                )
-                msgBox.setDetailedText(feedback.textLog())
-                msgBox.exec()
-                self._report_processing_error(feedback.textLog())
 
     def validatePage(self) -> bool:
         """
@@ -522,15 +342,17 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
                     "dialog."
                 ),
             )
+        if result:
+            self.update_check_timer.stop()
 
         return result
 
     def isComplete(self) -> bool:
         """
         Check if QWizardPage is complete for next/finish button enable.
-        Here we check that upload was created.
+        Here we check that update tile upload is finish.
 
-        Returns: True if upload was created, False otherwise
+        Returns: True if update tile upload is finish. False otherwise
 
         """
         result = True

@@ -13,6 +13,9 @@ from geotuileur.gui.publication_creation.wzd_publication_creation import (
 )
 from geotuileur.gui.report.dlg_report import ReportDialog
 from geotuileur.gui.tile_creation.wzd_tile_creation import TileCreationWizard
+from geotuileur.gui.update_tile_upload.wzd_update_tile_upload import (
+    UpdateTileUploadWizard,
+)
 from geotuileur.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
 from geotuileur.toolbelt import PlgLogger
 
@@ -307,7 +310,11 @@ class DashboardWidget(QWidget):
         Show update wizard with current datastore
 
         """
-        self.log("Replace data wizard not implemented yet", push=True)
+        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
+        wizard = UpdateTileUploadWizard(self)
+        wizard.set_datastore_id(self.cbx_datastore.current_datastore_id())
+        QGuiApplication.restoreOverrideCursor()
+        wizard.show()
 
     def _unpublish(self, stored_data: StoredData) -> None:
         """

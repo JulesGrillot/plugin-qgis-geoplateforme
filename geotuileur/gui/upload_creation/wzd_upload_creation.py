@@ -28,6 +28,15 @@ class UploadCreationWizard(QWizard):
         self.setOption(QWizard.NoBackButtonOnStartPage, True)
         self.setOption(QWizard.NoCancelButtonOnLastPage, True)
 
+    def set_datastore_id(self, datastore_id: str) -> None:
+        """
+        Define current datastore from datastore id
+
+        Args:
+            datastore_id: (str) datastore id
+        """
+        self.qwp_upload_edition.set_datastore_id(datastore_id)
+
     def closeEvent(self, event: QCloseEvent) -> None:
         """
         Override closeEvent to check that current page is valid before close

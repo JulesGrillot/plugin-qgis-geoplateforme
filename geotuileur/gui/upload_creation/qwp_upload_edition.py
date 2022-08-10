@@ -53,6 +53,15 @@ class UploadEditionPageWizard(QWizardPage):
 
         self.setCommitPage(True)
 
+    def set_datastore_id(self, datastore_id: str) -> None:
+        """
+        Define current datastore from datastore id
+
+        Args:
+            datastore_id: (str) datastore id
+        """
+        self.cbx_datastore.set_datastore_id(datastore_id)
+
     def validatePage(self) -> bool:
         """
         Validate current page content by checking files

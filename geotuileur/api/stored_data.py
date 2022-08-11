@@ -169,6 +169,9 @@ class StoredDataRequestManager:
     class AddTagException(Exception):
         pass
 
+    class DeleteTagException(Exception):
+        pass
+
     MAX_LIMIT = 50
 
     def get_base_url(self, datastore: str) -> str:
@@ -409,4 +412,35 @@ class StoredDataRequestManager:
         if resp != QgsBlockingNetworkRequest.NoError:
             raise self.AddTagException(
                 f"Error while adding tag to stored_data : {self.ntwk_requester_blk.errorMessage()}"
+            )
+
+    def delete_tags(self, datastore: str, stored_data: str, tags: list) -> None:
+        """
+        Delete tags of stored data
+
+        Args:
+            datastore:  (str) datastore id
+            stored_data: (str) stored_data id
+            tags: (list) list of tags
+        """
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+        url = f"{self.get_base_url(datastore)}/{stored_data}/tags?"
+        # Add all tag to remove
+        for tag in tags:
+            url += f"&tags={tag}"
+
+        req_del = QNetworkRequest(QUrl(url))
+
+        # headers
+        req_del.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+
+        # send request
+        resp = self.ntwk_requester_blk.deleteResource(req_del)
+
+        # check response
+        if resp != QgsBlockingNetworkRequest.NoError:
+            req_reply = self.ntwk_requester_blk.reply()
+            data = json.loads(req_reply.content().data().decode("utf-8"))
+            raise self.DeleteTagException(
+                f"Error while deleting tags for stored data : {self.ntwk_requester_blk.errorMessage()}. Reply error: {data}"
             )

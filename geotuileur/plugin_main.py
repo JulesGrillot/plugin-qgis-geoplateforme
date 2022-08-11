@@ -318,6 +318,8 @@ class GeotuileurPlugin:
         plg_settings = self.plg_settings.get_plg_settings()
         enabled = len(plg_settings.qgis_auth_id) != 0
 
+        self.action_dashboard.setEnabled(enabled)
+        self.action_storage_report.setEnabled(enabled)
         self.action_import.setEnabled(enabled)
         self.action_tile_create.setEnabled(enabled)
         self.action_publication.setEnabled(enabled)

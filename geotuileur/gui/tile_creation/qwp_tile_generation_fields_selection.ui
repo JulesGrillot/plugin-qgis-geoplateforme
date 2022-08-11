@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>479</width>
-    <height>488</height>
+    <width>509</width>
+    <height>510</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,16 +21,9 @@
     <widget class="QTreeView" name="tw_table_relation"/>
    </item>
    <item row="0" column="0">
-    <widget class="QLabel" name="lbl_attributes">
-     <property name="autoFillBackground">
-      <bool>true</bool>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
+    <widget class="QLabel" name="lbl_choose">
      <property name="text">
-      <string>Customize your vector tiles service</string>
+      <string>Select feature attributes</string>
      </property>
     </widget>
    </item>
@@ -42,25 +35,19 @@ color: rgb(52, 101, 164);</string>
        <height>90</height>
       </size>
      </property>
-     <property name="styleSheet">
-      <string notr="true">font: 75 10pt &quot;Ubuntu Condensed&quot;;</string>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>9</weight>
+       <italic>true</italic>
+       <bold>false</bold>
+      </font>
      </property>
      <property name="text">
       <string>Check the attributes you want to keep in your vector tile flow. These attributes will be accessible to your users when they click on a map. By limiting the number of attributes, you can lighten the volume of the tiles and improve the fluidity of the display. Keep only the attributes that are useful to your users. If you don't keep any attributes, your vector tiles will only contain geometry and symbolization possibilities will be limited.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="lbl_choose">
-     <property name="styleSheet">
-      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
-     <property name="text">
-      <string>Select feature attributes</string>
      </property>
     </widget>
    </item>

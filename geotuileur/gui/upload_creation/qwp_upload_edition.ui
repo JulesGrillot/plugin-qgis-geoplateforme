@@ -54,10 +54,6 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="styleSheet">
-      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
      <property name="text">
       <string>Datastore:</string>
      </property>
@@ -65,10 +61,6 @@ color: rgb(52, 101, 164);</string>
    </item>
    <item row="3" column="0">
     <widget class="QLabel" name="lbl_files_put">
-     <property name="styleSheet">
-      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
      <property name="text">
       <string>Pick a local dataset to import:</string>
      </property>
@@ -76,10 +68,6 @@ color: rgb(52, 101, 164);</string>
    </item>
    <item row="7" column="0">
     <widget class="QLabel" name="lbl_data">
-     <property name="styleSheet">
-      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
      <property name="text">
       <string>Name your dataset:</string>
      </property>
@@ -87,16 +75,32 @@ color: rgb(52, 101, 164);</string>
    </item>
    <item row="4" column="0">
     <widget class="QLabel" name="lbl_files_summary">
-     <property name="styleSheet">
-      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
      <property name="text">
       <string>List of datasets to import:</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
+   <item row="9" column="0">
+    <widget class="QLabel" name="lne_projection">
+     <property name="text">
+      <string>Select the SRS to use:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="4" column="1" rowspan="2">
     <widget class="QListWidget" name="lvw_import_data">
      <property name="enabled">
       <bool>true</bool>
@@ -121,17 +125,6 @@ color: rgb(52, 101, 164);</string>
      </property>
      <property name="sortingEnabled">
       <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="0">
-    <widget class="QLabel" name="lne_projection">
-     <property name="styleSheet">
-      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
-     <property name="text">
-      <string>Select the SRS to use:</string>
      </property>
     </widget>
    </item>

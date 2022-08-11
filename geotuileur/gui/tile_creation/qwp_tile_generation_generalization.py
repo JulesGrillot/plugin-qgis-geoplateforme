@@ -63,6 +63,7 @@ class TileGenerationGeneralizationPageWizard(QWizardPage):
         """
 
         super().__init__(parent)
+        self.setTitle(self.tr("Select generalization option"))
         self.qwp_tile_generation_edition = qwp_tile_generation_edition
 
         uic.loadUi(

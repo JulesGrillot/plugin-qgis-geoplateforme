@@ -1,6 +1,7 @@
 # standard
 import json
 import logging
+from typing import List
 
 # PyQGIS
 from qgis.core import QgsBlockingNetworkRequest, QgsProcessingFeedback
@@ -41,7 +42,7 @@ class OfferingsRequestManager:
 
         Returns: url for offerings
         """
-        return f"{self.plg_settings.base_url_api_entrepot}/datastores/{datastore}"
+        return f"{self.plg_settings.base_url_api_entrepot}/datastores/{datastore}/offerings"
 
     def get_offerings_id(self, datastore: str, stored_data: str) -> list:
         """
@@ -55,7 +56,7 @@ class OfferingsRequestManager:
 
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(
-            QUrl(f"{self.get_base_url(datastore)}/offerings?stored_data={stored_data}")
+            QUrl(f"{self.get_base_url(datastore)}/?stored_data={stored_data}")
         )
 
         # headers
@@ -64,43 +65,20 @@ class OfferingsRequestManager:
         )
 
         data = json.loads(req_reply.content().data().decode("utf-8"))
-        offering_ids = []
-        for offering in data:
-            offering_ids = offering["_id"]
 
+        offering_ids = [offering["_id"] for offering in data]
         return offering_ids
 
-    def get_configurations_id(self, datastore: str, stored_data: str) -> list:
-
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req = QNetworkRequest(
-            QUrl(
-                f"{self.get_base_url(datastore)}/configurations?stored_data={stored_data}"
-            )
-        )
-        # headers
-        req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk, req, self.UnavailableConfigurationsException
-        )
-        data = json.loads(req_reply.content().data().decode("utf-8"))
-        configuration_ids = []
-        for configuration in data:
-            configuration_ids = configuration["_id"]
-
-        return configuration_ids
-
-    def delete_publication(self, datastore: str, offering_ids: str):
+    def delete_offering(self, datastore: str, offering_id: str):
         """
-        Delete a publication
+        Delete offering
 
         Args:
             offering_ids: (str) datastore_id : (str)
         """
 
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req_get = QNetworkRequest(
-            QUrl(f"{self.get_base_url(datastore)}/offerings/{offering_ids}")
-        )
+        req_get = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{offering_id}"))
 
         # headers
         req_get.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
@@ -113,32 +91,5 @@ class OfferingsRequestManager:
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
             raise OfferingsRequestManager.UnavailableOfferingsException(
-                f"Error while fetching processing : {self.ntwk_requester_blk.errorMessage()}"
-            )
-
-    def delete_configuration(self, datastore: str, configuration_ids: str):
-        """
-        Delete a configuration
-
-        Args:
-            configuration_id: (str) datastore_id : (str)
-        """
-
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req_get = QNetworkRequest(
-            QUrl(f"{self.get_base_url(datastore)}/configurations/{configuration_ids}")
-        )
-
-        # headers
-        req_get.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
-
-        feedback = QgsProcessingFeedback()
-
-        # send request
-        resp = self.ntwk_requester_blk.deleteResource(req_get, feedback)
-
-        # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
-            raise OfferingsRequestManager.UnavailableConfigurationsException(
                 f"Error while fetching processing : {self.ntwk_requester_blk.errorMessage()}"
             )

@@ -10,8 +10,10 @@ from qgis.PyQt.QtCore import QCoreApplication
 # Plugin
 from geotuileur.api.offerings import OfferingsRequestManager
 
+from ..api.configuration import ConfigurationRequestManager
 
-class DepublicationAlgorithm(QgsProcessingAlgorithm):
+
+class UnpublishAlgorithm(QgsProcessingAlgorithm):
 
     INPUT_JSON = "INPUT_JSON"
     DATASTORE = "datastore"
@@ -23,7 +25,7 @@ class DepublicationAlgorithm(QgsProcessingAlgorithm):
         )
 
     def createInstance(self):
-        return DepublicationAlgorithm()
+        return UnpublishAlgorithm()
 
     def name(self):
         return "depublication"
@@ -71,13 +73,17 @@ class DepublicationAlgorithm(QgsProcessingAlgorithm):
             # Getting and delete offering and configuration
 
         try:
+            configuration_id_manager = ConfigurationRequestManager()
             offering_id_manager = OfferingsRequestManager()
+
             offering_ids = offering_id_manager.get_offerings_id(datastore, stored_data)
-            configuration_ids = offering_id_manager.get_configurations_id(
+            offering_id = offering_ids[0]
+            configuration_ids = configuration_id_manager.get_configurations_id(
                 datastore, stored_data
             )
-            offering_id_manager.delete_publication(datastore, offering_ids)
-            offering_id_manager.delete_configuration(datastore, configuration_ids)
+            configuration_id = configuration_ids[0]
+            offering_id_manager.delete_offering(datastore, offering_id)
+            configuration_id_manager.delete_configuration(datastore, configuration_id)
 
         except OfferingsRequestManager.UnavailableOfferingsException as exc:
             raise QgsProcessingException(f"exc depublication : {exc}")

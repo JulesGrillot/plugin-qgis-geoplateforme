@@ -7,7 +7,14 @@ from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedbac
 from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtCore import QCoreApplication, QModelIndex
 from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon
-from qgis.PyQt.QtWidgets import QAbstractItemView, QAction, QMenu, QTableView, QWidget
+from qgis.PyQt.QtWidgets import (
+    QAbstractItemView,
+    QAction,
+    QMenu,
+    QMessageBox,
+    QTableView,
+    QWidget,
+)
 
 from geotuileur.__about__ import __title_clean__
 from geotuileur.api.stored_data import StoredData, StoredDataStatus, StoredDataStep
@@ -20,7 +27,7 @@ from geotuileur.gui.report.dlg_report import ReportDialog
 from geotuileur.gui.tile_creation.wzd_tile_creation import TileCreationWizard
 from geotuileur.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
 from geotuileur.processing import GeotuileurProvider
-from geotuileur.processing.delete_publication import DepublicationAlgorithm
+from geotuileur.processing.unpublish import UnpublishAlgorithm
 from geotuileur.toolbelt import PlgLogger
 
 
@@ -323,23 +330,39 @@ class DashboardWidget(QWidget):
         Args:
             stored_data: (StoredData) stored data
         """
-        data = {
-            DepublicationAlgorithm.DATASTORE: stored_data.datastore_id,
-            DepublicationAlgorithm.STORED_DATA: stored_data.id,
-        }
-        filename = tempfile.NamedTemporaryFile(
-            prefix=f"qgis_{__title_clean__}_", suffix=".json"
-        ).name
-        with open(filename, "w") as file:
-            json.dump(data, file)
-        algo_str = f"{GeotuileurProvider().id()}:{DepublicationAlgorithm().name()}"
-        alg = QgsApplication.processingRegistry().algorithmById(algo_str)
-        params = {DepublicationAlgorithm.INPUT_JSON: filename}
+        reply = QMessageBox.question(
+            self,
+            "Unpublish",
+            "Are you sure you want to unpublish the data?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if reply == QMessageBox.Yes:
 
-        context = QgsProcessingContext()
-        self.feedback = QgsProcessingFeedback()
+            data = {
+                UnpublishAlgorithm.DATASTORE: stored_data.datastore_id,
+                UnpublishAlgorithm.STORED_DATA: stored_data.id,
+            }
+            filename = tempfile.NamedTemporaryFile(
+                prefix=f"qgis_{__title_clean__}_", suffix=".json"
+            ).name
+            with open(filename, "w") as file:
+                json.dump(data, file)
+            algo_str = f"{GeotuileurProvider().id()}:{UnpublishAlgorithm().name()}"
+            alg = QgsApplication.processingRegistry().algorithmById(algo_str)
+            params = {UnpublishAlgorithm.INPUT_JSON: filename}
 
-        alg.run(parameters=params, context=context, feedback=self.feedback)
+            context = QgsProcessingContext()
+            self.feedback = QgsProcessingFeedback()
+
+            alg.run(parameters=params, context=context, feedback=self.feedback)
+
+        else:
+            QMessageBox.information(
+                self,
+                self.tr("Unpublish"),
+                self.tr("Unpublish stopped"),
+            )
 
     def _create_proxy_model(
         self,

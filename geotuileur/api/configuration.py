@@ -4,9 +4,11 @@ import logging
 from dataclasses import dataclass
 
 # PyQGIS
-from qgis.core import QgsBlockingNetworkRequest
+from qgis.core import QgsBlockingNetworkRequest, QgsProcessingFeedback
 from qgis.PyQt.QtCore import QByteArray, QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
+
+from geotuileur.api.utils import qgs_blocking_get_request
 
 # project
 from geotuileur.toolbelt.log_handler import PlgLogger
@@ -75,6 +77,9 @@ class ConfigurationRequestManager:
         pass
 
     class ConfigurationCreationException(Exception):
+        pass
+
+    class OfferingCreationException(Exception):
         pass
 
     def __init__(self):
@@ -167,3 +172,106 @@ class ConfigurationRequestManager:
         print(data.keys())
 
         return data["_id"]
+
+    def get_configurations_id(self, datastore: str, stored_data: str) -> list:
+
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+        req = QNetworkRequest(
+            QUrl(f"{self.get_base_url(datastore)}/?stored_data={stored_data}")
+        )
+
+        # headers
+        req_reply = qgs_blocking_get_request(
+            self.ntwk_requester_blk, req, self.UnavailableConfigurationException
+        )
+        data = json.loads(req_reply.content().data().decode("utf-8"))
+        configuration_ids = [configuration["_id"] for configuration in data]
+
+        return configuration_ids
+
+    def delete_configuration(self, datastore: str, configuration_ids: str):
+        """
+        Delete a configuration
+
+        Args:
+            configuration_id: (str) datastore_id : (str)
+        """
+
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+        req_get = QNetworkRequest(
+            QUrl(f"{self.get_base_url(datastore)}/{configuration_ids}")
+        )
+        # headers
+        req_get.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+
+        feedback = QgsProcessingFeedback()
+
+        # send request
+        resp = self.ntwk_requester_blk.deleteResource(req_get, feedback)
+
+        # check response
+        if resp != QgsBlockingNetworkRequest.NoError:
+            raise self.UnavailableConfigurationException(
+                f"Error while fetching processing : {self.ntwk_requester_blk.errorMessage()}"
+            )
+
+    def create_offering(
+        self, visibility: str, endpoint: str, datastore: str, configuration_id: str
+    ):
+        """
+        Create offering on Geotuileur entrepot
+
+        Args:
+            configuration_id: (str) datastore_id :(str)
+            visibility :(str) endpoint : (str)
+
+        """
+        self.log(
+            message="Offering creation options: "
+            f"visibility={visibility}, endpoint={endpoint}, "
+            f"datastore={datastore}, configuration_id={configuration_id}",
+            log_level=4,
+        )
+
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+        req_post = QNetworkRequest(
+            QUrl(f"{self.get_base_url(datastore)}/{configuration_id}/offerings")
+        )
+
+        # headers
+        req_post.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+
+        # encode data
+        data = QByteArray()
+        data_map = {
+            "visibility": visibility,
+            "endpoint": endpoint,
+        }
+
+        data.append(json.dumps(data_map))
+
+        self.log(message=f" creation data map : {data}", log_level=4)
+
+        # send request
+        resp = self.ntwk_requester_blk.post(req_post, data=data)
+
+        # check response
+        if resp != QgsBlockingNetworkRequest.NoError:
+            raise self.OfferingCreationException(
+                f"Error while creating publication : "
+                f"{self.ntwk_requester_blk.errorMessage()}"
+            )
+        # check response type
+        req_reply = self.ntwk_requester_blk.reply()
+        if (
+            not req_reply.rawHeader(b"Content-Type")
+            == "application/json; charset=utf-8"
+        ):
+            raise self.OfferingCreationException(
+                "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
+                    req_reply.rawHeader(b"Content-type")
+                )
+            )
+
+        data = json.loads(req_reply.content().data().decode("utf-8"))
+        return data["urls"]

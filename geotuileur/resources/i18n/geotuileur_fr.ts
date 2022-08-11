@@ -83,22 +83,22 @@
 <context>
     <name>DashboardWidget</name>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="184"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="181"/>
         <source>Replace data</source>
         <translation>Remplacer les données</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="190"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="187"/>
         <source>Manage styles</source>
         <translation>Gérer les styles</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="194"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="191"/>
         <source>Update publication informations</source>
         <translation>Modifier les informations de publication</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="200"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="197"/>
         <source>Unpublish</source>
         <translation>Dépublier</translation>
     </message>
@@ -402,39 +402,84 @@
 <context>
     <name>ReportDialog</name>
     <message>
-        <location filename="../../gui/report/dlg_report.ui" line="60"/>
+        <location filename="../../gui/report/dlg_report.ui" line="45"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.ui" line="38"/>
+        <location filename="../../gui/report/dlg_report.ui" line="71"/>
         <source>ID</source>
         <translation>Identifiant</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="32"/>
+        <location filename="../../gui/report/dlg_report.py" line="35"/>
         <source>Report</source>
         <translation>Rapport</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="83"/>
+        <location filename="../../gui/report/dlg_report.py" line="91"/>
         <source>Can&apos;t define upload logs : {0}</source>
         <translation>Impossible de définir le journal du téléversement : {0}</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="124"/>
+        <location filename="../../gui/report/dlg_report.py" line="132"/>
         <source>Can&apos;t define execution logs : {0}</source>
         <translation>Impossible de définir le journal d&apos;execution : {0}</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.ui" line="74"/>
+        <location filename="../../gui/report/dlg_report.ui" line="101"/>
         <source>Data details</source>
         <translation>Détails sur les données</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.ui" line="119"/>
+        <location filename="../../gui/report/dlg_report.ui" line="126"/>
         <source>Data structure</source>
         <translation>Structure des données</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/dlg_report.py" line="148"/>
+        <source>Waiting for data creation. You will find above technical information about executing processing.</source>
+        <translation>Vos données sont en création. Vous trouverez ci-dessous des informations techniques sur le processus en cours.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/dlg_report.py" line="160"/>
+        <source>Data is generating. You will find above technical information about executing processing.</source>
+        <translation>Vos données sont en cours de génération. Vous trouverez ci-dessous des informations techniques sur le processus en cours.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/dlg_report.py" line="153"/>
+        <source>You will find above technical information about processing executed and encountered problem.</source>
+        <translation type="obsolete"> Vous trouverez ci-dessous des informations techniques concernant les processus exécutés et les problèmes rencontrés.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/dlg_report.py" line="164"/>
+        <source>Database integration successful.</source>
+        <translation>Vos données ont été intégrées en base. Elles peuvent être transformées en tuiles vectorielles.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/dlg_report.py" line="166"/>
+        <source>Tile creation successful.</source>
+        <translation>Vos tuiles vectorielles ont été générées avec succès à partir de vos données.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/dlg_report.py" line="167"/>
+        <source> You will find above technical information about executed processing.</source>
+        <translation> Vous trouverez ci-dessous des informations techniques concernant les processus exécutés.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/dlg_report.py" line="154"/>
+        <source>Database integration failed.</source>
+        <translation>Les données n&apos;ont pas pu être correctement intégrées en base.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/dlg_report.py" line="156"/>
+        <source>Tile creation failed.</source>
+        <translation>Les tuiles vectorielles n&apos;ont pas pu être générées correctement.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/dlg_report.py" line="157"/>
+        <source> You will find above technical information about processing executed and encountered problem.</source>
+        <translation> Vous trouverez ci-dessous des informations techniques concernant les processus exécutés et les problèmes rencontrés.</translation>
     </message>
 </context>
 <context>

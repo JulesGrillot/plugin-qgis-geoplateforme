@@ -149,7 +149,12 @@ class StoredData:
                     result = StoredDataStep.TILE_SAMPLE
                 elif "initial_pyramid_id" in self.tags:
                     result = StoredDataStep.TILE_UPDATE
-                elif "published" in self.tags:
+                # "published tag" should be defined if a tile is published
+                # cf : https://github.com/IGNF/geotuileur-site/blob/master/docs/developer/workflow.md#3-publier
+                # But it seems that the tag is not added
+                # an issue was created : https://github.com/IGNF/geotuileur-site/issues/94
+                # If pyramid is not in TILE_SAMPLE or TILE_UPDATE steps it means that it's published if tms_url available
+                elif "published" in self.tags or "tms_url" in self.tags:
                     result = StoredDataStep.PUBLISHED
         return result
 

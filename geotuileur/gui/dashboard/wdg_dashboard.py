@@ -92,8 +92,8 @@ class DashboardWidget(QWidget):
     def _init_table_view(
         self,
         tbv: QTableView,
-        visible_steps: List[StoredDataStep],
-        visible_status: List[StoredDataStatus],
+        visible_steps: [StoredDataStep],
+        visible_status: [StoredDataStatus],
     ) -> None:
         """
         Initialization of a table view for specific stored data steps and status visibility

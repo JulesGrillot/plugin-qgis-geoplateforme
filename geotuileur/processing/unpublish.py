@@ -7,10 +7,10 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
+from geotuileur.api.configuration import ConfigurationRequestManager
+
 # Plugin
 from geotuileur.api.offerings import OfferingsRequestManager
-
-from ..api.configuration import ConfigurationRequestManager
 
 
 class UnpublishAlgorithm(QgsProcessingAlgorithm):
@@ -21,17 +21,17 @@ class UnpublishAlgorithm(QgsProcessingAlgorithm):
 
     def tr(self, string):
         return QCoreApplication.translate(
-            "Create an depublication for IGN Geotuileur platform", string
+            "Unpublish for IGN Geotuileur platform", string
         )
 
     def createInstance(self):
         return UnpublishAlgorithm()
 
     def name(self):
-        return "depublication"
+        return "Unpublish"
 
     def displayName(self):
-        return self.tr("Create depublication")
+        return self.tr("Unpublish")
 
     def group(self):
         return self.tr("")
@@ -44,7 +44,7 @@ class UnpublishAlgorithm(QgsProcessingAlgorithm):
 
     def shortHelpString(self):
         return self.tr(
-            "Delete publication in geotuileur platform.\n"
+            "Unpublish in geotuileur platform.\n"
             "Input parameters are defined in a .json file.\n"
             "Available parameters:\n"
             "{\n"
@@ -63,7 +63,7 @@ class UnpublishAlgorithm(QgsProcessingAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         filename = self.parameterAsFile(parameters, self.INPUT_JSON, context)
 
-        # load processing depublication from the JSON
+        # load processing unpublish from the JSON
 
         with open(filename, "r") as file:
             data = json.load(file)
@@ -77,15 +77,21 @@ class UnpublishAlgorithm(QgsProcessingAlgorithm):
             offering_id_manager = OfferingsRequestManager()
 
             offering_ids = offering_id_manager.get_offerings_id(datastore, stored_data)
-            offering_id = offering_ids[0]
             configuration_ids = configuration_id_manager.get_configurations_id(
                 datastore, stored_data
             )
-            configuration_id = configuration_ids[0]
-            offering_id_manager.delete_offering(datastore, offering_id)
-            configuration_id_manager.delete_configuration(datastore, configuration_id)
+            for offering_id in offering_ids:
+                offering_id_manager.delete_offering(datastore, offering_id)
 
-        except OfferingsRequestManager.UnavailableOfferingsException as exc:
-            raise QgsProcessingException(f"exc depublication : {exc}")
+            for configuration_id in configuration_ids:
+                configuration_id_manager.delete_configuration(
+                    datastore, configuration_id
+                )
+
+        except (
+            OfferingsRequestManager.UnavailableOfferingsException,
+            ConfigurationRequestManager.UnavailableConfigurationException,
+        ) as exc:
+            raise QgsProcessingException(f"exc unpublish : {exc}")
 
         return {}

@@ -357,13 +357,6 @@ class DashboardWidget(QWidget):
 
             alg.run(parameters=params, context=context, feedback=self.feedback)
 
-        else:
-            QMessageBox.information(
-                self,
-                self.tr("Unpublish"),
-                self.tr("Unpublish stopped"),
-            )
-
     def _create_proxy_model(
         self,
         visible_steps: List[StoredDataStep],

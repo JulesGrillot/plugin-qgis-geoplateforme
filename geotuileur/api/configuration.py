@@ -174,10 +174,15 @@ class ConfigurationRequestManager:
         return data["_id"]
 
     def get_configurations_id(self, datastore: str, stored_data: str) -> list:
+        """
+        get  configuration id list from stored data
 
+        Args:
+            datastore: (str) stored_data : (str)
+        """
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(
-            QUrl(f"{self.get_base_url(datastore)}/?stored_data={stored_data}")
+            QUrl(f"{self.get_base_url(datastore)}?stored_data={stored_data}")
         )
 
         # headers

@@ -1,7 +1,6 @@
 # standard
 import json
 import logging
-from typing import List
 
 # PyQGIS
 from qgis.core import QgsBlockingNetworkRequest, QgsProcessingFeedback
@@ -56,7 +55,7 @@ class OfferingsRequestManager:
 
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(
-            QUrl(f"{self.get_base_url(datastore)}/?stored_data={stored_data}")
+            QUrl(f"{self.get_base_url(datastore)}?stored_data={stored_data}")
         )
 
         # headers
@@ -67,6 +66,7 @@ class OfferingsRequestManager:
         data = json.loads(req_reply.content().data().decode("utf-8"))
 
         offering_ids = [offering["_id"] for offering in data]
+
         return offering_ids
 
     def delete_offering(self, datastore: str, offering_id: str):

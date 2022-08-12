@@ -3,7 +3,13 @@ import os
 import tempfile
 from typing import List
 
-from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
+from qgis.core import (
+    QgsApplication,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
+    QgsProject,
+    QgsVectorTileLayer,
+)
 from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtCore import QCoreApplication, QModelIndex
 from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon
@@ -25,6 +31,9 @@ from geotuileur.gui.publication_creation.wzd_publication_creation import (
 )
 from geotuileur.gui.report.dlg_report import ReportDialog
 from geotuileur.gui.tile_creation.wzd_tile_creation import TileCreationWizard
+from geotuileur.gui.update_tile_upload.wzd_update_tile_upload import (
+    UpdateTileUploadWizard,
+)
 from geotuileur.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
 from geotuileur.processing import GeotuileurProvider
 from geotuileur.processing.unpublish import UnpublishAlgorithm
@@ -58,6 +67,7 @@ class DashboardWidget(QWidget):
             visible_steps=[
                 StoredDataStep.TILE_GENERATION,
                 StoredDataStep.TILE_SAMPLE,
+                StoredDataStep.TILE_UPDATE,
                 StoredDataStep.TILE_PUBLICATION,
             ],
             visible_status=[StoredDataStatus.GENERATED, StoredDataStatus.UNSTABLE],
@@ -175,6 +185,8 @@ class DashboardWidget(QWidget):
                 self._generate_tile_wizard(stored_data)
             elif current_step == StoredDataStep.TILE_SAMPLE:
                 self._tile_sample_wizard(stored_data)
+            elif current_step == StoredDataStep.TILE_UPDATE:
+                self._compare(stored_data)
             elif current_step == StoredDataStep.TILE_PUBLICATION:
                 self._publish_wizard(stored_data)
             elif current_step == StoredDataStep.PUBLISHED:
@@ -278,7 +290,16 @@ class DashboardWidget(QWidget):
         Args:
             stored_data: (StoredData) stored data to be viewed
         """
-        self.log("Tile view not implemented yet", push=True)
+        if stored_data.tags and "tms_url" in stored_data.tags:
+            tms_url = stored_data.tags["tms_url"]
+            zoom_levels = stored_data.zoom_levels()
+            bottom = zoom_levels[-1]
+            top = zoom_levels[0]
+            layer = QgsVectorTileLayer(
+                path=f"type=xyz&url={tms_url}/%7Bz%7D/%7Bx%7D/%7By%7D.pbf&zmax={bottom}&zmin={top}",
+                baseName=self.tr("Vector tile : {0}").format(stored_data.name),
+            )
+            QgsProject.instance().addMapLayer(layer)
 
     def _replace_data_wizard(self, stored_data: StoredData) -> None:
         """
@@ -321,7 +342,20 @@ class DashboardWidget(QWidget):
         Show update wizard with current datastore
 
         """
-        self.log("Replace data wizard not implemented yet", push=True)
+        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
+        wizard = UpdateTileUploadWizard(self)
+        wizard.set_datastore_id(self.cbx_datastore.current_datastore_id())
+        QGuiApplication.restoreOverrideCursor()
+        wizard.show()
+
+    def _compare(self, stored_data: StoredData) -> None:
+        """
+        Compare update with initial stored data
+
+        Args:
+            stored_data: (StoredData) stored data
+        """
+        self.log("Compare not implemented yet", push=True)
 
     def _unpublish(self, stored_data: StoredData) -> None:
         """

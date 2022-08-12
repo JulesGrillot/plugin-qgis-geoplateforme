@@ -66,7 +66,9 @@ class TableRelationTreeModel(CheckStateModel):
             table = self.data(table_index)
             result[table] = []
             for table_attribute in range(0, self.rowCount(table_index)):
-                attribute_index = self.index(row, self.NAME_COL, table_index)
+                attribute_index = self.index(
+                    table_attribute, self.NAME_COL, table_index
+                )
                 if (
                     not self.check_state_enabled
                     or self.data(attribute_index, Qt.CheckStateRole) == Qt.Checked

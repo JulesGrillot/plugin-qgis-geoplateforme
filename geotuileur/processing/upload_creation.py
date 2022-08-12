@@ -111,4 +111,4 @@ class UploadCreationAlgorithm(QgsProcessingAlgorithm):
             except UploadRequestManager.UploadClosingException as exc:
                 raise QgsProcessingException(f"Upload closing failed : {exc}")
 
-        return {self.CREATED_UPLOAD_ID: upload_id, self.DATASTORE: datastore}
+        return {self.CREATED_UPLOAD_ID: upload_id}

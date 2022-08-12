@@ -17,8 +17,6 @@ Unreleased
 -->
 ## 0.8.0 - 2022-08-12
 
-### New features
-
 - Report dialog for stored data  - !65 !68 !69 !84 / #65
 - Add refresh / create / update actions to dashboard - !82 !83 / #55 #59
 - Add method to copy label to clipboard - !66 / #78
@@ -27,8 +25,6 @@ Unreleased
 - display date in dashboard - !76
 - add view action to display vector tile in QGIS !80
 - unpublish tiles - !78 / #63 #64
-
-### Fixes
 - fix removal of current connection when disconnecting - !77
 - limit file type used for upload - !74 / #90
 - fix layers checked before upload - !75

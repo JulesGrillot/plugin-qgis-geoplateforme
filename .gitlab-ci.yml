@@ -193,6 +193,7 @@ pages:
     changes:
       - "**/*.md"
       - "**/*.rst"
+      - "**/*.ts"
       - ".gitlab-ci.yml"
       - "$PROJECT_FOLDER/**/*"
       - requirements/documentation.txt

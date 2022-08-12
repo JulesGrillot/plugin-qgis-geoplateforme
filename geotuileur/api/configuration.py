@@ -4,7 +4,7 @@ import logging
 from dataclasses import dataclass
 
 # PyQGIS
-from qgis.core import QgsBlockingNetworkRequest, QgsProcessingFeedback
+from qgis.core import QgsBlockingNetworkRequest
 from qgis.PyQt.QtCore import QByteArray, QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
@@ -209,10 +209,8 @@ class ConfigurationRequestManager:
         # headers
         req_get.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
 
-        feedback = QgsProcessingFeedback()
-
         # send request
-        resp = self.ntwk_requester_blk.deleteResource(req_get, feedback)
+        resp = self.ntwk_requester_blk.deleteResource(req_get)
 
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:

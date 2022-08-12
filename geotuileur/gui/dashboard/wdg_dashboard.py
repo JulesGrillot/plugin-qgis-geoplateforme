@@ -390,6 +390,7 @@ class DashboardWidget(QWidget):
             self.feedback = QgsProcessingFeedback()
 
             alg.run(parameters=params, context=context, feedback=self.feedback)
+            self.refresh()
 
     def _create_proxy_model(
         self,

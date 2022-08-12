@@ -12,7 +12,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 # Plugin
 from geotuileur.api.configuration import Configuration, ConfigurationRequestManager
 from geotuileur.api.datastore import DatastoreRequestManager
-from geotuileur.api.offering import OfferingRequestManager
 from geotuileur.api.stored_data import StoredDataRequestManager
 from geotuileur.toolbelt import PlgLogger
 
@@ -169,7 +168,7 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
             # create publication (offering)
             try:
 
-                manager_offering = OfferingRequestManager()
+                manager_offering = ConfigurationRequestManager()
                 res = manager_offering.create_offering(
                     visibility=publication_visibility,
                     endpoint=publication_endpoint,
@@ -177,7 +176,7 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
                     configuration_id=configuration_id,
                 )
                 publication_urls = res
-            except OfferingRequestManager.OfferingCreationException as exc:
+            except ConfigurationRequestManager.OfferingCreationException as exc:
                 raise QgsProcessingException(f"exc publication url : {exc}")
 
             # One url defined

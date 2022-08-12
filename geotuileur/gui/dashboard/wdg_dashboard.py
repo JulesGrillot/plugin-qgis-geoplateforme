@@ -1,11 +1,28 @@
+import json
 import os
+import tempfile
+from typing import List
 
-from qgis.core import QgsProject, QgsVectorTileLayer
+from qgis.core import (
+    QgsApplication,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
+    QgsProject,
+    QgsVectorTileLayer,
+)
 from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtCore import QCoreApplication, QModelIndex
 from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon
-from qgis.PyQt.QtWidgets import QAbstractItemView, QAction, QMenu, QTableView, QWidget
+from qgis.PyQt.QtWidgets import (
+    QAbstractItemView,
+    QAction,
+    QMenu,
+    QMessageBox,
+    QTableView,
+    QWidget,
+)
 
+from geotuileur.__about__ import __title_clean__
 from geotuileur.api.stored_data import StoredData, StoredDataStatus, StoredDataStep
 from geotuileur.gui.mdl_stored_data import StoredDataListModel
 from geotuileur.gui.proxy_model_stored_data import StoredDataProxyModel
@@ -18,6 +35,8 @@ from geotuileur.gui.update_tile_upload.wzd_update_tile_upload import (
     UpdateTileUploadWizard,
 )
 from geotuileur.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
+from geotuileur.processing import GeotuileurProvider
+from geotuileur.processing.unpublish import UnpublishAlgorithm
 from geotuileur.toolbelt import PlgLogger
 
 
@@ -345,12 +364,38 @@ class DashboardWidget(QWidget):
         Args:
             stored_data: (StoredData) stored data
         """
-        self.log("Unpublish not implemented yet", push=True)
+        reply = QMessageBox.question(
+            self,
+            "Unpublish",
+            "Are you sure you want to unpublish the data?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if reply == QMessageBox.Yes:
+
+            data = {
+                UnpublishAlgorithm.DATASTORE: stored_data.datastore_id,
+                UnpublishAlgorithm.STORED_DATA: stored_data.id,
+            }
+            filename = tempfile.NamedTemporaryFile(
+                prefix=f"qgis_{__title_clean__}_", suffix=".json"
+            ).name
+            with open(filename, "w") as file:
+                json.dump(data, file)
+            algo_str = f"{GeotuileurProvider().id()}:{UnpublishAlgorithm().name()}"
+            alg = QgsApplication.processingRegistry().algorithmById(algo_str)
+            params = {UnpublishAlgorithm.INPUT_JSON: filename}
+
+            context = QgsProcessingContext()
+            self.feedback = QgsProcessingFeedback()
+
+            alg.run(parameters=params, context=context, feedback=self.feedback)
+            self.refresh()
 
     def _create_proxy_model(
         self,
-        visible_steps: [StoredDataStep],
-        visible_status: [StoredDataStatus],
+        visible_steps: List[StoredDataStep],
+        visible_status: List[StoredDataStatus],
     ) -> StoredDataProxyModel:
         """
         Create StoredDataProxyModel with filters

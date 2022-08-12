@@ -11,10 +11,10 @@ from geotuileur.api.configuration import ConfigurationRequestManager
 
 # Plugin
 from geotuileur.api.offerings import OfferingsRequestManager
+from geotuileur.api.stored_data import StoredDataRequestManager
 
 
 class UnpublishAlgorithm(QgsProcessingAlgorithm):
-
     INPUT_JSON = "INPUT_JSON"
     DATASTORE = "datastore"
     STORED_DATA = "stored data"
@@ -87,10 +87,16 @@ class UnpublishAlgorithm(QgsProcessingAlgorithm):
                 configuration_id_manager.delete_configuration(
                     datastore, configuration_id
                 )
+            # Remove publish tags
+            stored_data_manager = StoredDataRequestManager()
+            stored_data_manager.delete_tags(
+                datastore, stored_data, ["tms_url", "published"]
+            )
 
         except (
             OfferingsRequestManager.UnavailableOfferingsException,
             ConfigurationRequestManager.UnavailableConfigurationException,
+            StoredDataRequestManager.DeleteTagException,
         ) as exc:
             raise QgsProcessingException(f"exc unpublish : {exc}")
 

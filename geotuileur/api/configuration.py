@@ -226,13 +226,6 @@ class ConfigurationRequestManager:
             visibility :(str) endpoint : (str)
 
         """
-        self.log(
-            message="Offering creation options: "
-            f"visibility={visibility}, endpoint={endpoint}, "
-            f"datastore={datastore}, configuration_id={configuration_id}",
-            log_level=4,
-        )
-
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req_post = QNetworkRequest(
             QUrl(f"{self.get_base_url(datastore)}/{configuration_id}/offerings")

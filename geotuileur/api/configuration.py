@@ -169,8 +169,6 @@ class ConfigurationRequestManager:
             )
 
         data = json.loads(req_reply.content().data().decode("utf-8"))
-        print(data.keys())
-
         return data["_id"]
 
     def get_configurations_id(self, datastore: str, stored_data: str) -> list:

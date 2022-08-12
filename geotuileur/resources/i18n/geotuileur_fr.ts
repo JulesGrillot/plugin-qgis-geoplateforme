@@ -375,7 +375,7 @@
     <message>
         <location filename="../../gui/publication_creation/wzd_publication_creation.py" line="23"/>
         <source>Publication creation</source>
-        <translation>Date de publication</translation>
+        <translation>Création d&apos;une publication</translation>
     </message>
 </context>
 <context>
@@ -554,12 +554,12 @@
     </message>
     <message>
         <location filename="../../gui/storage/dlg_storage_report.ui" line="140"/>
-        <source>This space is used by GÃ©otuileur for vector tiles pyramid file storage.</source>
+        <source>This space is used by Geotuileur for vector tiles pyramid file storage.</source>
         <translation>Cet espace est utilisé par le Géotuileur pour le stockage des pyramides de tuiles vectorielles.</translation>
     </message>
     <message>
         <location filename="../../gui/storage/dlg_storage_report.ui" line="200"/>
-        <source>This space is used by GÃ©otuileur for vector tiles pyramid storage. It&apos;s more efficient that file storage.</source>
+        <source>This space is used by Geotuileur for vector tiles pyramid storage. It&apos;s more efficient that file storage.</source>
         <translation>Cet espace est utilisé par le Géotuileur pour le stockage des pyramides de tuiles vectorielles. Il est plus performant que le stockage sous forme de fichiers.</translation>
     </message>
 </context>

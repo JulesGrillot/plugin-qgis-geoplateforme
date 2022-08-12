@@ -83,22 +83,22 @@
 <context>
     <name>DashboardWidget</name>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="181"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="207"/>
         <source>Replace data</source>
         <translation>Remplacer les données</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="187"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="213"/>
         <source>Manage styles</source>
         <translation>Gérer les styles</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="191"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="217"/>
         <source>Update publication informations</source>
         <translation>Modifier les informations de publication</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="197"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="223"/>
         <source>Unpublish</source>
         <translation>Dépublier</translation>
     </message>
@@ -141,6 +141,11 @@
         <location filename="../../gui/dashboard/wdg_dashboard.ui" line="112"/>
         <source>Update</source>
         <translation>Mettre à jour un flux</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="298"/>
+        <source>Vector tile : {0}</source>
+        <translation>Vector tile : {0}</translation>
     </message>
 </context>
 <context>
@@ -264,7 +269,7 @@
 <context>
     <name>GeotuileurProvider</name>
     <message>
-        <location filename="../../processing/provider.py" line="69"/>
+        <location filename="../../processing/provider.py" line="71"/>
         <source>Geotuileur - Tools</source>
         <translation>Geotuileur - Outillage</translation>
     </message>
@@ -304,7 +309,7 @@
     <message>
         <location filename="../../gui/dlg_settings.ui" line="290"/>
         <source>GÃ©otuileur portal:</source>
-        <translation type="unfinished">URL du portail du Géotuileur :</translation>
+        <translation>URL du portail du Géotuileur :</translation>
     </message>
     <message>
         <location filename="../../gui/dlg_settings.ui" line="315"/>
@@ -314,7 +319,7 @@
     <message>
         <location filename="../../gui/dlg_settings.ui" line="322"/>
         <source>API EntrepÃ´t endpoint:</source>
-        <translation type="unfinished">URL de l&apos;API Entrepôt :</translation>
+        <translation>URL de l&apos;API Entrepôt :</translation>
     </message>
     <message>
         <location filename="../../gui/dlg_settings.ui" line="344"/>
@@ -412,17 +417,17 @@
         <translation>Identifiant</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="35"/>
+        <location filename="../../gui/report/dlg_report.py" line="39"/>
         <source>Report</source>
         <translation>Rapport</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="91"/>
+        <location filename="../../gui/report/dlg_report.py" line="95"/>
         <source>Can&apos;t define upload logs : {0}</source>
         <translation>Impossible de définir le journal du téléversement : {0}</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="132"/>
+        <location filename="../../gui/report/dlg_report.py" line="136"/>
         <source>Can&apos;t define execution logs : {0}</source>
         <translation>Impossible de définir le journal d&apos;execution : {0}</translation>
     </message>
@@ -437,12 +442,12 @@
         <translation>Structure des données</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="148"/>
+        <location filename="../../gui/report/dlg_report.py" line="152"/>
         <source>Waiting for data creation. You will find above technical information about executing processing.</source>
         <translation>Vos données sont en création. Vous trouverez ci-dessous des informations techniques sur le processus en cours.</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="160"/>
+        <location filename="../../gui/report/dlg_report.py" line="170"/>
         <source>Data is generating. You will find above technical information about executing processing.</source>
         <translation>Vos données sont en cours de génération. Vous trouverez ci-dessous des informations techniques sur le processus en cours.</translation>
     </message>
@@ -452,32 +457,32 @@
         <translation type="obsolete"> Vous trouverez ci-dessous des informations techniques concernant les processus exécutés et les problèmes rencontrés.</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="164"/>
+        <location filename="../../gui/report/dlg_report.py" line="176"/>
         <source>Database integration successful.</source>
         <translation>Vos données ont été intégrées en base. Elles peuvent être transformées en tuiles vectorielles.</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="166"/>
+        <location filename="../../gui/report/dlg_report.py" line="178"/>
         <source>Tile creation successful.</source>
         <translation>Vos tuiles vectorielles ont été générées avec succès à partir de vos données.</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="167"/>
+        <location filename="../../gui/report/dlg_report.py" line="179"/>
         <source> You will find above technical information about executed processing.</source>
         <translation> Vous trouverez ci-dessous des informations techniques concernant les processus exécutés.</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="154"/>
+        <location filename="../../gui/report/dlg_report.py" line="162"/>
         <source>Database integration failed.</source>
         <translation>Les données n&apos;ont pas pu être correctement intégrées en base.</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="156"/>
+        <location filename="../../gui/report/dlg_report.py" line="164"/>
         <source>Tile creation failed.</source>
         <translation>Les tuiles vectorielles n&apos;ont pas pu être générées correctement.</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="157"/>
+        <location filename="../../gui/report/dlg_report.py" line="165"/>
         <source> You will find above technical information about processing executed and encountered problem.</source>
         <translation> Vous trouverez ci-dessous des informations techniques concernant les processus exécutés et les problèmes rencontrés.</translation>
     </message>
@@ -550,12 +555,12 @@
     <message>
         <location filename="../../gui/storage/dlg_storage_report.ui" line="140"/>
         <source>This space is used by GÃ©otuileur for vector tiles pyramid file storage.</source>
-        <translation type="unfinished">Cet espace est utilisé par le Géotuileur pour le stockage des pyramides de tuiles vectorielles.</translation>
+        <translation>Cet espace est utilisé par le Géotuileur pour le stockage des pyramides de tuiles vectorielles.</translation>
     </message>
     <message>
         <location filename="../../gui/storage/dlg_storage_report.ui" line="200"/>
         <source>This space is used by GÃ©otuileur for vector tiles pyramid storage. It&apos;s more efficient that file storage.</source>
-        <translation type="unfinished">Cet espace est utilisé par le Géotuileur pour le stockage des pyramides de tuiles vectorielles. Il est plus performant que le stockage sous forme de fichiers.</translation>
+        <translation>Cet espace est utilisé par le Géotuileur pour le stockage des pyramides de tuiles vectorielles. Il est plus performant que le stockage sous forme de fichiers.</translation>
     </message>
 </context>
 <context>
@@ -619,7 +624,7 @@
         <translation>Suppression</translation>
     </message>
     <message>
-        <location filename="../../gui/mdl_stored_data.py" line="141"/>
+        <location filename="../../gui/mdl_stored_data.py" line="143"/>
         <source>Report</source>
         <translation>Rapport</translation>
     </message>
@@ -639,7 +644,7 @@
         <translation>Générer</translation>
     </message>
     <message>
-        <location filename="../../gui/mdl_stored_data.py" line="139"/>
+        <location filename="../../gui/mdl_stored_data.py" line="141"/>
         <source>View</source>
         <translation>Voir</translation>
     </message>
@@ -652,6 +657,11 @@
         <location filename="../../gui/mdl_stored_data.py" line="37"/>
         <source>Date</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../../gui/mdl_stored_data.py" line="139"/>
+        <source>Compare</source>
+        <translation>Comparaison</translation>
     </message>
 </context>
 <context>
@@ -838,6 +848,30 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
         <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="226"/>
         <source>Your tiles are ready.</source>
         <translation>Les tuiles ont été générées.</translation>
+    </message>
+</context>
+<context>
+    <name>UnpublishAlgorithm</name>
+    <message>
+        <location filename="../../processing/unpublish.py" line="34"/>
+        <source>Unpublish</source>
+        <translation>Dépublier</translation>
+    </message>
+    <message>
+        <location filename="../../processing/unpublish.py" line="46"/>
+        <source>Unpublish in geotuileur platform.
+Input parameters are defined in a .json file.
+Available parameters:
+{
+    &quot;{self.DATASTORE}&quot;: datastore id (str),
+    &quot;{self.STORED_DATA}&quot;: stored data(str),
+</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../processing/unpublish.py" line="56"/>
+        <source>Input .json file</source>
+        <translation>Fichier JSON en entrée</translation>
     </message>
 </context>
 <context>
@@ -1501,17 +1535,17 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
 <context>
     <name>UploadPublicationAlgorithm</name>
     <message>
-        <location filename="../../processing/upload_publication.py" line="58"/>
+        <location filename="../../processing/upload_publication.py" line="57"/>
         <source>Create configuration</source>
         <translation>Créer une configuration</translation>
     </message>
     <message>
-        <location filename="../../processing/upload_publication.py" line="96"/>
+        <location filename="../../processing/upload_publication.py" line="95"/>
         <source>Input .json file</source>
         <translation>Fichier JSON en entrée</translation>
     </message>
     <message>
-        <location filename="../../processing/upload_publication.py" line="71"/>
+        <location filename="../../processing/upload_publication.py" line="70"/>
         <source>Publication in geotuileur platform.
 Input parameters are defined in a .json file.
 Available parameters:

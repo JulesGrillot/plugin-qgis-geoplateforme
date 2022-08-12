@@ -27,7 +27,7 @@ SOURCES= ../../plugin_main.py \
     ../../api/client.py \
     ../../api/configuration.py \
     ../../api/datastore.py \
-    ../../api/offering.py \
+    ../../api/offerings.py \
     ../../api/processing.py \
     ../../api/stored_data.py \
     ../../api/upload.py \
@@ -73,6 +73,7 @@ SOURCES= ../../plugin_main.py \
     ../../processing/check_layer.py \
     ../../processing/provider.py \
     ../../processing/tile_creation.py \
+    ../../processing/unpublish.py \
     ../../processing/upload_creation.py \
     ../../processing/upload_database_integration.py \
     ../../processing/upload_publication.py \

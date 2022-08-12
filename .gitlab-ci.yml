@@ -125,8 +125,9 @@ build:translation:
   before_script:
     - apt update
     - apt install -y qttools5-dev-tools qt5-default g++
+    - python -m pip install -U pyqt5-tools
   script:
-    - lupdate -noobsolete -verbose $PROJECT_FOLDER/resources/i18n/plugin_translation.pro
+    - pylupdate5 -noobsolete -verbose $PROJECT_FOLDER/resources/i18n/plugin_translation.pro
     - lrelease $PROJECT_FOLDER/resources/i18n/*.ts
   artifacts:
     name: ui-translation

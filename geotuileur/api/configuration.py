@@ -145,7 +145,6 @@ class ConfigurationRequestManager:
             "attribution": configuration.attribution,
         }
         data.append(json.dumps(data_map))
-        self.log(message=f" creation data map CONFIG: {data}", log_level=4)
 
         # send request
         resp = self.ntwk_requester_blk.post(req_post, data=data)
@@ -250,8 +249,6 @@ class ConfigurationRequestManager:
         }
 
         data.append(json.dumps(data_map))
-
-        self.log(message=f" creation data map : {data}", log_level=4)
 
         # send request
         resp = self.ntwk_requester_blk.post(req_post, data=data)

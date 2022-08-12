@@ -3,7 +3,7 @@ import json
 import logging
 
 # PyQGIS
-from qgis.core import QgsBlockingNetworkRequest, QgsProcessingFeedback
+from qgis.core import QgsBlockingNetworkRequest
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
@@ -74,7 +74,8 @@ class OfferingsRequestManager:
         Delete offering
 
         Args:
-            offering_ids: (str) datastore_id : (str)
+            datastore: (str)
+            offering_id : (str)
         """
 
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
@@ -83,10 +84,8 @@ class OfferingsRequestManager:
         # headers
         req_get.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
 
-        feedback = QgsProcessingFeedback()
-
         # send request
-        resp = self.ntwk_requester_blk.deleteResource(req_get, feedback)
+        resp = self.ntwk_requester_blk.deleteResource(req_get)
 
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:

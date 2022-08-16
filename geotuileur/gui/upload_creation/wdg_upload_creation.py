@@ -10,7 +10,7 @@ from qgis.core import (
 )
 from qgis.gui import QgsFileWidget
 from qgis.PyQt import QtCore, QtGui, uic
-from qgis.PyQt.QtWidgets import QMessageBox, QShortcut, QWidget
+from qgis.PyQt.QtWidgets import QAbstractItemView, QMessageBox, QShortcut, QWidget
 
 # Plugin
 from geotuileur.gui.lne_validators import alphanum_qval
@@ -54,6 +54,7 @@ class UploadCreationWidget(QWidget):
 
         self.mdl_upload_files = UploadFilesTreeModel(self)
         self.trv_upload_files.setModel(self.mdl_upload_files)
+        self.trv_upload_files.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
     def get_name(self) -> str:
         """

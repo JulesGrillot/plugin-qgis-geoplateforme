@@ -1,8 +1,9 @@
 from typing import List
 
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QComboBox
 
-from geotuileur.api.stored_data import StoredDataStatus, StoredDataStep
+from geotuileur.api.stored_data import StoredData, StoredDataStatus, StoredDataStep
 from geotuileur.gui.mdl_stored_data import StoredDataListModel
 from geotuileur.gui.proxy_model_stored_data import StoredDataProxyModel
 
@@ -96,3 +97,14 @@ class StoredDataComboBox(QComboBox):
         index = self.currentIndex()
         model = self.model()
         return model.data(model.index(index, StoredDataListModel.ID_COL))
+
+    def current_stored_data(self) -> StoredData:
+        """
+        Get current selected stored data object
+
+        Returns: (StoredData) current selected stored data
+
+        """
+        index = self.currentIndex()
+        model = self.model()
+        return model.data(model.index(index, StoredDataListModel.NAME_COL), Qt.UserRole)

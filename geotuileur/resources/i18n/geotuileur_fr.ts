@@ -407,12 +407,12 @@
 <context>
     <name>ReportDialog</name>
     <message>
-        <location filename="../../gui/report/dlg_report.ui" line="45"/>
+        <location filename="../../gui/report/dlg_report.ui" line="38"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.ui" line="71"/>
+        <location filename="../../gui/report/dlg_report.ui" line="57"/>
         <source>ID</source>
         <translation>Identifiant</translation>
     </message>
@@ -422,32 +422,32 @@
         <translation>Rapport</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="95"/>
+        <location filename="../../gui/report/dlg_report.py" line="118"/>
         <source>Can&apos;t define upload logs : {0}</source>
         <translation>Impossible de définir le journal du téléversement : {0}</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="136"/>
+        <location filename="../../gui/report/dlg_report.py" line="159"/>
         <source>Can&apos;t define execution logs : {0}</source>
         <translation>Impossible de définir le journal d&apos;execution : {0}</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.ui" line="101"/>
+        <location filename="../../gui/report/dlg_report.ui" line="78"/>
         <source>Data details</source>
         <translation>Détails sur les données</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.ui" line="126"/>
+        <location filename="../../gui/report/dlg_report.ui" line="103"/>
         <source>Data structure</source>
         <translation>Structure des données</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="152"/>
+        <location filename="../../gui/report/dlg_report.py" line="175"/>
         <source>Waiting for data creation. You will find above technical information about executing processing.</source>
         <translation>Vos données sont en création. Vous trouverez ci-dessous des informations techniques sur le processus en cours.</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="170"/>
+        <location filename="../../gui/report/dlg_report.py" line="193"/>
         <source>Data is generating. You will find above technical information about executing processing.</source>
         <translation>Vos données sont en cours de génération. Vous trouverez ci-dessous des informations techniques sur le processus en cours.</translation>
     </message>
@@ -457,34 +457,44 @@
         <translation type="obsolete"> Vous trouverez ci-dessous des informations techniques concernant les processus exécutés et les problèmes rencontrés.</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="176"/>
+        <location filename="../../gui/report/dlg_report.py" line="199"/>
         <source>Database integration successful.</source>
         <translation>Vos données ont été intégrées en base. Elles peuvent être transformées en tuiles vectorielles.</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="178"/>
+        <location filename="../../gui/report/dlg_report.py" line="201"/>
         <source>Tile creation successful.</source>
         <translation>Vos tuiles vectorielles ont été générées avec succès à partir de vos données.</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="179"/>
+        <location filename="../../gui/report/dlg_report.py" line="202"/>
         <source> You will find above technical information about executed processing.</source>
         <translation> Vous trouverez ci-dessous des informations techniques concernant les processus exécutés.</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="162"/>
+        <location filename="../../gui/report/dlg_report.py" line="185"/>
         <source>Database integration failed.</source>
         <translation>Les données n&apos;ont pas pu être correctement intégrées en base.</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="164"/>
+        <location filename="../../gui/report/dlg_report.py" line="187"/>
         <source>Tile creation failed.</source>
         <translation>Les tuiles vectorielles n&apos;ont pas pu être générées correctement.</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="165"/>
+        <location filename="../../gui/report/dlg_report.py" line="188"/>
         <source> You will find above technical information about processing executed and encountered problem.</source>
         <translation> Vous trouverez ci-dessous des informations techniques concernant les processus exécutés et les problèmes rencontrés.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/dlg_report.ui" line="128"/>
+        <source>Data extent</source>
+        <translation>Emprise géographique des données</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/dlg_report.ui" line="140"/>
+        <source>Add in canvas</source>
+        <translation>Ajouter à la carte</translation>
     </message>
 </context>
 <context>

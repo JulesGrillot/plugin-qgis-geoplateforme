@@ -2,13 +2,19 @@
 import os
 
 # PyQGIS
-from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
+from qgis.core import (
+    QgsApplication,
+    QgsCoordinateReferenceSystem,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
+)
 from qgis.gui import QgsFileWidget
 from qgis.PyQt import QtCore, QtGui, uic
-from qgis.PyQt.QtWidgets import QAbstractItemView, QMessageBox, QShortcut, QWidget
+from qgis.PyQt.QtWidgets import QMessageBox, QShortcut, QWidget
 
 # Plugin
 from geotuileur.gui.lne_validators import alphanum_qval
+from geotuileur.gui.upload_creation.mdl_upload_files import UploadFilesTreeModel
 from geotuileur.processing import GeotuileurProvider
 from geotuileur.processing.check_layer import CheckLayerAlgorithm
 
@@ -36,8 +42,6 @@ class UploadCreationWidget(QWidget):
         # To avoid some characters
         self.lne_data.setValidator(alphanum_qval)
 
-        self.lvw_import_data.setSelectionMode(QAbstractItemView.MultiSelection)
-
         self.shortcut_close = QShortcut(QtGui.QKeySequence("Del"), self)
         self.shortcut_close.activated.connect(self.shortcut_del)
         filter_strings = [
@@ -47,6 +51,9 @@ class UploadCreationWidget(QWidget):
         self.flw_files_put.setFilter(";;".join(filter_strings))
         self.flw_files_put.fileChanged.connect(self.add_file_path)
         self.flw_files_put.setStorageMode(QgsFileWidget.GetMultipleFiles)
+
+        self.mdl_upload_files = UploadFilesTreeModel(self)
+        self.trv_upload_files.setModel(self.mdl_upload_files)
 
     def get_name(self) -> str:
         """
@@ -82,10 +89,7 @@ class UploadCreationWidget(QWidget):
         Returns: selected filenames
 
         """
-        return [
-            self.lvw_import_data.item(row).text()
-            for row in range(0, self.lvw_import_data.count())
-        ]
+        return self.mdl_upload_files.get_filenames()
 
     def validateWidget(self) -> bool:
         """
@@ -152,10 +156,15 @@ class UploadCreationWidget(QWidget):
         Create  shortcut which delete a filepath
 
         """
-        for x in self.lvw_import_data.selectedIndexes():
-            row = x.row()
-            item = self.lvw_import_data.takeItem(row)
-            del item
+        # Only use row with invalid parent (row for filename)
+        rows = [
+            x.row()
+            for x in self.trv_upload_files.selectedIndexes()
+            if not x.parent().isValid()
+        ]
+        rows.sort(reverse=True)
+        for row in rows:
+            self.mdl_upload_files.removeRow(row)
 
     def add_file_path(self):
         """
@@ -166,13 +175,24 @@ class UploadCreationWidget(QWidget):
         for path in QgsFileWidget.splitFilePaths(savepath):
             self._add_file_path_to_list(path)
 
-    def _add_file_path_to_list(self, savepath):
+    def _add_file_path_to_list(self, savepath: str) -> None:
         file_info = QtCore.QFileInfo(savepath)
         if file_info.exists() and file_info.suffix() in [
             suffix["suffix"] for suffix in self.SUPPORTED_SUFFIX
         ]:
-            items = self.lvw_import_data.findItems(
-                savepath, QtCore.Qt.MatchCaseSensitive
-            )
-            if len(items) == 0:
-                self.lvw_import_data.addItem(savepath)
+            self.mdl_upload_files.add_file(savepath)
+            self.trv_upload_files.resizeColumnToContents(self.mdl_upload_files.NAME_COL)
+            self.trv_upload_files.expandAll()
+
+            # Define name if empty
+            if not self.lne_data.text():
+                self.lne_data.setText(self.mdl_upload_files.get_first_file_name())
+
+            # Define CRS if not defined
+            if (
+                not self.psw_projection.crs().isValid()
+                and self.mdl_upload_files.get_first_crs()
+            ):
+                self.psw_projection.setCrs(
+                    QgsCoordinateReferenceSystem(self.mdl_upload_files.get_first_crs())
+                )

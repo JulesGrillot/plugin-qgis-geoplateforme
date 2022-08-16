@@ -31,6 +31,9 @@ from geotuileur.gui.tile_creation.qwp_tile_generation_fields_selection import (
 from geotuileur.gui.tile_creation.qwp_tile_generation_generalization import (
     TileGenerationGeneralizationPageWizard,
 )
+from geotuileur.gui.tile_creation.qwp_tile_generation_sample import (
+    TileGenerationSamplePageWizard,
+)
 from geotuileur.processing import GeotuileurProvider
 from geotuileur.processing.tile_creation import TileCreationAlgorithm
 
@@ -43,6 +46,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
         qwp_tile_generation_edition: TileGenerationEditionPageWizard,
         qwp_tile_generation_fields_selection: TileGenerationFieldsSelectionPageWizard,
         qwp_tile_generation_generalization: TileGenerationGeneralizationPageWizard,
+        qwp_tile_generation_sample: TileGenerationSamplePageWizard,
         parent=None,
     ):
 
@@ -58,6 +62,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
         self.qwp_tile_generation_edition = qwp_tile_generation_edition
         self.qwp_tile_generation_fields_selection = qwp_tile_generation_fields_selection
         self.qwp_tile_generation_generalization = qwp_tile_generation_generalization
+        self.qwp_tile_generation_sample = qwp_tile_generation_sample
 
         uic.loadUi(
             os.path.join(os.path.dirname(__file__), "qwp_tile_generation_status.ui"),
@@ -155,6 +160,16 @@ class TileGenerationStatusPageWizard(QWizardPage):
                     ),
                 }
             )
+
+        # Add bounding box for sample generation if enabled
+        if self.qwp_tile_generation_sample.is_sample_enabled():
+            qgs_rectangle = self.qwp_tile_generation_sample.get_sample_box()
+            data[TileCreationAlgorithm.BBOX] = [
+                qgs_rectangle.xMinimum(),
+                qgs_rectangle.yMinimum(),
+                qgs_rectangle.xMaximum(),
+                qgs_rectangle.yMaximum(),
+            ]
 
         filename = tempfile.NamedTemporaryFile(suffix=".json").name
         with open(filename, "w") as file:

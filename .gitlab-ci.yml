@@ -71,6 +71,9 @@ test-unit:
     changes:
       - "**/*.py"
       - ".gitlab-ci.yml"
+    refs:
+      - master
+      - merge_requests
   before_script:
     - python3 -m pip install -U -r requirements/development.txt
     - python3 -m pip install -U -r requirements/testing.txt

@@ -826,18 +826,18 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
     <name>TileGenerationStatusPageWizard</name>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="187"/>
-        <source>Tile creation failed</source>
-        <translation>La génération des tuiles a échoué</translation>
+        <source>Tile creation</source>
+        <translation>La génération des tuiles</translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="265"/>
         <source>Check details for more informations</source>
-        <translation>Consulter les détails pour plus d&apos;informations</translation>
+        <translation type="obsolete">Consulter les détails pour plus d&apos;informations</translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="265"/>
         <source>Stored data check status failed</source>
-        <translation>La vérification du statut des données stockées a échoué</translation>
+        <translation type="obsolete">La vérification du statut des données stockées a échoué</translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="57"/>
@@ -845,9 +845,24 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
         <translation>Génération en cours</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="226"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="223"/>
         <source>Your tiles are ready.</source>
         <translation>Les tuiles ont été générées.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="236"/>
+        <source>Stored data creation failed. Check report in dashboard for more details.</source>
+        <translation>La création des données a échoué. Vérifier le rapport dans le tableau de bord pour plus de détails.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="257"/>
+        <source>Stored data check status</source>
+        <translation>La vérification du status de la donnée</translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="281"/>
+        <source>{0} failed. Check report for more details.</source>
+        <translation>{0} a échoué. Consulter le rapport pour plus d&apos;informations.</translation>
     </message>
 </context>
 <context>
@@ -1005,57 +1020,82 @@ Returns created stored data in {self.CREATED_STORED_DATA_ID} results</source>
     <message>
         <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="156"/>
         <source>Update tile upload failed</source>
-        <translation>Mise à jour contenu d&apos;un flux à échoué</translation>
+        <translation type="obsolete">Mise à jour contenu d&apos;un flux à échoué</translation>
     </message>
     <message>
         <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="298"/>
         <source>Check details for more informations</source>
-        <translation>Consulter les détails pour plus d&apos;informations</translation>
+        <translation type="obsolete">Consulter les détails pour plus d&apos;informations</translation>
     </message>
     <message>
         <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="209"/>
         <source>Upload check status failed</source>
-        <translation>La vérification du statut de chargement a échoué</translation>
+        <translation type="obsolete">La vérification du statut de chargement a échoué</translation>
     </message>
     <message>
         <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="253"/>
         <source>Stored data database integration check failed</source>
-        <translation>La vérification d&apos;intégrité des données en base a échoué</translation>
+        <translation type="obsolete">La vérification d&apos;intégrité des données en base a échoué</translation>
     </message>
     <message>
         <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="298"/>
         <source>Stored data pyramid creation check failed</source>
-        <translation>La vérification de création de la pyramide a échoué</translation>
+        <translation type="obsolete">La vérification de création de la pyramide a échoué</translation>
     </message>
     <message>
-        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="318"/>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="299"/>
         <source>Upload not finished.</source>
         <translation>Chargement inachevé.</translation>
     </message>
     <message>
-        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="318"/>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="299"/>
         <source>Upload not finished. You must wait for data upload before closing this dialog.</source>
         <translation>Le chargement des données est toujours en cours. Merci d&apos;attendre la fin du téléversement avant de fermer la fenêtre.</translation>
     </message>
     <message>
-        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="327"/>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="308"/>
         <source>Database integration not finished.</source>
         <translation>Intégration des données en base inachevée.</translation>
     </message>
     <message>
-        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="327"/>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="308"/>
         <source>Database integration not finished. You must wait for database integration before closing this dialog.</source>
         <translation>L&apos;intégration des données dans la base distante est toujours en cours. Merci d&apos;attendre la fin du téléversement avant de fermer la fenêtre.</translation>
     </message>
     <message>
-        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="337"/>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="318"/>
         <source>Tile creation not finished.</source>
         <translation>Génération des tuiles inachevée.</translation>
     </message>
     <message>
-        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="337"/>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="318"/>
         <source>Tile creation not finished. You must wait for tile creation before closing this dialog.</source>
         <translation>Génération des tuiles inachevée  Merci d&apos;attendre la génération avant de fermer la fenêtre.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="159"/>
+        <source>Update tile upload</source>
+        <translation>La mise à jour du contenu d&apos;un flux</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="204"/>
+        <source>Upload check status</source>
+        <translation>La vérification du statut de chargement</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="242"/>
+        <source>Stored data database integration check</source>
+        <translation>La vérification d&apos;intégrité des données en base</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="283"/>
+        <source>Stored data pyramid creation check</source>
+        <translation>La vérification de création de la pyramide</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="369"/>
+        <source>{0} failed. Check report for more details.</source>
+        <translation>{0} a échoué. Consulter le rapport pour plus d&apos;informations.</translation>
     </message>
 </context>
 <context>
@@ -1099,7 +1139,7 @@ Returns created upload id in {self.CREATED_UPLOAD_ID} results</source>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="305"/>
         <source>Check details for more informations</source>
-        <translation>Consulter les détails pour plus d&apos;informations</translation>
+        <translation type="obsolete">Consulter les détails pour plus d&apos;informations</translation>
     </message>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_creation.ui" line="39"/>
@@ -1143,48 +1183,73 @@ Returns created upload id in {self.CREATED_UPLOAD_ID} results</source>
     </message>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="142"/>
-        <source>Upload creation failed</source>
-        <translation>L&apos;envoi des données a échoué</translation>
+        <source>Upload creation</source>
+        <translation>L&apos;envoi des données</translation>
     </message>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="191"/>
         <source>Upload check status failed</source>
-        <translation>La vérification du statut de chargement a échoué</translation>
+        <translation type="obsolete">La vérification du statut de chargement a échoué</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="231"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="228"/>
         <source>Your data has been stored on the remote storage.</source>
         <translation>Vos données ont été chargées dans l&apos;espace de stockage distant.</translation>
     </message>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="254"/>
-        <source>Stored data database integration check failed</source>
-        <translation>La vérification d&apos;intégrité des données en base a échoué</translation>
+        <source>Stored database integration check</source>
+        <translation>La vérification d&apos;intégrité des données en base</translation>
     </message>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="305"/>
         <source>Database integration failed</source>
-        <translation>L&apos;intégration des données dans la base distante a échoué</translation>
+        <translation type="obsolete">L&apos;intégration des données dans la base distante a échoué</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="325"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="316"/>
         <source>Upload not finished.</source>
         <translation>Chargement inachevé.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="325"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="316"/>
         <source>Upload not finished. You must wait for data upload before closing this dialog.</source>
         <translation>Le chargement des données est toujours en cours. Merci d&apos;attendre la fin du téléversement avant de fermer la fenêtre.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="334"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="325"/>
         <source>Database integration not finished.</source>
         <translation>Intégration des données en base inachevée.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="334"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="325"/>
         <source>Database integration not finished. You must wait for database integration before closing this dialog.</source>
         <translation>L&apos;intégration des données dans la base distante est toujours en cours. Merci d&apos;attendre la fin du téléversement avant de fermer la fenêtre.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="185"/>
+        <source>Upload creation failed. Check report in dashboard for more details.</source>
+        <translation>L&apos;envoi de données à échoué. Vérifier le rapport dans le tableau de bord pour plus de détails.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="193"/>
+        <source>Upload check status</source>
+        <translation>La vérification du statut de chargement</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="243"/>
+        <source>Stored data creation failed. Check report in dashboard for more details.</source>
+        <translation>La création des données a échoué. Vérifier le rapport dans le tableau de bord pour plus de détails.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="301"/>
+        <source>Database integration</source>
+        <translation>L&apos;intégration des données dans la base distante</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="372"/>
+        <source>{0} failed. Check report for more details.</source>
+        <translation>{0} a échoué. Consulter le rapport pour plus d&apos;informations.</translation>
     </message>
 </context>
 <context>

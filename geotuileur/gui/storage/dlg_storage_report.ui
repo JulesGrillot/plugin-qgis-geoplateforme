@@ -8,6 +8,9 @@
     <y>0</y>
     <width>653</width>
     <height>629</height>
+
+    <width>715</width>
+    <height>917</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -137,7 +140,7 @@
          </size>
         </property>
         <property name="text">
-         <string>This space is used by Géotuileur for vector tiles pyramid file storage.</string>
+         <string>This space is used by Geotuileur for vector tiles pyramid file storage.</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
@@ -200,7 +203,7 @@
          </size>
         </property>
         <property name="text">
-         <string>This space is used by Géotuileur for vector tiles pyramid storage. It's more efficient that file storage.</string>
+         <string>This space is used by Geotuileur for vector tiles pyramid storage. It's more efficient that file storage.</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>

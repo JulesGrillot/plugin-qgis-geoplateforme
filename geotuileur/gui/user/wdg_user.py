@@ -26,7 +26,7 @@ class UserWidget(QWidget):
         self.mdl_datastore = DatastoreListModel(self)
         self.tbv_datastore.setModel(self.mdl_datastore)
 
-        self.gui_utils.make_qlabel_copyable(self.lbl_id_value, self.lbl_id)
+        self.gui_utils.make_qlabel_copiable(self.lbl_id_value, self.lbl_id)
 
     def set_user(self, user: User) -> None:
         """

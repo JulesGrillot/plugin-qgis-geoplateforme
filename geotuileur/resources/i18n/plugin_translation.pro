@@ -15,6 +15,9 @@ FORMS = ../../gui/dlg_settings.ui \
     ../../gui/tile_creation/qwp_tile_generation_status.ui \
     ../../gui/upload_creation/qwp_upload_creation.ui \
     ../../gui/upload_creation/qwp_upload_edition.ui \
+    ../../gui/upload_creation/wdg_upload_creation.ui \
+    ../../gui/update_tile_upload/qwp_update_tile_upload_edition.ui \
+    ../../gui/update_tile_upload/qwp_update_tile_upload_run.ui \
     ../../gui/user/dlg_user.ui \
     ../../gui/user/wdg_user.ui
 
@@ -24,8 +27,7 @@ SOURCES= ../../plugin_main.py \
     ../../api/client.py \
     ../../api/configuration.py \
     ../../api/datastore.py \
-    ../../api/execution.py \
-    ../../api/offering.py \
+    ../../api/offerings.py \
     ../../api/processing.py \
     ../../api/stored_data.py \
     ../../api/upload.py \
@@ -61,15 +63,21 @@ SOURCES= ../../plugin_main.py \
     ../../gui/upload_creation/qwp_upload_creation.py \
     ../../gui/upload_creation/qwp_upload_edition.py \
     ../../gui/upload_creation/wzd_upload_creation.py \
+    ../../gui/upload_creation/wdg_upload_creation.py \
+    ../../gui/update_tile_upload/qwp_update_tile_upload_edition.py \
+    ../../gui/update_tile_upload/qwp_update_tile_upload_run.py \
+    ../../gui/update_tile_upload/wzd_update_tile_upload.py \
     ../../gui/user/dlg_user.py \
     ../../gui/user/wdg_user.py \
     # Processings
     ../../processing/check_layer.py \
     ../../processing/provider.py \
     ../../processing/tile_creation.py \
+    ../../processing/unpublish.py \
     ../../processing/upload_creation.py \
     ../../processing/upload_database_integration.py \
     ../../processing/upload_publication.py \
+    ../../processing/update_tile_upload.py \
     # Toolbelt
     ../../toolbelt/check_state_model.py \
     ../../toolbelt/log_handler.py \

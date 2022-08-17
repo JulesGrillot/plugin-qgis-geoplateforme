@@ -1,42 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>wzp_publication_form</class>
- <widget class="QWizardPage" name="wzp_publication_form">
+ <class>UpdateTileUploadEditionPageWizard</class>
+ <widget class="QWizardPage" name="UpdateTileUploadEditionPageWizard">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>839</width>
-    <height>493</height>
+    <width>616</width>
+    <height>336</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Publication Form</string>
+   <string>Uploading form</string>
   </property>
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="1">
-    <widget class="DatastoreComboBox" name="cbx_datastore"/>
-   </item>
-   <item row="5" column="1">
-    <widget class="StoredDataComboBox" name="cbx_stored_data"/>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="lbl_stored_data">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Dataset</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
+   <item row="0" column="0">
     <widget class="QLabel" name="lbl_datastore">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -45,25 +26,31 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Datastore</string>
+      <string>Datastore:</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="0" colspan="2">
-    <widget class="PublicationForm" name="wdg_publication_form" native="true"/>
+   <item row="0" column="1">
+    <widget class="DatastoreComboBox" name="cbx_datastore"/>
    </item>
-   <item row="7" column="0" colspan="2">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+   <item row="1" column="0">
+    <widget class="QLabel" name="lbl_stored_data">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>466</height>
-      </size>
+     <property name="text">
+      <string>Dataset:</string>
      </property>
-    </spacer>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="StoredDataComboBox" name="cbx_stored_data"/>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="UploadCreationWidget" name="wdg_upload_creation" native="true"/>
    </item>
   </layout>
  </widget>
@@ -79,9 +66,9 @@
    <header>geotuileur.gui.cbx_stored_data</header>
   </customwidget>
   <customwidget>
-   <class>PublicationForm</class>
+   <class>UploadCreationWidget</class>
    <extends>QWidget</extends>
-   <header location="global">geotuileur.gui.publication_creation.wdg_publication_form.h</header>
+   <header>geotuileur.gui.upload_creation.wdg_upload_creation</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

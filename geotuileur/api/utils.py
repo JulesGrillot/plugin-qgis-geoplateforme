@@ -57,3 +57,17 @@ def as_localized_datetime(date: str) -> str:
     except Exception as exc:
         logger.error(f"Datetime parseing failded. Trace: {exc}")
         return date
+
+
+def as_datetime(date: str) -> QDateTime:
+    """Try to convert raw creation date as datetime using Qt.
+
+    :return: localized date time (or invalid QDateTime if conversion fails)
+    :rtype: QDateTime
+    """
+    try:
+        dt = QDateTime.fromString(date, Qt.ISODate)
+        return dt
+    except Exception as exc:
+        logger.error(f"Datetime parseing failded. Trace: {exc}")
+        return QDateTime()

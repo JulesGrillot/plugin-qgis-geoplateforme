@@ -5,6 +5,7 @@ from qgis.PyQt.QtCore import QModelIndex
 from qgis.PyQt.QtWidgets import (
     QAbstractItemView,
     QDialog,
+    QHeaderView,
     QProgressBar,
     QTableView,
     QWidget,
@@ -79,6 +80,7 @@ class StorageReportDialog(QDialog):
         proxy_mdl = self._create_proxy_model(visible_storage=visible_storage)
         tbv.setModel(proxy_mdl)
 
+        tbv.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
         # Remove vertical header and disable edit
         tbv.verticalHeader().setVisible(False)
         tbv.setEditTriggers(QAbstractItemView.NoEditTriggers)

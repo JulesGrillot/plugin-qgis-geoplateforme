@@ -125,8 +125,9 @@ build:translation:
   before_script:
     - apt update
     - apt install -y qttools5-dev-tools qt5-default g++
+    - python -m pip install -U pyqt5-tools
   script:
-    - lupdate -noobsolete -verbose $PROJECT_FOLDER/resources/i18n/plugin_translation.pro
+    - pylupdate5 -noobsolete -verbose $PROJECT_FOLDER/resources/i18n/plugin_translation.pro
     - lrelease $PROJECT_FOLDER/resources/i18n/*.ts
   artifacts:
     name: ui-translation
@@ -149,8 +150,9 @@ builder:
     - apt install git
     - python -m pip install -U -r requirements/packaging.txt
   script:
-    # Amend gitignore to include embedded libs with qgis-plugin-ci
+    # Amend gitignore to include translation with qgis-plugin-ci
     - sed -i "s|^*.qm.*| |" .gitignore
+    - git add $PROJECT_FOLDER/resources/i18n/*.qm
 
     # Package the latest version listed in the changelog
     - qgis-plugin-ci package latest --allow-uncommitted-changes --plugin-repo-url $REPO_PLUGIN_URL
@@ -191,6 +193,7 @@ pages:
     changes:
       - "**/*.md"
       - "**/*.rst"
+      - "**/*.ts"
       - ".gitlab-ci.yml"
       - "$PROJECT_FOLDER/**/*"
       - requirements/documentation.txt

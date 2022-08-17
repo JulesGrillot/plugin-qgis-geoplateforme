@@ -124,8 +124,10 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                     "tms": tms,
                     "bottom_level": str(bottom_level),
                     "top_level": str(top_level),
-                    "tippecanoe_options": tippecanoe_options,
                 }
+
+                if tippecanoe_options:
+                    exec_params["tippecanoe_options"] = tippecanoe_options
 
                 bbox_used = False
                 if self.BBOX in data:

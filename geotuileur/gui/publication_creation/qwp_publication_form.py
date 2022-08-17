@@ -19,6 +19,7 @@ class PublicationFormPageWizard(QWizardPage):
         """
 
         super().__init__(parent)
+        self.setTitle(self.tr("Describe and publish your tiles"))
 
         uic.loadUi(
             os.path.join(os.path.dirname(__file__), "qwp_publication_form.ui"), self

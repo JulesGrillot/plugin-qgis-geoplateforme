@@ -1,10 +1,17 @@
 import os
 
+from qgis.core import QgsApplication
 from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtGui import QIcon, QPixmap
 from qgis.PyQt.QtWidgets import QAbstractItemView, QDialog, QHeaderView, QWidget
 
 from geotuileur.api.processing import ProcessingRequestManager
-from geotuileur.api.stored_data import StoredData, StoredDataRequestManager
+from geotuileur.api.stored_data import (
+    StoredData,
+    StoredDataRequestManager,
+    StoredDataStatus,
+)
 from geotuileur.api.upload import UploadRequestManager
 from geotuileur.gui.mdl_table_relation import TableRelationTreeModel
 from geotuileur.gui.report.mdl_stored_data_details import StoredDataDetailsModel
@@ -57,6 +64,11 @@ class ReportDialog(QDialog):
         self._add_stored_data_execution_logs(stored_data)
 
     def _set_stored_data_details(self, stored_data: StoredData) -> None:
+        status = StoredDataStatus[stored_data.status]
+        self.lbl_status_icon.setText("")
+        self.lbl_status_icon.setPixmap(self._get_status_icon(status))
+        self.lbl_status.setText(self._get_status_text(stored_data))
+
         self.lne_name.setText(stored_data.name)
         self.lne_id.setText(stored_data.id)
         self.mdl_stored_data_details.set_stored_data(stored_data)
@@ -124,3 +136,82 @@ class ReportDialog(QDialog):
             self.log(
                 self.tr("Can't define execution logs : {0}").format(exc), push=True
             )
+
+    def _get_status_text(self, stored_data: StoredData) -> str:
+        """
+        Define status text from a stored data
+
+        Args:
+            stored_data: (StoredData) stored data
+
+        Returns: status text
+
+        """
+        status = StoredDataStatus[stored_data.status]
+        if status == StoredDataStatus.CREATED:
+            result = self.tr(
+                "Waiting for data creation. You will find above technical information about executing "
+                "processing."
+            )
+        elif status == StoredDataStatus.GENERATING:
+            result = self.tr(
+                "Data is generating. You will find above technical information about executing processing."
+            )
+        elif status == StoredDataStatus.UNSTABLE:
+            if stored_data.type == "VECTOR-DB":
+                result = self.tr("Database integration failed.")
+            else:
+                result = self.tr("Tile creation failed.")
+            result += self.tr(
+                " You will find above technical information about processing executed and encountered "
+                "problem."
+            )
+        elif status == StoredDataStatus.MODIFYING:
+            result = self.tr(
+                "Data is generating. You will find above technical information about executing processing."
+            )
+        else:
+            # GENERATED and DELETED
+            if stored_data.type == "VECTOR-DB":
+                result = self.tr("Database integration successful.")
+            else:
+                result = self.tr("Tile creation successful.")
+            result += self.tr(
+                " You will find above technical information about executed processing."
+            )
+        return result
+
+    @staticmethod
+    def _get_status_icon(status: StoredDataStatus) -> QPixmap:
+        """
+        Get status icon
+
+        Args:
+            status: StoredDataStatus
+
+        Returns: QPixmap
+
+        """
+        if status == StoredDataStatus.CREATED:
+            result = QIcon(QgsApplication.iconPath("mTaskQueued.svg")).pixmap(
+                QSize(16, 16)
+            )
+        elif status == StoredDataStatus.GENERATING:
+            result = QIcon(QgsApplication.iconPath("mTaskRunning.svg")).pixmap(
+                QSize(16, 16)
+            )
+        elif status == StoredDataStatus.UNSTABLE:
+            result = QIcon(QgsApplication.iconPath("mIconWarning.svg")).pixmap(
+                QSize(16, 16)
+            )
+        elif status == StoredDataStatus.MODIFYING:
+            result = QIcon(QgsApplication.iconPath("mTaskRunning.svg")).pixmap(
+                QSize(16, 16)
+            )
+        else:
+            # GENERATED and DELETED
+            result = QIcon(QgsApplication.iconPath("mIconSuccess.svg")).pixmap(
+                QSize(16, 16)
+            )
+
+        return result

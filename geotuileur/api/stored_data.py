@@ -31,6 +31,7 @@ class StoredDataStep(Enum):
     # Steps for ROK4-PYRAMID-VECTOR type
     TILE_SAMPLE = "TILE_SAMPLE"
     TILE_PUBLICATION = "TILE_PUBLICATION"
+    TILE_UPDATE = "TILE_UPDATE"
     PUBLISHED = "PUBLISHED"
 
 
@@ -62,6 +63,13 @@ class StoredData:
     size: int = 0
     srs: str = ""
     storage: dict = None
+    last_event: dict = None
+
+    def get_last_event_date(self) -> str:
+        result = ""
+        if self.last_event and "date" in self.last_event:
+            result = self.last_event["date"]
+        return result
 
     def get_storage_type(self) -> StorageType:
         result = StorageType.UNDEFINED
@@ -139,7 +147,14 @@ class StoredData:
                 result = StoredDataStep.TILE_PUBLICATION
                 if "is_sample" in self.tags:
                     result = StoredDataStep.TILE_SAMPLE
-                elif "tms_url" in self.tags:
+                elif "initial_pyramid_id" in self.tags:
+                    result = StoredDataStep.TILE_UPDATE
+                # "published tag" should be defined if a tile is published
+                # cf : https://github.com/IGNF/geotuileur-site/blob/master/docs/developer/workflow.md#3-publier
+                # But it seems that the tag is not added
+                # an issue was created : https://github.com/IGNF/geotuileur-site/issues/94
+                # If pyramid is not in TILE_SAMPLE or TILE_UPDATE steps it means that it's published if tms_url available
+                elif "published" in self.tags or "tms_url" in self.tags:
                     result = StoredDataStep.PUBLISHED
         return result
 
@@ -155,6 +170,9 @@ class StoredDataRequestManager:
         pass
 
     class AddTagException(Exception):
+        pass
+
+    class DeleteTagException(Exception):
         pass
 
     MAX_LIMIT = 50
@@ -326,6 +344,8 @@ class StoredDataRequestManager:
             result.srs = data["srs"]
         if "storage" in data:
             result.storage = data["storage"]
+        if "last_event" in data:
+            result.last_event = data["last_event"]
         return result
 
     def get_stored_data_json(self, datastore: str, stored_data: str) -> dict:
@@ -418,4 +438,35 @@ class StoredDataRequestManager:
         if resp != QgsBlockingNetworkRequest.NoError:
             raise self.AddTagException(
                 f"Error while adding tag to stored_data : {self.ntwk_requester_blk.errorMessage()}"
+            )
+
+    def delete_tags(self, datastore: str, stored_data: str, tags: list) -> None:
+        """
+        Delete tags of stored data
+
+        Args:
+            datastore:  (str) datastore id
+            stored_data: (str) stored_data id
+            tags: (list) list of tags
+        """
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+        url = f"{self.get_base_url(datastore)}/{stored_data}/tags?"
+        # Add all tag to remove
+        for tag in tags:
+            url += f"&tags={tag}"
+
+        req_del = QNetworkRequest(QUrl(url))
+
+        # headers
+        req_del.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+
+        # send request
+        resp = self.ntwk_requester_blk.deleteResource(req_del)
+
+        # check response
+        if resp != QgsBlockingNetworkRequest.NoError:
+            req_reply = self.ntwk_requester_blk.reply()
+            data = json.loads(req_reply.content().data().decode("utf-8"))
+            raise self.DeleteTagException(
+                f"Error while deleting tags for stored data : {self.ntwk_requester_blk.errorMessage()}. Reply error: {data}"
             )

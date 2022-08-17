@@ -18,7 +18,7 @@ from geotuileur.gui.publication_creation.qwp_publication_form import (
 )
 from geotuileur.processing import GeotuileurProvider
 from geotuileur.processing.upload_publication import UploadPublicationAlgorithm
-from geotuileur.toolbelt import PlgLogger
+from geotuileur.toolbelt import PlgLogger, PlgOptionsManager
 
 
 class PublicationStatut(QWizardPage):
@@ -35,16 +35,17 @@ class PublicationStatut(QWizardPage):
         """
 
         super().__init__(parent)
+        self.setTitle(self.tr("Publication URL"))
         self.url_data = ""
+        self.url_publication = ""
         self.qwp_publication_form = qwp_publication_form
         uic.loadUi(os.path.join(os.path.dirname(__file__), "qwp_status.ui"), self)
 
         self.log = PlgLogger().log
-        self.btn_data.clicked.connect(lambda: self.openUrl(self.url_data))
-        self.btn_publication.clicked.connect(lambda: self.openUrl(self.url_publication))
-
-    def openUrl(self, url_edit) -> None:
-        QDesktopServices.openUrl(QUrl(url_edit))
+        self.btn_data.clicked.connect(lambda: self._openUrl(self.url_data))
+        self.btn_publication.clicked.connect(
+            lambda: self._openUrl(self.url_publication)
+        )
 
     def initializePage(self) -> None:
         """
@@ -81,14 +82,13 @@ class PublicationStatut(QWizardPage):
             UploadPublicationAlgorithm.ABSTRACT: configuration.abstract,
             UploadPublicationAlgorithm.BOTTOM_LEVEL: bottom,
             UploadPublicationAlgorithm.DATASTORE: datastore_id,
-            UploadPublicationAlgorithm.KEYWORDS: "Adresse",
+            UploadPublicationAlgorithm.KEYWORDS: "QGIS Plugin",  # TODO : define keywords
             UploadPublicationAlgorithm.LAYER_NAME: configuration.layer_name,
             UploadPublicationAlgorithm.METADATA: [],
             UploadPublicationAlgorithm.NAME: configuration.name,
             UploadPublicationAlgorithm.STORED_DATA: stored_data,
             UploadPublicationAlgorithm.TITLE: configuration.title,
             UploadPublicationAlgorithm.TOP_LEVEL: top,
-            UploadPublicationAlgorithm.TYPE_DATA: "WMTS-TMS",
             UploadPublicationAlgorithm.URL_TITLE: configuration.url_title,
             UploadPublicationAlgorithm.URL_ATTRIBUTION: configuration.url,
         }
@@ -102,31 +102,16 @@ class PublicationStatut(QWizardPage):
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
         params = {UploadPublicationAlgorithm.INPUT_JSON: filename}
         context = QgsProcessingContext()
-        self.create_url_feedback = QgsProcessingFeedback()
+        create_url_feedback = QgsProcessingFeedback()
 
         result, success = alg.run(
-            parameters=params, context=context, feedback=self.create_url_feedback
+            parameters=params, context=context, feedback=create_url_feedback
         )
         if success:
-            url_data = result["publication_url"]
-
-            self.log(
-                message=f"result configuration_id and url_data: { result}",
-                log_level=4,
-            )
-
-            url_data = url_data[6 : len(url_data) - 2]
-            self.url_data = url_data
-            self.url_publication = (
-                "https://qlf-portail-gpf-beta.ign.fr/viewer?tiles_url=https://qlf-vt-gpf-beta.ign.fr/"
-                + str(url_data[31::])
-            )
-            manager = StoredDataRequestManager()
-            manager.add_tags(
-                datastore=self.qwp_publication_form.cbx_datastore.current_datastore_id(),
-                stored_data=self.qwp_publication_form.cbx_stored_data.current_stored_data_id(),
-                tags={"tms_url": url_data},
-            )
+            self.url_data = result["publication_url"]
+            plg_settings = PlgOptionsManager.get_plg_settings()
+            url_geotuileur = plg_settings.url_geotuileur
+            self.url_publication = f"{url_geotuileur}viewer?tiles_url={self.url_data}"
 
         else:
             self.btn_publication.setEnabled(False)
@@ -134,9 +119,13 @@ class PublicationStatut(QWizardPage):
 
             self.log(
                 "URL publication failed \nCheck your storage capacity and the flux name \n \n "
-                + self.create_url_feedback.textLog(),
+                + create_url_feedback.textLog(),
                 log_level=1,
                 push=True,
                 button=True,
                 duration=60,
             )
+
+    @staticmethod
+    def _openUrl(url_edit) -> None:
+        QDesktopServices.openUrl(QUrl(url_edit))

@@ -42,6 +42,7 @@ class TileGenerationEditionPageWizard(QWizardPage):
         """
 
         super().__init__(parent)
+        self.setTitle(self.tr("Define tile parameters"))
 
         uic.loadUi(
             os.path.join(os.path.dirname(__file__), "qwp_tile_generation_edition.ui"),

@@ -1,10 +1,28 @@
+import json
 import os
+import tempfile
+from typing import List
 
+from qgis.core import (
+    QgsApplication,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
+    QgsProject,
+    QgsVectorTileLayer,
+)
 from qgis.PyQt import QtCore, uic
-from qgis.PyQt.QtCore import QModelIndex
-from qgis.PyQt.QtGui import QCursor, QGuiApplication
-from qgis.PyQt.QtWidgets import QAbstractItemView, QAction, QMenu, QWidget
+from qgis.PyQt.QtCore import QCoreApplication, QModelIndex
+from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon
+from qgis.PyQt.QtWidgets import (
+    QAbstractItemView,
+    QAction,
+    QMenu,
+    QMessageBox,
+    QTableView,
+    QWidget,
+)
 
+from geotuileur.__about__ import __title_clean__
 from geotuileur.api.stored_data import (
     StoredData,
     StoredDataRequestManager,
@@ -18,6 +36,12 @@ from geotuileur.gui.publication_creation.wzd_publication_creation import (
 )
 from geotuileur.gui.report.dlg_report import ReportDialog
 from geotuileur.gui.tile_creation.wzd_tile_creation import TileCreationWizard
+from geotuileur.gui.update_tile_upload.wzd_update_tile_upload import (
+    UpdateTileUploadWizard,
+)
+from geotuileur.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
+from geotuileur.processing import GeotuileurProvider
+from geotuileur.processing.unpublish import UnpublishAlgorithm
 from geotuileur.toolbelt import PlgLogger
 
 
@@ -43,60 +67,87 @@ class DashboardWidget(QWidget):
         # Create proxy model for each table
 
         # Action to finish
-        self.proxy_mdl_action_to_finish = self._create_proxy_model(
+        self._init_table_view(
+            tbv=self.tbv_actions_to_finish,
             visible_steps=[
                 StoredDataStep.TILE_GENERATION,
                 StoredDataStep.TILE_SAMPLE,
+                StoredDataStep.TILE_UPDATE,
                 StoredDataStep.TILE_PUBLICATION,
             ],
             visible_status=[StoredDataStatus.GENERATED, StoredDataStatus.UNSTABLE],
         )
-        self.tbv_actions_to_finish.setModel(self.proxy_mdl_action_to_finish)
-        self.tbv_actions_to_finish.verticalHeader().setVisible(False)
-        self.tbv_actions_to_finish.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tbv_actions_to_finish.setColumnHidden(
             self.mdl_stored_data.OTHER_ACTIONS_COL, True
         )
-        self.tbv_actions_to_finish.clicked.connect(
-            lambda index: self._item_clicked(index, self.proxy_mdl_action_to_finish)
-        )
 
         # Running actions
-        self.proxy_mdl_running_action = self._create_proxy_model(
+        self._init_table_view(
+            tbv=self.tbl_running_actions,
             visible_steps=[],
             visible_status=[StoredDataStatus.GENERATING],
         )
-        self.tbl_running_actions.setModel(self.proxy_mdl_running_action)
-        self.tbl_running_actions.verticalHeader().setVisible(False)
         self.tbl_running_actions.setColumnHidden(
             self.mdl_stored_data.OTHER_ACTIONS_COL, True
         )
-        self.tbl_running_actions.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.tbl_running_actions.clicked.connect(
-            lambda index: self._item_clicked(index, self.proxy_mdl_running_action)
-        )
 
         # Publicated tiles
-        self.proxy_mdl_publicated_tiles = self._create_proxy_model(
+        self._init_table_view(
+            tbv=self.tbl_publicated_tiles,
             visible_steps=[StoredDataStep.PUBLISHED],
             visible_status=[StoredDataStatus.GENERATED],
         )
-        self.tbl_publicated_tiles.setModel(self.proxy_mdl_publicated_tiles)
-        self.tbl_publicated_tiles.verticalHeader().setVisible(False)
-        self.tbl_publicated_tiles.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.tbl_publicated_tiles.clicked.connect(
-            lambda index: self._item_clicked(index, self.proxy_mdl_publicated_tiles)
-        )
 
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
+
+        self.btn_refresh.clicked.connect(self.refresh)
+        self.btn_refresh.setIcon(QIcon(":/images/themes/default/mActionRefresh.svg"))
+
+        self.btn_create.clicked.connect(self._create)
+        self.btn_create.setIcon(QIcon(":/images/themes/default/mActionAdd.svg"))
+
+        self.btn_update.clicked.connect(self._update)
+        self.btn_update.setIcon(QIcon(":/images/themes/default/mActionRedo.svg"))
+
         self._datastore_updated()
 
-    def refresh(self):
+    def _init_table_view(
+        self,
+        tbv: QTableView,
+        visible_steps: [StoredDataStep],
+        visible_status: [StoredDataStatus],
+    ) -> None:
+        """
+        Initialization of a table view for specific stored data steps and status visibility
+
+        Args:
+            tbv:  QTableView table view
+            visible_steps: [StoredDataStep] visible stored data steps
+            visible_status: [StoredDataStatus] visible stored data status
+        """
+        proxy_mdl = self._create_proxy_model(
+            visible_steps=visible_steps,
+            visible_status=visible_status,
+        )
+        tbv.setModel(proxy_mdl)
+        tbv.verticalHeader().setVisible(False)
+        tbv.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        tbv.clicked.connect(lambda index: self._item_clicked(index, proxy_mdl))
+
+    def refresh(self) -> None:
         """
         Force refresh of stored data model
 
         """
+        # Disable refresh button : must processEvents so user can't click while updating
+        self.btn_refresh.setEnabled(False)
+        QCoreApplication.processEvents()
+
+        # Update datastore content
         self._datastore_updated()
+
+        # Enable new refresh
+        self.btn_refresh.setEnabled(True)
 
     def _item_clicked(
         self, index: QModelIndex, proxy_model: StoredDataProxyModel
@@ -139,6 +190,8 @@ class DashboardWidget(QWidget):
                 self._generate_tile_wizard(stored_data)
             elif current_step == StoredDataStep.TILE_SAMPLE:
                 self._tile_sample_wizard(stored_data)
+            elif current_step == StoredDataStep.TILE_UPDATE:
+                self._compare(stored_data)
             elif current_step == StoredDataStep.TILE_PUBLICATION:
                 self._publish_wizard(stored_data)
             elif current_step == StoredDataStep.PUBLISHED:
@@ -256,7 +309,16 @@ class DashboardWidget(QWidget):
         Args:
             stored_data: (StoredData) stored data to be viewed
         """
-        self.log("Tile view not implemented yet", push=True)
+        if stored_data.tags and "tms_url" in stored_data.tags:
+            tms_url = stored_data.tags["tms_url"]
+            zoom_levels = stored_data.zoom_levels()
+            bottom = zoom_levels[-1]
+            top = zoom_levels[0]
+            layer = QgsVectorTileLayer(
+                path=f"type=xyz&url={tms_url}/%7Bz%7D/%7Bx%7D/%7By%7D.pbf&zmax={bottom}&zmin={top}",
+                baseName=self.tr("Vector tile : {0}").format(stored_data.name),
+            )
+            QgsProject.instance().addMapLayer(layer)
 
     def _replace_data_wizard(self, stored_data: StoredData) -> None:
         """
@@ -285,6 +347,35 @@ class DashboardWidget(QWidget):
         """
         self.log("Publish information update not implemented yet", push=True)
 
+    def _create(self) -> None:
+        """
+        Show upload creation wizard with current datastore
+
+        """
+        import_wizard = UploadCreationWizard(self)
+        import_wizard.set_datastore_id(self.cbx_datastore.current_datastore_id())
+        import_wizard.show()
+
+    def _update(self) -> None:
+        """
+        Show update wizard with current datastore
+
+        """
+        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
+        wizard = UpdateTileUploadWizard(self)
+        wizard.set_datastore_id(self.cbx_datastore.current_datastore_id())
+        QGuiApplication.restoreOverrideCursor()
+        wizard.show()
+
+    def _compare(self, stored_data: StoredData) -> None:
+        """
+        Compare update with initial stored data
+
+        Args:
+            stored_data: (StoredData) stored data
+        """
+        self.log("Compare not implemented yet", push=True)
+
     def _unpublish(self, stored_data: StoredData) -> None:
         """
         Unpublish a stored data
@@ -292,12 +383,38 @@ class DashboardWidget(QWidget):
         Args:
             stored_data: (StoredData) stored data
         """
-        self.log("Unpublish not implemented yet", push=True)
+        reply = QMessageBox.question(
+            self,
+            "Unpublish",
+            "Are you sure you want to unpublish the data?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if reply == QMessageBox.Yes:
+
+            data = {
+                UnpublishAlgorithm.DATASTORE: stored_data.datastore_id,
+                UnpublishAlgorithm.STORED_DATA: stored_data.id,
+            }
+            filename = tempfile.NamedTemporaryFile(
+                prefix=f"qgis_{__title_clean__}_", suffix=".json"
+            ).name
+            with open(filename, "w") as file:
+                json.dump(data, file)
+            algo_str = f"{GeotuileurProvider().id()}:{UnpublishAlgorithm().name()}"
+            alg = QgsApplication.processingRegistry().algorithmById(algo_str)
+            params = {UnpublishAlgorithm.INPUT_JSON: filename}
+
+            context = QgsProcessingContext()
+            self.feedback = QgsProcessingFeedback()
+
+            alg.run(parameters=params, context=context, feedback=self.feedback)
+            self.refresh()
 
     def _create_proxy_model(
         self,
-        visible_steps: [StoredDataStep],
-        visible_status: [StoredDataStatus],
+        visible_steps: List[StoredDataStep],
+        visible_status: List[StoredDataStatus],
     ) -> StoredDataProxyModel:
         """
         Create StoredDataProxyModel with filters
@@ -322,6 +439,7 @@ class DashboardWidget(QWidget):
         Update stored data combobox when datastore is updated
 
         """
+        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
         self.mdl_stored_data.set_datastore(self.cbx_datastore.current_datastore_id())
 
         self.tbv_actions_to_finish.resizeRowsToContents()
@@ -332,3 +450,4 @@ class DashboardWidget(QWidget):
 
         self.tbl_publicated_tiles.resizeRowsToContents()
         self.tbl_publicated_tiles.resizeColumnsToContents()
+        QGuiApplication.restoreOverrideCursor()

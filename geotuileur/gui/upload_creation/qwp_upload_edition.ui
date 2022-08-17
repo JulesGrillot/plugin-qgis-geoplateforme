@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>652</width>
-    <height>504</height>
+    <width>872</width>
+    <height>595</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,34 +17,8 @@
    <locale language="English" country="UnitedStates"/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="7" column="1">
-    <widget class="QLineEdit" name="lne_data">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="inputMethodHints">
-      <set>Qt::ImhLatinOnly|Qt::ImhUrlCharactersOnly</set>
-     </property>
-     <property name="dragEnabled">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="1">
-    <widget class="QgsProjectionSelectionWidget" name="psw_projection"/>
-   </item>
    <item row="1" column="1">
     <widget class="DatastoreComboBox" name="cbx_datastore"/>
-   </item>
-   <item row="3" column="1">
-    <widget class="QgsFileWidget" name="flw_files_put">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="inputMethodHints">
-      <set>Qt::ImhLatinOnly</set>
-     </property>
-    </widget>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="lbl_datastore">
@@ -54,104 +28,27 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="styleSheet">
-      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
      <property name="text">
       <string>Datastore:</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="lbl_files_put">
-     <property name="styleSheet">
-      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
-     <property name="text">
-      <string>Pick a local dataset to import:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
-    <widget class="QLabel" name="lbl_data">
-     <property name="styleSheet">
-      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
-     <property name="text">
-      <string>Name your dataset:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="lbl_files_summary">
-     <property name="styleSheet">
-      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
-     <property name="text">
-      <string>List of datasets to import:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QListWidget" name="lvw_import_data">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="tabKeyNavigation">
-      <bool>true</bool>
-     </property>
-     <property name="dragEnabled">
-      <bool>false</bool>
-     </property>
-     <property name="dragDropMode">
-      <enum>QAbstractItemView::DragDrop</enum>
-     </property>
-     <property name="defaultDropAction">
-      <enum>Qt::ActionMask</enum>
-     </property>
-     <property name="selectionRectVisible">
-      <bool>false</bool>
-     </property>
-     <property name="currentRow">
-      <number>-1</number>
-     </property>
-     <property name="sortingEnabled">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="0">
-    <widget class="QLabel" name="lne_projection">
-     <property name="styleSheet">
-      <string notr="true">font: 75 13pt &quot;Ubuntu Condensed&quot;;
-color: rgb(52, 101, 164);</string>
-     </property>
-     <property name="text">
-      <string>Select the SRS to use:</string>
-     </property>
-    </widget>
+   <item row="2" column="0" colspan="2">
+    <widget class="UploadCreationWidget" name="wdg_upload_creation" native="true"/>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsFileWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsfilewidget.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsProjectionSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsprojectionselectionwidget.h</header>
-  </customwidget>
-  <customwidget>
    <class>DatastoreComboBox</class>
    <extends>QComboBox</extends>
    <header>geotuileur.gui.cbx_datastore</header>
+  </customwidget>
+  <customwidget>
+   <class>UploadCreationWidget</class>
+   <extends>QWidget</extends>
+   <header>geotuileur.gui.upload_creation.wdg_upload_creation</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

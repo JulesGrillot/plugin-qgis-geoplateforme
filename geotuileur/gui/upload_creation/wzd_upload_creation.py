@@ -26,6 +26,7 @@ class UploadCreationWizard(QWizard):
         self.addPage(self.qwp_upload_edition)
         self.addPage(self.qwp_upload_creation)
         self.setOption(QWizard.NoBackButtonOnStartPage, True)
+        self.setOption(QWizard.NoBackButtonOnLastPage, True)
         self.setOption(QWizard.NoCancelButtonOnLastPage, True)
 
     def set_datastore_id(self, datastore_id: str) -> None:

@@ -151,9 +151,10 @@ class StorageReportDialog(QDialog):
 
     @staticmethod
     def _update_progress_bar(quota: int, use: int, pgb: QProgressBar) -> None:
+
         pgb.setMinimum(0)
-        pgb.setMaximum(quota / 1e6)
-        pgb.setValue(use / 1e6)
+        pgb.setMaximum(int(quota / 1e6))
+        pgb.setValue(int(use / 1e6))
         pgb.setFormat(f"%p% ({use / 1e6} Mo / {quota / 1e6} Mo)")
 
     def _item_clicked(

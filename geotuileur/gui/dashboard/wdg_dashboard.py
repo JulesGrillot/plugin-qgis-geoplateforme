@@ -1,6 +1,7 @@
 import json
 import os
 import tempfile
+from sre_constants import SUCCESS
 from typing import List
 
 from qgis.core import (
@@ -23,12 +24,7 @@ from qgis.PyQt.QtWidgets import (
 )
 
 from geotuileur.__about__ import __title_clean__
-from geotuileur.api.stored_data import (
-    StoredData,
-    StoredDataRequestManager,
-    StoredDataStatus,
-    StoredDataStep,
-)
+from geotuileur.api.stored_data import StoredData, StoredDataStatus, StoredDataStep
 from geotuileur.gui.mdl_stored_data import StoredDataListModel
 from geotuileur.gui.proxy_model_stored_data import StoredDataProxyModel
 from geotuileur.gui.publication_creation.wzd_publication_creation import (
@@ -41,6 +37,7 @@ from geotuileur.gui.update_tile_upload.wzd_update_tile_upload import (
 )
 from geotuileur.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
 from geotuileur.processing import GeotuileurProvider
+from geotuileur.processing.delete_data import DeleteDataAlgorithm
 from geotuileur.processing.unpublish import UnpublishAlgorithm
 from geotuileur.toolbelt import PlgLogger
 
@@ -238,21 +235,34 @@ class DashboardWidget(QWidget):
         Args:
             stored_data: (StoredData) stored data to delete
         """
-        try:
-            manager = StoredDataRequestManager()
-            manager.delete(
-                datastore=stored_data.datastore_id, stored_data=stored_data.id
-            )
+
+        reply = QMessageBox.question(
+            self,
+            "Delete data",
+            "Are you sure you want to delete the data?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if reply == QMessageBox.Yes:
+
+            data = {
+                DeleteDataAlgorithm.DATASTORE: stored_data.datastore_id,
+                DeleteDataAlgorithm.STORED_DATA: stored_data.id,
+            }
+            filename = tempfile.NamedTemporaryFile(
+                prefix=f"qgis_{__title_clean__}_", suffix=".json"
+            ).name
+            with open(filename, "w") as file:
+                json.dump(data, file)
+            algo_str = f"{GeotuileurProvider().id()}:{DeleteDataAlgorithm().name()}"
+            alg = QgsApplication.processingRegistry().algorithmById(algo_str)
+            params = {DeleteDataAlgorithm.INPUT_JSON: filename}
+            context = QgsProcessingContext()
+            self.feedback = QgsProcessingFeedback()
+            alg.run(parameters=params, context=context, feedback=self.feedback)
             row = self.mdl_stored_data.get_stored_data_row(stored_data.id)
             self.mdl_stored_data.removeRow(row)
-        except StoredDataRequestManager.DeleteStoredDataException as exc:
-            self.log(
-                self.tr("Stored data {0} delete error : {1}").format(
-                    stored_data.id, exc
-                ),
-                log_level=1,
-                push=True,
-            )
+            self.refresh()
 
     def _show_report(self, stored_data: StoredData) -> None:
         """

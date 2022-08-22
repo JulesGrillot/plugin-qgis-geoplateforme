@@ -259,9 +259,12 @@ class DashboardWidget(QWidget):
             params = {DeleteDataAlgorithm.INPUT_JSON: filename}
             context = QgsProcessingContext()
             self.feedback = QgsProcessingFeedback()
-            alg.run(parameters=params, context=context, feedback=self.feedback)
-            row = self.mdl_stored_data.get_stored_data_row(stored_data.id)
-            self.mdl_stored_data.removeRow(row)
+            result, success = alg.run(
+                parameters=params, context=context, feedback=self.feedback
+            )
+            if success:
+                row = self.mdl_stored_data.get_stored_data_row(stored_data.id)
+                self.mdl_stored_data.removeRow(row)
 
     def _show_report(self, stored_data: StoredData) -> None:
         """

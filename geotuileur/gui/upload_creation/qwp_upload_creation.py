@@ -14,15 +14,15 @@ from qgis.core import (
     QgsProcessingFeedback,
 )
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QByteArray, QTimer
-from qgis.PyQt.QtGui import QMovie, QPixmap
+from qgis.PyQt.QtCore import QByteArray, QSize, QTimer
+from qgis.PyQt.QtGui import QIcon, QMovie, QPixmap
 from qgis.PyQt.QtWidgets import QHeaderView, QMessageBox, QWizardPage
 
 from geotuileur.__about__ import DIR_PLUGIN_ROOT
 from geotuileur.api.check import CheckExecution
 from geotuileur.api.processing import Execution, ProcessingRequestManager
-from geotuileur.api.stored_data import StoredDataRequestManager
-from geotuileur.api.upload import UploadRequestManager
+from geotuileur.api.stored_data import StoredDataRequestManager, StoredDataStatus
+from geotuileur.api.upload import UploadRequestManager, UploadStatus
 from geotuileur.gui.mdl_execution_list import ExecutionListModel
 from geotuileur.gui.upload_creation.qwp_upload_edition import UploadEditionPageWizard
 from geotuileur.processing import GeotuileurProvider
@@ -139,14 +139,9 @@ class UploadCreationPageWizard(QWizardPage):
             # Run timer for upload check
             self.upload_check_timer.start(self.STATUS_CHECK_INTERVAL)
         else:
-            msgBox = QMessageBox(
-                QMessageBox.Warning,
-                self.tr("Upload creation failed"),
-                self.tr("Check details for more informations"),
+            self._report_processing_error(
+                self.tr("Upload creation"), self.upload_feedback.textLog()
             )
-            msgBox.setDetailedText(self.upload_feedback.textLog())
-            msgBox.exec()
-            self._report_processing_error(self.upload_feedback.textLog())
 
     def check_upload_status(self):
         """
@@ -175,26 +170,27 @@ class UploadCreationPageWizard(QWizardPage):
                 datastore_id = (
                     self.qwp_upload_edition.cbx_datastore.current_datastore_id()
                 )
-                status = manager.get_upload_status(
+                upload = manager.get_upload(
                     datastore=datastore_id, upload=self.created_upload_id
                 )
 
                 execution_list = manager.get_upload_checks_execution(
                     datastore=datastore_id, upload=self.created_upload_id
                 )
-
+                status = UploadStatus[upload.status]
                 # Run database integration
-                if status == "CLOSED":
+                if status == UploadStatus.CLOSED:
                     self.integrate()
+                elif status == UploadStatus.UNSTABLE:
+                    self._stop_timer_and_display_error(
+                        self.tr(
+                            "Upload creation failed. Check report in dashboard for "
+                            "more details."
+                        )
+                    )
 
             except UploadRequestManager.UnavailableUploadException as exc:
-                msgBox = QMessageBox(
-                    QMessageBox.Warning,
-                    self.tr("Upload check status failed"),
-                    self.tr("Check details for more informations"),
-                )
-                msgBox.setDetailedText(str(exc))
-                msgBox.exec()
+                self._report_processing_error(self.tr("Upload check status"), str(exc))
         return execution_list
 
     def _check_stored_data_creation(self) -> Execution:
@@ -225,7 +221,8 @@ class UploadCreationPageWizard(QWizardPage):
                         datastore=datastore_id, exec_id=stored_data.tags["proc_int_id"]
                     )
                 # Stop timer if stored_data generated
-                if stored_data.status == "GENERATED":
+                status = StoredDataStatus[stored_data.status]
+                if status == StoredDataStatus.GENERATED:
                     self.upload_check_timer.stop()
                     self.loading_movie.stop()
                     self.setTitle(
@@ -242,22 +239,21 @@ class UploadCreationPageWizard(QWizardPage):
                     )
                     self.lbl_step_icon.setMovie(QMovie())
                     self.lbl_step_icon.setPixmap(pixmap)
-            except ProcessingRequestManager.UnavailableProcessingException as exc:
-                msgBox = QMessageBox(
-                    QMessageBox.Warning,
-                    self.tr("Stored data database integration check failed"),
-                    self.tr("Check details for more informations"),
+                elif status == StoredDataStatus.UNSTABLE:
+                    self._stop_timer_and_display_error(
+                        self.tr(
+                            "Stored data creation failed. Check report in "
+                            "dashboard for more details."
+                        )
+                    )
+
+            except (
+                ProcessingRequestManager.UnavailableProcessingException,
+                StoredDataRequestManager.UnavailableStoredData,
+            ) as exc:
+                self._report_processing_error(
+                    self.tr("Stored database integration check"), str(exc)
                 )
-                msgBox.setDetailedText(str(exc))
-                msgBox.exec()
-            except StoredDataRequestManager.UnavailableStoredData as exc:
-                msgBox = QMessageBox(
-                    QMessageBox.Warning,
-                    self.tr("Stored data database integration check failed"),
-                    self.tr("Check details for more informations"),
-                )
-                msgBox.setDetailedText(str(exc))
-                msgBox.exec()
         return execution
 
     def integrate(self):
@@ -302,14 +298,9 @@ class UploadCreationPageWizard(QWizardPage):
                 # Emit completeChanged to update finish button
                 self.completeChanged.emit()
             else:
-                msgBox = QMessageBox(
-                    QMessageBox.Warning,
-                    self.tr("Database integration failed"),
-                    self.tr("Check details for more informations"),
+                self._report_processing_error(
+                    self.tr("Database integration"), feedback.textLog()
                 )
-                msgBox.setDetailedText(feedback.textLog())
-                msgBox.exec()
-                self._report_processing_error(feedback.textLog())
 
     def validatePage(self) -> bool:
         """
@@ -358,18 +349,29 @@ class UploadCreationPageWizard(QWizardPage):
 
         return result
 
-    def _report_processing_error(self, error: str) -> None:
+    def _stop_timer_and_display_error(self, error: str) -> None:
+        self.upload_check_timer.stop()
+        self.setTitle(error)
+        self.loading_movie.stop()
+        self.lbl_step_icon.setMovie(QMovie())
+        self.lbl_step_icon.setPixmap(
+            QIcon(QgsApplication.iconPath("mIconWarning.svg")).pixmap(QSize(32, 32))
+        )
+        self.completeChanged.emit()
+
+    def _report_processing_error(self, processing: str, error: str) -> None:
         """
         Report processing error by displaying error in text browser
 
         Args:
             error:
         """
-        self.loading_movie.stop()
         self.processing_failed = True
         self.tbw_errors.setVisible(True)
         self.tbw_errors.setText(error)
-        self.completeChanged.emit()
+        self._stop_timer_and_display_error(
+            self.tr("{0} failed. Check report for more details.").format(processing)
+        )
 
     @staticmethod
     def _run_alg(

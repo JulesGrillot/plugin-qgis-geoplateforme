@@ -13,13 +13,13 @@ from qgis.core import (
     QgsProcessingFeedback,
 )
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QByteArray, QTimer
-from qgis.PyQt.QtGui import QMovie, QPixmap
-from qgis.PyQt.QtWidgets import QHeaderView, QMessageBox, QWizardPage
+from qgis.PyQt.QtCore import QByteArray, QSize, QTimer
+from qgis.PyQt.QtGui import QIcon, QMovie, QPixmap
+from qgis.PyQt.QtWidgets import QHeaderView, QWizardPage
 
 from geotuileur.__about__ import DIR_PLUGIN_ROOT
 from geotuileur.api.processing import ProcessingRequestManager
-from geotuileur.api.stored_data import StoredDataRequestManager
+from geotuileur.api.stored_data import StoredDataRequestManager, StoredDataStatus
 from geotuileur.api.upload import UploadRequestManager
 from geotuileur.gui.mdl_execution_list import ExecutionListModel
 from geotuileur.gui.tile_creation.qwp_tile_generation_edition import (
@@ -184,13 +184,9 @@ class TileGenerationStatusPageWizard(QWizardPage):
             # Run timer for tile creation check
             self.create_tile_check_timer.start(self.STATUS_CHECK_INTERVAL)
         else:
-            msgBox = QMessageBox(
-                QMessageBox.Warning,
-                self.tr("Tile creation failed"),
-                self.tr("Check details for more informations"),
+            self._report_processing_error(
+                self.tr("Tile creation"), self.create_tile_feedback.textLog()
             )
-            msgBox.setDetailedText(self.create_tile_feedback.textLog())
-            msgBox.exec()
 
     def check_create_tile_status(self):
         """
@@ -220,7 +216,8 @@ class TileGenerationStatusPageWizard(QWizardPage):
                     )
 
                 # Stop timer if stored_data generated
-                if stored_data.status == "GENERATED":
+                status = StoredDataStatus[stored_data.status]
+                if status == StoredDataStatus.GENERATED:
                     self.create_tile_check_timer.stop()
                     self.loading_movie.stop()
                     self.setTitle(self.tr("Your tiles are ready."))
@@ -235,6 +232,13 @@ class TileGenerationStatusPageWizard(QWizardPage):
                     )
                     self.lbl_step_icon.setMovie(QMovie())
                     self.lbl_step_icon.setPixmap(pixmap)
+                elif status == StoredDataStatus.UNSTABLE:
+                    self._stop_timer_and_display_error(
+                        self.tr(
+                            "Stored data creation failed. Check report in "
+                            "dashboard for more details."
+                        )
+                    )
                 if (
                     stored_data.tags is not None
                     and "proc_pyr_creat_id" in stored_data.tags.keys()
@@ -245,30 +249,38 @@ class TileGenerationStatusPageWizard(QWizardPage):
                     )
 
                     self.mdl_execution_list.set_execution_list([execution])
-            except StoredDataRequestManager.UnavailableStoredData as exc:
-                msgBox = QMessageBox(
-                    QMessageBox.Warning,
-                    self.tr("Stored data check status failed"),
-                    self.tr("Check details for more informations"),
+            except (
+                StoredDataRequestManager.UnavailableStoredData,
+                ProcessingRequestManager.UnavailableProcessingException,
+                UploadRequestManager.UnavailableUploadException,
+            ) as exc:
+                self._report_processing_error(
+                    self.tr("Stored data check status"), str(exc)
                 )
-                msgBox.setDetailedText(str(exc))
-                msgBox.exec()
-            except ProcessingRequestManager.UnavailableProcessingException as exc:
-                msgBox = QMessageBox(
-                    QMessageBox.Warning,
-                    self.tr("Stored data check status failed"),
-                    self.tr("Check details for more informations"),
-                )
-                msgBox.setDetailedText(str(exc))
-                msgBox.exec()
-            except UploadRequestManager.UnavailableUploadException as exc:
-                msgBox = QMessageBox(
-                    QMessageBox.Warning,
-                    self.tr("Stored data check status failed"),
-                    self.tr("Check details for more informations"),
-                )
-                msgBox.setDetailedText(str(exc))
-                msgBox.exec()
+
+    def _stop_timer_and_display_error(self, error: str) -> None:
+        self.upload_check_timer.stop()
+        self.setTitle(error)
+        self.loading_movie.stop()
+        self.lbl_step_icon.setMovie(QMovie())
+        self.lbl_step_icon.setPixmap(
+            QIcon(QgsApplication.iconPath("mIconWarning.svg")).pixmap(QSize(32, 32))
+        )
+        self.completeChanged.emit()
+
+    def _report_processing_error(self, processing: str, error: str) -> None:
+        """
+        Report processing error by displaying error in text browser
+
+        Args:
+            error:
+        """
+        self.processing_failed = True
+        self.tbw_errors.setVisible(True)
+        self.tbw_errors.setText(error)
+        self._stop_timer_and_display_error(
+            self.tr("{0} failed. Check report for more details.").format(processing)
+        )
 
     def _run_alg(
         self,

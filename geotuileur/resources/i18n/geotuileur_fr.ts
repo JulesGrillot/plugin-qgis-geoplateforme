@@ -1195,22 +1195,22 @@ Returns created upload id in {self.CREATED_UPLOAD_ID} results</source>
         <translation>Tableau de bord</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="45"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="82"/>
         <source>List of datasets to import:</source>
         <translation>Liste des données sélectionnées à importer :</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="93"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="52"/>
         <source>Select the SRS to use:</source>
         <translation>Sélectionner la projection de vos données :</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="113"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="45"/>
         <source>Name your dataset:</source>
         <translation>Nom du jeu de données distant :</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="120"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="59"/>
         <source>Pick a local dataset to import:</source>
         <translation>Sélectionner une donnée locale :</translation>
     </message>
@@ -1507,6 +1507,34 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
         <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="20"/>
         <source>Upload data</source>
         <translation>Déposez votre fichier de données</translation>
+    </message>
+</context>
+<context>
+    <name>UploadFilesTreeModel</name>
+    <message>
+        <location filename="../../gui/upload_creation/mdl_upload_files.py" line="33"/>
+        <source>Name</source>
+        <translation>Nom</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/mdl_upload_files.py" line="33"/>
+        <source>CRS</source>
+        <translation>Projection</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/mdl_upload_files.py" line="116"/>
+        <source>Invalid CRS. Only EPSG and IGNF crs are supported.</source>
+        <translation>Projection invalide. Seules les projections EPSG et IGNF sont supportées.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/mdl_upload_files.py" line="118"/>
+        <source>Invalid CRS {0}. Expected {1}</source>
+        <translation>Projection {0} invalide. Projection attendue {1}</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/mdl_upload_files.py" line="124"/>
+        <source>File not available.</source>
+        <translation>Fichier non disponible.</translation>
     </message>
 </context>
 <context>

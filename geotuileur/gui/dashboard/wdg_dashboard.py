@@ -258,13 +258,22 @@ class DashboardWidget(QWidget):
             alg = QgsApplication.processingRegistry().algorithmById(algo_str)
             params = {DeleteDataAlgorithm.INPUT_JSON: filename}
             context = QgsProcessingContext()
-            self.feedback = QgsProcessingFeedback()
+            feedback = QgsProcessingFeedback()
             result, success = alg.run(
-                parameters=params, context=context, feedback=self.feedback
+                parameters=params, context=context, feedback=feedback
             )
             if success:
                 row = self.mdl_stored_data.get_stored_data_row(stored_data.id)
                 self.mdl_stored_data.removeRow(row)
+
+            else:
+                self.log(
+                    self.tr("delete data error").format(
+                        stored_data.id, feedback.textLog()
+                    ),
+                    log_level=1,
+                    push=True,
+                )
 
     def _show_report(self, stored_data: StoredData) -> None:
         """
@@ -418,13 +427,21 @@ class DashboardWidget(QWidget):
             params = {UnpublishAlgorithm.INPUT_JSON: filename}
 
             context = QgsProcessingContext()
-            self.feedback = QgsProcessingFeedback()
+            feedback = QgsProcessingFeedback()
 
             result, success = alg.run(
-                parameters=params, context=context, feedback=self.feedback
+                parameters=params, context=context, feedback=feedback
             )
             if success:
                 self.refresh()
+            else:
+                self.log(
+                    self.tr("Unpublish error ").format(
+                        stored_data.id, feedback.textLog()
+                    ),
+                    log_level=1,
+                    push=True,
+                )
 
     def _create_proxy_model(
         self,

@@ -54,7 +54,7 @@ class DeleteDataAlgorithm(QgsProcessingAlgorithm):
     def shortHelpString(self):
 
         return self.tr(
-            "Publication in geotuileur platform.\n"
+            "Delete data action in geotuileur platform.\n"
             "Input parameters are defined in a .json file.\n"
             "Available parameters:\n"
             "{\n"

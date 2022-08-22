@@ -262,7 +262,6 @@ class DashboardWidget(QWidget):
             alg.run(parameters=params, context=context, feedback=self.feedback)
             row = self.mdl_stored_data.get_stored_data_row(stored_data.id)
             self.mdl_stored_data.removeRow(row)
-            self.refresh()
 
     def _show_report(self, stored_data: StoredData) -> None:
         """
@@ -418,8 +417,11 @@ class DashboardWidget(QWidget):
             context = QgsProcessingContext()
             self.feedback = QgsProcessingFeedback()
 
-            alg.run(parameters=params, context=context, feedback=self.feedback)
-            self.refresh()
+            result, success = alg.run(
+                parameters=params, context=context, feedback=self.feedback
+            )
+            if success:
+                self.refresh()
 
     def _create_proxy_model(
         self,

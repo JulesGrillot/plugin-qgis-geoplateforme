@@ -1,5 +1,8 @@
+import json
 import os
+import tempfile
 
+from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
 from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtCore import QModelIndex
 from qgis.PyQt.QtWidgets import (
@@ -11,11 +14,14 @@ from qgis.PyQt.QtWidgets import (
     QWidget,
 )
 
+from geotuileur.__about__ import __title_clean__
 from geotuileur.api.datastore import DatastoreRequestManager
 from geotuileur.api.stored_data import StorageType, StoredData, StoredDataRequestManager
 from geotuileur.gui.mdl_stored_data import StoredDataListModel
 from geotuileur.gui.proxy_model_stored_data import StoredDataProxyModel
 from geotuileur.gui.report.dlg_report import ReportDialog
+from geotuileur.processing import GeotuileurProvider
+from geotuileur.processing.unpublish import UnpublishAlgorithm
 from geotuileur.toolbelt import PlgLogger
 
 
@@ -186,12 +192,30 @@ class StorageReportDialog(QDialog):
             stored_data: (StoredData) stored data to delete
         """
         try:
-            manager = StoredDataRequestManager()
-            manager.delete(
-                datastore=stored_data.datastore_id, stored_data=stored_data.id
+
+            data = {
+                UnpublishAlgorithm.DATASTORE: stored_data.datastore_id,
+                UnpublishAlgorithm.STORED_DATA: stored_data.id,
+            }
+            filename = tempfile.NamedTemporaryFile(
+                prefix=f"qgis_{__title_clean__}_", suffix=".json"
+            ).name
+            with open(filename, "w") as file:
+                json.dump(data, file)
+            algo_str = f"{GeotuileurProvider().id()}:{UnpublishAlgorithm().name()}"
+            alg = QgsApplication.processingRegistry().algorithmById(algo_str)
+            params = {UnpublishAlgorithm.INPUT_JSON: filename}
+
+            context = QgsProcessingContext()
+            self.feedback = QgsProcessingFeedback()
+
+            result, success = alg.run(
+                parameters=params, context=context, feedback=self.feedback
             )
-            row = self.mdl_stored_data.get_stored_data_row(stored_data.id)
-            self.mdl_stored_data.removeRow(row)
+            if success:
+                row = self.mdl_stored_data.get_stored_data_row(stored_data.id)
+                self.mdl_stored_data.removeRow(row)
+
         except StoredDataRequestManager.DeleteStoredDataException as exc:
             self.log(
                 self.tr("Stored data {0} delete error : {1}").format(

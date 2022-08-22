@@ -12,6 +12,7 @@ from qgis.PyQt.QtGui import QIcon
 # project
 from geotuileur.__about__ import DIR_PLUGIN_ROOT, __title__, __version__
 from geotuileur.processing.check_layer import CheckLayerAlgorithm
+from geotuileur.processing.delete_data import DeleteDataAlgorithm
 from geotuileur.processing.tile_creation import TileCreationAlgorithm
 from geotuileur.processing.unpublish import UnpublishAlgorithm
 from geotuileur.processing.update_tile_upload import UpdateTileUploadAlgorithm
@@ -40,6 +41,7 @@ class GeotuileurProvider(QgsProcessingProvider):
         self.addAlgorithm(UploadPublicationAlgorithm())
         self.addAlgorithm(UnpublishAlgorithm())
         self.addAlgorithm(UpdateTileUploadAlgorithm())
+        self.addAlgorithm(DeleteDataAlgorithm())
 
     def id(self) -> str:
         """Unique provider id, used for identifying it. This string should be unique, \

@@ -164,8 +164,8 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                 # Get created stored_data id
                 stored_data_id = stored_data_val["_id"]
 
-                # Update feedback if correct type
-                if isinstance(feedback, TileCreationProcessingFeedback):
+                # Update feedback if attribute is present
+                if hasattr(feedback, "created_pyramid_id"):
                     feedback.created_pyramid_id = stored_data_id
 
                 # Update stored data tags

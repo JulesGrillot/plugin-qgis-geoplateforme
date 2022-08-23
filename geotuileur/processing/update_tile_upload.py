@@ -12,13 +12,9 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication
 
 from geotuileur.api.processing import ProcessingRequestManager
-from geotuileur.api.stored_data import StoredDataRequestManager, StoredDataStatus
-from geotuileur.api.upload import UploadRequestManager, UploadStatus
+from geotuileur.api.stored_data import StoredDataRequestManager
 from geotuileur.processing.tile_creation import TileCreationAlgorithm
-from geotuileur.processing.upload_creation import UploadCreationAlgorithm
-from geotuileur.processing.upload_database_integration import (
-    UploadDatabaseIntegrationAlgorithm,
-)
+from geotuileur.processing.vector_db_creation import VectorDatabaseCreationAlgorithm
 
 
 class UpdateTileUploadProcessingFeedback(QgsProcessingFeedback):
@@ -112,19 +108,10 @@ class UpdateTileUploadAlgorithm(QgsProcessingAlgorithm):
             datastore, initial_stored_data_id
         )
 
-        # Create upload
-        upload_id = self._create_upload(datastore, files, name, srs, context, feedback)
-
-        # Wait for upload close after check
-        self._wait_upload_close(datastore, upload_id)
-
-        # Run database integration
+        # Create vector db
         vector_db_stored_data_id = self._database_integration(
-            name, datastore, upload_id, context, feedback
+            datastore, files, name, srs, context, feedback
         )
-
-        # Wait for database integration
-        self._wait_database_integration(datastore, vector_db_stored_data_id)
 
         # Create tile
         created_stored_data = self._tile_creation(
@@ -178,7 +165,7 @@ class UpdateTileUploadAlgorithm(QgsProcessingAlgorithm):
             )
         return exec_param
 
-    def _create_upload(
+    def _database_integration(
         self,
         datastore: str,
         files: [str],
@@ -200,137 +187,26 @@ class UpdateTileUploadAlgorithm(QgsProcessingAlgorithm):
         Returns: (str) created upload id
 
         """
-        algo_str = f"geotuileur:{UploadCreationAlgorithm().name()}"
+        algo_str = f"geotuileur:{VectorDatabaseCreationAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
         data = {
-            UploadCreationAlgorithm.DATASTORE: datastore,
-            UploadCreationAlgorithm.NAME: name,
-            UploadCreationAlgorithm.DESCRIPTION: name,
-            UploadCreationAlgorithm.SRS: srs,
-            UploadCreationAlgorithm.FILES: files,
+            VectorDatabaseCreationAlgorithm.DATASTORE: datastore,
+            VectorDatabaseCreationAlgorithm.NAME: name,
+            VectorDatabaseCreationAlgorithm.SRS: srs,
+            VectorDatabaseCreationAlgorithm.FILES: files,
         }
         filename = tempfile.NamedTemporaryFile(suffix=".json").name
         with open(filename, "w") as file:
             json.dump(data, file)
-        params = {UploadDatabaseIntegrationAlgorithm.INPUT_JSON: filename}
+        params = {VectorDatabaseCreationAlgorithm.INPUT_JSON: filename}
         results, successful = alg.run(params, context, feedback)
         if successful:
-            created_upload_id = results[UploadCreationAlgorithm.CREATED_UPLOAD_ID]
-
-            # Update feedback if correct type
-            if isinstance(feedback, UpdateTileUploadProcessingFeedback):
-                feedback.created_upload_id = created_upload_id
-        else:
-            raise QgsProcessingException(self.tr("Upload creation failed"))
-        return created_upload_id
-
-    def _wait_upload_close(self, datastore: str, upload_id: str) -> None:
-        """
-        Wait until upload is CLOSED or throw exception if status is UNSTABLE
-
-        Args:
-            datastore : (str) datastore id
-            upload_id:  (str) upload id
-        """
-        try:
-            manager = UploadRequestManager()
-            upload = manager.get_upload(datastore=datastore, upload=upload_id)
-            status = UploadStatus(upload.status)
-            while status != UploadStatus.CLOSED and status != UploadStatus.UNSTABLE:
-                upload = manager.get_upload(datastore=datastore, upload=upload_id)
-                status = UploadStatus(upload.status)
-
-            if status == UploadStatus.UNSTABLE:
-                raise QgsProcessingException(
-                    self.tr(
-                        "Upload check failed. Check report in dashboard for more details."
-                    )
-                )
-
-        except UploadRequestManager.UnavailableUploadException as exc:
-            raise QgsProcessingException(
-                self.tr("Upload read failed : {0}").format(exc)
-            )
-
-    def _database_integration(
-        self,
-        name: str,
-        datastore: str,
-        upload_id: str,
-        context: QgsProcessingContext,
-        feedback: QgsProcessingFeedback,
-    ) -> str:
-        """
-        Launch database integration for an upload
-
-        Args:
-            name: (str) stored data name
-            datastore : (str) datastore id
-            upload_id:  (str) upload id
-            context: QgsProcessingContext
-            feedback: QgsProcessingFeedback
-
-        Returns: (str) created vector db stored data id
-
-        """
-        algo_str = f"geotuileur:{UploadDatabaseIntegrationAlgorithm().name()}"
-        alg = QgsApplication.processingRegistry().algorithmById(algo_str)
-        data = {
-            UploadDatabaseIntegrationAlgorithm.DATASTORE: datastore,
-            UploadDatabaseIntegrationAlgorithm.UPLOAD: upload_id,
-            UploadDatabaseIntegrationAlgorithm.STORED_DATA_NAME: name,
-        }
-        filename = tempfile.NamedTemporaryFile(suffix=".json").name
-        with open(filename, "w") as file:
-            json.dump(data, file)
-        params = {UploadDatabaseIntegrationAlgorithm.INPUT_JSON: filename}
-        results, successful = alg.run(params, context, feedback)
-        if successful:
-            vector_db_stored_data_id = results[
-                UploadDatabaseIntegrationAlgorithm.CREATED_STORED_DATA_ID
+            created_upload_id = results[
+                VectorDatabaseCreationAlgorithm.CREATED_UPLOAD_ID
             ]
-
-            # Update feedback if correct type
-            if isinstance(feedback, UpdateTileUploadProcessingFeedback):
-                feedback.created_vector_db_id = vector_db_stored_data_id
         else:
-            raise QgsProcessingException(self.tr("Upload database integration failed"))
-        return vector_db_stored_data_id
-
-    def _wait_database_integration(
-        self, datastore: str, vector_db_stored_data_id: str
-    ) -> None:
-        """
-        Wait until database integration is done (GENERATED status) or throw exception if status is UNSTABLE
-
-        Args:
-            datastore: (str) datastore id
-            vector_db_stored_data_id: (str) vector db stored data id
-        """
-        try:
-            manager = StoredDataRequestManager()
-            stored_data = manager.get_stored_data(
-                datastore=datastore, stored_data=vector_db_stored_data_id
-            )
-            status = StoredDataStatus(stored_data.status)
-            while (
-                status != StoredDataStatus.GENERATED
-                and status != StoredDataStatus.UNSTABLE
-            ):
-                stored_data = manager.get_stored_data(
-                    datastore=datastore, stored_data=vector_db_stored_data_id
-                )
-                status = StoredDataStatus(stored_data.status)
-
-            if status == StoredDataStatus.UNSTABLE:
-                raise QgsProcessingException(
-                    self.tr(
-                        "Database integration failed. Check report in dashboard for more details."
-                    )
-                )
-
-        except UploadRequestManager.UnavailableUploadException as exc:
-            raise QgsProcessingException(f"Stored data read failed : {exc}")
+            raise QgsProcessingException(self.tr("Vector database creation failed"))
+        return created_upload_id
 
     def _tile_creation(
         self,

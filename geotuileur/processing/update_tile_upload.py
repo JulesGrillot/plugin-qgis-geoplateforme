@@ -201,12 +201,12 @@ class UpdateTileUploadAlgorithm(QgsProcessingAlgorithm):
         params = {VectorDatabaseCreationAlgorithm.INPUT_JSON: filename}
         results, successful = alg.run(params, context, feedback)
         if successful:
-            created_upload_id = results[
-                VectorDatabaseCreationAlgorithm.CREATED_UPLOAD_ID
+            vector_db_stored_data_id = results[
+                VectorDatabaseCreationAlgorithm.CREATED_STORED_DATA_ID
             ]
         else:
             raise QgsProcessingException(self.tr("Vector database creation failed"))
-        return created_upload_id
+        return vector_db_stored_data_id
 
     def _tile_creation(
         self,

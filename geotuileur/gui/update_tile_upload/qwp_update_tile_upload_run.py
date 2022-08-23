@@ -347,7 +347,7 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
         return result
 
     def _stop_timer_and_display_error(self, error: str) -> None:
-        self.upload_check_timer.stop()
+        self.update_check_timer.stop()
         self.setTitle(error)
         self.loading_movie.stop()
         self.lbl_step_icon.setMovie(QMovie())

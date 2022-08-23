@@ -77,6 +77,7 @@ SOURCES= ../../plugin_main.py \
     ../../processing/unpublish.py \
     ../../processing/upload_creation.py \
     ../../processing/upload_database_integration.py \
+    ../../processing/vector_db_creation.py \
     ../../processing/upload_publication.py \
     ../../processing/update_tile_upload.py \
     # Toolbelt

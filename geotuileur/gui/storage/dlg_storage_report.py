@@ -17,7 +17,9 @@ from qgis.PyQt.QtWidgets import (
 from geotuileur.__about__ import __title_clean__
 from geotuileur.api.datastore import DatastoreRequestManager
 from geotuileur.api.stored_data import StorageType, StoredData
+from geotuileur.api.upload import Upload, UploadRequestManager
 from geotuileur.gui.mdl_stored_data import StoredDataListModel
+from geotuileur.gui.mdl_upload import UploadListModel
 from geotuileur.gui.proxy_model_stored_data import StoredDataProxyModel
 from geotuileur.gui.report.dlg_report import ReportDialog
 from geotuileur.processing import GeotuileurProvider
@@ -63,6 +65,16 @@ class StorageReportDialog(QDialog):
         self._init_table_view(
             self.tbv_integrated_as_s3, visible_storage=[StorageType.S3]
         )
+
+        # Upload
+        self.mdl_upload = UploadListModel(self)
+        self.tbv_upload.setModel(self.mdl_upload)
+        # Connection for delete
+        self.tbv_upload.clicked.connect(lambda index: self._upload_item_clicked(index))
+        self.tbv_upload.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        # Remove vertical header and disable edit
+        self.tbv_upload.verticalHeader().setVisible(False)
+        self.tbv_upload.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
         self._datastore_updated()
@@ -130,6 +142,8 @@ class StorageReportDialog(QDialog):
                 self.cbx_datastore.current_datastore_id()
             )
 
+            self.mdl_upload.set_datastore(self.cbx_datastore.current_datastore_id())
+
             self.tbv_integrated_in_database.resizeRowsToContents()
             self.tbv_integrated_in_database.resizeColumnsToContents()
 
@@ -145,6 +159,9 @@ class StorageReportDialog(QDialog):
 
                 (use, quota) = datastore.get_storage_use_and_quota("S3")
                 self._update_progress_bar(quota, use, self.pgb_integrated_as_s3)
+
+                (use, quota) = datastore.get_upload_use_and_quota()
+                self._update_progress_bar(quota, use, self.pgb_upload)
 
             except DatastoreRequestManager.UnavailableDatastoreException as exc:
                 self.log(
@@ -183,6 +200,41 @@ class StorageReportDialog(QDialog):
                 self._delete(stored_data)
             elif index.column() == self.mdl_stored_data.REPORT_COL:
                 self._show_report(stored_data)
+
+    def _upload_item_clicked(self, index: QModelIndex) -> None:
+        """
+        Launch action for upload table item depending on clicked column
+
+        Args:
+            index: selected index
+        """
+        # Get StoredData
+        upload = self.mdl_upload.data(
+            self.mdl_upload.index(index.row(), self.mdl_stored_data.NAME_COL),
+            QtCore.Qt.UserRole,
+        )
+        if upload:
+            if index.column() == self.mdl_upload.DELETE_COL:
+                self._delete_upload(upload)
+
+    def _delete_upload(self, upload: Upload) -> None:
+        """
+        Delete an upload
+
+        Args:
+            upload: (Upload) upload to delete
+        """
+        try:
+            manager = UploadRequestManager()
+            manager.delete(datastore=upload.datastore_id, upload=upload.id)
+            row = self.mdl_upload.get_upload_row(upload.id)
+            self.mdl_upload.removeRow(row)
+        except UploadRequestManager.DeleteUploadException as exc:
+            self.log(
+                self.tr("Upload {0} delete error : {1}").format(upload.id, exc),
+                log_level=1,
+                push=True,
+            )
 
     def _delete(self, stored_data: StoredData) -> None:
         """

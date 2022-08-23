@@ -1,5 +1,7 @@
 import json
 import logging
+import math
+import re
 from dataclasses import dataclass
 from enum import Enum
 from typing import List
@@ -43,9 +45,24 @@ class Upload:
     status: str
     size: int = 0
     tags: dict = None
+    last_event: dict = None
+
+    def get_last_event_date(self) -> str:
+        result = ""
+        if self.last_event and "date" in self.last_event:
+            result = self.last_event["date"]
+        return result
 
 
 class UploadRequestManager:
+    MAX_LIMIT = 50
+
+    class ReadUploadException(Exception):
+        pass
+
+    class DeleteUploadException(Exception):
+        pass
+
     class UnavailableUploadException(Exception):
         pass
 
@@ -84,6 +101,81 @@ class UploadRequestManager:
         return (
             f"{self.plg_settings.base_url_api_entrepot}/datastores/{datastore}/uploads"
         )
+
+    def get_upload_list(self, datastore: str) -> List[Upload]:
+        """
+        Get list of upload
+
+        Args:
+            datastore: (str) datastore id
+
+        Returns: list of available upload, raise ReadUploadException otherwise
+        """
+        nb_value = self._get_nb_available_upload(datastore)
+        nb_request = math.ceil(nb_value / self.MAX_LIMIT)
+        result = []
+        for page in range(0, nb_request):
+            result += self._get_upload_list(datastore, page + 1, self.MAX_LIMIT)
+        return result
+
+    def _get_upload_list(
+        self, datastore: str, page: int = 1, limit: int = MAX_LIMIT
+    ) -> List[Upload]:
+        """
+        Get list of upload
+
+        Args:
+            datastore: (str) datastore id
+            page: (int) page number (start at 1)
+            limit: (int)
+
+        Returns: list of available upload, raise ReadUploadException otherwise
+        """
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+
+        req = QNetworkRequest(
+            QUrl(f"{self.get_base_url(datastore)}?page={page}&limit={limit}")
+        )
+
+        req_reply = qgs_blocking_get_request(
+            self.ntwk_requester_blk, req, self.ReadUploadException
+        )
+        data = json.loads(req_reply.content().data().decode("utf-8"))
+        uploads_id = [val["_id"] for val in data]
+
+        return [self.get_upload(datastore, upload) for upload in uploads_id]
+
+    def _get_nb_available_upload(self, datastore: str) -> int:
+        """
+        Get number of available upload
+
+        Args:
+            datastore: (str) datastore id
+
+        Returns: (int) number of available data, raise ReadUploadException in case of request error
+
+        """
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+
+        # For now read with maximum limit possible
+        req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}?limit=1"))
+
+        req_reply = qgs_blocking_get_request(
+            self.ntwk_requester_blk, req, self.UnavailableUploadException
+        )
+
+        content_range = req_reply.rawHeader(b"Content-Range").data().decode("utf-8")
+        match = re.match(
+            r"(?P<min>\d+)\s?-\s?(?P<max>\d+)?\s?\/?\s?(?P<nb_val>\d+|\*)?",
+            content_range,
+        )
+        if match:
+            nb_val = int(match.group("nb_val"))
+        else:
+            raise self.ReadUploadException(
+                f"Invalid Content-Range {content_range} not min-max/nb_val as expected"
+            )
+        return nb_val
 
     def get_upload_status(self, datastore: str, upload: str) -> str:
         """
@@ -146,6 +238,27 @@ class UploadRequestManager:
         data = json.loads(req_reply.content().data().decode("utf-8"))
         return self._upload_from_json(data, datastore)
 
+    def delete(self, datastore: str, upload: str) -> None:
+        """
+        Delete an upload. Raise DeleteUploadException if an error occurs
+
+        Args:
+            datastore: (str) datastore id
+            upload: (str) upload id
+        """
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+        req_delete = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{upload}"))
+        # send request
+        resp = self.ntwk_requester_blk.deleteResource(req_delete)
+
+        # check response
+        if resp != QgsBlockingNetworkRequest.NoError:
+            req_reply = self.ntwk_requester_blk.reply()
+            data = json.loads(req_reply.content().data().decode("utf-8"))
+            raise self.DeleteUploadException(
+                f"Error while deleting upload : {self.ntwk_requester_blk.errorMessage()}. Reply error: {data}"
+            )
+
     @staticmethod
     def _upload_from_json(data, datastore: str) -> Upload:
         upload = Upload(
@@ -160,6 +273,8 @@ class UploadRequestManager:
             upload.size = data["size"]
         if "tags" in data:
             upload.tags = data["tags"]
+        if "last_event" in data:
+            upload.last_event = data["last_event"]
         return upload
 
     def get_upload_checks_execution(

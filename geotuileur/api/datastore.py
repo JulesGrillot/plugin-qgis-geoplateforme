@@ -24,11 +24,35 @@ class Datastore:
     storages: dict
 
     def get_storage_use_and_quota(self, storage_type: str) -> (int, int):
+        """
+        Get storage use and quota as tuple
+
+        Args:
+            storage_type: (str) storage type ("POSTGRESQL" or "FILESYSTEM" or "S3")
+
+        Returns: (int,int) (use/quota)
+
+        """
         result = (0, 0)
         for data in self.storages["data"]:
             if data["type"] == storage_type:
                 result = (data["use"], data["quota"])
                 break
+        return result
+
+    def get_upload_use_and_quota(self) -> (int, int):
+        """
+        Get upload use and quota as tuple
+
+        Returns: (int,int) (use/quota)
+
+        """
+        result = (0, 0)
+        if "uploads" in self.storages:
+            result = (
+                self.storages["uploads"]["use"],
+                self.storages["uploads"]["quota"],
+            )
         return result
 
 

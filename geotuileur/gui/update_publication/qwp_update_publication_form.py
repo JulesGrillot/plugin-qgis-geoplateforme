@@ -87,7 +87,6 @@ class UpdatePublicationWizard(QWizardPage):
                     configuration = manager_config.get_configuration(
                         datastore_id, ids[0]
                     )
-                    self.wdg_publication_form = PublicationForm
                     self.wdg_publication_form.set_config(configuration)
             except ConfigurationRequestManager.UnavailableConfigurationException as exc:
                 raise QgsProcessingException(f"exc configuration : {exc}")

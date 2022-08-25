@@ -13,11 +13,8 @@ from qgis.PyQt.QtWidgets import QWizardPage
 # Plugin
 from geotuileur.__about__ import __title_clean__
 from geotuileur.api.stored_data import StoredDataRequestManager
-from geotuileur.gui.publication_creation.qwp_publication_form import (
-    PublicationFormPageWizard,
-)
 from geotuileur.gui.update_publication.qwp_update_publication_form import (
-    UpdatePublicationFormPageWizard,
+    UpdatePublicationWizard,
 )
 from geotuileur.processing import GeotuileurProvider
 from geotuileur.processing.unpublish import UnpublishAlgorithm
@@ -25,10 +22,10 @@ from geotuileur.processing.upload_publication import UploadPublicationAlgorithm
 from geotuileur.toolbelt import PlgLogger, PlgOptionsManager
 
 
-class UpdatePublicationStatut(QWizardPage):
+class UpdatePublicationStatusPageWizard(QWizardPage):
     def __init__(
         self,
-        qwp_update_publication_form: UpdatePublicationFormPageWizard,
+        qwp_update_publication_form: UpdatePublicationWizard,
         parent=None,
     ):
         """
@@ -44,8 +41,6 @@ class UpdatePublicationStatut(QWizardPage):
         self.url_data = ""
         self.url_publication = ""
         self.qwp_update_publication_form = qwp_update_publication_form
-        self.qwp_publication_form: PublicationFormPageWizard
-        self.qwp
         uic.loadUi(
             os.path.join(
                 os.path.dirname(__file__),
@@ -73,8 +68,12 @@ class UpdatePublicationStatut(QWizardPage):
 
         """
 
-        datastore_id = self.qwp_publication_form.cbx_datastore.current_datastore_id()
-        stored_data = self.qwp_publication_form.cbx_stored_data.current_stored_data_id()
+        datastore_id = (
+            self.qwp_update_publication_form.cbx_datastore.current_datastore_id()
+        )
+        stored_data = (
+            self.qwp_update_publication_form.cbx_stored_data.current_stored_data_id()
+        )
         data = {
             UnpublishAlgorithm.DATASTORE: datastore_id,
             UnpublishAlgorithm.STORED_DATA: stored_data,
@@ -97,9 +96,15 @@ class UpdatePublicationStatut(QWizardPage):
         Run UploadPublicationAlgorithm
 
         """
-        configuration = self.qwp_publication_form.wdg_publication_form.get_config()
-        datastore_id = self.qwp_publication_form.cbx_datastore.current_datastore_id()
-        stored_data = self.qwp_publication_form.cbx_stored_data.current_stored_data_id()
+        configuration = (
+            self.qwp_update_publication_form.wdg_publication_form.get_config()
+        )
+        datastore_id = (
+            self.qwp_update_publication_form.cbx_datastore.current_datastore_id()
+        )
+        stored_data = (
+            self.qwp_update_publication_form.cbx_stored_data.current_stored_data_id()
+        )
 
         # Getting zoom levels parameters
         manager = StoredDataRequestManager()

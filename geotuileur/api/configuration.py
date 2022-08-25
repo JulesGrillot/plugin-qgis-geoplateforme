@@ -2,7 +2,6 @@
 import json
 import logging
 from dataclasses import dataclass
-from re import S
 
 # PyQGIS
 from qgis.core import QgsBlockingNetworkRequest

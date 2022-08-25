@@ -4,12 +4,14 @@ from qgis.PyQt.QtWidgets import QDialog, QWizard
 
 # Plugin
 from geotuileur.gui.update_publication.qwp_update_publication_form import (
-    UpdatePublicationFormPageWizard,
+    UpdatePublicationWizard,
 )
-from geotuileur.gui.update_publication.qwp_update_status import UpdatePublicationStatut
+from geotuileur.gui.update_publication.qwp_update_status import (
+    UpdatePublicationStatusPageWizard,
+)
 
 
-class UpdatePublicationFormCreation(QWizard):
+class UpdatePublicationWizard(QWizard):
     def __init__(self, parent=None):
         """
         QWizard for update a publication
@@ -20,8 +22,8 @@ class UpdatePublicationFormCreation(QWizard):
 
         super().__init__(parent)
         self.setWindowTitle(self.tr("Publication update"))
-        self.qwp_update_publication_form = UpdatePublicationFormPageWizard(self)
-        self.qwp_update_publication_status = UpdatePublicationStatut(
+        self.qwp_update_publication_form = UpdatePublicationWizard(self)
+        self.qwp_update_publication_status = UpdatePublicationStatusPageWizard(
             self.qwp_update_publication_form, self
         )
 

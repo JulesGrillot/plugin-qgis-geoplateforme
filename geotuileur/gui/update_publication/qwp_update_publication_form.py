@@ -1,6 +1,7 @@
 # standard
 import os
 
+from qgis.core import QgsProcessingException
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QWizardPage
 
@@ -10,7 +11,7 @@ from geotuileur.api.stored_data import StoredDataStatus, StoredDataStep
 from geotuileur.gui.publication_creation.wdg_publication_form import PublicationForm
 
 
-class UpdatePublicationFormPageWizard(QWizardPage):
+class UpdatePublicationWizard(QWizardPage):
     def __init__(self, parent=None):
 
         """
@@ -76,7 +77,6 @@ class UpdatePublicationFormPageWizard(QWizardPage):
         Update pyramid generation combobox when datastore is updated
 
         """
-        self.wdg_publication_form = PublicationForm()
         stored_data_id = self.cbx_stored_data.current_stored_data_id()
         datastore_id = self.cbx_datastore.current_datastore_id()
         if stored_data_id:
@@ -87,6 +87,7 @@ class UpdatePublicationFormPageWizard(QWizardPage):
                     configuration = manager_config.get_configuration(
                         datastore_id, ids[0]
                     )
+                    self.wdg_publication_form = PublicationForm
                     self.wdg_publication_form.set_config(configuration)
             except ConfigurationRequestManager.UnavailableConfigurationException as exc:
-                self.log(self.tr("Can't update stored_data").format(exc), push=True)
+                raise QgsProcessingException(f"exc configuration : {exc}")

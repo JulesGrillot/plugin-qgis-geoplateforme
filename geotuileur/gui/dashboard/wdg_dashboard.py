@@ -31,6 +31,12 @@ from geotuileur.gui.publication_creation.wzd_publication_creation import (
 )
 from geotuileur.gui.report.dlg_report import ReportDialog
 from geotuileur.gui.tile_creation.wzd_tile_creation import TileCreationWizard
+from geotuileur.gui.update_publication.qwp_update_publication_form import (
+    UpdatePublicationFormPageWizard,
+)
+from geotuileur.gui.update_publication.wzd_update_publication import (
+    UpdatePublicationFormCreation,
+)
 from geotuileur.gui.update_tile_upload.wzd_update_tile_upload import (
     UpdateTileUploadWizard,
 )
@@ -326,7 +332,14 @@ class DashboardWidget(QWidget):
         Args:
             stored_data: (StoredData) stored data
         """
-        self.log("Publish information update not implemented yet", push=True)
+
+        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
+        publication_wizard = UpdatePublicationFormCreation(self)
+        publication_wizard.set_datastore_id(stored_data.datastore_id)
+        publication_wizard.set_stored_data_id(stored_data.id)
+
+        QGuiApplication.restoreOverrideCursor()
+        publication_wizard.show()
 
     def _create(self) -> None:
         """
@@ -337,7 +350,7 @@ class DashboardWidget(QWidget):
         import_wizard.set_datastore_id(self.cbx_datastore.current_datastore_id())
         import_wizard.show()
 
-    def _update(self) -> None:
+    def _update(self, stored_data: str) -> None:
         """
         Show update wizard with current datastore
 
@@ -385,11 +398,11 @@ class DashboardWidget(QWidget):
             algo_str = f"{GeotuileurProvider().id()}:{UnpublishAlgorithm().name()}"
             alg = QgsApplication.processingRegistry().algorithmById(algo_str)
             params = {UnpublishAlgorithm.INPUT_JSON: filename}
-
             context = QgsProcessingContext()
-            self.feedback = QgsProcessingFeedback()
+            feedback = QgsProcessingFeedback()
 
-            alg.run(parameters=params, context=context, feedback=self.feedback)
+            alg.run(parameters=params, context=context, feedback=feedback)
+
             self.refresh()
 
     def _create_proxy_model(

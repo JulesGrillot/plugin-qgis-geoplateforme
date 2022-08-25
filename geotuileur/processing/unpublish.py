@@ -17,7 +17,7 @@ from geotuileur.api.stored_data import StoredDataRequestManager
 class UnpublishAlgorithm(QgsProcessingAlgorithm):
     INPUT_JSON = "INPUT_JSON"
     DATASTORE = "datastore"
-    STORED_DATA = "stored data"
+    STORED_DATA = "stored_data"
 
     def tr(self, string):
         return QCoreApplication.translate(

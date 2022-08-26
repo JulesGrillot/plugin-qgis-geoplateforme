@@ -14,7 +14,7 @@ from qgis.PyQt.QtWidgets import QWizardPage
 from geotuileur.__about__ import __title_clean__
 from geotuileur.api.stored_data import StoredDataRequestManager
 from geotuileur.gui.update_publication.qwp_update_publication_form import (
-    UpdatePublicationWizard,
+    UpdatePublicationPageWizard,
 )
 from geotuileur.processing import GeotuileurProvider
 from geotuileur.processing.unpublish import UnpublishAlgorithm
@@ -25,7 +25,7 @@ from geotuileur.toolbelt import PlgLogger, PlgOptionsManager
 class UpdatePublicationStatusPageWizard(QWizardPage):
     def __init__(
         self,
-        qwp_update_publication_form: UpdatePublicationWizard,
+        qwp_update_publication_form: UpdatePublicationPageWizard,
         parent=None,
     ):
         """

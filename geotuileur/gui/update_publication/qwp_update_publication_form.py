@@ -8,10 +8,9 @@ from qgis.PyQt.QtWidgets import QWizardPage
 # plugin
 from geotuileur.api.configuration import ConfigurationRequestManager
 from geotuileur.api.stored_data import StoredDataStatus, StoredDataStep
-from geotuileur.gui.publication_creation.wdg_publication_form import PublicationForm
 
 
-class UpdatePublicationWizard(QWizardPage):
+class UpdatePublicationPageWizard(QWizardPage):
     def __init__(self, parent=None):
 
         """

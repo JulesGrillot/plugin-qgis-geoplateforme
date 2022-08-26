@@ -221,7 +221,7 @@ class ConfigurationRequestManager:
         """
 
         result = Configuration(
-            type_data=data["type_data"],
+            type_data=data["type"],
             metadata=data["metadata"],
             name=data["name"],
             layer_name=data["layer_name"],

@@ -173,3 +173,6 @@ class TileGenerationEditionPageWizard(QWizardPage):
             self.LEVEL_SCALE_LAMBERT_MAP[self.levels_range_slider.low()],
             self.LEVEL_SCALE_LAMBERT_MAP[self.levels_range_slider.high()],
         )
+
+        self.lbl_min_zoom.setText(str(self.levels_range_slider.low()))
+        self.lbl_max_zoom.setText(str(self.levels_range_slider.high()))

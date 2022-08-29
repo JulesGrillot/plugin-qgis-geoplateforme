@@ -17,10 +17,17 @@
    <locale language="English" country="UnitedStates"/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="1">
-    <widget class="DatastoreComboBox" name="cbx_datastore"/>
+   <item row="5" column="0">
+    <widget class="QLabel" name="lbl_flux">
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>Service name:</string>
+     </property>
+    </widget>
    </item>
-   <item row="9" column="1">
+   <item row="9" column="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -33,37 +40,17 @@
      </property>
     </spacer>
    </item>
-   <item row="8" column="1">
-    <widget class="QgsScaleRangeWidget" name="srw_zoom">
-     <property name="cursor">
-      <cursorShape>ArrowCursor</cursorShape>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="1">
-    <widget class="RangeSlider" name="levels_range_slider" native="true">
-     <property name="cursor">
-      <cursorShape>ClosedHandCursor</cursorShape>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="StoredDataComboBox" name="cbx_stored_data"/>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="lbl_flux">
-     <property name="autoFillBackground">
-      <bool>true</bool>
-     </property>
-     <property name="text">
-      <string>Service name:</string>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0">
     <widget class="QLabel" name="lbl_datastore">
      <property name="text">
       <string>Datastore:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0" rowspan="2">
+    <widget class="QLabel" name="lbl_zoom">
+     <property name="text">
+      <string>Max and min zoom levels:</string>
      </property>
     </widget>
    </item>
@@ -74,7 +61,14 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
+   <item row="7" column="2">
+    <widget class="RangeSlider" name="levels_range_slider" native="true">
+     <property name="cursor">
+      <cursorShape>ClosedHandCursor</cursorShape>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1" colspan="3">
     <widget class="QLineEdit" name="lne_flux">
      <property name="inputMethodHints">
       <set>Qt::ImhLatinOnly</set>
@@ -87,10 +81,42 @@
      </property>
     </widget>
    </item>
-   <item row="7" column="0" rowspan="2">
-    <widget class="QLabel" name="lbl_zoom">
+   <item row="3" column="1" colspan="3">
+    <widget class="StoredDataComboBox" name="cbx_stored_data"/>
+   </item>
+   <item row="1" column="1" colspan="3">
+    <widget class="DatastoreComboBox" name="cbx_datastore"/>
+   </item>
+   <item row="8" column="1" colspan="3">
+    <widget class="QgsScaleRangeWidget" name="srw_zoom">
+     <property name="cursor">
+      <cursorShape>ArrowCursor</cursorShape>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="QLabel" name="lbl_min_zoom">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
-      <string>Max and min zoom levels:</string>
+      <string notr="true">&lt;min_zoom&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="3">
+    <widget class="QLabel" name="lbl_max_zoom">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string notr="true">&lt;max_zoom&gt;</string>
      </property>
     </widget>
    </item>

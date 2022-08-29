@@ -1,7 +1,6 @@
 import json
 import os
 import tempfile
-from sre_constants import SUCCESS
 from typing import List
 
 from qgis.core import (
@@ -32,6 +31,9 @@ from geotuileur.gui.publication_creation.wzd_publication_creation import (
 )
 from geotuileur.gui.report.dlg_report import ReportDialog
 from geotuileur.gui.tile_creation.wzd_tile_creation import TileCreationWizard
+from geotuileur.gui.update_publication.wzd_update_publication import (
+    UpdatePublicationWizard,
+)
 from geotuileur.gui.update_tile_upload.wzd_update_tile_upload import (
     UpdateTileUploadWizard,
 )
@@ -366,7 +368,14 @@ class DashboardWidget(QWidget):
         Args:
             stored_data: (StoredData) stored data
         """
-        self.log("Publish information update not implemented yet", push=True)
+
+        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
+        publication_wizard = UpdatePublicationWizard(self)
+        publication_wizard.set_datastore_id(stored_data.datastore_id)
+        publication_wizard.set_stored_data_id(stored_data.id)
+
+        QGuiApplication.restoreOverrideCursor()
+        publication_wizard.show()
 
     def _create(self) -> None:
         """
@@ -425,9 +434,10 @@ class DashboardWidget(QWidget):
             algo_str = f"{GeotuileurProvider().id()}:{UnpublishAlgorithm().name()}"
             alg = QgsApplication.processingRegistry().algorithmById(algo_str)
             params = {UnpublishAlgorithm.INPUT_JSON: filename}
-
             context = QgsProcessingContext()
             feedback = QgsProcessingFeedback()
+            alg.run(parameters=params, context=context, feedback=feedback)
+            self.refresh()
 
             result, success = alg.run(
                 parameters=params, context=context, feedback=feedback

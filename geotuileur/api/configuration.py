@@ -191,6 +191,46 @@ class ConfigurationRequestManager:
 
         return configuration_ids
 
+    def get_configuration(self, datastore: str, configuration: str) -> Configuration:
+
+        """
+        get configuration informations
+
+        Args :
+            datastore : (str) , configuration : (str)
+        """
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+        req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{configuration}"))
+
+        # headers
+        req_reply = qgs_blocking_get_request(
+            self.ntwk_requester_blk, req, self.UnavailableConfigurationException
+        )
+        data = json.loads(req_reply.content().data().decode("utf-8"))
+        return self._create_configuration_from_json(data)
+
+    def _create_configuration_from_json(self, data: dict) -> Configuration:
+        """
+        Get config by id
+
+        Args:
+            datastore: (str) datastore id
+            stored_data: (str) stored dat id
+
+        Returns: stored data, raise ReadStoredDataException otherwise
+        """
+
+        result = Configuration(
+            type_data=data["type"],
+            metadata=data["metadata"],
+            name=data["name"],
+            layer_name=data["layer_name"],
+            type_infos=data["type_infos"],
+            attribution=data["attribution"],
+        )
+
+        return result
+
     def delete_configuration(self, datastore: str, configuration_ids: str):
         """
         Delete a configuration

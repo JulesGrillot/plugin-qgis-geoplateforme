@@ -3,7 +3,7 @@ import os
 
 # PyQGIS
 from qgis.PyQt import uic
-from qgis.PyQt.QtWidgets import QMessageBox, QWizardPage
+from qgis.PyQt.QtWidgets import QWizardPage
 
 from geotuileur.api.stored_data import StoredDataStatus, StoredDataStep
 
@@ -61,23 +61,8 @@ class PublicationFormPageWizard(QWizardPage):
         Returns: True
 
         """
-        if (
-            len(self.wdg_publication_form.lne_name.text()) == 0
-            or len(self.wdg_publication_form.lne_title.text()) == 0
-            or len(self.wdg_publication_form.txe_abstract.toPlainText()) == 0
-            or len(self.wdg_publication_form.lne_legal_notice.text()) == 0
-            or len(self.wdg_publication_form.lne_url_legal.text()) == 0
-        ):
-            valid = False
-            QMessageBox.warning(
-                self,
-                self.tr("Missing informations."),
-                self.tr("Please fill all fields."),
-            )
-        else:
-            valid = True
 
-        return valid
+        return self.wdg_publication_form.validatePage()
 
     def _datastore_updated(self) -> None:
         """

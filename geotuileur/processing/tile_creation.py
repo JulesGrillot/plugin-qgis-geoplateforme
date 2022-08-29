@@ -76,7 +76,7 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
             f'         "{self.TOP_LEVEL}": tile top level (str), value between 1 and 21,\n'
             f'         "{self.TOP_LEVEL}": tile top level (str), value between 1 and 21,\n'
             f"        ]"
-            f'    "{self.BBOX}": bounding box of sample generation ([x_min,x_max,y_min,y_max]): define bounding box, '
+            f'    "{self.BBOX}": bounding box of sample generation ([x_min,y_min,x_max,y_max]): define bounding box, '
             f"if used is_sample tag added to created stored data,\n"
             "}\n"
             f"Returns created stored data id in {self.CREATED_STORED_DATA_ID} results"

@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import List
 
-from qgis.core import QgsBlockingNetworkRequest
+from qgis.core import QgsBlockingNetworkRequest, QgsVectorLayer
 from qgis.PyQt.QtCore import QByteArray, QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
@@ -62,6 +62,7 @@ class StoredData:
     type_infos: dict = None
     size: int = 0
     srs: str = ""
+    extent: dict = None
     storage: dict = None
     last_event: dict = None
 
@@ -158,9 +159,21 @@ class StoredData:
                     result = StoredDataStep.PUBLISHED
         return result
 
+    def create_extent_layer(self) -> QgsVectorLayer:
+        """
+        Create extent layer from geojson contains in extent key
+
+        Returns: QgsVectorLayer (invalid layer if extent not defined)
+
+        """
+        return QgsVectorLayer(json.dumps(self.extent), f"{self.name}-extent", "ogr")
+
 
 class StoredDataRequestManager:
     class ReadStoredDataException(Exception):
+        pass
+
+    class DeleteStoredDataException(Exception):
         pass
 
     class UnavailableStoredData(Exception):
@@ -343,6 +356,8 @@ class StoredDataRequestManager:
             result.storage = data["storage"]
         if "last_event" in data:
             result.last_event = data["last_event"]
+        if "extent" in data:
+            result.extent = data["extent"]
         return result
 
     def get_stored_data_json(self, datastore: str, stored_data: str) -> dict:
@@ -383,6 +398,29 @@ class StoredDataRequestManager:
             )
 
         return json.loads(req_reply.content().data().decode("utf-8"))
+
+    def delete(self, datastore: str, stored_data: str) -> None:
+        """
+        Delete a stored data. Raise DeleteStoredDataException if an error occurs
+
+        Args:
+            datastore: (str) datastore id
+            stored_data: (str) stored data id
+        """
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+        req_delete = QNetworkRequest(
+            QUrl(f"{self.get_base_url(datastore)}/{stored_data}")
+        )
+        # send request
+        resp = self.ntwk_requester_blk.deleteResource(req_delete)
+
+        # check response
+        if resp != QgsBlockingNetworkRequest.NoError:
+            req_reply = self.ntwk_requester_blk.reply()
+            data = json.loads(req_reply.content().data().decode("utf-8"))
+            raise self.DeleteStoredDataException(
+                f"Error while deleting stored_data : {self.ntwk_requester_blk.errorMessage()}. Reply error: {data}"
+            )
 
     def add_tags(self, datastore: str, stored_data: str, tags: dict) -> None:
         """

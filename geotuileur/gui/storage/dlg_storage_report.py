@@ -1,5 +1,8 @@
+import json
 import os
+import tempfile
 
+from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
 from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtCore import QModelIndex
 from qgis.PyQt.QtWidgets import (
@@ -11,11 +14,16 @@ from qgis.PyQt.QtWidgets import (
     QWidget,
 )
 
+from geotuileur.__about__ import __title_clean__
 from geotuileur.api.datastore import DatastoreRequestManager
 from geotuileur.api.stored_data import StorageType, StoredData
+from geotuileur.api.upload import Upload, UploadRequestManager
 from geotuileur.gui.mdl_stored_data import StoredDataListModel
+from geotuileur.gui.mdl_upload import UploadListModel
 from geotuileur.gui.proxy_model_stored_data import StoredDataProxyModel
 from geotuileur.gui.report.dlg_report import ReportDialog
+from geotuileur.processing import GeotuileurProvider
+from geotuileur.processing.delete_data import DeleteDataAlgorithm
 from geotuileur.toolbelt import PlgLogger
 
 
@@ -58,6 +66,16 @@ class StorageReportDialog(QDialog):
             self.tbv_integrated_as_s3, visible_storage=[StorageType.S3]
         )
 
+        # Upload
+        self.mdl_upload = UploadListModel(self)
+        self.tbv_upload.setModel(self.mdl_upload)
+        # Connection for delete
+        self.tbv_upload.clicked.connect(lambda index: self._upload_item_clicked(index))
+        self.tbv_upload.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        # Remove vertical header and disable edit
+        self.tbv_upload.verticalHeader().setVisible(False)
+        self.tbv_upload.setEditTriggers(QAbstractItemView.NoEditTriggers)
+
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
         self._datastore_updated()
 
@@ -85,9 +103,7 @@ class StorageReportDialog(QDialog):
         tbv.verticalHeader().setVisible(False)
         tbv.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
-        # Remove some columns*
-        tbv.setColumnHidden(self.mdl_stored_data.ID_COL, True)
-        tbv.setColumnHidden(self.mdl_stored_data.TYPE_COL, True)
+        # Remove some columns
         tbv.setColumnHidden(self.mdl_stored_data.STATUS_COL, True)
         tbv.setColumnHidden(self.mdl_stored_data.ACTION_COL, True)
         tbv.setColumnHidden(self.mdl_stored_data.OTHER_ACTIONS_COL, True)
@@ -126,6 +142,8 @@ class StorageReportDialog(QDialog):
                 self.cbx_datastore.current_datastore_id()
             )
 
+            self.mdl_upload.set_datastore(self.cbx_datastore.current_datastore_id())
+
             self.tbv_integrated_in_database.resizeRowsToContents()
             self.tbv_integrated_in_database.resizeColumnsToContents()
 
@@ -142,6 +160,9 @@ class StorageReportDialog(QDialog):
                 (use, quota) = datastore.get_storage_use_and_quota("S3")
                 self._update_progress_bar(quota, use, self.pgb_integrated_as_s3)
 
+                (use, quota) = datastore.get_upload_use_and_quota()
+                self._update_progress_bar(quota, use, self.pgb_upload)
+
             except DatastoreRequestManager.UnavailableDatastoreException as exc:
                 self.log(
                     message=self.tr(
@@ -153,6 +174,7 @@ class StorageReportDialog(QDialog):
 
     @staticmethod
     def _update_progress_bar(quota: int, use: int, pgb: QProgressBar) -> None:
+
         pgb.setMinimum(0)
         pgb.setMaximum(int(quota / 1e6))
         pgb.setValue(int(use / 1e6))
@@ -179,6 +201,41 @@ class StorageReportDialog(QDialog):
             elif index.column() == self.mdl_stored_data.REPORT_COL:
                 self._show_report(stored_data)
 
+    def _upload_item_clicked(self, index: QModelIndex) -> None:
+        """
+        Launch action for upload table item depending on clicked column
+
+        Args:
+            index: selected index
+        """
+        # Get StoredData
+        upload = self.mdl_upload.data(
+            self.mdl_upload.index(index.row(), self.mdl_stored_data.NAME_COL),
+            QtCore.Qt.UserRole,
+        )
+        if upload:
+            if index.column() == self.mdl_upload.DELETE_COL:
+                self._delete_upload(upload)
+
+    def _delete_upload(self, upload: Upload) -> None:
+        """
+        Delete an upload
+
+        Args:
+            upload: (Upload) upload to delete
+        """
+        try:
+            manager = UploadRequestManager()
+            manager.delete(datastore=upload.datastore_id, upload=upload.id)
+            row = self.mdl_upload.get_upload_row(upload.id)
+            self.mdl_upload.removeRow(row)
+        except UploadRequestManager.DeleteUploadException as exc:
+            self.log(
+                self.tr("Upload {0} delete error : {1}").format(upload.id, exc),
+                log_level=1,
+                push=True,
+            )
+
     def _delete(self, stored_data: StoredData) -> None:
         """
         Delete a stored data
@@ -186,7 +243,34 @@ class StorageReportDialog(QDialog):
         Args:
             stored_data: (StoredData) stored data to delete
         """
-        self.log("Stored data delete not implemented yet", push=True)
+
+        data = {
+            DeleteDataAlgorithm.DATASTORE: stored_data.datastore_id,
+            DeleteDataAlgorithm.STORED_DATA: stored_data.id,
+        }
+        filename = tempfile.NamedTemporaryFile(
+            prefix=f"qgis_{__title_clean__}_", suffix=".json"
+        ).name
+        with open(filename, "w") as file:
+            json.dump(data, file)
+        algo_str = f"{GeotuileurProvider().id()}:{DeleteDataAlgorithm().name()}"
+        alg = QgsApplication.processingRegistry().algorithmById(algo_str)
+        params = {DeleteDataAlgorithm.INPUT_JSON: filename}
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        result, success = alg.run(parameters=params, context=context, feedback=feedback)
+
+        if success:
+            row = self.mdl_stored_data.get_stored_data_row(stored_data.id)
+            self.mdl_stored_data.removeRow(row)
+        else:
+            self.log(
+                self.tr("Stored data {0} delete error : {1}").format(
+                    stored_data.id, feedback.textLog()
+                ),
+                log_level=1,
+                push=True,
+            )
 
     def _show_report(self, stored_data: StoredData) -> None:
         """

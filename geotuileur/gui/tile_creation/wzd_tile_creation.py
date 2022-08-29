@@ -12,6 +12,9 @@ from geotuileur.gui.tile_creation.qwp_tile_generation_fields_selection import (
 from geotuileur.gui.tile_creation.qwp_tile_generation_generalization import (
     TileGenerationGeneralizationPageWizard,
 )
+from geotuileur.gui.tile_creation.qwp_tile_generation_sample import (
+    TileGenerationSamplePageWizard,
+)
 from geotuileur.gui.tile_creation.qwp_tile_generation_status import (
     TileGenerationStatusPageWizard,
 )
@@ -40,17 +43,23 @@ class TileCreationWizard(QWizard):
                 self.qwp_tile_generation_edition, parent=self
             )
         )
+        self.qwp_tile_generation_sample = TileGenerationSamplePageWizard(
+            self.qwp_tile_generation_edition, parent=self
+        )
         self.qwp_tile_generation_status = TileGenerationStatusPageWizard(
             self.qwp_tile_generation_edition,
             self.qwp_tile_generation_fields_selection,
             self.qwp_tile_generation_generalization,
+            self.qwp_tile_generation_sample,
             self,
         )
         self.addPage(self.qwp_tile_generation_edition)
         self.addPage(self.qwp_tile_generation_fields_selection)
         self.addPage(self.qwp_tile_generation_generalization)
+        self.addPage(self.qwp_tile_generation_sample)
         self.addPage(self.qwp_tile_generation_status)
         self.setOption(QWizard.NoBackButtonOnStartPage, True)
+        self.setOption(QWizard.NoBackButtonOnLastPage, True)
         self.setOption(QWizard.NoCancelButtonOnLastPage, True)
 
     def set_datastore_id(self, datastore_id: str) -> None:

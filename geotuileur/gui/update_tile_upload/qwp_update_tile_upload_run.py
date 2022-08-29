@@ -14,8 +14,8 @@ from qgis.core import (
     QgsProcessingFeedback,
 )
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QByteArray, QTimer
-from qgis.PyQt.QtGui import QMovie, QPixmap
+from qgis.PyQt.QtCore import QByteArray, QSize, QTimer
+from qgis.PyQt.QtGui import QIcon, QMovie, QPixmap
 from qgis.PyQt.QtWidgets import QHeaderView, QMessageBox, QWizardPage
 
 from geotuileur.__about__ import DIR_PLUGIN_ROOT
@@ -152,18 +152,13 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
             )
             self.lbl_step_icon.setMovie(QMovie())
             self.lbl_step_icon.setPixmap(pixmap)
-        else:
-            msgBox = QMessageBox(
-                QMessageBox.Warning,
-                self.tr("Update tile upload failed"),
-                self.tr("Check details for more informations"),
-            )
-            msgBox.setDetailedText(self.update_feedback.textLog())
-            msgBox.exec()
-            self._report_processing_error(self.update_feedback.textLog())
 
-        # Emit completeChanged to update finish button
-        self.completeChanged.emit()
+            # Emit completeChanged to update finish button
+            self.completeChanged.emit()
+        else:
+            self._report_processing_error(
+                self.tr("Update tile upload"), self.update_feedback.textLog()
+            )
 
     def check_update_status(self):
         """
@@ -206,13 +201,7 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
                 )
 
             except UploadRequestManager.UnavailableUploadException as exc:
-                msgBox = QMessageBox(
-                    QMessageBox.Warning,
-                    self.tr("Upload check status failed"),
-                    self.tr("Check details for more informations"),
-                )
-                msgBox.setDetailedText(str(exc))
-                msgBox.exec()
+                self._report_processing_error(self.tr("Upload check status"), str(exc))
         return execution_list
 
     def _check_vector_stored_data_creation(self) -> Execution:
@@ -250,13 +239,9 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
                 ProcessingRequestManager.UnavailableProcessingException,
                 StoredDataRequestManager.UnavailableStoredData,
             ) as exc:
-                msgBox = QMessageBox(
-                    QMessageBox.Warning,
-                    self.tr("Stored data database integration check failed"),
-                    self.tr("Check details for more informations"),
+                self._report_processing_error(
+                    self.tr("Stored data database integration check"), str(exc)
                 )
-                msgBox.setDetailedText(str(exc))
-                msgBox.exec()
         return execution
 
     def _check_pyramid_stored_data_creation(self) -> Execution:
@@ -295,13 +280,9 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
                 ProcessingRequestManager.UnavailableProcessingException,
                 StoredDataRequestManager.UnavailableStoredData,
             ) as exc:
-                msgBox = QMessageBox(
-                    QMessageBox.Warning,
-                    self.tr("Stored data pyramid creation check failed"),
-                    self.tr("Check details for more informations"),
+                self._report_processing_error(
+                    self.tr("Stored data pyramid creation check"), str(exc)
                 )
-                msgBox.setDetailedText(str(exc))
-                msgBox.exec()
         return execution
 
     def validatePage(self) -> bool:
@@ -365,18 +346,29 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
 
         return result
 
-    def _report_processing_error(self, error: str) -> None:
+    def _stop_timer_and_display_error(self, error: str) -> None:
+        self.upload_check_timer.stop()
+        self.setTitle(error)
+        self.loading_movie.stop()
+        self.lbl_step_icon.setMovie(QMovie())
+        self.lbl_step_icon.setPixmap(
+            QIcon(QgsApplication.iconPath("mIconWarning.svg")).pixmap(QSize(32, 32))
+        )
+        self.completeChanged.emit()
+
+    def _report_processing_error(self, processing: str, error: str) -> None:
         """
         Report processing error by displaying error in text browser
 
         Args:
             error:
         """
-        self.loading_movie.stop()
         self.processing_failed = True
         self.tbw_errors.setVisible(True)
         self.tbw_errors.setText(error)
-        self.completeChanged.emit()
+        self._stop_timer_and_display_error(
+            self.tr("{0} failed. Check report for more details.").format(processing)
+        )
 
     @staticmethod
     def _run_alg(

@@ -83,22 +83,22 @@
 <context>
     <name>DashboardWidget</name>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="207"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="209"/>
         <source>Replace data</source>
         <translation>Remplacer les données</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="213"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="215"/>
         <source>Manage styles</source>
         <translation>Gérer les styles</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="217"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="219"/>
         <source>Update publication informations</source>
         <translation>Modifier les informations de publication</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="223"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="225"/>
         <source>Unpublish</source>
         <translation>Dépublier</translation>
     </message>
@@ -143,9 +143,19 @@
         <translation>Mettre à jour un flux</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="298"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="338"/>
         <source>Vector tile : {0}</source>
         <translation>Vector tile : {0}</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="270"/>
+        <source>delete data error</source>
+        <translation>Erreur de suppression de donnée stockée</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="438"/>
+        <source>Unpublish error </source>
+        <translation>Erreur de dépublication </translation>
     </message>
 </context>
 <context>
@@ -269,7 +279,7 @@
 <context>
     <name>GeotuileurProvider</name>
     <message>
-        <location filename="../../processing/provider.py" line="71"/>
+        <location filename="../../processing/provider.py" line="73"/>
         <source>Geotuileur - Tools</source>
         <translation>Geotuileur - Outillage</translation>
     </message>
@@ -407,12 +417,12 @@
 <context>
     <name>ReportDialog</name>
     <message>
-        <location filename="../../gui/report/dlg_report.ui" line="45"/>
+        <location filename="../../gui/report/dlg_report.ui" line="38"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.ui" line="71"/>
+        <location filename="../../gui/report/dlg_report.ui" line="57"/>
         <source>ID</source>
         <translation>Identifiant</translation>
     </message>
@@ -422,32 +432,32 @@
         <translation>Rapport</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="95"/>
+        <location filename="../../gui/report/dlg_report.py" line="118"/>
         <source>Can&apos;t define upload logs : {0}</source>
         <translation>Impossible de définir le journal du téléversement : {0}</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="136"/>
+        <location filename="../../gui/report/dlg_report.py" line="159"/>
         <source>Can&apos;t define execution logs : {0}</source>
         <translation>Impossible de définir le journal d&apos;execution : {0}</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.ui" line="101"/>
+        <location filename="../../gui/report/dlg_report.ui" line="78"/>
         <source>Data details</source>
         <translation>Détails sur les données</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.ui" line="126"/>
+        <location filename="../../gui/report/dlg_report.ui" line="103"/>
         <source>Data structure</source>
         <translation>Structure des données</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="152"/>
+        <location filename="../../gui/report/dlg_report.py" line="175"/>
         <source>Waiting for data creation. You will find above technical information about executing processing.</source>
         <translation>Vos données sont en création. Vous trouverez ci-dessous des informations techniques sur le processus en cours.</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="170"/>
+        <location filename="../../gui/report/dlg_report.py" line="193"/>
         <source>Data is generating. You will find above technical information about executing processing.</source>
         <translation>Vos données sont en cours de génération. Vous trouverez ci-dessous des informations techniques sur le processus en cours.</translation>
     </message>
@@ -457,34 +467,44 @@
         <translation type="obsolete"> Vous trouverez ci-dessous des informations techniques concernant les processus exécutés et les problèmes rencontrés.</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="176"/>
+        <location filename="../../gui/report/dlg_report.py" line="199"/>
         <source>Database integration successful.</source>
         <translation>Vos données ont été intégrées en base. Elles peuvent être transformées en tuiles vectorielles.</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="178"/>
+        <location filename="../../gui/report/dlg_report.py" line="201"/>
         <source>Tile creation successful.</source>
         <translation>Vos tuiles vectorielles ont été générées avec succès à partir de vos données.</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="179"/>
+        <location filename="../../gui/report/dlg_report.py" line="202"/>
         <source> You will find above technical information about executed processing.</source>
         <translation> Vous trouverez ci-dessous des informations techniques concernant les processus exécutés.</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="162"/>
+        <location filename="../../gui/report/dlg_report.py" line="185"/>
         <source>Database integration failed.</source>
         <translation>Les données n&apos;ont pas pu être correctement intégrées en base.</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="164"/>
+        <location filename="../../gui/report/dlg_report.py" line="187"/>
         <source>Tile creation failed.</source>
         <translation>Les tuiles vectorielles n&apos;ont pas pu être générées correctement.</translation>
     </message>
     <message>
-        <location filename="../../gui/report/dlg_report.py" line="165"/>
+        <location filename="../../gui/report/dlg_report.py" line="188"/>
         <source> You will find above technical information about processing executed and encountered problem.</source>
         <translation> Vous trouverez ci-dessous des informations techniques concernant les processus exécutés et les problèmes rencontrés.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/dlg_report.ui" line="128"/>
+        <source>Data extent</source>
+        <translation>Emprise géographique des données</translation>
+    </message>
+    <message>
+        <location filename="../../gui/report/dlg_report.ui" line="140"/>
+        <source>Add in canvas</source>
+        <translation>Ajouter à la carte</translation>
     </message>
 </context>
 <context>
@@ -503,64 +523,74 @@
 <context>
     <name>StorageReportDialog</name>
     <message>
-        <location filename="../../gui/storage/dlg_storage_report.ui" line="14"/>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="17"/>
         <source>Storage report</source>
         <translation>Gérer mon espace</translation>
     </message>
     <message>
-        <location filename="../../gui/storage/dlg_storage_report.ui" line="32"/>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="35"/>
         <source>Datastore</source>
         <translation>Espace de stockage</translation>
     </message>
     <message>
-        <location filename="../../gui/storage/dlg_storage_report.ui" line="57"/>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="60"/>
         <source>Data integrated in database</source>
         <translation>Données intégrées en base</translation>
     </message>
     <message>
-        <location filename="../../gui/storage/dlg_storage_report.ui" line="77"/>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="80"/>
         <source>This is space used by data in PostgresSQL server in your datastore. This is intermediate data that are not visible by users.</source>
         <translation>Il s&apos;agit de l&apos;espace occupé par des données sur les serveurs PostgreSQL de votre espace de travail. Il s&apos;agit de données intérmédiaires qui ne sont pas directement visibles de vos utilisateurs.</translation>
     </message>
     <message>
-        <location filename="../../gui/storage/dlg_storage_report.ui" line="273"/>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="282"/>
         <source>List</source>
         <translation>Liste</translation>
     </message>
     <message>
-        <location filename="../../gui/storage/dlg_storage_report.ui" line="120"/>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="123"/>
         <source>Data integrated as file</source>
         <translation>Données intégrées sous forme de fichiers</translation>
     </message>
     <message>
-        <location filename="../../gui/storage/dlg_storage_report.ui" line="180"/>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="186"/>
         <source>Mass storage</source>
         <translation>Stockage de masse</translation>
     </message>
     <message>
-        <location filename="../../gui/storage/dlg_storage_report.ui" line="240"/>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="249"/>
         <source>Upload</source>
         <translation>Données déposées</translation>
     </message>
     <message>
-        <location filename="../../gui/storage/dlg_storage_report.ui" line="260"/>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="269"/>
         <source>This space is used by raw data that you uploaded (.csv, geopackage files). This files should be deleted when database integration is sucessful. Some files could be left when integration fail.</source>
         <translation>Il s&apos;agit de l&apos;espace occupé par les fichiers de données bruts que vous avez téléversés (fichiers csv, geopackage...). Ces fichiers sont normalement supprimés dès l&apos;intégration en base réussie de vos données. Il est possible qu&apos;il reste des traces de fichiers dans cet espace lorsque les intégrations en base ont échoué.</translation>
     </message>
     <message>
-        <location filename="../../gui/storage/dlg_storage_report.py" line="146"/>
+        <location filename="../../gui/storage/dlg_storage_report.py" line="167"/>
         <source>Can&apos;t define datastore &apos;{0}&apos; from requests : {1}</source>
         <translation>Impossible de definir l&apos;espace de travail &apos;{0}&apos; depuis une requete : {1}</translation>
     </message>
     <message>
-        <location filename="../../gui/storage/dlg_storage_report.ui" line="140"/>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="143"/>
         <source>This space is used by Geotuileur for vector tiles pyramid file storage.</source>
         <translation>Cet espace est utilisé par le Géotuileur pour le stockage des pyramides de tuiles vectorielles.</translation>
     </message>
     <message>
-        <location filename="../../gui/storage/dlg_storage_report.ui" line="200"/>
+        <location filename="../../gui/storage/dlg_storage_report.ui" line="206"/>
         <source>This space is used by Geotuileur for vector tiles pyramid storage. It&apos;s more efficient that file storage.</source>
         <translation>Cet espace est utilisé par le Géotuileur pour le stockage des pyramides de tuiles vectorielles. Il est plus performant que le stockage sous forme de fichiers.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/storage/dlg_storage_report.py" line="233"/>
+        <source>Upload {0} delete error : {1}</source>
+        <translation>Livraison {0} erreur de suppression : {1}</translation>
+    </message>
+    <message>
+        <location filename="../../gui/storage/dlg_storage_report.py" line="267"/>
+        <source>Stored data {0} delete error : {1}</source>
+        <translation>Données stockées {0} erreur de suppression : {1}</translation>
     </message>
 </context>
 <context>
@@ -747,77 +777,77 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
 <context>
     <name>TileGenerationGeneralizationPageWizard</name>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="79"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="85"/>
         <source>Simplification de donnÃ©es hÃ©tÃ©rogÃ¨nes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="80"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="86"/>
         <source>Toutes les formes sont simplifiÃ©es.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="85"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="91"/>
         <source>Simplification de rÃ©seau</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="86"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="92"/>
         <source>Toutes les formes sont simplifiÃ©es et les nÅuds du rÃ©seau sont conservÃ©s.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="93"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="99"/>
         <source>Simplification de donnÃ©es linÃ©aires autres</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="94"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="100"/>
         <source>Les petits objets sont supprimÃ©s.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="99"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="105"/>
         <source>SchÃ©matisation de donnÃ©es surfaciques</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="100"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="106"/>
         <source>Les formes sont simplifiÃ©es en conservant une couverture du territoire.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="107"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="113"/>
         <source>SÃ©lection de donnÃ©es surfaciques</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="108"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="114"/>
         <source>Les donnÃ©es les plus reprÃ©sentatives sont conservÃ©es et les plus petites supprimÃ©es. Ce choix est pertinent si 3 attributs ou moins sont conservÃ©s Ã&#xa0; l&apos;Ã©tape prÃ©cÃ©dente.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="117"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="123"/>
         <source>Fusion attributaire de donnÃ©es surfaciques</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="118"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="124"/>
         <source>Les objets qui ont les mÃªmes valeurs dâattribut sont fusionnÃ©s tout en simplifiant les formes et en supprimant les petites surfaces. Ce choix est pertinent si 3 attributs ou moins sont conservÃ©s Ã&#xa0; l&apos;Ã©tape prÃ©cÃ©dente.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="127"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="133"/>
         <source>Harmonisation de donnÃ©es surfaciques</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="128"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="134"/>
         <source>Les formes sont simplifiÃ©es en conservant les limites partagÃ©es entre deux surfaces.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="66"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_generalization.py" line="72"/>
         <source>Select generalization option</source>
         <translation>Choisissez une option de généralisation</translation>
     </message>
@@ -826,18 +856,18 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
     <name>TileGenerationStatusPageWizard</name>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="187"/>
-        <source>Tile creation failed</source>
-        <translation>La génération des tuiles a échoué</translation>
+        <source>Tile creation</source>
+        <translation>La génération des tuiles</translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="265"/>
         <source>Check details for more informations</source>
-        <translation>Consulter les détails pour plus d&apos;informations</translation>
+        <translation type="obsolete">Consulter les détails pour plus d&apos;informations</translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="265"/>
         <source>Stored data check status failed</source>
-        <translation>La vérification du statut des données stockées a échoué</translation>
+        <translation type="obsolete">La vérification du statut des données stockées a échoué</translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="57"/>
@@ -845,9 +875,24 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
         <translation>Génération en cours</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="226"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="223"/>
         <source>Your tiles are ready.</source>
         <translation>Les tuiles ont été générées.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="236"/>
+        <source>Stored data creation failed. Check report in dashboard for more details.</source>
+        <translation>La création des données a échoué. Vérifier le rapport dans le tableau de bord pour plus de détails.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="257"/>
+        <source>Stored data check status</source>
+        <translation>La vérification du status de la donnée</translation>
+    </message>
+    <message>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="281"/>
+        <source>{0} failed. Check report for more details.</source>
+        <translation>{0} a échoué. Consulter le rapport pour plus d&apos;informations.</translation>
     </message>
 </context>
 <context>
@@ -1005,57 +1050,82 @@ Returns created stored data in {self.CREATED_STORED_DATA_ID} results</source>
     <message>
         <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="156"/>
         <source>Update tile upload failed</source>
-        <translation>Mise à jour contenu d&apos;un flux à échoué</translation>
+        <translation type="obsolete">Mise à jour contenu d&apos;un flux à échoué</translation>
     </message>
     <message>
         <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="298"/>
         <source>Check details for more informations</source>
-        <translation>Consulter les détails pour plus d&apos;informations</translation>
+        <translation type="obsolete">Consulter les détails pour plus d&apos;informations</translation>
     </message>
     <message>
         <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="209"/>
         <source>Upload check status failed</source>
-        <translation>La vérification du statut de chargement a échoué</translation>
+        <translation type="obsolete">La vérification du statut de chargement a échoué</translation>
     </message>
     <message>
         <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="253"/>
         <source>Stored data database integration check failed</source>
-        <translation>La vérification d&apos;intégrité des données en base a échoué</translation>
+        <translation type="obsolete">La vérification d&apos;intégrité des données en base a échoué</translation>
     </message>
     <message>
         <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="298"/>
         <source>Stored data pyramid creation check failed</source>
-        <translation>La vérification de création de la pyramide a échoué</translation>
+        <translation type="obsolete">La vérification de création de la pyramide a échoué</translation>
     </message>
     <message>
-        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="318"/>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="299"/>
         <source>Upload not finished.</source>
         <translation>Chargement inachevé.</translation>
     </message>
     <message>
-        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="318"/>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="299"/>
         <source>Upload not finished. You must wait for data upload before closing this dialog.</source>
         <translation>Le chargement des données est toujours en cours. Merci d&apos;attendre la fin du téléversement avant de fermer la fenêtre.</translation>
     </message>
     <message>
-        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="327"/>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="308"/>
         <source>Database integration not finished.</source>
         <translation>Intégration des données en base inachevée.</translation>
     </message>
     <message>
-        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="327"/>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="308"/>
         <source>Database integration not finished. You must wait for database integration before closing this dialog.</source>
         <translation>L&apos;intégration des données dans la base distante est toujours en cours. Merci d&apos;attendre la fin du téléversement avant de fermer la fenêtre.</translation>
     </message>
     <message>
-        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="337"/>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="318"/>
         <source>Tile creation not finished.</source>
         <translation>Génération des tuiles inachevée.</translation>
     </message>
     <message>
-        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="337"/>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="318"/>
         <source>Tile creation not finished. You must wait for tile creation before closing this dialog.</source>
         <translation>Génération des tuiles inachevée  Merci d&apos;attendre la génération avant de fermer la fenêtre.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="159"/>
+        <source>Update tile upload</source>
+        <translation>La mise à jour du contenu d&apos;un flux</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="204"/>
+        <source>Upload check status</source>
+        <translation>La vérification du statut de chargement</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="242"/>
+        <source>Stored data database integration check</source>
+        <translation>La vérification d&apos;intégrité des données en base</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="283"/>
+        <source>Stored data pyramid creation check</source>
+        <translation>La vérification de création de la pyramide</translation>
+    </message>
+    <message>
+        <location filename="../../gui/update_tile_upload/qwp_update_tile_upload_run.py" line="369"/>
+        <source>{0} failed. Check report for more details.</source>
+        <translation>{0} a échoué. Consulter le rapport pour plus d&apos;informations.</translation>
     </message>
 </context>
 <context>
@@ -1099,7 +1169,7 @@ Returns created upload id in {self.CREATED_UPLOAD_ID} results</source>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="305"/>
         <source>Check details for more informations</source>
-        <translation>Consulter les détails pour plus d&apos;informations</translation>
+        <translation type="obsolete">Consulter les détails pour plus d&apos;informations</translation>
     </message>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_creation.ui" line="39"/>
@@ -1143,48 +1213,73 @@ Returns created upload id in {self.CREATED_UPLOAD_ID} results</source>
     </message>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="142"/>
-        <source>Upload creation failed</source>
-        <translation>L&apos;envoi des données a échoué</translation>
+        <source>Upload creation</source>
+        <translation>L&apos;envoi des données</translation>
     </message>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="191"/>
         <source>Upload check status failed</source>
-        <translation>La vérification du statut de chargement a échoué</translation>
+        <translation type="obsolete">La vérification du statut de chargement a échoué</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="231"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="228"/>
         <source>Your data has been stored on the remote storage.</source>
         <translation>Vos données ont été chargées dans l&apos;espace de stockage distant.</translation>
     </message>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="254"/>
-        <source>Stored data database integration check failed</source>
-        <translation>La vérification d&apos;intégrité des données en base a échoué</translation>
+        <source>Stored database integration check</source>
+        <translation>La vérification d&apos;intégrité des données en base</translation>
     </message>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="305"/>
         <source>Database integration failed</source>
-        <translation>L&apos;intégration des données dans la base distante a échoué</translation>
+        <translation type="obsolete">L&apos;intégration des données dans la base distante a échoué</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="325"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="316"/>
         <source>Upload not finished.</source>
         <translation>Chargement inachevé.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="325"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="316"/>
         <source>Upload not finished. You must wait for data upload before closing this dialog.</source>
         <translation>Le chargement des données est toujours en cours. Merci d&apos;attendre la fin du téléversement avant de fermer la fenêtre.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="334"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="325"/>
         <source>Database integration not finished.</source>
         <translation>Intégration des données en base inachevée.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="334"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="325"/>
         <source>Database integration not finished. You must wait for database integration before closing this dialog.</source>
         <translation>L&apos;intégration des données dans la base distante est toujours en cours. Merci d&apos;attendre la fin du téléversement avant de fermer la fenêtre.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="185"/>
+        <source>Upload creation failed. Check report in dashboard for more details.</source>
+        <translation>L&apos;envoi de données à échoué. Vérifier le rapport dans le tableau de bord pour plus de détails.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="193"/>
+        <source>Upload check status</source>
+        <translation>La vérification du statut de chargement</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="243"/>
+        <source>Stored data creation failed. Check report in dashboard for more details.</source>
+        <translation>La création des données a échoué. Vérifier le rapport dans le tableau de bord pour plus de détails.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="301"/>
+        <source>Database integration</source>
+        <translation>L&apos;intégration des données dans la base distante</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="372"/>
+        <source>{0} failed. Check report for more details.</source>
+        <translation>{0} a échoué. Consulter le rapport pour plus d&apos;informations.</translation>
     </message>
 </context>
 <context>
@@ -1195,96 +1290,101 @@ Returns created upload id in {self.CREATED_UPLOAD_ID} results</source>
         <translation>Tableau de bord</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="45"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="75"/>
         <source>List of datasets to import:</source>
         <translation>Liste des données sélectionnées à importer :</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="93"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="68"/>
         <source>Select the SRS to use:</source>
         <translation>Sélectionner la projection de vos données :</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="113"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="82"/>
         <source>Name your dataset:</source>
         <translation>Nom du jeu de données distant :</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="120"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="51"/>
         <source>Pick a local dataset to import:</source>
         <translation>Sélectionner une donnée locale :</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="101"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="106"/>
         <source>No name defined.</source>
         <translation>Aucun nom défini.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="101"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="106"/>
         <source>Please define data name</source>
         <translation>Merci de spécifier un nom</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="107"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="112"/>
         <source>No SRS defined.</source>
         <translation>Système de projection manquant.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="107"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="112"/>
         <source>Please define SRS</source>
         <translation>Merci de spécifier un système de projection</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="128"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="133"/>
         <source>Invalid layers:
 </source>
         <translation>Couches invalides:
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="130"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="135"/>
         <source>- CRS mismatch
 </source>
         <translation>- incohérence dans le système de projection
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="132"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="137"/>
         <source>- invalid layer name
 </source>
         <translation>- nom de couche invalide
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="134"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="139"/>
         <source>- invalid file name
 </source>
         <translation>- nom de fichier invalide
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="136"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="141"/>
         <source>- invalid field name
 </source>
         <translation>- nom d&apos;attribut invalide
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="138"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="143"/>
         <source>- invalid layer type
 </source>
         <translation>- type de couche invalide
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="140"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="145"/>
         <source>Invalid layers list are available in details.</source>
         <translation>La liste des couches invalides est disponible dans les détails.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="142"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="147"/>
         <source>Invalid layers</source>
         <translation>Couches invalides</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="94"/>
+        <source>Supported files are .gpkg, .zip or .csv</source>
+        <translation>Les fichiers supportés sont .gpkg, .zip ou .csv</translation>
     </message>
 </context>
 <context>
@@ -1507,6 +1607,34 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
         <location filename="../../gui/upload_creation/qwp_upload_edition.py" line="20"/>
         <source>Upload data</source>
         <translation>Déposez votre fichier de données</translation>
+    </message>
+</context>
+<context>
+    <name>UploadFilesTreeModel</name>
+    <message>
+        <location filename="../../gui/upload_creation/mdl_upload_files.py" line="24"/>
+        <source>Name</source>
+        <translation>Nom</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/mdl_upload_files.py" line="24"/>
+        <source>CRS</source>
+        <translation>Projection</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/mdl_upload_files.py" line="128"/>
+        <source>Invalid CRS. Only EPSG and IGNF crs are supported.</source>
+        <translation>Projection invalide. Seules les projections EPSG et IGNF sont supportées.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/mdl_upload_files.py" line="132"/>
+        <source>Invalid CRS {0}. Expected {1}</source>
+        <translation>Projection {0} invalide. Projection attendue {1}</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/mdl_upload_files.py" line="140"/>
+        <source>File not available.</source>
+        <translation>Fichier non disponible.</translation>
     </message>
 </context>
 <context>

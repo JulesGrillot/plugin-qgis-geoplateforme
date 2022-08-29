@@ -64,6 +64,7 @@ SOURCES= ../../plugin_main.py \
     ../../gui/upload_creation/qwp_upload_edition.py \
     ../../gui/upload_creation/wzd_upload_creation.py \
     ../../gui/upload_creation/wdg_upload_creation.py \
+    ../../gui/upload_creation/mdl_upload_files.py \
     ../../gui/update_tile_upload/qwp_update_tile_upload_edition.py \
     ../../gui/update_tile_upload/qwp_update_tile_upload_run.py \
     ../../gui/update_tile_upload/wzd_update_tile_upload.py \

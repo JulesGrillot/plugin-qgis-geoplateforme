@@ -13,13 +13,13 @@ from qgis.core import (
     QgsProcessingFeedback,
 )
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QByteArray, QTimer
-from qgis.PyQt.QtGui import QMovie, QPixmap
+from qgis.PyQt.QtCore import QByteArray, QSize, QTimer
+from qgis.PyQt.QtGui import QIcon, QMovie, QPixmap
 from qgis.PyQt.QtWidgets import QHeaderView, QMessageBox, QWizardPage
 
 from geotuileur.__about__ import DIR_PLUGIN_ROOT
 from geotuileur.api.processing import ProcessingRequestManager
-from geotuileur.api.stored_data import StoredDataRequestManager
+from geotuileur.api.stored_data import StoredDataRequestManager, StoredDataStatus
 from geotuileur.api.upload import UploadRequestManager
 from geotuileur.gui.mdl_execution_list import ExecutionListModel
 from geotuileur.gui.tile_creation.qwp_tile_generation_edition import (
@@ -31,8 +31,14 @@ from geotuileur.gui.tile_creation.qwp_tile_generation_fields_selection import (
 from geotuileur.gui.tile_creation.qwp_tile_generation_generalization import (
     TileGenerationGeneralizationPageWizard,
 )
+from geotuileur.gui.tile_creation.qwp_tile_generation_sample import (
+    TileGenerationSamplePageWizard,
+)
 from geotuileur.processing import GeotuileurProvider
-from geotuileur.processing.tile_creation import TileCreationAlgorithm
+from geotuileur.processing.tile_creation import (
+    TileCreationAlgorithm,
+    TileCreationProcessingFeedback,
+)
 
 
 class TileGenerationStatusPageWizard(QWizardPage):
@@ -43,6 +49,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
         qwp_tile_generation_edition: TileGenerationEditionPageWizard,
         qwp_tile_generation_fields_selection: TileGenerationFieldsSelectionPageWizard,
         qwp_tile_generation_generalization: TileGenerationGeneralizationPageWizard,
+        qwp_tile_generation_sample: TileGenerationSamplePageWizard,
         parent=None,
     ):
 
@@ -58,6 +65,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
         self.qwp_tile_generation_edition = qwp_tile_generation_edition
         self.qwp_tile_generation_fields_selection = qwp_tile_generation_fields_selection
         self.qwp_tile_generation_generalization = qwp_tile_generation_generalization
+        self.qwp_tile_generation_sample = qwp_tile_generation_sample
 
         uic.loadUi(
             os.path.join(os.path.dirname(__file__), "qwp_tile_generation_status.ui"),
@@ -66,10 +74,11 @@ class TileGenerationStatusPageWizard(QWizardPage):
 
         # Task and feedback for tile creation
         self.create_tile_task_id = None
-        self.create_tile_feedback = QgsProcessingFeedback()
+        self.create_tile_feedback = TileCreationProcessingFeedback()
 
         # Processing results
         self.created_stored_data_id = ""
+        self.processing_failed = False
 
         # Timer for processing execution check after tile creation
         self.loading_movie = QMovie(
@@ -78,7 +87,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
             self,
         )
         self.create_tile_check_timer = QTimer(self)
-        self.create_tile_check_timer.timeout.connect(self.check_create_tile_status)
+        self.create_tile_check_timer.timeout.connect(self._check_create_tile_status)
 
         # Model for executions display
         self.mdl_execution_list = ExecutionListModel(self)
@@ -94,6 +103,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
 
         """
         self.created_stored_data_id = ""
+        self.processing_failed = False
         self.mdl_execution_list.clear_executions()
         self.create_tile()
 
@@ -104,8 +114,23 @@ class TileGenerationStatusPageWizard(QWizardPage):
         Returns: True
 
         """
-        self.create_tile_check_timer.stop()
-        return True
+
+        result = True
+
+        if not self.created_stored_data_id and not self.processing_failed:
+            result = False
+            QMessageBox.warning(
+                self,
+                self.tr("Tile creation not launched."),
+                self.tr(
+                    "Tile creation is not launched. You must wait for launch before closing this dialog."
+                ),
+            )
+
+        if result:
+            self.create_tile_check_timer.stop()
+
+        return result
 
     def create_tile(self) -> None:
         """
@@ -156,19 +181,32 @@ class TileGenerationStatusPageWizard(QWizardPage):
                 }
             )
 
+        # Add bounding box for sample generation if enabled
+        if self.qwp_tile_generation_sample.is_sample_enabled():
+            qgs_rectangle = self.qwp_tile_generation_sample.get_sample_box()
+            data[TileCreationAlgorithm.BBOX] = [
+                qgs_rectangle.xMinimum(),
+                qgs_rectangle.yMinimum(),
+                qgs_rectangle.xMaximum(),
+                qgs_rectangle.yMaximum(),
+            ]
+
         filename = tempfile.NamedTemporaryFile(suffix=".json").name
         with open(filename, "w") as file:
             json.dump(data, file)
-            params = {TileCreationAlgorithm.INPUT_JSON: filename}
+        params = {TileCreationAlgorithm.INPUT_JSON: filename}
 
-            self.lbl_step_icon.setMovie(self.loading_movie)
-            self.loading_movie.start()
+        self.lbl_step_icon.setMovie(self.loading_movie)
+        self.loading_movie.start()
 
-            self.create_tile_task_id = self._run_alg(
-                alg, params, self.create_tile_feedback, self.create_tile_finished
-            )
+        self.create_tile_task_id = self._run_alg(
+            alg, params, self.create_tile_feedback, self._create_tile_finished
+        )
 
-    def create_tile_finished(self, context, successful, results):
+        # Run timer for tile creation check
+        self.create_tile_check_timer.start(self.STATUS_CHECK_INTERVAL)
+
+    def _create_tile_finished(self, context, successful, results):
         """
         Callback executed when TileCreationAlgorithm is finished
 
@@ -181,24 +219,20 @@ class TileGenerationStatusPageWizard(QWizardPage):
             self.created_stored_data_id = results[
                 TileCreationAlgorithm.CREATED_STORED_DATA_ID
             ]
-            # Run timer for tile creation check
-            self.create_tile_check_timer.start(self.STATUS_CHECK_INTERVAL)
         else:
-            msgBox = QMessageBox(
-                QMessageBox.Warning,
-                self.tr("Tile creation failed"),
-                self.tr("Check details for more informations"),
+            self._report_processing_error(
+                self.tr("Tile creation"), self.create_tile_feedback.textLog()
             )
-            msgBox.setDetailedText(self.create_tile_feedback.textLog())
-            msgBox.exec()
 
-    def check_create_tile_status(self):
+    def _check_create_tile_status(self):
         """
         Check tile creation status
 
         """
         self.mdl_execution_list.clear_executions()
-        if self.created_stored_data_id:
+
+        if self.create_tile_feedback.created_pyramid_id:
+            self.created_stored_data_id = self.create_tile_feedback.created_pyramid_id
             try:
                 upload_manager = UploadRequestManager()
                 processing_manager = ProcessingRequestManager()
@@ -220,7 +254,8 @@ class TileGenerationStatusPageWizard(QWizardPage):
                     )
 
                 # Stop timer if stored_data generated
-                if stored_data.status == "GENERATED":
+                status = StoredDataStatus[stored_data.status]
+                if status == StoredDataStatus.GENERATED:
                     self.create_tile_check_timer.stop()
                     self.loading_movie.stop()
                     self.setTitle(self.tr("Your tiles are ready."))
@@ -235,6 +270,13 @@ class TileGenerationStatusPageWizard(QWizardPage):
                     )
                     self.lbl_step_icon.setMovie(QMovie())
                     self.lbl_step_icon.setPixmap(pixmap)
+                elif status == StoredDataStatus.UNSTABLE:
+                    self._stop_timer_and_display_error(
+                        self.tr(
+                            "Stored data creation failed. Check report in "
+                            "dashboard for more details."
+                        )
+                    )
                 if (
                     stored_data.tags is not None
                     and "proc_pyr_creat_id" in stored_data.tags.keys()
@@ -245,49 +287,56 @@ class TileGenerationStatusPageWizard(QWizardPage):
                     )
 
                     self.mdl_execution_list.set_execution_list([execution])
-            except StoredDataRequestManager.UnavailableStoredData as exc:
-                msgBox = QMessageBox(
-                    QMessageBox.Warning,
-                    self.tr("Stored data check status failed"),
-                    self.tr("Check details for more informations"),
+            except (
+                StoredDataRequestManager.UnavailableStoredData,
+                ProcessingRequestManager.UnavailableProcessingException,
+                UploadRequestManager.UnavailableUploadException,
+            ) as exc:
+                self._report_processing_error(
+                    self.tr("Stored data check status"), str(exc)
                 )
-                msgBox.setDetailedText(str(exc))
-                msgBox.exec()
-            except ProcessingRequestManager.UnavailableProcessingException as exc:
-                msgBox = QMessageBox(
-                    QMessageBox.Warning,
-                    self.tr("Stored data check status failed"),
-                    self.tr("Check details for more informations"),
-                )
-                msgBox.setDetailedText(str(exc))
-                msgBox.exec()
-            except UploadRequestManager.UnavailableUploadException as exc:
-                msgBox = QMessageBox(
-                    QMessageBox.Warning,
-                    self.tr("Stored data check status failed"),
-                    self.tr("Check details for more informations"),
-                )
-                msgBox.setDetailedText(str(exc))
-                msgBox.exec()
 
+    def _stop_timer_and_display_error(self, error: str) -> None:
+        self.upload_check_timer.stop()
+        self.setTitle(error)
+        self.loading_movie.stop()
+        self.lbl_step_icon.setMovie(QMovie())
+        self.lbl_step_icon.setPixmap(
+            QIcon(QgsApplication.iconPath("mIconWarning.svg")).pixmap(QSize(32, 32))
+        )
+        self.completeChanged.emit()
+
+    def _report_processing_error(self, processing: str, error: str) -> None:
+        """
+        Report processing error by displaying error in text browser
+
+        Args:
+            error:
+        """
+        self.processing_failed = True
+        self.tbw_errors.setVisible(True)
+        self.tbw_errors.setText(error)
+        self._stop_timer_and_display_error(
+            self.tr("{0} failed. Check report for more details.").format(processing)
+        )
+
+    @staticmethod
     def _run_alg(
-        self,
         alg: QgsProcessingAlgorithm,
         params: {},
         feedback: QgsProcessingFeedback,
         executed_callback,
     ) -> int:
         """
-        Run a QgsProcessingAlgorithm and connect execution callback and cancel task for button
+        Run a QgsProcessingAlgorithm and connect execution callback
 
         Args:
             alg: QgsProcessingAlgorithm to run
             params: QgsProcessingAlgorithm params
             feedback: QgsProcessingFeedback
             executed_callback: executed callback after algorithm execution
-            btn: (optional) button to connect for QgsTask cancel
 
-        Returns: created QgsTask
+        Returns: created QgsTask id
 
         """
         context = QgsProcessingContext()

@@ -42,8 +42,14 @@ class PixmapLabel(QLabel):
         return QSize(w, self.heightForWidth(w))
 
     def scaledPixmap(self) -> QPixmap:
+        size = self.size()
+        if (
+            size.width() > self._pixmap.size().width()
+            or size.height() > self._pixmap.size().height()
+        ):
+            size = self._pixmap.size()
         return self._pixmap.scaled(
-            self.size(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation
+            size, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation
         )
 
     def resizeEvent(self, a0: QtGui.QResizeEvent) -> None:
@@ -134,10 +140,9 @@ class TileGenerationGeneralizationPageWizard(QWizardPage):
         }
 
         self._add_tippecanoe_radiobuttons()
-        self.setCommitPage(True)
 
     def _add_tippecanoe_radiobuttons(self):
-        nb_max_col = 3
+        nb_max_col = 2
         nb_row_for_options = 3
         minimum_width = 200
         i = 0
@@ -179,7 +184,6 @@ class TileGenerationGeneralizationPageWizard(QWizardPage):
             image_label.setMinimumHeight(100)
             image_label.setPixmap(pixmap)
             self.tippecanoe_layout.addWidget(image_label, row, column)
-            row = row + 1
 
             i = i + 1
 

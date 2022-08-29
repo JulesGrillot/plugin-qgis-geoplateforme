@@ -39,6 +39,7 @@ from geotuileur.gui.update_tile_upload.wzd_update_tile_upload import (
 )
 from geotuileur.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
 from geotuileur.processing import GeotuileurProvider
+from geotuileur.processing.delete_data import DeleteDataAlgorithm
 from geotuileur.processing.unpublish import UnpublishAlgorithm
 from geotuileur.toolbelt import PlgLogger
 
@@ -236,7 +237,45 @@ class DashboardWidget(QWidget):
         Args:
             stored_data: (StoredData) stored data to delete
         """
-        self.log("Stored data delete not implemented yet", push=True)
+
+        reply = QMessageBox.question(
+            self,
+            "Delete data",
+            "Are you sure you want to delete the data?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if reply == QMessageBox.Yes:
+
+            data = {
+                DeleteDataAlgorithm.DATASTORE: stored_data.datastore_id,
+                DeleteDataAlgorithm.STORED_DATA: stored_data.id,
+            }
+            filename = tempfile.NamedTemporaryFile(
+                prefix=f"qgis_{__title_clean__}_", suffix=".json"
+            ).name
+            with open(filename, "w") as file:
+                json.dump(data, file)
+            algo_str = f"{GeotuileurProvider().id()}:{DeleteDataAlgorithm().name()}"
+            alg = QgsApplication.processingRegistry().algorithmById(algo_str)
+            params = {DeleteDataAlgorithm.INPUT_JSON: filename}
+            context = QgsProcessingContext()
+            feedback = QgsProcessingFeedback()
+            result, success = alg.run(
+                parameters=params, context=context, feedback=feedback
+            )
+            if success:
+                row = self.mdl_stored_data.get_stored_data_row(stored_data.id)
+                self.mdl_stored_data.removeRow(row)
+
+            else:
+                self.log(
+                    self.tr("delete data error").format(
+                        stored_data.id, feedback.textLog()
+                    ),
+                    log_level=1,
+                    push=True,
+                )
 
     def _show_report(self, stored_data: StoredData) -> None:
         """
@@ -397,10 +436,22 @@ class DashboardWidget(QWidget):
             params = {UnpublishAlgorithm.INPUT_JSON: filename}
             context = QgsProcessingContext()
             feedback = QgsProcessingFeedback()
-
             alg.run(parameters=params, context=context, feedback=feedback)
-
             self.refresh()
+
+            result, success = alg.run(
+                parameters=params, context=context, feedback=feedback
+            )
+            if success:
+                self.refresh()
+            else:
+                self.log(
+                    self.tr("Unpublish error ").format(
+                        stored_data.id, feedback.textLog()
+                    ),
+                    log_level=1,
+                    push=True,
+                )
 
     def _create_proxy_model(
         self,

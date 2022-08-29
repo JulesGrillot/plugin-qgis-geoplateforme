@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>499</width>
-    <height>241</height>
+    <width>548</width>
+    <height>186</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,7 +26,13 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="3" column="1">
+   <item row="6" column="1">
+    <widget class="QgsProjectionSelectionWidget" name="psw_projection"/>
+   </item>
+   <item row="2" column="0" rowspan="2" colspan="2">
+    <widget class="QTreeView" name="trv_upload_files"/>
+   </item>
+   <item row="5" column="1">
     <widget class="QLineEdit" name="lne_data">
      <property name="enabled">
       <bool>true</bool>
@@ -39,41 +45,10 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="lbl_files_summary">
+   <item row="0" column="0">
+    <widget class="QLabel" name="lbl_files_put">
      <property name="text">
-      <string>List of datasets to import:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QgsProjectionSelectionWidget" name="psw_projection"/>
-   </item>
-   <item row="1" column="1" rowspan="2">
-    <widget class="QListWidget" name="lvw_import_data">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="tabKeyNavigation">
-      <bool>true</bool>
-     </property>
-     <property name="dragEnabled">
-      <bool>false</bool>
-     </property>
-     <property name="dragDropMode">
-      <enum>QAbstractItemView::DragDrop</enum>
-     </property>
-     <property name="defaultDropAction">
-      <enum>Qt::ActionMask</enum>
-     </property>
-     <property name="selectionRectVisible">
-      <bool>false</bool>
-     </property>
-     <property name="currentRow">
-      <number>-1</number>
-     </property>
-     <property name="sortingEnabled">
-      <bool>false</bool>
+      <string>Pick a local dataset to import:</string>
      </property>
     </widget>
    </item>
@@ -87,37 +62,36 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="6" column="0">
     <widget class="QLabel" name="lne_projection">
      <property name="text">
       <string>Select the SRS to use:</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+   <item row="1" column="0" colspan="2">
+    <widget class="QLabel" name="lbl_files_summary">
+     <property name="text">
+      <string>List of datasets to import:</string>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>122</height>
-      </size>
-     </property>
-    </spacer>
+    </widget>
    </item>
-   <item row="3" column="0">
+   <item row="5" column="0">
     <widget class="QLabel" name="lbl_data">
      <property name="text">
       <string>Name your dataset:</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="lbl_files_put">
+   <item row="4" column="0" colspan="2">
+    <widget class="QLabel" name="lbl_supported_files">
+     <property name="font">
+      <font>
+       <italic>true</italic>
+      </font>
+     </property>
      <property name="text">
-      <string>Pick a local dataset to import:</string>
+      <string>Supported files are .gpkg, .zip or .csv</string>
      </property>
     </widget>
    </item>

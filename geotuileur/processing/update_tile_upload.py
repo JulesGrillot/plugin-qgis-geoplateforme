@@ -1,5 +1,6 @@
 import json
 import tempfile
+from time import sleep
 
 from qgis.core import (
     QgsApplication,
@@ -239,6 +240,7 @@ class UpdateTileUploadAlgorithm(QgsProcessingAlgorithm):
             while status != UploadStatus.CLOSED and status != UploadStatus.UNSTABLE:
                 upload = manager.get_upload(datastore=datastore, upload=upload_id)
                 status = UploadStatus(upload.status)
+                sleep(0.5)
 
             if status == UploadStatus.UNSTABLE:
                 raise QgsProcessingException(
@@ -321,6 +323,7 @@ class UpdateTileUploadAlgorithm(QgsProcessingAlgorithm):
                     datastore=datastore, stored_data=vector_db_stored_data_id
                 )
                 status = StoredDataStatus(stored_data.status)
+                sleep(0.5)
 
             if status == StoredDataStatus.UNSTABLE:
                 raise QgsProcessingException(
@@ -329,7 +332,7 @@ class UpdateTileUploadAlgorithm(QgsProcessingAlgorithm):
                     )
                 )
 
-        except UploadRequestManager.UnavailableUploadException as exc:
+        except StoredDataRequestManager.ReadStoredDataException as exc:
             raise QgsProcessingException(f"Stored data read failed : {exc}")
 
     def _tile_creation(

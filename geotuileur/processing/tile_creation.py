@@ -1,14 +1,25 @@
 import json
+from time import sleep
 
 from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingException,
+    QgsProcessingFeedback,
     QgsProcessingParameterFile,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
 from geotuileur.api.processing import ProcessingRequestManager
-from geotuileur.api.stored_data import StoredDataRequestManager
+from geotuileur.api.stored_data import StoredDataRequestManager, StoredDataStatus
+
+
+class TileCreationProcessingFeedback(QgsProcessingFeedback):
+    """
+    Implentation of QgsProcessingFeedback to store information from processing:
+        - created_pyramid_id (str) : created pyramid stored data id
+    """
+
+    created_pyramid_id: str = ""
 
 
 class TileCreationAlgorithm(QgsProcessingAlgorithm):
@@ -153,6 +164,10 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                 # Get created stored_data id
                 stored_data_id = stored_data_val["_id"]
 
+                # Update feedback if attribute is present
+                if hasattr(feedback, "created_pyramid_id"):
+                    feedback.created_pyramid_id = stored_data_id
+
                 # Update stored data tags
                 tags = {
                     "upload_id": vector_db_stored_data.tags["upload_id"],
@@ -184,6 +199,12 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                     datastore=datastore, exec_id=exec_id
                 )
 
+                # Wait for tile creation
+                self._wait_tile_creation(datastore, stored_data_id)
+
+                # Delete vector db stored data
+                stored_data_manager.delete(datastore, vector_db_stored_data_id)
+
             except StoredDataRequestManager.UnavailableStoredData as exc:
                 raise QgsProcessingException(
                     f"Can't retrieve vector db datastore for tile creation : {exc}"
@@ -203,6 +224,10 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
             except StoredDataRequestManager.AddTagException as exc:
                 raise QgsProcessingException(
                     f"Can't add tags to stored data for tile creation : {exc}"
+                )
+            except StoredDataRequestManager.DeleteStoredDataException as exc:
+                raise QgsProcessingException(
+                    f"Can't delete vector db stored data after tile creation : {exc}"
                 )
 
         return {self.CREATED_STORED_DATA_ID: stored_data_id}
@@ -273,3 +298,37 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                 raise QgsProcessingException(
                     f"Missing {', '.join(missing_keys)} keys for {self.COMPOSITION} item in input json."
                 )
+
+    def _wait_tile_creation(self, datastore: str, pyramid_stored_data_id: str) -> None:
+        """
+        Wait until tile creation is done (GENERATED status) or throw exception if status is UNSTABLE
+
+        Args:
+            datastore: (str) datastore id
+            pyramid_stored_data_id: (str) pyramid stored data id
+        """
+        try:
+            manager = StoredDataRequestManager()
+            stored_data = manager.get_stored_data(
+                datastore=datastore, stored_data=pyramid_stored_data_id
+            )
+            status = StoredDataStatus(stored_data.status)
+            while (
+                status != StoredDataStatus.GENERATED
+                and status != StoredDataStatus.UNSTABLE
+            ):
+                stored_data = manager.get_stored_data(
+                    datastore=datastore, stored_data=pyramid_stored_data_id
+                )
+                status = StoredDataStatus(stored_data.status)
+                sleep(0.5)
+
+            if status == StoredDataStatus.UNSTABLE:
+                raise QgsProcessingException(
+                    self.tr(
+                        "Tile creation failed. Check report in dashboard for more details."
+                    )
+                )
+
+        except StoredDataRequestManager.ReadStoredDataException as exc:
+            raise QgsProcessingException(f"Stored data read failed : {exc}")

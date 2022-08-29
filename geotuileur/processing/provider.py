@@ -25,6 +25,7 @@ from geotuileur.processing.upload_publication import UploadPublicationAlgorithm
 # ############################################################################
 # ########## Classes ###############
 # ##################################
+from geotuileur.processing.vector_db_creation import VectorDatabaseCreationAlgorithm
 
 
 class GeotuileurProvider(QgsProcessingProvider):
@@ -37,6 +38,7 @@ class GeotuileurProvider(QgsProcessingProvider):
         self.addAlgorithm(CheckLayerAlgorithm())
         self.addAlgorithm(UploadCreationAlgorithm())
         self.addAlgorithm(UploadDatabaseIntegrationAlgorithm())
+        self.addAlgorithm(VectorDatabaseCreationAlgorithm())
         self.addAlgorithm(TileCreationAlgorithm())
         self.addAlgorithm(UploadPublicationAlgorithm())
         self.addAlgorithm(UnpublishAlgorithm())

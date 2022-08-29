@@ -3,12 +3,23 @@ import json
 from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingException,
+    QgsProcessingFeedback,
     QgsProcessingParameterFile,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
 from geotuileur.api.processing import ProcessingRequestManager
-from geotuileur.api.stored_data import StoredDataRequestManager
+from geotuileur.api.stored_data import StoredDataRequestManager, StoredDataStatus
+from geotuileur.api.upload import UploadRequestManager
+
+
+class UploadDatabaseIntegrationProcessingFeedback(QgsProcessingFeedback):
+    """
+    Implementation of QgsProcessingFeedback to store information from processing:
+        - created_vector_db_id (str) : created vector db stored data id
+    """
+
+    created_vector_db_id: str = ""
 
 
 class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
@@ -105,6 +116,10 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
                 # Get created stored_data id
                 stored_data_id = stored_data_val["_id"]
 
+                # Update feedback if vector db id attribute present
+                if hasattr(feedback, "created_vector_db_id"):
+                    feedback.created_vector_db_id = stored_data_id
+
                 # Update stored data tags
                 tags = {"upload_id": upload, "proc_int_id": exec_id}
                 stored_data_manager.add_tags(
@@ -115,6 +130,13 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
                 processing_manager.launch_execution(
                     datastore=datastore, exec_id=exec_id
                 )
+
+                # Wait for database integration
+                self._wait_database_integration(datastore, stored_data_id)
+
+                # Delete upload
+                upload_manager = UploadRequestManager()
+                upload_manager.delete(datastore, upload)
 
             except ProcessingRequestManager.UnavailableProcessingException as exc:
                 raise QgsProcessingException(
@@ -132,5 +154,44 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
                 raise QgsProcessingException(
                     f"Can't add tags to stored data for database integration : {exc}"
                 )
+            except UploadRequestManager.DeleteUploadException as exc:
+                raise QgsProcessingException(
+                    f"Can't delete upload after database integration : {exc}"
+                )
 
         return {self.CREATED_STORED_DATA_ID: stored_data_id}
+
+    def _wait_database_integration(
+        self, datastore: str, vector_db_stored_data_id: str
+    ) -> None:
+        """
+        Wait until database integration is done (GENERATED status) or throw exception if status is UNSTABLE
+
+        Args:
+            datastore: (str) datastore id
+            vector_db_stored_data_id: (str) vector db stored data id
+        """
+        try:
+            manager = StoredDataRequestManager()
+            stored_data = manager.get_stored_data(
+                datastore=datastore, stored_data=vector_db_stored_data_id
+            )
+            status = StoredDataStatus(stored_data.status)
+            while (
+                status != StoredDataStatus.GENERATED
+                and status != StoredDataStatus.UNSTABLE
+            ):
+                stored_data = manager.get_stored_data(
+                    datastore=datastore, stored_data=vector_db_stored_data_id
+                )
+                status = StoredDataStatus(stored_data.status)
+
+            if status == StoredDataStatus.UNSTABLE:
+                raise QgsProcessingException(
+                    self.tr(
+                        "Database integration failed. Check report in dashboard for more details."
+                    )
+                )
+
+        except StoredDataRequestManager.ReadStoredDataException as exc:
+            raise QgsProcessingException(f"Stored data read failed : {exc}")

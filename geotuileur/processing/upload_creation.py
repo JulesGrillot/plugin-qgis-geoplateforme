@@ -3,11 +3,21 @@ import json
 from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingException,
+    QgsProcessingFeedback,
     QgsProcessingParameterFile,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
-from geotuileur.api.upload import UploadRequestManager
+from geotuileur.api.upload import UploadRequestManager, UploadStatus
+
+
+class UploadCreationProcessingFeedback(QgsProcessingFeedback):
+    """
+    Implementation of QgsProcessingFeedback to store information from processing:
+        - created_upload_id (str) : created upload id
+    """
+
+    created_upload_id: str = ""
 
 
 class UploadCreationAlgorithm(QgsProcessingAlgorithm):
@@ -104,6 +114,14 @@ class UploadCreationAlgorithm(QgsProcessingAlgorithm):
 
                 # Get create upload id
                 upload_id = upload.id
+
+                # Update feedback if upload attribute present
+                if hasattr(feedback, "created_upload_id"):
+                    feedback.created_upload_id = upload_id
+
+                # Wait for upload close after check
+                self._wait_upload_close(datastore, upload_id)
+
             except UploadRequestManager.UploadCreationException as exc:
                 raise QgsProcessingException(f"Upload creation failed : {exc}")
             except UploadRequestManager.FileUploadException as exc:
@@ -112,3 +130,31 @@ class UploadCreationAlgorithm(QgsProcessingAlgorithm):
                 raise QgsProcessingException(f"Upload closing failed : {exc}")
 
         return {self.CREATED_UPLOAD_ID: upload_id}
+
+    def _wait_upload_close(self, datastore: str, upload_id: str) -> None:
+        """
+        Wait until upload is CLOSED or throw exception if status is UNSTABLE
+
+        Args:
+            datastore : (str) datastore id
+            upload_id:  (str) upload id
+        """
+        try:
+            manager = UploadRequestManager()
+            upload = manager.get_upload(datastore=datastore, upload=upload_id)
+            status = UploadStatus(upload.status)
+            while status != UploadStatus.CLOSED and status != UploadStatus.UNSTABLE:
+                upload = manager.get_upload(datastore=datastore, upload=upload_id)
+                status = UploadStatus(upload.status)
+
+            if status == UploadStatus.UNSTABLE:
+                raise QgsProcessingException(
+                    self.tr(
+                        "Upload check failed. Check report in dashboard for more details."
+                    )
+                )
+
+        except UploadRequestManager.UnavailableUploadException as exc:
+            raise QgsProcessingException(
+                self.tr("Upload read failed : {0}").format(exc)
+            )

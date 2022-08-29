@@ -26,7 +26,13 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="4" column="1">
+   <item row="6" column="1">
+    <widget class="QgsProjectionSelectionWidget" name="psw_projection"/>
+   </item>
+   <item row="2" column="0" rowspan="2" colspan="2">
+    <widget class="QTreeView" name="trv_upload_files"/>
+   </item>
+   <item row="5" column="1">
     <widget class="QLineEdit" name="lne_data">
      <property name="enabled">
       <bool>true</bool>
@@ -36,20 +42,6 @@
      </property>
      <property name="dragEnabled">
       <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="lbl_data">
-     <property name="text">
-      <string>Name your dataset:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="lne_projection">
-     <property name="text">
-      <string>Select the SRS to use:</string>
      </property>
     </widget>
    </item>
@@ -70,16 +62,36 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
-    <widget class="QgsProjectionSelectionWidget" name="psw_projection"/>
-   </item>
-   <item row="2" column="0" rowspan="2" colspan="2">
-    <widget class="QTreeView" name="trv_upload_files"/>
+   <item row="6" column="0">
+    <widget class="QLabel" name="lne_projection">
+     <property name="text">
+      <string>Select the SRS to use:</string>
+     </property>
+    </widget>
    </item>
    <item row="1" column="0" colspan="2">
     <widget class="QLabel" name="lbl_files_summary">
      <property name="text">
       <string>List of datasets to import:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="lbl_data">
+     <property name="text">
+      <string>Name your dataset:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QLabel" name="lbl_supported_files">
+     <property name="font">
+      <font>
+       <italic>true</italic>
+      </font>
+     </property>
+     <property name="text">
+      <string>Supported files are .gpkg, .zip or .csv</string>
      </property>
     </widget>
    </item>

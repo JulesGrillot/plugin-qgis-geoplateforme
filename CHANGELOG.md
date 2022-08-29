@@ -15,6 +15,23 @@ Unreleased
 ### Removed
 
 -->
+
+## 0.9.0 - 2022-08-29
+
+- Update stored dataset
+- View output tiles service into QGIS
+- Add ability to unpublish a service
+- Add ability to delete data
+- Display available uploads into dashboard
+- Add sample generation
+- Display dataset extent
+- Improve processing waith & run
+- Improve CRS picker into update form
+- Improve tippecanoe options UI
+- Add Sonar Cloud analisis
+- Minor improvments on settings management
+- Various bug fixes
+
 ## 0.8.0 - 2022-08-12
 
 - Report dialog for stored data  - !65 !68 !69 !84 / #65

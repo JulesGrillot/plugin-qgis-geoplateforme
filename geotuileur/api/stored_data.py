@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import List
 
-from qgis.core import QgsBlockingNetworkRequest
+from qgis.core import QgsBlockingNetworkRequest, QgsVectorLayer
 from qgis.PyQt.QtCore import QByteArray, QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
@@ -62,6 +62,7 @@ class StoredData:
     type_infos: dict = None
     size: int = 0
     srs: str = ""
+    extent: dict = None
     storage: dict = None
     last_event: dict = None
 
@@ -157,6 +158,15 @@ class StoredData:
                 elif "published" in self.tags or "tms_url" in self.tags:
                     result = StoredDataStep.PUBLISHED
         return result
+
+    def create_extent_layer(self) -> QgsVectorLayer:
+        """
+        Create extent layer from geojson contains in extent key
+
+        Returns: QgsVectorLayer (invalid layer if extent not defined)
+
+        """
+        return QgsVectorLayer(json.dumps(self.extent), f"{self.name}-extent", "ogr")
 
 
 class StoredDataRequestManager:
@@ -346,6 +356,8 @@ class StoredDataRequestManager:
             result.storage = data["storage"]
         if "last_event" in data:
             result.last_event = data["last_event"]
+        if "extent" in data:
+            result.extent = data["extent"]
         return result
 
     def get_stored_data_json(self, datastore: str, stored_data: str) -> dict:

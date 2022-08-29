@@ -1,6 +1,6 @@
 import os
 
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsProject
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QIcon, QPixmap
@@ -38,6 +38,8 @@ class ReportDialog(QDialog):
 
         self.setWindowTitle(self.tr("Report"))
 
+        self._stored_data = None
+
         self.mdl_stored_data_details = StoredDataDetailsModel(self)
         self.tbv_details.setModel(self.mdl_stored_data_details)
         self.tbv_details.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
@@ -51,6 +53,8 @@ class ReportDialog(QDialog):
         self.trv_table_relation.header().setSectionResizeMode(QHeaderView.Stretch)
         self.trv_table_relation.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
+        self.btn_add_extent_layer.pressed.connect(self._add_extent_layer)
+
     def set_stored_data(self, stored_data: StoredData) -> None:
         """
         Define displayed stored data
@@ -58,12 +62,19 @@ class ReportDialog(QDialog):
         Args:
             stored_data: StoredData
         """
+        self._stored_data = stored_data
         self._set_stored_data_details(stored_data)
         self._add_upload_log(stored_data)
         self._add_vectordb_stored_data_logs(stored_data)
         self._add_stored_data_execution_logs(stored_data)
 
     def _set_stored_data_details(self, stored_data: StoredData) -> None:
+        """
+        Define stored data details
+
+        Args:
+            stored_data: (StoredData)
+        """
         status = StoredDataStatus[stored_data.status]
         self.lbl_status_icon.setText("")
         self.lbl_status_icon.setPixmap(self._get_status_icon(status))
@@ -74,6 +85,18 @@ class ReportDialog(QDialog):
         self.mdl_stored_data_details.set_stored_data(stored_data)
         self.gpx_data_structure.setVisible(len(stored_data.get_tables()) != 0)
         self.mdl_table_relation.set_stored_data_tables(stored_data)
+        vlayer = stored_data.create_extent_layer()
+        self.gpx_data_extent.setVisible(vlayer.isValid())
+
+    def _add_extent_layer(self) -> None:
+        """
+        Slot called for extent layer add in canvas
+
+        """
+        if self._stored_data:
+            vlayer = self._stored_data.create_extent_layer()
+            if vlayer.isValid():
+                QgsProject.instance().addMapLayer(vlayer)
 
     def _add_upload_log(self, stored_data: StoredData) -> None:
         """

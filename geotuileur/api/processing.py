@@ -90,6 +90,8 @@ class ProcessingRequestManager:
         Returns: Processing
 
         """
+        self.log(f"{__name__}.get_processing(datastore:{datastore},name:{name})")
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}"))
 
@@ -114,6 +116,10 @@ class ProcessingRequestManager:
         Returns: (dict) result map containing created execution in _id
 
         """
+        self.log(
+            f"{__name__}.create_processing_execution(datastore:{datastore},input_map:{input_map})"
+        )
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req_post = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/executions"))
 
@@ -155,6 +161,10 @@ class ProcessingRequestManager:
             datastore: (str) datastore id
             exec_id: (str) execution id (see create_processing_execution)
         """
+        self.log(
+            f"{__name__}.launch_execution(datastore:{datastore},exec_id:{exec_id})"
+        )
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req_post = QNetworkRequest(
             QUrl(f"{self.get_base_url(datastore)}/executions/{exec_id}/launch")
@@ -184,6 +194,8 @@ class ProcessingRequestManager:
 
         Returns: Execution execution if execution available, raise UnavailableExecutionException otherwise
         """
+        self.log(f"{__name__}.get_execution(datastore:{datastore},exec_id:{exec_id})")
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(
             QUrl(f"{self.get_base_url(datastore)}/executions/{exec_id}")
@@ -209,6 +221,10 @@ class ProcessingRequestManager:
 
         Returns: [Execution] list of execution if stored data available, raise UnavailableExecutionException otherwise
         """
+        self.log(
+            f"{__name__}.get_stored_data_executions(datastore:{datastore},stored_data:{stored_data})"
+        )
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(
             QUrl(
@@ -252,6 +268,10 @@ class ProcessingRequestManager:
 
         Returns: (str) Execution logs if execution available, raise UnavailableExecutionException otherwise
         """
+        self.log(
+            f"{__name__}.get_execution_logs(datastore:{datastore},exec_id:{exec_id})"
+        )
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(
             QUrl(f"{self.get_base_url(datastore)}/executions/{exec_id}/logs")

@@ -52,6 +52,9 @@ class OfferingsRequestManager:
             stored data id : (str)
 
         """
+        self.log(
+            f"{__name__}.get_offerings_id(datastore:{datastore},stored_data:{stored_data})"
+        )
 
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(
@@ -77,6 +80,9 @@ class OfferingsRequestManager:
             datastore: (str)
             offering_id : (str)
         """
+        self.log(
+            f"{__name__}.delete_offering(datastore:{datastore},offering_id:{offering_id})"
+        )
 
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req_get = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{offering_id}"))

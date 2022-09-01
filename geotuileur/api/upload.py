@@ -111,6 +111,7 @@ class UploadRequestManager:
 
         Returns: list of available upload, raise ReadUploadException otherwise
         """
+        self.log(f"{__name__}.get_upload_list(datastore:{datastore})")
         nb_value = self._get_nb_available_upload(datastore)
         nb_request = math.ceil(nb_value / self.MAX_LIMIT)
         result = []
@@ -177,47 +178,6 @@ class UploadRequestManager:
             )
         return nb_val
 
-    def get_upload_status(self, datastore: str, upload: str) -> str:
-        """
-        Get upload status.
-
-        Args:
-            datastore: (str) datastore id
-            upload: (str) upload id
-
-        Returns: (str) Upload status if upload available, raise UnavailableUploadException otherwise
-
-        """
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{upload}"))
-
-        # headers
-        req.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
-
-        # send request
-        resp = self.ntwk_requester_blk.get(req, forceRefresh=True)
-
-        # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
-            raise self.UnavailableUploadException(
-                f"Error while fetching upload : {self.ntwk_requester_blk.errorMessage()}"
-            )
-
-        # check response
-        req_reply = self.ntwk_requester_blk.reply()
-        if (
-            not req_reply.rawHeader(b"Content-Type")
-            == "application/json; charset=utf-8"
-        ):
-            raise self.UnavailableUploadException(
-                "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
-                    req_reply.rawHeader(b"Content-type")
-                )
-            )
-
-        data = json.loads(req_reply.content().data().decode("utf-8"))
-        return data["status"]
-
     def get_upload(self, datastore: str, upload: str) -> Upload:
         """
         Get upload.
@@ -229,6 +189,8 @@ class UploadRequestManager:
         Returns: (upload) Upload if available, raise UnavailableUploadException otherwise
 
         """
+        self.log(f"{__name__}.get_upload(datastore:{datastore}, upload: {upload})")
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{upload}"))
 
@@ -246,6 +208,8 @@ class UploadRequestManager:
             datastore: (str) datastore id
             upload: (str) upload id
         """
+        self.log(f"{__name__}.delete(datastore:{datastore}, upload: {upload})")
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req_delete = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{upload}"))
         # send request
@@ -289,6 +253,10 @@ class UploadRequestManager:
 
         Returns: [Execution] Upload checks execution list if upload available, raise UnavailableUploadException otherwise
         """
+        self.log(
+            f"{__name__}.get_upload_checks_execution(datastore:{datastore}, upload: {upload})"
+        )
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{upload}/checks"))
 
@@ -353,6 +321,10 @@ class UploadRequestManager:
         Returns: Upload if creation succeeded, raise UploadCreationException otherwise
 
         """
+        self.log(
+            f"{__name__}.create_upload(datastore:{datastore}, name: {name}, description: {description}, srs: {srs})"
+        )
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req_post = QNetworkRequest(QUrl(self.get_base_url(datastore)))
         # headers
@@ -428,6 +400,9 @@ class UploadRequestManager:
             upload: (str) upload id
             filename: (str) file to import
         """
+        self.log(
+            f"{__name__}.add_file_with_requests(datastore:{datastore}, upload: {upload}, filename: {filename})"
+        )
 
         # Get api token for requests
         with requests.Session() as session:
@@ -470,6 +445,10 @@ class UploadRequestManager:
             upload: (str) upload id
             filename: (str) file to import
         """
+        self.log(
+            f"{__name__}.add_file(datastore:{datastore}, upload: {upload}, filename: {filename})"
+        )
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req_post = QNetworkRequest(
             QUrl(f"{self.get_base_url(datastore)}/{upload}/data")
@@ -518,6 +497,8 @@ class UploadRequestManager:
             datastore: (str) datastore id
             upload: (str) upload id
         """
+        self.log(f"{__name__}.close_upload(datastore:{datastore}, upload: {upload})")
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req_post = QNetworkRequest(
             QUrl(f"{self.get_base_url(datastore)}/{upload}/close")
@@ -544,6 +525,10 @@ class UploadRequestManager:
         Returns: (dict) Upload file tree if available, raise UnavailableUploadFileTreeException otherwise
 
         """
+        self.log(
+            f"{__name__}.get_upload_file_tree(datastore:{datastore}, upload: {upload})"
+        )
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{upload}/tree"))
 

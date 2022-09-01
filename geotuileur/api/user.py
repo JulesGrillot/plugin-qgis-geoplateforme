@@ -133,6 +133,8 @@ class UserRequestsManager:
 
         Returns: User, raise UnavailableUserException otherwise
         """
+        self.log(f"{__name__}.get_user()")
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(QUrl(f"{self.get_base_url()}/me"))
 

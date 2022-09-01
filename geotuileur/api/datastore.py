@@ -9,6 +9,10 @@ from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # project
+from geotuileur.api.custom_exceptions import (
+    UnavailableDatastoreException,
+    UnavailableEndpointException,
+)
 from geotuileur.api.utils import qgs_blocking_get_request
 from geotuileur.toolbelt.log_handler import PlgLogger
 from geotuileur.toolbelt.preferences import PlgOptionsManager
@@ -93,7 +97,7 @@ class DatastoreRequestManager:
         req_reply = qgs_blocking_get_request(
             self.ntwk_requester_blk,
             req,
-            self.UnavailableDatastoreException,
+            UnavailableDatastoreException,
             expected_type="application/json; charset=utf-8",
         )
 
@@ -122,7 +126,7 @@ class DatastoreRequestManager:
         req_reply = qgs_blocking_get_request(
             self.ntwk_requester_blk,
             req,
-            self.UnavailableEndpointException,
+            UnavailableEndpointException,
             expected_type="application/json; charset=utf-8",
         )
 
@@ -132,7 +136,7 @@ class DatastoreRequestManager:
                 data = data["endpoints"][i]["endpoint"]["_id"]
 
         if len(data) == 0:
-            raise self.UnavailableEndpointException(
+            raise UnavailableEndpointException(
                 f"Error while endpoint publication is empty : " f"{data}"
             )
         return data

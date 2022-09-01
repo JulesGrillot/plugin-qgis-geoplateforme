@@ -15,6 +15,7 @@ from geotuileur.api.configuration import Configuration, ConfigurationRequestMana
 from geotuileur.api.custom_exceptions import (
     ConfigurationCreationException,
     OfferingCreationException,
+    UnavailableEndpointException,
 )
 from geotuileur.api.datastore import DatastoreRequestManager
 from geotuileur.api.stored_data import StoredDataRequestManager
@@ -167,7 +168,7 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
                 )
 
                 publication_endpoint = res
-            except DatastoreRequestManager.UnavailableEndpointException as exc:
+            except UnavailableEndpointException as exc:
                 raise QgsProcessingException(f"exc endpoint : {exc}")
 
             # create publication (offering)

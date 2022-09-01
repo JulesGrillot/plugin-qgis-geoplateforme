@@ -26,6 +26,14 @@ class UnavailableConfigurationException(Exception):
     pass
 
 
+class UnavailableDatastoreException(Exception):
+    pass
+
+
+class UnavailableEndpointException(Exception):
+    pass
+
+
 class UnavailableExecutionException(Exception):
     pass
 

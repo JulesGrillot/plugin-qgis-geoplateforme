@@ -204,7 +204,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
 
         # Run timer for tile creation check
         self.create_tile_check_timer.start(
-            PlgOptionsManager.get_plg_settings().status_check_sleep
+            PlgOptionsManager.get_plg_settings().status_check_sleep / 1000.0
         )
 
     def _create_tile_finished(self, context, successful, results):

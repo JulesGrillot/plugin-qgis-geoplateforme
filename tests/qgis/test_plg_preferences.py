@@ -40,26 +40,36 @@ class TestPlgPreferences(unittest.TestCase):
         # network and authentication
         self.assertTrue(hasattr(settings, "url_geotuileur"))
         self.assertIsInstance(settings.url_geotuileur, str)
-        self.assertEqual(
-            settings.url_geotuileur, "https://qlf-portail-gpf-beta.ign.fr/"
-        )
+        self.assertEqual(settings.url_geotuileur, "https://portail-gpf-beta.ign.fr/")
+
         self.assertTrue(hasattr(settings, "url_api_entrepot"))
         self.assertIsInstance(settings.url_api_entrepot, str)
         self.assertEqual(
-            settings.url_api_entrepot, "https://plage-geotuileur.cegedim.cloud/"
+            settings.url_api_entrepot, "https://gpf-beta.ign.fr/geotuileur/"
         )
+
+        self.assertTrue(hasattr(settings, "url_api_appendices"))
+        self.assertIsInstance(settings.url_api_appendices, str)
+        self.assertEqual(
+            settings.url_api_appendices, "https://gpf-beta.ign.fr/geotuileur/annexes/"
+        )
+
         self.assertTrue(hasattr(settings, "url_service_vt"))
         self.assertIsInstance(settings.url_service_vt, str)
-        self.assertEqual(settings.url_service_vt, "https://qlf-vt-gpf-beta.ign.fr/")
+        self.assertEqual(settings.url_service_vt, "https://vt-gpf-beta.ign.fr/")
+
         self.assertTrue(hasattr(settings, "url_auth"))
         self.assertIsInstance(settings.url_auth, str)
-        self.assertEqual(settings.url_auth, "https://iam-ign-qa-ext.cegedim.cloud/")
+        self.assertEqual(settings.url_auth, "https://compte-gpf-beta.ign.fr/")
+
         self.assertTrue(hasattr(settings, "auth_realm"))
         self.assertIsInstance(settings.auth_realm, str)
         self.assertEqual(settings.auth_realm, "demo")
+
         self.assertTrue(hasattr(settings, "auth_client_id"))
         self.assertIsInstance(settings.auth_client_id, str)
         self.assertEqual(settings.auth_client_id, "geotuileur-qgis-plugin")
+
         self.assertTrue(hasattr(settings, "qgis_auth_id"))
         self.assertIsInstance(settings.qgis_auth_id, str)
         self.assertEqual(settings.qgis_auth_id, None)

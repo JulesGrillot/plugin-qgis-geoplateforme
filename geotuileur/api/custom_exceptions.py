@@ -26,6 +26,10 @@ class UnavailableConfigurationException(Exception):
     pass
 
 
+class UnavailableConfigurationsException(Exception):
+    pass
+
+
 class UnavailableDatastoreException(Exception):
     pass
 
@@ -35,6 +39,10 @@ class UnavailableEndpointException(Exception):
 
 
 class UnavailableExecutionException(Exception):
+    pass
+
+
+class UnavailableOfferingsException(Exception):
     pass
 
 

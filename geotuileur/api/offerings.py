@@ -7,9 +7,9 @@ from qgis.core import QgsBlockingNetworkRequest
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
-from geotuileur.api.utils import qgs_blocking_get_request
-
 # project
+from geotuileur.api.custom_exceptions import UnavailableOfferingsException
+from geotuileur.api.utils import qgs_blocking_get_request
 from geotuileur.toolbelt.log_handler import PlgLogger
 from geotuileur.toolbelt.preferences import PlgOptionsManager
 
@@ -17,12 +17,6 @@ logger = logging.getLogger(__name__)
 
 
 class OfferingsRequestManager:
-    class UnavailableOfferingsException(Exception):
-        pass
-
-    class UnavailableConfigurationsException(Exception):
-        pass
-
     def __init__(self):
         """
         Helper for get offerings request
@@ -89,6 +83,6 @@ class OfferingsRequestManager:
 
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
-            raise OfferingsRequestManager.UnavailableOfferingsException(
+            raise UnavailableOfferingsException(
                 f"Error while fetching processing : {self.ntwk_requester_blk.errorMessage()}"
             )

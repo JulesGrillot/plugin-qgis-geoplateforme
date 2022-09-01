@@ -71,7 +71,7 @@ class TestPlgPreferences(unittest.TestCase):
         self.assertEqual(settings.auth_client_id, "geotuileur-qgis-plugin")
 
         self.assertTrue(hasattr(settings, "qgis_auth_id"))
-        self.assertIsInstance(settings.qgis_auth_id, None)
+        self.assertIsNone(settings.qgis_auth_id, None)
         self.assertEqual(settings.qgis_auth_id, None)
 
 

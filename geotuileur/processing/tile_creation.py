@@ -9,6 +9,12 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
+# plugin
+from geotuileur.api.custom_exceptions import (
+    CreateProcessingException,
+    LaunchExecutionException,
+    UnavailableProcessingException,
+)
 from geotuileur.api.processing import ProcessingRequestManager
 from geotuileur.api.stored_data import StoredDataRequestManager, StoredDataStatus
 
@@ -209,15 +215,15 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                 raise QgsProcessingException(
                     f"Can't retrieve vector db datastore for tile creation : {exc}"
                 )
-            except ProcessingRequestManager.UnavailableProcessingException as exc:
+            except UnavailableProcessingException as exc:
                 raise QgsProcessingException(
                     f"Can't retrieve processing for tile creation : {exc}"
                 )
-            except ProcessingRequestManager.CreateProcessingException as exc:
+            except CreateProcessingException as exc:
                 raise QgsProcessingException(
                     f"Can't create processing execution for tile creation : {exc}"
                 )
-            except ProcessingRequestManager.LaunchExecutionException as exc:
+            except LaunchExecutionException as exc:
                 raise QgsProcessingException(
                     f"Can't launch execution for tile creation : {exc}"
                 )

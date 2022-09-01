@@ -20,7 +20,10 @@ from qgis.PyQt.QtWidgets import QHeaderView, QMessageBox, QWizardPage
 
 from geotuileur.__about__ import DIR_PLUGIN_ROOT
 from geotuileur.api.check import CheckExecution
-from geotuileur.api.custom_exceptions import UnavailableUploadException
+from geotuileur.api.custom_exceptions import (
+    UnavailableProcessingException,
+    UnavailableUploadException,
+)
 from geotuileur.api.processing import Execution, ProcessingRequestManager
 from geotuileur.api.stored_data import StoredDataRequestManager
 from geotuileur.api.upload import UploadRequestManager
@@ -237,7 +240,7 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
                         datastore=datastore_id, exec_id=stored_data.tags["proc_int_id"]
                     )
             except (
-                ProcessingRequestManager.UnavailableProcessingException,
+                UnavailableProcessingException,
                 StoredDataRequestManager.UnavailableStoredData,
             ) as exc:
                 self._report_processing_error(
@@ -278,7 +281,7 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
                 if stored_data.status == "GENERATED":
                     self.update_check_timer.stop()
             except (
-                ProcessingRequestManager.UnavailableProcessingException,
+                UnavailableProcessingException,
                 StoredDataRequestManager.UnavailableStoredData,
             ) as exc:
                 self._report_processing_error(

@@ -8,7 +8,12 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
-from geotuileur.api.custom_exceptions import DeleteUploadException
+from geotuileur.api.custom_exceptions import (
+    CreateProcessingException,
+    DeleteUploadException,
+    LaunchExecutionException,
+    UnavailableProcessingException,
+)
 from geotuileur.api.processing import ProcessingRequestManager
 from geotuileur.api.stored_data import StoredDataRequestManager, StoredDataStatus
 from geotuileur.api.upload import UploadRequestManager
@@ -139,15 +144,15 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
                 upload_manager = UploadRequestManager()
                 upload_manager.delete(datastore, upload)
 
-            except ProcessingRequestManager.UnavailableProcessingException as exc:
+            except UnavailableProcessingException as exc:
                 raise QgsProcessingException(
                     f"Can't retrieve processing for database integration : {exc}"
                 )
-            except ProcessingRequestManager.CreateProcessingException as exc:
+            except CreateProcessingException as exc:
                 raise QgsProcessingException(
                     f"Can't create processing execution for database integration : {exc}"
                 )
-            except ProcessingRequestManager.LaunchExecutionException as exc:
+            except LaunchExecutionException as exc:
                 raise QgsProcessingException(
                     f"Can't launch execution for database integration : {exc}"
                 )

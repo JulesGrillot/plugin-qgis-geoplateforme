@@ -94,7 +94,7 @@
          </size>
         </property>
         <property name="placeholderText">
-         <string>https://gpf-beta.ign.fr/geotuileur/</string>
+         <string notr="true">https://gpf-beta.ign.fr/geotuileur/</string>
         </property>
        </widget>
       </item>
@@ -116,7 +116,7 @@
          <set>Qt::ImhUrlCharactersOnly</set>
         </property>
         <property name="placeholderText">
-         <string>https://vt-gpf-beta.ign.fr/</string>
+         <string notr="true">https://vt-gpf-beta.ign.fr/</string>
         </property>
        </widget>
       </item>
@@ -214,7 +214,7 @@
          <set>Qt::ImhUrlCharactersOnly</set>
         </property>
         <property name="placeholderText">
-         <string>https://compte-gpf-beta.ign.fr/</string>
+         <string notr="true">https://compte-gpf-beta.ign.fr/</string>
         </property>
        </widget>
       </item>
@@ -262,7 +262,7 @@
          <set>Qt::ImhUrlCharactersOnly</set>
         </property>
         <property name="placeholderText">
-         <string>https://portail-gpf-beta.ign.fr/</string>
+         <string notr="true">https://portail-gpf-beta.ign.fr/</string>
         </property>
        </widget>
       </item>
@@ -368,7 +368,7 @@
          </size>
         </property>
         <property name="placeholderText">
-         <string>https://gpf-beta.ign.fr/geotuileur/annexes/</string>
+         <string notr="true">https://gpf-beta.ign.fr/geotuileur/annexes/</string>
         </property>
        </widget>
       </item>

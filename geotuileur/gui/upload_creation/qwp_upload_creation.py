@@ -20,6 +20,7 @@ from qgis.PyQt.QtWidgets import QHeaderView, QMessageBox, QWizardPage
 
 from geotuileur.__about__ import DIR_PLUGIN_ROOT
 from geotuileur.api.check import CheckExecution
+from geotuileur.api.custom_exceptions import UnavailableUploadException
 from geotuileur.api.processing import Execution, ProcessingRequestManager
 from geotuileur.api.stored_data import StoredDataRequestManager, StoredDataStatus
 from geotuileur.api.upload import UploadRequestManager
@@ -195,7 +196,7 @@ class UploadCreationPageWizard(QWizardPage):
                     datastore=datastore_id, upload=self.created_upload_id
                 )
 
-            except UploadRequestManager.UnavailableUploadException as exc:
+            except UnavailableUploadException as exc:
                 self._report_processing_error(self.tr("Upload check status"), str(exc))
         return execution_list
 

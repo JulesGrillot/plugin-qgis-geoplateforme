@@ -1,11 +1,15 @@
+# standard
 import os
 
+# PyQGIS
 from qgis.core import QgsApplication
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QIcon, QPixmap
 from qgis.PyQt.QtWidgets import QAbstractItemView, QWidget
 
+# plugin
+from geotuileur.api.custom_exceptions import UnavailableUploadException
 from geotuileur.api.upload import Upload, UploadRequestManager, UploadStatus
 from geotuileur.gui.report.mdl_upload_details import UploadDetailsTreeModel
 from geotuileur.gui.report.wdg_execution_log import ExecutionLogWidget
@@ -51,7 +55,7 @@ class UploadLogWidget(QWidget):
                 widget = ExecutionLogWidget(upload.datastore_id, self)
                 widget.set_check_execution(execution)
                 self.vlayout_checks.addWidget(widget)
-        except UploadRequestManager.UnavailableUploadException as exc:
+        except UnavailableUploadException as exc:
             self.log(
                 self.tr("Can't define execution logs : {0}").format(exc), push=True
             )

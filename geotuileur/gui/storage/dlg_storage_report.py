@@ -15,6 +15,7 @@ from qgis.PyQt.QtWidgets import (
 )
 
 from geotuileur.__about__ import __title_clean__
+from geotuileur.api.custom_exceptions import DeleteUploadException
 from geotuileur.api.datastore import DatastoreRequestManager
 from geotuileur.api.stored_data import StorageType, StoredData
 from geotuileur.api.upload import Upload, UploadRequestManager
@@ -229,7 +230,7 @@ class StorageReportDialog(QDialog):
             manager.delete(datastore=upload.datastore_id, upload=upload.id)
             row = self.mdl_upload.get_upload_row(upload.id)
             self.mdl_upload.removeRow(row)
-        except UploadRequestManager.DeleteUploadException as exc:
+        except DeleteUploadException as exc:
             self.log(
                 self.tr("Upload {0} delete error : {1}").format(upload.id, exc),
                 log_level=1,

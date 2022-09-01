@@ -127,7 +127,7 @@ class UploadCreationPageWizard(QWizardPage):
 
         # Run timer for upload check
         self.upload_check_timer.start(
-            PlgOptionsManager.get_plg_settings().status_check_sleep / 1000.0
+            int(PlgOptionsManager.get_plg_settings().status_check_sleep / 1000.0)
         )
 
     def _vector_db_creation_finished(self, context, successful, results):

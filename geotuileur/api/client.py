@@ -11,6 +11,7 @@
 # Standard library
 import json
 import logging
+import urllib.parse
 
 # PyQGIS
 from qgis.core import QgsApplication, QgsAuthMethodConfig, QgsBlockingNetworkRequest
@@ -101,6 +102,8 @@ class NetworkRequestsManager:
 
         # encode data
         data = QByteArray()
+        password = urllib.parse.quote(password)
+
         data.append(
             f"grant_type=password&"
             f"client_id={self.plg_settings.auth_client_id}&"

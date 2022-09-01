@@ -8,9 +8,13 @@ from qgis.core import QgsBlockingNetworkRequest
 from qgis.PyQt.QtCore import QByteArray, QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
-from geotuileur.api.utils import qgs_blocking_get_request
-
 # project
+from geotuileur.api.custom_exceptions import (
+    ConfigurationCreationException,
+    OfferingCreationException,
+    UnavailableConfigurationException,
+)
+from geotuileur.api.utils import qgs_blocking_get_request
 from geotuileur.toolbelt.log_handler import PlgLogger
 from geotuileur.toolbelt.preferences import PlgOptionsManager
 
@@ -73,15 +77,6 @@ class Configuration:
 
 
 class ConfigurationRequestManager:
-    class UnavailableConfigurationException(Exception):
-        pass
-
-    class ConfigurationCreationException(Exception):
-        pass
-
-    class OfferingCreationException(Exception):
-        pass
-
     def __init__(self):
         """
         Helper for configuration request
@@ -151,7 +146,7 @@ class ConfigurationRequestManager:
 
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
-            raise self.ConfigurationCreationException(
+            raise ConfigurationCreationException(
                 f"Error while creating configuration : "
                 f"{self.ntwk_requester_blk.errorMessage()}"
             )
@@ -161,7 +156,7 @@ class ConfigurationRequestManager:
             not req_reply.rawHeader(b"Content-Type")
             == "application/json; charset=utf-8"
         ):
-            raise self.ConfigurationCreationException(
+            raise ConfigurationCreationException(
                 "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
                     req_reply.rawHeader(b"Content-type")
                 )
@@ -184,7 +179,7 @@ class ConfigurationRequestManager:
 
         # headers
         req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk, req, self.UnavailableConfigurationException
+            self.ntwk_requester_blk, req, UnavailableConfigurationException
         )
         data = json.loads(req_reply.content().data().decode("utf-8"))
         configuration_ids = [configuration["_id"] for configuration in data]
@@ -204,7 +199,7 @@ class ConfigurationRequestManager:
 
         # headers
         req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk, req, self.UnavailableConfigurationException
+            self.ntwk_requester_blk, req, UnavailableConfigurationException
         )
         data = json.loads(req_reply.content().data().decode("utf-8"))
         return self._create_configuration_from_json(data)
@@ -251,7 +246,7 @@ class ConfigurationRequestManager:
 
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
-            raise self.UnavailableConfigurationException(
+            raise UnavailableConfigurationException(
                 f"Error while fetching processing : {self.ntwk_requester_blk.errorMessage()}"
             )
 
@@ -288,7 +283,7 @@ class ConfigurationRequestManager:
 
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
-            raise self.OfferingCreationException(
+            raise OfferingCreationException(
                 f"Error while creating publication : "
                 f"{self.ntwk_requester_blk.errorMessage()}"
             )
@@ -298,7 +293,7 @@ class ConfigurationRequestManager:
             not req_reply.rawHeader(b"Content-Type")
             == "application/json; charset=utf-8"
         ):
-            raise self.OfferingCreationException(
+            raise OfferingCreationException(
                 "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
                     req_reply.rawHeader(b"Content-type")
                 )

@@ -127,7 +127,7 @@ class NetworkRequestsManager:
                 log_level=2,
                 push=True,
             )
-            raise InvalidToken(err_msg)
+            raise InvalidToken(self.ntwk_requester_blk.errorMessage())
 
         # debug log
         self.log(

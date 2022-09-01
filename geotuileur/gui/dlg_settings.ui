@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>538</width>
-    <height>489</height>
+    <height>642</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -75,125 +75,31 @@
       <string>Service settings</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="5" column="0">
-       <widget class="QLabel" name="lbl_auth_client_id">
-        <property name="minimumSize">
-         <size>
-          <width>50</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Client ID:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QLineEdit" name="lne_url_auth">
-        <property name="minimumSize">
-         <size>
-          <width>250</width>
-          <height>25</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>1000</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="inputMethodHints">
-         <set>Qt::ImhUrlCharactersOnly</set>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLineEdit" name="lne_url_service_vt">
-        <property name="minimumSize">
-         <size>
-          <width>250</width>
-          <height>25</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>1000</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="inputMethodHints">
-         <set>Qt::ImhUrlCharactersOnly</set>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="lbl_auth_realm">
-        <property name="minimumSize">
-         <size>
-          <width>50</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Authentication realm:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QLineEdit" name="lne_auth_client_id">
-        <property name="minimumSize">
-         <size>
-          <width>100</width>
-          <height>25</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>1000</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="placeholderText">
-         <string notr="true">guichet</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QLineEdit" name="lne_auth_realm">
+      <item row="7" column="1">
+       <widget class="QgsAuthConfigSelect" name="cbb_auth_config_select">
         <property name="minimumSize">
          <size>
           <width>0</width>
           <height>25</height>
          </size>
         </property>
-        <property name="maximumSize">
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="lne_url_api_entrepot">
+        <property name="minimumSize">
          <size>
-          <width>1000</width>
-          <height>30</height>
+          <width>150</width>
+          <height>25</height>
          </size>
         </property>
-        <property name="inputMethodHints">
-         <set>Qt::ImhLatinOnly|Qt::ImhPreferLowercase</set>
-        </property>
         <property name="placeholderText">
-         <string notr="true">demo</string>
+         <string notr="true">https://gpf-beta.ign.fr/geotuileur/</string>
         </property>
        </widget>
       </item>
-      <item row="8" column="0" colspan="2">
-       <widget class="QPushButton" name="btn_check_connection">
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="lne_url_service_vt">
         <property name="minimumSize">
          <size>
           <width>150</width>
@@ -206,12 +112,34 @@
           <height>30</height>
          </size>
         </property>
-        <property name="text">
-         <string>Check connection settings</string>
+        <property name="inputMethodHints">
+         <set>Qt::ImhUrlCharactersOnly</set>
+        </property>
+        <property name="placeholderText">
+         <string notr="true">https://vt-gpf-beta.ign.fr/</string>
         </property>
        </widget>
       </item>
-      <item row="7" column="0" colspan="2">
+      <item row="6" column="1">
+       <widget class="QLineEdit" name="lne_auth_client_id">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>1000</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="placeholderText">
+         <string notr="true">geotuileur-qgis-plugin</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0" colspan="2">
        <spacer name="verticalSpacer_2">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -224,34 +152,8 @@
         </property>
        </spacer>
       </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="lbl_account">
-        <property name="text">
-         <string>Account:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="lne_url_geotuileur">
-        <property name="minimumSize">
-         <size>
-          <width>250</width>
-          <height>25</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>1000</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="inputMethodHints">
-         <set>Qt::ImhUrlCharactersOnly</set>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="lbl_url_service_vt">
+      <item row="4" column="0">
+       <widget class="QLabel" name="lbl_url_auth">
         <property name="minimumSize">
          <size>
           <width>50</width>
@@ -265,12 +167,9 @@
          </size>
         </property>
         <property name="text">
-         <string>Vector tile service:</string>
+         <string>Authentication:</string>
         </property>
        </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QgsAuthConfigSelect" name="cbb_auth_config_select"/>
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="lbl_url_geotuileur">
@@ -297,8 +196,78 @@
         </property>
        </widget>
       </item>
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="lne_url_auth">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>1000</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="inputMethodHints">
+         <set>Qt::ImhUrlCharactersOnly</set>
+        </property>
+        <property name="placeholderText">
+         <string notr="true">https://compte-gpf-beta.ign.fr/</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lbl_url_api_entrepot">
+        <property name="text">
+         <string>API Entrepôt endpoint:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0" colspan="2">
+       <widget class="QPushButton" name="btn_check_connection">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>1000</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Check connection settings</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="lne_url_geotuileur">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>1000</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="inputMethodHints">
+         <set>Qt::ImhUrlCharactersOnly</set>
+        </property>
+        <property name="placeholderText">
+         <string notr="true">https://portail-gpf-beta.ign.fr/</string>
+        </property>
+       </widget>
+      </item>
       <item row="3" column="0">
-       <widget class="QLabel" name="lbl_url_auth">
+       <widget class="QLabel" name="lbl_url_service_vt">
         <property name="minimumSize">
          <size>
           <width>50</width>
@@ -312,19 +281,96 @@
          </size>
         </property>
         <property name="text">
-         <string>Authentication:</string>
+         <string>Vector tile service:</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="lbl_url_api_entrepot">
+      <item row="5" column="0">
+       <widget class="QLabel" name="lbl_auth_realm">
+        <property name="minimumSize">
+         <size>
+          <width>50</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>30</height>
+         </size>
+        </property>
         <property name="text">
-         <string>API Entrepôt endpoint:</string>
+         <string>Authentication realm:</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="lne_url_api_entrepot"/>
+      <item row="5" column="1">
+       <widget class="QLineEdit" name="lne_auth_realm">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>1000</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="inputMethodHints">
+         <set>Qt::ImhLatinOnly|Qt::ImhPreferLowercase</set>
+        </property>
+        <property name="placeholderText">
+         <string notr="true">demo</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="lbl_account">
+        <property name="text">
+         <string>Account:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="lbl_auth_client_id">
+        <property name="minimumSize">
+         <size>
+          <width>50</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Client ID:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="lbl_url_api_appendices">
+        <property name="text">
+         <string>API appendices endpoint:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="lne_url_api_appendices">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="placeholderText">
+         <string notr="true">https://gpf-beta.ign.fr/geotuileur/annexes/</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -347,6 +393,101 @@
       <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QPushButton" name="btn_help">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>500</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="locale">
+         <locale language="English" country="UnitedStates"/>
+        </property>
+        <property name="text">
+         <string>Help</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="lbl_version_saved">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="locale">
+         <locale language="English" country="UnitedStates"/>
+        </property>
+        <property name="text">
+         <string>Version used to save settings:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLabel" name="lbl_version_saved_value">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="locale">
+         <locale language="English" country="UnitedStates"/>
+        </property>
+        <property name="text">
+         <string notr="true">X.X.x</string>
+        </property>
+        <property name="textInteractionFlags">
+         <set>Qt::NoTextInteraction</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="btn_report">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>500</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="locale">
+         <locale language="English" country="UnitedStates"/>
+        </property>
+        <property name="text">
+         <string>Report an issue</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>:/plugins/qtribu/resources/images/bullhorn.svg</normaloff>:/plugins/qtribu/resources/images/bullhorn.svg</iconset>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0">
        <widget class="QCheckBox" name="opt_debug">
         <property name="minimumSize">
@@ -378,98 +519,22 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QLabel" name="lbl_version_saved_value">
+      <item row="3" column="0" colspan="2">
+       <widget class="QPushButton" name="btn_reset">
         <property name="minimumSize">
          <size>
-          <width>0</width>
+          <width>300</width>
           <height>25</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>16777215</width>
+          <width>1000</width>
           <height>30</height>
          </size>
         </property>
-        <property name="locale">
-         <locale language="English" country="UnitedStates"/>
-        </property>
         <property name="text">
-         <string notr="true">X.X.x</string>
-        </property>
-        <property name="textInteractionFlags">
-         <set>Qt::NoTextInteraction</set>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="lbl_version_saved">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>25</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="locale">
-         <locale language="English" country="UnitedStates"/>
-        </property>
-        <property name="text">
-         <string>Version used to save settings:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QPushButton" name="btn_help">
-        <property name="minimumSize">
-         <size>
-          <width>200</width>
-          <height>25</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>500</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="locale">
-         <locale language="English" country="UnitedStates"/>
-        </property>
-        <property name="text">
-         <string>Help</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="btn_report">
-        <property name="minimumSize">
-         <size>
-          <width>200</width>
-          <height>25</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>500</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="locale">
-         <locale language="English" country="UnitedStates"/>
-        </property>
-        <property name="text">
-         <string>Report an issue</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normaloff>:/plugins/qtribu/resources/images/bullhorn.svg</normaloff>:/plugins/qtribu/resources/images/bullhorn.svg</iconset>
+         <string>Reset to factory default</string>
         </property>
        </widget>
       </item>

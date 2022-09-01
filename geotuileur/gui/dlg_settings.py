@@ -9,6 +9,7 @@ from functools import partial
 from pathlib import Path
 
 # PyQGIS
+from qgis.core import QgsApplication
 from qgis.gui import QgsOptionsPageWidget, QgsOptionsWidgetFactory
 from qgis.PyQt import uic
 from qgis.PyQt.Qt import QUrl
@@ -75,6 +76,9 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
             partial(QDesktopServices.openUrl, QUrl(f"{__uri_tracker__}new/"))
         )
 
+        self.btn_reset.setIcon(QIcon(QgsApplication.iconPath("mActionUndo.svg")))
+        self.btn_reset.pressed.connect(self.reset_settings)
+
         # load previously saved settings
         self.load_settings()
 
@@ -120,11 +124,22 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
         # network and authentication
         self.lne_url_geotuileur.setText(settings.url_geotuileur)
         self.lne_url_api_entrepot.setText(settings.url_api_entrepot)
+        self.lne_url_api_appendices.setText(settings.url_api_appendices)
         self.lne_url_service_vt.setText(settings.url_service_vt)
         self.lne_url_auth.setText(settings.url_auth)
         self.lne_auth_realm.setText(settings.auth_realm)
         self.lne_auth_client_id.setText(settings.auth_client_id)
         self.cbb_auth_config_select.setConfigId(settings.qgis_auth_id)
+
+    def reset_settings(self):
+        """Reset settings to default values (set in preferences.py module)."""
+        default_settings = PlgSettingsStructure()
+
+        # dump default settings into QgsSettings
+        self.plg_settings.save_from_object(default_settings)
+
+        # update the form
+        self.load_settings()
 
     def tr(self, message: str) -> str:
         """Get the translation for a string using Qt translation API.

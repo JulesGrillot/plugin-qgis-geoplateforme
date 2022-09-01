@@ -30,10 +30,11 @@ class PlgSettingsStructure:
     version: str = __version__
 
     # network and authentication
-    url_geotuileur: str = "https://qlf-portail-gpf-beta.ign.fr/"
-    url_api_entrepot: str = "https://plage-geotuileur.cegedim.cloud/"
-    url_service_vt: str = "https://qlf-vt-gpf-beta.ign.fr/"
-    url_auth: str = "https://iam-ign-qa-ext.cegedim.cloud/"
+    url_geotuileur: str = "https://portail-gpf-beta.ign.fr/"
+    url_api_entrepot: str = "https://gpf-beta.ign.fr/geotuileur/"
+    url_api_appendices: str = "https://gpf-beta.ign.fr/geotuileur/annexes/"
+    url_service_vt: str = "https://vt-gpf-beta.ign.fr/"
+    url_auth: str = "https://compte-gpf-beta.ign.fr/"
     auth_realm: str = "demo"
     auth_client_id: str = "geotuileur-qgis-plugin"
     qgis_auth_id: str = None

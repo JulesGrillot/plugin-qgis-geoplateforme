@@ -8,6 +8,7 @@ from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 from geotuileur.api.client import NetworkRequestsManager
+from geotuileur.api.custom_exceptions import UnavailableExecutionException
 from geotuileur.api.utils import qgs_blocking_get_request
 from geotuileur.toolbelt import PlgLogger, PlgOptionsManager
 
@@ -38,9 +39,6 @@ class Check:
 
 
 class CheckRequestManager:
-    class UnavailableExecutionException(Exception):
-        pass
-
     def __init__(self):
         """
         Helper for checks request
@@ -81,7 +79,7 @@ class CheckRequestManager:
         )
 
         req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk, req, self.UnavailableExecutionException
+            self.ntwk_requester_blk, req, UnavailableExecutionException
         )
         data = json.loads(req_reply.content().data().decode("utf-8"))
         execution = CheckExecution(
@@ -116,7 +114,7 @@ class CheckRequestManager:
         req_reply = qgs_blocking_get_request(
             self.ntwk_requester_blk,
             req,
-            self.UnavailableExecutionException,
+            UnavailableExecutionException,
             expected_type="plain/text; charset=utf-8",
         )
         data = req_reply.content().data().decode("utf-8")

@@ -32,6 +32,7 @@ from geotuileur.api.custom_exceptions import (
     FileUploadException,
     InvalidToken,
     ReadUploadException,
+    UnavailableExecutionException,
     UnavailableUploadException,
     UnavailableUploadFileTreeException,
     UploadClosingException,
@@ -338,7 +339,7 @@ class UploadRequestManager:
                             datastore=datastore, exec_id=execution["_id"]
                         )
                     )
-        except CheckRequestManager.UnavailableExecutionException as exc:
+        except UnavailableExecutionException as exc:
             raise UnavailableUploadException(
                 f"Error while fetching upload check execution : {exc}"
             )

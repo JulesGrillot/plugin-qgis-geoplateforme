@@ -117,12 +117,17 @@ class NetworkRequestsManager:
 
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
+            err_msg = self.tr(
+                "Error while getting token: {}".format(
+                    self.ntwk_requester_blk.errorMessage()
+                )
+            )
             self.log(
-                f"Error while getting token: {self.ntwk_requester_blk.errorMessage()}",
+                message=err_msg,
                 log_level=2,
                 push=True,
             )
-            raise InvalidToken(self.ntwk_requester_blk.errorMessage())
+            raise InvalidToken(err_msg)
 
         # debug log
         self.log(

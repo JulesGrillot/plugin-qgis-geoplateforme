@@ -30,12 +30,10 @@ from geotuileur.processing.vector_db_creation import (
     VectorDatabaseCreationAlgorithm,
     VectorDatabaseCreationProcessingFeedback,
 )
-from geotuileur.toolbelt import PlgLogger
+from geotuileur.toolbelt import PlgLogger, PlgOptionsManager
 
 
 class UploadCreationPageWizard(QWizardPage):
-    STATUS_CHECK_INTERVAL = 500
-
     def __init__(self, qwp_upload_edition: UploadEditionPageWizard, parent=None):
 
         """
@@ -128,7 +126,9 @@ class UploadCreationPageWizard(QWizardPage):
         )
 
         # Run timer for upload check
-        self.upload_check_timer.start(self.STATUS_CHECK_INTERVAL)
+        self.upload_check_timer.start(
+            PlgOptionsManager.get_plg_settings().status_check_sleep
+        )
 
     def _vector_db_creation_finished(self, context, successful, results):
         """

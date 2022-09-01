@@ -11,6 +11,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 from geotuileur.api.processing import ProcessingRequestManager
 from geotuileur.api.stored_data import StoredDataRequestManager, StoredDataStatus
+from geotuileur.toolbelt import PlgOptionsManager
 
 
 class TileCreationProcessingFeedback(QgsProcessingFeedback):
@@ -321,7 +322,7 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                     datastore=datastore, stored_data=pyramid_stored_data_id
                 )
                 status = StoredDataStatus(stored_data.status)
-                sleep(0.5)
+                sleep(PlgOptionsManager.get_plg_settings().status_check_sleep)
 
             if status == StoredDataStatus.UNSTABLE:
                 raise QgsProcessingException(

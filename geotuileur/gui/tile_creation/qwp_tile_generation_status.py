@@ -39,11 +39,10 @@ from geotuileur.processing.tile_creation import (
     TileCreationAlgorithm,
     TileCreationProcessingFeedback,
 )
+from geotuileur.toolbelt import PlgOptionsManager
 
 
 class TileGenerationStatusPageWizard(QWizardPage):
-    STATUS_CHECK_INTERVAL = 500
-
     def __init__(
         self,
         qwp_tile_generation_edition: TileGenerationEditionPageWizard,
@@ -204,7 +203,9 @@ class TileGenerationStatusPageWizard(QWizardPage):
         )
 
         # Run timer for tile creation check
-        self.create_tile_check_timer.start(self.STATUS_CHECK_INTERVAL)
+        self.create_tile_check_timer.start(
+            PlgOptionsManager.get_plg_settings().status_check_sleep
+        )
 
     def _create_tile_finished(self, context, successful, results):
         """

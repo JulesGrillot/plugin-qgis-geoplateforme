@@ -39,6 +39,9 @@ class PlgSettingsStructure:
     auth_client_id: str = "geotuileur-qgis-plugin"
     qgis_auth_id: str = None
 
+    # status check sleep (in seconds)
+    status_check_sleep: int = 1
+
     @property
     def url_authentication_token(self) -> str:
         """Return the URL to get the token from the authentication service."""

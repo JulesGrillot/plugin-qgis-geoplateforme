@@ -10,6 +10,7 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication
 
 from geotuileur.api.upload import UploadRequestManager, UploadStatus
+from geotuileur.toolbelt import PlgOptionsManager
 
 
 class UploadCreationProcessingFeedback(QgsProcessingFeedback):
@@ -147,7 +148,7 @@ class UploadCreationAlgorithm(QgsProcessingAlgorithm):
             while status != UploadStatus.CLOSED and status != UploadStatus.UNSTABLE:
                 upload = manager.get_upload(datastore=datastore, upload=upload_id)
                 status = UploadStatus(upload.status)
-                sleep(0.5)
+                sleep(PlgOptionsManager.get_plg_settings().status_check_sleep)
 
             if status == UploadStatus.UNSTABLE:
                 raise QgsProcessingException(

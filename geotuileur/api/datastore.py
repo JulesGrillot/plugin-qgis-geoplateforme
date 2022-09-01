@@ -57,12 +57,6 @@ class Datastore:
 
 
 class DatastoreRequestManager:
-    class UnavailableDatastoreException(Exception):
-        pass
-
-    class UnavailableEndpointException(Exception):
-        pass
-
     def __init__(self):
         """
         Helper for datastore request

@@ -1,4 +1,5 @@
 import json
+from time import sleep
 
 from qgis.core import (
     QgsProcessingAlgorithm,
@@ -185,6 +186,7 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
                     datastore=datastore, stored_data=vector_db_stored_data_id
                 )
                 status = StoredDataStatus(stored_data.status)
+                sleep(0.5)
 
             if status == StoredDataStatus.UNSTABLE:
                 raise QgsProcessingException(

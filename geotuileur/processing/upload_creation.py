@@ -1,4 +1,5 @@
 import json
+from time import sleep
 
 from qgis.core import (
     QgsProcessingAlgorithm,
@@ -146,6 +147,7 @@ class UploadCreationAlgorithm(QgsProcessingAlgorithm):
             while status != UploadStatus.CLOSED and status != UploadStatus.UNSTABLE:
                 upload = manager.get_upload(datastore=datastore, upload=upload_id)
                 status = UploadStatus(upload.status)
+                sleep(0.5)
 
             if status == UploadStatus.UNSTABLE:
                 raise QgsProcessingException(

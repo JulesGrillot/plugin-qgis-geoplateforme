@@ -453,8 +453,8 @@ class UploadRequestManager:
             except InvalidToken as exc:
                 self.log(
                     message=self.tr(
-                        "Authentication token returned is invalid. Trace: {}. {}".format(
-                            check, exc
+                        "Authentication token returned is invalid. Trace: {}".format(
+                            exc
                         )
                     ),
                     log_level=2,

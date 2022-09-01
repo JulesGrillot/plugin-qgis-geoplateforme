@@ -11,6 +11,8 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
+# plugin
+from geotuileur.api.custom_exceptions import UnavailableExecutionException
 from geotuileur.api.processing import ProcessingRequestManager
 from geotuileur.api.stored_data import StoredDataRequestManager
 from geotuileur.processing.tile_creation import TileCreationAlgorithm
@@ -155,7 +157,7 @@ class UpdateTileUploadAlgorithm(QgsProcessingAlgorithm):
                 proc_manager = ProcessingRequestManager()
                 execution = proc_manager.get_execution(datastore, execution_id)
                 exec_param = execution.parameters
-            except ProcessingRequestManager.UnavailableExecutionException as exc:
+            except UnavailableExecutionException as exc:
                 raise QgsProcessingException(
                     self.tr("Execution read failed : {0}").format(exc)
                 )

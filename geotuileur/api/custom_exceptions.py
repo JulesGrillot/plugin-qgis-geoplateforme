@@ -6,11 +6,19 @@ class ConfigurationCreationException(Exception):
     pass
 
 
+class CreateProcessingException(Exception):
+    pass
+
+
 class FileUploadException(Exception):
     pass
 
 
 class InvalidToken(Exception):
+    pass
+
+
+class LaunchExecutionException(Exception):
     pass
 
 
@@ -43,6 +51,14 @@ class UnavailableExecutionException(Exception):
 
 
 class UnavailableOfferingsException(Exception):
+    pass
+
+
+class UnavailableProcessingException(Exception):
+    pass
+
+
+class UnavailableStoredDataException(Exception):
     pass
 
 

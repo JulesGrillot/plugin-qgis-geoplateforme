@@ -9,7 +9,14 @@ from typing import List
 # PyQGIS
 import requests
 from qgis.core import QgsApplication, QgsBlockingNetworkRequest, QgsSettings
-from qgis.PyQt.QtCore import QByteArray, QEventLoop, QFile, QIODevice, QUrl
+from qgis.PyQt.QtCore import (
+    QByteArray,
+    QCoreApplication,
+    QEventLoop,
+    QFile,
+    QIODevice,
+    QUrl,
+)
 from qgis.PyQt.QtNetwork import (
     QHttpMultiPart,
     QHttpPart,
@@ -78,6 +85,18 @@ class UploadRequestManager:
         self.request_manager = NetworkRequestsManager()
         self.ntwk_requester_blk = QgsBlockingNetworkRequest()
         self.plg_settings = PlgOptionsManager.get_plg_settings()
+
+    def tr(self, message):
+        """Get the translation for a string using Qt translation API.
+        We implement this ourselves since we do not inherit QObject.
+
+        :param message: String for translation.
+        :type message: str, QString
+
+        :returns: Translated version of message.
+        :rtype: QString
+        """
+        return QCoreApplication.translate(self.__class__.__name__, message)
 
     def get_base_url(self, datastore: str) -> str:
         """

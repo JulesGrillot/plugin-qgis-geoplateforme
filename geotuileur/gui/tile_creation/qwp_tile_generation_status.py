@@ -17,8 +17,12 @@ from qgis.PyQt.QtCore import QByteArray, QSize, QTimer
 from qgis.PyQt.QtGui import QIcon, QMovie, QPixmap
 from qgis.PyQt.QtWidgets import QHeaderView, QMessageBox, QWizardPage
 
+# plugin
 from geotuileur.__about__ import DIR_PLUGIN_ROOT
-from geotuileur.api.custom_exceptions import UnavailableUploadException
+from geotuileur.api.custom_exceptions import (
+    UnavailableProcessingException,
+    UnavailableUploadException,
+)
 from geotuileur.api.processing import ProcessingRequestManager
 from geotuileur.api.stored_data import StoredDataRequestManager, StoredDataStatus
 from geotuileur.api.upload import UploadRequestManager
@@ -291,7 +295,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
                     self.mdl_execution_list.set_execution_list([execution])
             except (
                 StoredDataRequestManager.UnavailableStoredData,
-                ProcessingRequestManager.UnavailableProcessingException,
+                UnavailableProcessingException,
                 UnavailableUploadException,
             ) as exc:
                 self._report_processing_error(

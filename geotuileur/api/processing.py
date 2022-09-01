@@ -1,12 +1,18 @@
 import json
 from dataclasses import dataclass
-from datetime import datetime
 from enum import Enum
 
 from qgis.core import QgsBlockingNetworkRequest
 from qgis.PyQt.QtCore import QByteArray, QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
+# plugin
+from geotuileur.api.custom_exceptions import (
+    CreateProcessingException,
+    LaunchExecutionException,
+    UnavailableExecutionException,
+    UnavailableProcessingException,
+)
 from geotuileur.api.utils import qgs_blocking_get_request
 from geotuileur.toolbelt import PlgLogger, PlgOptionsManager
 
@@ -41,21 +47,6 @@ class Processing:
 
 
 class ProcessingRequestManager:
-    class UnavailableProcessingException(Exception):
-        pass
-
-    class UnavailableExecutionException(Exception):
-        pass
-
-    class UnavailableStoredDataException(Exception):
-        pass
-
-    class CreateProcessingException(Exception):
-        pass
-
-    class LaunchExecutionException(Exception):
-        pass
-
     def __init__(self):
         """
         Helper for processing request
@@ -96,14 +87,14 @@ class ProcessingRequestManager:
         req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}"))
 
         req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk, req, self.UnavailableProcessingException
+            self.ntwk_requester_blk, req, UnavailableProcessingException
         )
         processing_list = json.loads(req_reply.content().data().decode("utf-8"))
         for processing in processing_list:
             if processing["name"] == name:
                 return Processing(name=processing["name"], id=processing["_id"])
 
-        raise self.UnavailableProcessingException("Processing not available in server")
+        raise UnavailableProcessingException("Processing not available in server")
 
     def create_processing_execution(self, datastore: str, input_map: dict) -> dict:
         """
@@ -135,7 +126,7 @@ class ProcessingRequestManager:
 
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
-            raise self.CreateProcessingException(
+            raise CreateProcessingException(
                 f"Error while creating processing execution : {self.ntwk_requester_blk.errorMessage()}"
             )
 
@@ -145,7 +136,7 @@ class ProcessingRequestManager:
             not req_reply.rawHeader(b"Content-Type")
             == "application/json; charset=utf-8"
         ):
-            raise self.CreateProcessingException(
+            raise CreateProcessingException(
                 "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
                     req_reply.rawHeader(b"Content-type")
                 )
@@ -180,7 +171,7 @@ class ProcessingRequestManager:
 
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
-            raise self.LaunchExecutionException(
+            raise LaunchExecutionException(
                 f"Error while launching execution : {self.ntwk_requester_blk.errorMessage()}"
             )
 
@@ -202,7 +193,7 @@ class ProcessingRequestManager:
         )
 
         req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk, req, self.UnavailableExecutionException
+            self.ntwk_requester_blk, req, UnavailableExecutionException
         )
         data = json.loads(req_reply.content().data().decode("utf-8"))
 
@@ -233,7 +224,7 @@ class ProcessingRequestManager:
         )
 
         req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk, req, self.UnavailableExecutionException
+            self.ntwk_requester_blk, req, UnavailableExecutionException
         )
         data = json.loads(req_reply.content().data().decode("utf-8"))
         execution_list = [self.get_execution(datastore, e["_id"]) for e in data]
@@ -280,7 +271,7 @@ class ProcessingRequestManager:
         req_reply = qgs_blocking_get_request(
             self.ntwk_requester_blk,
             req,
-            self.UnavailableExecutionException,
+            UnavailableExecutionException,
             expected_type="plain/text; charset=utf-8",
         )
         data = req_reply.content().data().decode("utf-8")

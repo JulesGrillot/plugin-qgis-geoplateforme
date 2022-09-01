@@ -57,7 +57,7 @@ class OfferingsRequestManager:
 
         # headers
         req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk, req, self.UnavailableOfferingsException
+            self.ntwk_requester_blk, req, UnavailableOfferingsException
         )
 
         data = json.loads(req_reply.content().data().decode("utf-8"))

@@ -7,6 +7,7 @@ from qgis.PyQt.QtWidgets import QWizardPage
 
 # plugin
 from geotuileur.api.configuration import ConfigurationRequestManager
+from geotuileur.api.custom_exceptions import UnavailableConfigurationException
 from geotuileur.api.stored_data import StoredDataStatus, StoredDataStep
 
 
@@ -87,5 +88,5 @@ class UpdatePublicationPageWizard(QWizardPage):
                         datastore_id, ids[0]
                     )
                     self.wdg_publication_form.set_config(configuration)
-            except ConfigurationRequestManager.UnavailableConfigurationException as exc:
+            except UnavailableConfigurationException as exc:
                 raise QgsProcessingException(f"exc configuration : {exc}")

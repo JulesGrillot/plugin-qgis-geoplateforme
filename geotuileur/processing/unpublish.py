@@ -10,6 +10,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from geotuileur.api.configuration import ConfigurationRequestManager
 
 # Plugin
+from geotuileur.api.custom_exceptions import UnavailableConfigurationException
 from geotuileur.api.offerings import OfferingsRequestManager
 from geotuileur.api.stored_data import StoredDataRequestManager
 
@@ -95,7 +96,7 @@ class UnpublishAlgorithm(QgsProcessingAlgorithm):
 
         except (
             OfferingsRequestManager.UnavailableOfferingsException,
-            ConfigurationRequestManager.UnavailableConfigurationException,
+            UnavailableConfigurationException,
             StoredDataRequestManager.DeleteTagException,
         ) as exc:
             raise QgsProcessingException(f"exc unpublish : {exc}")

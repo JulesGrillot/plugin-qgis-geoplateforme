@@ -12,6 +12,7 @@ from qgis.PyQt.QtWidgets import QWizardPage
 
 # Plugin
 from geotuileur.__about__ import __title_clean__
+from geotuileur.api.custom_exceptions import ReadStoredDataException
 from geotuileur.api.stored_data import StoredDataRequestManager
 from geotuileur.gui.publication_creation.qwp_publication_form import (
     PublicationFormPageWizard,
@@ -71,7 +72,7 @@ class PublicationStatut(QWizardPage):
             bottom = zoom_levels[-1]
             top = zoom_levels[0]
 
-        except StoredDataRequestManager.ReadStoredDataException as exc:
+        except ReadStoredDataException as exc:
             self.log(
                 f"Error while getting zoom levels from stored data: {exc}",
                 log_level=2,

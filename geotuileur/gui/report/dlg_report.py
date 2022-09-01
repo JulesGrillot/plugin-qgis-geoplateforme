@@ -8,6 +8,7 @@ from qgis.PyQt.QtWidgets import QAbstractItemView, QDialog, QHeaderView, QWidget
 
 from geotuileur.api.custom_exceptions import (
     UnavailableExecutionException,
+    UnavailableStoredData,
     UnavailableUploadException,
 )
 from geotuileur.api.processing import ProcessingRequestManager
@@ -138,7 +139,7 @@ class ReportDialog(QDialog):
                     datastore=stored_data.datastore_id, stored_data=vectordb_id
                 )
                 self._add_stored_data_execution_logs(vectordb_stored_data)
-            except StoredDataRequestManager.UnavailableStoredData as exc:
+            except UnavailableStoredData as exc:
                 self.log(
                     self.tr("Can't define execution logs : {0}").format(exc), push=True
                 )

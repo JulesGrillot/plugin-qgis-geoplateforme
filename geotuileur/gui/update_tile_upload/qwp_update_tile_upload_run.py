@@ -18,10 +18,12 @@ from qgis.PyQt.QtCore import QByteArray, QSize, QTimer
 from qgis.PyQt.QtGui import QIcon, QMovie, QPixmap
 from qgis.PyQt.QtWidgets import QHeaderView, QMessageBox, QWizardPage
 
+# plugin
 from geotuileur.__about__ import DIR_PLUGIN_ROOT
 from geotuileur.api.check import CheckExecution
 from geotuileur.api.custom_exceptions import (
     UnavailableProcessingException,
+    UnavailableStoredData,
     UnavailableUploadException,
 )
 from geotuileur.api.processing import Execution, ProcessingRequestManager
@@ -241,7 +243,7 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
                     )
             except (
                 UnavailableProcessingException,
-                StoredDataRequestManager.UnavailableStoredData,
+                UnavailableStoredData,
             ) as exc:
                 self._report_processing_error(
                     self.tr("Stored data database integration check"), str(exc)
@@ -282,7 +284,7 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
                     self.update_check_timer.stop()
             except (
                 UnavailableProcessingException,
-                StoredDataRequestManager.UnavailableStoredData,
+                UnavailableStoredData,
             ) as exc:
                 self._report_processing_error(
                     self.tr("Stored data pyramid creation check"), str(exc)

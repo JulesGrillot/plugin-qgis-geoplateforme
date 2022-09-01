@@ -1,3 +1,7 @@
+class AddTagException(Exception):
+    pass
+
+
 class DeleteUploadException(Exception):
     pass
 
@@ -7,6 +11,14 @@ class ConfigurationCreationException(Exception):
 
 
 class CreateProcessingException(Exception):
+    pass
+
+
+class DeleteStoredDataException(Exception):
+    pass
+
+
+class DeleteTagException(Exception):
     pass
 
 
@@ -23,6 +35,10 @@ class LaunchExecutionException(Exception):
 
 
 class OfferingCreationException(Exception):
+    pass
+
+
+class ReadStoredDataException(Exception):
     pass
 
 
@@ -55,6 +71,10 @@ class UnavailableOfferingsException(Exception):
 
 
 class UnavailableProcessingException(Exception):
+    pass
+
+
+class UnavailableStoredData(Exception):
     pass
 
 

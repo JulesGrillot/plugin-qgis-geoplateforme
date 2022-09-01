@@ -11,6 +11,7 @@ from geotuileur.api.configuration import ConfigurationRequestManager
 
 # Plugin
 from geotuileur.api.custom_exceptions import (
+    DeleteTagException,
     UnavailableConfigurationException,
     UnavailableOfferingsException,
 )
@@ -100,7 +101,7 @@ class UnpublishAlgorithm(QgsProcessingAlgorithm):
         except (
             UnavailableOfferingsException,
             UnavailableConfigurationException,
-            StoredDataRequestManager.DeleteTagException,
+            DeleteTagException,
         ) as exc:
             raise QgsProcessingException(f"exc unpublish : {exc}")
 

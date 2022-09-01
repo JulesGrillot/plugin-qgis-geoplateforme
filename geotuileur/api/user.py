@@ -13,6 +13,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # project
+from geotuileur.api.custom_exceptions import UnavailableUserException
 from geotuileur.api.utils import as_localized_datetime
 from geotuileur.toolbelt.log_handler import PlgLogger
 from geotuileur.toolbelt.preferences import PlgOptionsManager
@@ -107,9 +108,6 @@ class User:
 
 
 class UserRequestsManager:
-    class UnavailableUserException(Exception):
-        pass
-
     def __init__(self):
         """
         Helper for user request
@@ -144,7 +142,7 @@ class UserRequestsManager:
 
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
-            raise self.UnavailableUserException(
+            raise UnavailableUserException(
                 f"Error while fetching user info : {self.ntwk_requester_blk.errorMessage()}"
             )
 
@@ -154,7 +152,7 @@ class UserRequestsManager:
             not req_reply.rawHeader(b"Content-Type")
             == "application/json; charset=utf-8"
         ):
-            raise self.UnavailableUserException(
+            raise UnavailableUserException(
                 "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
                     req_reply.rawHeader(b"Content-type")
                 )

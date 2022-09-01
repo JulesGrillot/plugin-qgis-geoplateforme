@@ -26,6 +26,7 @@ from geotuileur.__about__ import (
     __version__,
 )
 from geotuileur.api.client import NetworkRequestsManager
+from geotuileur.api.custom_exceptions import UnavailableUserException
 from geotuileur.api.user import UserRequestsManager
 from geotuileur.toolbelt import PlgLogger, PlgOptionsManager
 from geotuileur.toolbelt.preferences import PlgSettingsStructure
@@ -178,7 +179,7 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
                 self.tr(f"Welcome {user.first_name} {user.last_name}!"),
             )
 
-        except UserRequestsManager.UnavailableUserException as exc:
+        except UnavailableUserException as exc:
             self.btn_check_connection.setIcon(
                 QIcon(":/images/themes/default/repositoryUnavailable.svg")
             )

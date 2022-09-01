@@ -14,6 +14,10 @@ class ReadUploadException(Exception):
     pass
 
 
+class UnavailableExecutionException(Exception):
+    pass
+
+
 class UnavailableUploadException(Exception):
     pass
 

@@ -12,6 +12,7 @@ from geotuileur.api.check import (
     CheckExecutionStatus,
     CheckRequestManager,
 )
+from geotuileur.api.custom_exceptions import UnavailableExecutionException
 from geotuileur.api.processing import (
     Execution,
     ExecutionStatus,
@@ -91,7 +92,7 @@ class ExecutionLogWidget(QWidget):
             logs += self.tr("Logs:\n")
             logs += manager.get_execution_logs(self.datastore, execution.id)
             self.tbw_logs.setPlainText(logs)
-        except CheckRequestManager.UnavailableExecutionException as exc:
+        except UnavailableExecutionException as exc:
             self.tbw_logs.setPlainText(
                 self.tr("Can't define execution logs : {0}").format(exc)
             )

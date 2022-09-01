@@ -443,8 +443,8 @@ class UploadRequestManager:
             if proxy_str:
                 session.proxies = {"http": proxy_str, "https": proxy_str}
 
-            check = self.request_manager.get_api_token()
             try:
+                check = self.request_manager.get_api_token()
                 data = json.loads(check.data().decode("utf-8"))
             except InvalidToken as exc:
                 self.log(

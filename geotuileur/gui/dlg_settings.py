@@ -120,6 +120,7 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
         # network and authentication
         self.lne_url_geotuileur.setText(settings.url_geotuileur)
         self.lne_url_api_entrepot.setText(settings.url_api_entrepot)
+        self.lne_url_api_appendices.setText(settings.url_api_appendices)
         self.lne_url_service_vt.setText(settings.url_service_vt)
         self.lne_url_auth.setText(settings.url_auth)
         self.lne_auth_realm.setText(settings.auth_realm)

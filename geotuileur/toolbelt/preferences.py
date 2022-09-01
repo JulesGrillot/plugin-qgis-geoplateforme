@@ -32,6 +32,7 @@ class PlgSettingsStructure:
     # network and authentication
     url_geotuileur: str = "https://portail-gpf-beta.ign.fr/"
     url_api_entrepot: str = "https://gpf-beta.ign.fr/geotuileur/"
+    url_api_appendices: str = "https://gpf-beta.ign.fr/geotuileur/annexes/"
     url_service_vt: str = "https://vt-gpf-beta.ign.fr/"
     url_auth: str = "https://compte-gpf-beta.ign.fr/"
     auth_realm: str = "demo"

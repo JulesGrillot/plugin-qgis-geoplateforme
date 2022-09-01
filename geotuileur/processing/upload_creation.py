@@ -1,6 +1,8 @@
+# standard
 import json
 from time import sleep
 
+# PyQGIS
 from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingException,
@@ -9,6 +11,13 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
+# plugin
+from geotuileur.api.custom_exceptions import (
+    FileUploadException,
+    UnavailableUploadException,
+    UploadClosingException,
+    UploadCreationException,
+)
 from geotuileur.api.upload import UploadRequestManager, UploadStatus
 from geotuileur.toolbelt import PlgOptionsManager
 
@@ -124,11 +133,11 @@ class UploadCreationAlgorithm(QgsProcessingAlgorithm):
                 # Wait for upload close after check
                 self._wait_upload_close(datastore, upload_id)
 
-            except UploadRequestManager.UploadCreationException as exc:
+            except UploadCreationException as exc:
                 raise QgsProcessingException(f"Upload creation failed : {exc}")
-            except UploadRequestManager.FileUploadException as exc:
+            except FileUploadException as exc:
                 raise QgsProcessingException(f"File upload failed : {exc}")
-            except UploadRequestManager.UploadClosingException as exc:
+            except UploadClosingException as exc:
                 raise QgsProcessingException(f"Upload closing failed : {exc}")
 
         return {self.CREATED_UPLOAD_ID: upload_id}
@@ -157,7 +166,7 @@ class UploadCreationAlgorithm(QgsProcessingAlgorithm):
                     )
                 )
 
-        except UploadRequestManager.UnavailableUploadException as exc:
+        except UnavailableUploadException as exc:
             raise QgsProcessingException(
                 self.tr("Upload read failed : {0}").format(exc)
             )

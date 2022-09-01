@@ -1,8 +1,11 @@
+# PyQGIS
 from qgis.core import QgsApplication
 from qgis.PyQt import QtCore
 from qgis.PyQt.QtCore import QObject, QSize, Qt, QVariant
 from qgis.PyQt.QtGui import QIcon, QPixmap, QStandardItemModel
 
+# plugin
+from geotuileur.api.custom_exceptions import ReadUploadException
 from geotuileur.api.upload import Upload, UploadRequestManager, UploadStatus
 from geotuileur.api.utils import as_datetime
 from geotuileur.toolbelt import PlgLogger
@@ -111,7 +114,7 @@ class UploadListModel(QStandardItemModel):
             uploads = manager.get_upload_list(datastore)
             for upload in uploads:
                 self.insert_upload(upload)
-        except UploadRequestManager.ReadUploadException as exc:
+        except ReadUploadException as exc:
             self.log(
                 f"Error while getting upload informations: {exc}",
                 log_level=2,

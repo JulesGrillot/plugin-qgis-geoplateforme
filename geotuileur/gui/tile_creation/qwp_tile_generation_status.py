@@ -18,6 +18,7 @@ from qgis.PyQt.QtGui import QIcon, QMovie, QPixmap
 from qgis.PyQt.QtWidgets import QHeaderView, QMessageBox, QWizardPage
 
 from geotuileur.__about__ import DIR_PLUGIN_ROOT
+from geotuileur.api.custom_exceptions import UnavailableUploadException
 from geotuileur.api.processing import ProcessingRequestManager
 from geotuileur.api.stored_data import StoredDataRequestManager, StoredDataStatus
 from geotuileur.api.upload import UploadRequestManager
@@ -291,7 +292,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
             except (
                 StoredDataRequestManager.UnavailableStoredData,
                 ProcessingRequestManager.UnavailableProcessingException,
-                UploadRequestManager.UnavailableUploadException,
+                UnavailableUploadException,
             ) as exc:
                 self._report_processing_error(
                     self.tr("Stored data check status"), str(exc)

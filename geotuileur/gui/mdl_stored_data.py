@@ -4,6 +4,7 @@ from qgis.PyQt.QtCore import QObject, QSize, Qt, QVariant
 from qgis.PyQt.QtGui import QIcon, QPixmap, QStandardItemModel
 
 from geotuileur.__about__ import DIR_PLUGIN_ROOT
+from geotuileur.api.custom_exceptions import ReadStoredDataException
 from geotuileur.api.stored_data import (
     StoredData,
     StoredDataRequestManager,
@@ -156,7 +157,7 @@ class StoredDataListModel(QStandardItemModel):
             stored_datas = manager.get_stored_data_list(datastore)
             for stored_data in stored_datas:
                 self.insert_stored_data(stored_data)
-        except StoredDataRequestManager.ReadStoredDataException as exc:
+        except ReadStoredDataException as exc:
             self.log(
                 f"Error while getting stored data informations: {exc}",
                 log_level=2,

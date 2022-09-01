@@ -9,9 +9,11 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication
 
 from geotuileur.api.custom_exceptions import (
+    AddTagException,
     CreateProcessingException,
     DeleteUploadException,
     LaunchExecutionException,
+    ReadStoredDataException,
     UnavailableProcessingException,
 )
 from geotuileur.api.processing import ProcessingRequestManager
@@ -156,7 +158,7 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
                 raise QgsProcessingException(
                     f"Can't launch execution for database integration : {exc}"
                 )
-            except StoredDataRequestManager.AddTagException as exc:
+            except AddTagException as exc:
                 raise QgsProcessingException(
                     f"Can't add tags to stored data for database integration : {exc}"
                 )
@@ -199,5 +201,5 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
                     )
                 )
 
-        except StoredDataRequestManager.ReadStoredDataException as exc:
+        except ReadStoredDataException as exc:
             raise QgsProcessingException(f"Stored data read failed : {exc}")

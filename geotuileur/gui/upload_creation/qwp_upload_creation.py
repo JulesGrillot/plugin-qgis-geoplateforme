@@ -23,6 +23,7 @@ from geotuileur.api.check import CheckExecution
 from geotuileur.api.custom_exceptions import (
     UnavailableExecutionException,
     UnavailableProcessingException,
+    UnavailableStoredData,
     UnavailableUploadException,
 )
 from geotuileur.api.processing import Execution, ProcessingRequestManager
@@ -241,7 +242,7 @@ class UploadCreationPageWizard(QWizardPage):
 
             except (
                 UnavailableProcessingException,
-                StoredDataRequestManager.UnavailableStoredData,
+                UnavailableStoredData,
             ) as exc:
                 self._report_processing_error(
                     self.tr("Stored database integration check"), str(exc)

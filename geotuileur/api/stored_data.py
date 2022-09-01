@@ -9,6 +9,13 @@ from qgis.core import QgsBlockingNetworkRequest, QgsVectorLayer
 from qgis.PyQt.QtCore import QByteArray, QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
+# plugin
+from geotuileur.api.custom_exceptions import (
+    AddTagException,
+    DeleteStoredDataException,
+    DeleteTagException,
+    ReadStoredDataException,
+)
 from geotuileur.toolbelt import PlgLogger, PlgOptionsManager
 
 
@@ -170,20 +177,6 @@ class StoredData:
 
 
 class StoredDataRequestManager:
-    class ReadStoredDataException(Exception):
-        pass
-
-    class DeleteStoredDataException(Exception):
-        pass
-
-    class UnavailableStoredData(Exception):
-        pass
-
-    class AddTagException(Exception):
-        pass
-
-    class DeleteTagException(Exception):
-        pass
 
     MAX_LIMIT = 50
 
@@ -251,7 +244,7 @@ class StoredDataRequestManager:
 
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
-            raise self.ReadStoredDataException(
+            raise ReadStoredDataException(
                 f"Error while fetching stored data : {self.ntwk_requester_blk.errorMessage()}"
             )
 
@@ -261,7 +254,7 @@ class StoredDataRequestManager:
             not req_reply.rawHeader(b"Content-Type")
             == "application/json; charset=utf-8"
         ):
-            raise self.ReadStoredDataException(
+            raise ReadStoredDataException(
                 "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
                     req_reply.rawHeader(b"Content-type")
                 )
@@ -297,7 +290,7 @@ class StoredDataRequestManager:
 
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
-            raise self.ReadStoredDataException(
+            raise ReadStoredDataException(
                 f"Error while fetching stored data : {self.ntwk_requester_blk.errorMessage()}"
             )
 
@@ -307,7 +300,7 @@ class StoredDataRequestManager:
             not req_reply.rawHeader(b"Content-Type")
             == "application/json; charset=utf-8"
         ):
-            raise self.ReadStoredDataException(
+            raise ReadStoredDataException(
                 "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
                     req_reply.rawHeader(b"Content-type")
                 )
@@ -321,7 +314,7 @@ class StoredDataRequestManager:
         if match:
             nb_val = int(match.group("nb_val"))
         else:
-            raise self.ReadStoredDataException(
+            raise ReadStoredDataException(
                 f"Invalid Content-Range {content_range} not min-max/nb_val as expected"
             )
         return nb_val
@@ -381,7 +374,7 @@ class StoredDataRequestManager:
 
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
-            raise self.ReadStoredDataException(
+            raise ReadStoredDataException(
                 f"Error while fetching stored data : {self.ntwk_requester_blk.errorMessage()}"
             )
 
@@ -391,7 +384,7 @@ class StoredDataRequestManager:
             not req_reply.rawHeader(b"Content-Type")
             == "application/json; charset=utf-8"
         ):
-            raise self.ReadStoredDataException(
+            raise ReadStoredDataException(
                 "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
                     req_reply.rawHeader(b"Content-type")
                 )
@@ -418,7 +411,7 @@ class StoredDataRequestManager:
         if resp != QgsBlockingNetworkRequest.NoError:
             req_reply = self.ntwk_requester_blk.reply()
             data = json.loads(req_reply.content().data().decode("utf-8"))
-            raise self.DeleteStoredDataException(
+            raise DeleteStoredDataException(
                 f"Error while deleting stored_data : {self.ntwk_requester_blk.errorMessage()}. Reply error: {data}"
             )
 
@@ -448,7 +441,7 @@ class StoredDataRequestManager:
 
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
-            raise self.AddTagException(
+            raise AddTagException(
                 f"Error while adding tag to stored_data : {self.ntwk_requester_blk.errorMessage()}"
             )
 
@@ -479,6 +472,6 @@ class StoredDataRequestManager:
         if resp != QgsBlockingNetworkRequest.NoError:
             req_reply = self.ntwk_requester_blk.reply()
             data = json.loads(req_reply.content().data().decode("utf-8"))
-            raise self.DeleteTagException(
+            raise DeleteTagException(
                 f"Error while deleting tags for stored data : {self.ntwk_requester_blk.errorMessage()}. Reply error: {data}"
             )

@@ -16,6 +16,12 @@ Unreleased
 
 -->
 
+## 0.11.0 - 2022-09-01
+
+- Fix password encoding (see #40 and !109)
+- Add logs for REST API (see !108)
+- Add sleep for status wait as a shadow setting (see !107)
+
 ## 0.10.0 - 2022-09-01
 
 - tile creation: display zoom level in labels (see #34 and !101)

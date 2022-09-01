@@ -1,6 +1,7 @@
 from qgis.PyQt.QtCore import QObject
 from qgis.PyQt.QtGui import QStandardItemModel
 
+from geotuileur.api.custom_exceptions import UnavailableUserException
 from geotuileur.api.user import UserRequestsManager
 from geotuileur.toolbelt import PlgLogger
 
@@ -56,7 +57,7 @@ class DatastoreListModel(QStandardItemModel):
                 self.setData(self.index(row, self.NAME_COL), datastore.name)
                 self.setData(self.index(row, self.ID_COL), datastore.id)
 
-        except UserRequestsManager.UnavailableUserException as exc:
+        except UnavailableUserException as exc:
             self.log(
                 f"Error while getting user datastore: {exc}",
                 log_level=2,

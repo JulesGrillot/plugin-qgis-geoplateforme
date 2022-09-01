@@ -90,6 +90,10 @@ class UnavailableUploadFileTreeException(Exception):
     pass
 
 
+class UnavailableUserException(Exception):
+    pass
+
+
 class UploadClosingException(Exception):
     pass
 

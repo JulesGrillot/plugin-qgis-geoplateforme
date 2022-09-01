@@ -16,6 +16,15 @@ Unreleased
 
 -->
 
+## 0.10.0 - 2022-09-01
+
+- tile creation: display zoom level in labels (see #34 and !101)
+- tile creation: round scale for zoom level informations (see #34 and !101)
+- settings update and improvments (see !103):
+  - set production URLs as defaults
+  - add URL for appendices API
+  - add reset to default button and logic
+
 ## 0.9.0 - 2022-08-29
 
 - Update stored dataset

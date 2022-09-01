@@ -19,6 +19,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # project
+from geotuileur.api.custom_exceptions import InvalidToken
 from geotuileur.toolbelt.log_handler import PlgLogger
 from geotuileur.toolbelt.preferences import PlgOptionsManager
 
@@ -118,7 +119,7 @@ class NetworkRequestsManager:
                 log_level=2,
                 push=True,
             )
-            return self.ntwk_requester_blk.errorMessage()
+            raise InvalidToken(self.ntwk_requester_blk.errorMessage())
 
         # debug log
         self.log(

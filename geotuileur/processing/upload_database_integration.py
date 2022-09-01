@@ -8,6 +8,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
+from geotuileur.api.custom_exceptions import DeleteUploadException
 from geotuileur.api.processing import ProcessingRequestManager
 from geotuileur.api.stored_data import StoredDataRequestManager, StoredDataStatus
 from geotuileur.api.upload import UploadRequestManager
@@ -154,7 +155,7 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
                 raise QgsProcessingException(
                     f"Can't add tags to stored data for database integration : {exc}"
                 )
-            except UploadRequestManager.DeleteUploadException as exc:
+            except DeleteUploadException as exc:
                 raise QgsProcessingException(
                     f"Can't delete upload after database integration : {exc}"
                 )

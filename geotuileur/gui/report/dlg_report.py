@@ -6,6 +6,7 @@ from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QIcon, QPixmap
 from qgis.PyQt.QtWidgets import QAbstractItemView, QDialog, QHeaderView, QWidget
 
+from geotuileur.api.custom_exceptions import UnavailableUploadException
 from geotuileur.api.processing import ProcessingRequestManager
 from geotuileur.api.stored_data import (
     StoredData,
@@ -114,7 +115,7 @@ class ReportDialog(QDialog):
                 widget = UploadLogWidget(self)
                 widget.set_upload(upload)
                 self.vlayout_execution.addWidget(widget)
-            except UploadRequestManager.UnavailableUploadException as exc:
+            except UnavailableUploadException as exc:
                 self.log(
                     self.tr("Can't define upload logs : {0}").format(exc), push=True
                 )

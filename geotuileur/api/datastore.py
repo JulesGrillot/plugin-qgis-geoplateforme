@@ -93,6 +93,8 @@ class DatastoreRequestManager:
 
         Returns: Datastore data, raise UnavailableDatastoreException otherwise
         """
+        self.log(f"{__name__}.get_datastore(datastore:{datastore})")
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(QUrl(self.get_base_url(datastore)))
 
@@ -122,6 +124,10 @@ class DatastoreRequestManager:
 
         Returns: first available endpoint id for data_type, raise UnavailableEndpointException otherwise
         """
+        self.log(
+            f"{__name__}.get_endpoint(datastore:{datastore},data_type:{data_type})"
+        )
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(QUrl(self.get_base_url(datastore)))
 

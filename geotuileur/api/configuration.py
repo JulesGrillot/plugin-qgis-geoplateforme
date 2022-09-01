@@ -121,6 +121,11 @@ class ConfigurationRequestManager:
         Returns: Upload if creation succeeded, raise UploadCreationException otherwise
 
         """
+        self.log(
+            f"{__name__}.create_configuration(datastore:{datastore}, stored_data: {stored_data}, "
+            f"top_level: {top_level}, bottom_level: {bottom_level}, configuration: {configuration})"
+        )
+
         configuration.type_infos["used_data"] = [
             {
                 "stored_data": stored_data,
@@ -177,6 +182,10 @@ class ConfigurationRequestManager:
         Args:
             datastore: (str) stored_data : (str)
         """
+        self.log(
+            f"{__name__}.get_configurations_id(datastore:{datastore}, stored_data: {stored_data})"
+        )
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(
             QUrl(f"{self.get_base_url(datastore)}?stored_data={stored_data}")
@@ -199,6 +208,10 @@ class ConfigurationRequestManager:
         Args :
             datastore : (str) , configuration : (str)
         """
+        self.log(
+            f"{__name__}.get_configuration(datastore:{datastore}, configuration: {configuration})"
+        )
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{configuration}"))
 
@@ -238,6 +251,9 @@ class ConfigurationRequestManager:
         Args:
             configuration_id: (str) datastore_id : (str)
         """
+        self.log(
+            f"{__name__}.delete_configuration(datastore:{datastore}, configuration_ids: {configuration_ids})"
+        )
 
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req_get = QNetworkRequest(
@@ -266,6 +282,10 @@ class ConfigurationRequestManager:
             visibility :(str) endpoint : (str)
 
         """
+        self.log(
+            f"{__name__}.create_offering(visibility:{visibility}, endpoint: {endpoint}, datastore: {datastore}, configuration_id: {configuration_id})"
+        )
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req_post = QNetworkRequest(
             QUrl(f"{self.get_base_url(datastore)}/{configuration_id}/offerings")

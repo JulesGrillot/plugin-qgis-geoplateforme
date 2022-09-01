@@ -217,6 +217,8 @@ class StoredDataRequestManager:
 
         Returns: list of available stored data, raise ReadStoredDataException otherwise
         """
+        self.log(f"{__name__}.get_stored_data_list(datastore:{datastore})")
+
         nb_value = self._get_nb_available_stored_data(datastore)
         nb_request = math.ceil(nb_value / self.MAX_LIMIT)
         result = []
@@ -336,6 +338,10 @@ class StoredDataRequestManager:
 
         Returns: stored data, raise ReadStoredDataException otherwise
         """
+        self.log(
+            f"{__name__}.get_stored_data(datastore:{datastore},stored_data:{stored_data})"
+        )
+
         data = self.get_stored_data_json(datastore, stored_data)
         result = StoredData(
             id=data["_id"],
@@ -407,6 +413,8 @@ class StoredDataRequestManager:
             datastore: (str) datastore id
             stored_data: (str) stored data id
         """
+        self.log(f"{__name__}.delete(datastore:{datastore},stored_data:{stored_data})")
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req_delete = QNetworkRequest(
             QUrl(f"{self.get_base_url(datastore)}/{stored_data}")
@@ -431,6 +439,10 @@ class StoredDataRequestManager:
             stored_data: (str) stored_data id
             tags: (dict) dictionary of tags
         """
+        self.log(
+            f"{__name__}.add_tags(datastore:{datastore},stored_data:{stored_data}, tags:{tags})"
+        )
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req_post = QNetworkRequest(
             QUrl(f"{self.get_base_url(datastore)}/{stored_data}/tags")
@@ -461,6 +473,10 @@ class StoredDataRequestManager:
             stored_data: (str) stored_data id
             tags: (list) list of tags
         """
+        self.log(
+            f"{__name__}.delete_tags(datastore:{datastore},stored_data:{stored_data}, tags:{tags})"
+        )
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         url = f"{self.get_base_url(datastore)}/{stored_data}/tags?"
         # Add all tag to remove

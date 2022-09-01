@@ -75,6 +75,8 @@ class CheckRequestManager:
 
         Returns: CheckExecution execution if execution available, raise UnavailableExecutionException otherwise
         """
+        self.log(f"{__name__}.get_execution(datastore:{datastore}, exec_id: {exec_id})")
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(
             QUrl(f"{self.get_base_url(datastore)}/executions/{exec_id}")
@@ -108,6 +110,10 @@ class CheckRequestManager:
 
         Returns: (str) Execution logs if execution available, raise UnavailableExecutionException otherwise
         """
+        self.log(
+            f"{__name__}.get_execution_logs(datastore:{datastore}, exec_id: {exec_id})"
+        )
+
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req = QNetworkRequest(
             QUrl(f"{self.get_base_url(datastore)}/executions/{exec_id}/logs")

@@ -2,6 +2,10 @@ class DeleteUploadException(Exception):
     pass
 
 
+class ConfigurationCreationException(Exception):
+    pass
+
+
 class FileUploadException(Exception):
     pass
 
@@ -10,7 +14,15 @@ class InvalidToken(Exception):
     pass
 
 
+class OfferingCreationException(Exception):
+    pass
+
+
 class ReadUploadException(Exception):
+    pass
+
+
+class UnavailableConfigurationException(Exception):
     pass
 
 

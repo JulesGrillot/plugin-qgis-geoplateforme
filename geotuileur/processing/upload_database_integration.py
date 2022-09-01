@@ -1,4 +1,5 @@
 import json
+from time import sleep
 
 from qgis.core import (
     QgsProcessingAlgorithm,
@@ -11,6 +12,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from geotuileur.api.processing import ProcessingRequestManager
 from geotuileur.api.stored_data import StoredDataRequestManager, StoredDataStatus
 from geotuileur.api.upload import UploadRequestManager
+from geotuileur.toolbelt import PlgOptionsManager
 
 
 class UploadDatabaseIntegrationProcessingFeedback(QgsProcessingFeedback):
@@ -185,6 +187,7 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
                     datastore=datastore, stored_data=vector_db_stored_data_id
                 )
                 status = StoredDataStatus(stored_data.status)
+                sleep(PlgOptionsManager.get_plg_settings().status_check_sleep)
 
             if status == StoredDataStatus.UNSTABLE:
                 raise QgsProcessingException(

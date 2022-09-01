@@ -32,12 +32,10 @@ from geotuileur.processing.update_tile_upload import (
     UpdateTileUploadAlgorithm,
     UpdateTileUploadProcessingFeedback,
 )
-from geotuileur.toolbelt import PlgLogger
+from geotuileur.toolbelt import PlgLogger, PlgOptionsManager
 
 
 class UpdateTileUploadRunPageWizard(QWizardPage):
-    STATUS_CHECK_INTERVAL = 500
-
     def __init__(
         self, qwp_upload_edition: UpdateTileUploadEditionPageWizard, parent=None
     ):
@@ -130,7 +128,9 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
             )
 
             # Run timer for update check
-            self.update_check_timer.start(self.STATUS_CHECK_INTERVAL)
+            self.update_check_timer.start(
+                PlgOptionsManager.get_plg_settings().status_check_sleep / 1000.0
+            )
 
     def update_finished(self, context, successful, results):
         """

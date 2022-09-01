@@ -13,6 +13,7 @@ from geotuileur.api.configuration import Configuration, ConfigurationRequestMana
 
 # Plugin
 from geotuileur.api.custom_exceptions import (
+    AddTagException,
     ConfigurationCreationException,
     OfferingCreationException,
     UnavailableEndpointException,
@@ -198,7 +199,7 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
                     stored_data=stored_data_id,
                     tags={"tms_url": url_data, "published": "true"},
                 )
-            except StoredDataRequestManager.AddTagException as exc:
+            except AddTagException as exc:
                 raise QgsProcessingException(f"exc tag update url : {exc}")
 
             return {

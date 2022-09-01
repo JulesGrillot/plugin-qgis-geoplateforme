@@ -1,5 +1,7 @@
 from qgis.PyQt.QtCore import QObject, Qt
 
+# plugin
+from geotuileur.api.custom_exceptions import ReadStoredDataException
 from geotuileur.api.stored_data import (
     StoredData,
     StoredDataRequestManager,
@@ -36,7 +38,7 @@ class TableRelationTreeModel(CheckStateModel):
         try:
             stored_data = manager.get_stored_data(datastore, stored_data)
             self._insert_table_relations(stored_data.get_tables())
-        except StoredDataRequestManager.ReadStoredDataException as exc:
+        except ReadStoredDataException as exc:
             self.log(
                 self.tr("Error while getting stored data informations: {0}").format(
                     exc

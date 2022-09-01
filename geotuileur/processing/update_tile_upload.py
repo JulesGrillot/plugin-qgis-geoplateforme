@@ -12,7 +12,11 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication
 
 # plugin
-from geotuileur.api.custom_exceptions import UnavailableExecutionException
+from geotuileur.api.custom_exceptions import (
+    AddTagException,
+    UnavailableExecutionException,
+    UnavailableStoredData,
+)
 from geotuileur.api.processing import ProcessingRequestManager
 from geotuileur.api.stored_data import StoredDataRequestManager
 from geotuileur.processing.tile_creation import TileCreationAlgorithm
@@ -145,7 +149,7 @@ class UpdateTileUploadAlgorithm(QgsProcessingAlgorithm):
             initial_stored_data = manager.get_stored_data(
                 datastore, initial_stored_data_id
             )
-        except StoredDataRequestManager.UnavailableStoredData as exc:
+        except UnavailableStoredData as exc:
             raise QgsProcessingException(
                 self.tr("Stored data read failed : {0}").format(exc)
             )
@@ -283,7 +287,7 @@ class UpdateTileUploadAlgorithm(QgsProcessingAlgorithm):
                 stored_data=initial_stored_data_id,
                 tags={"update_pyramid_id": created_stored_data},
             )
-        except StoredDataRequestManager.AddTagException as exc:
+        except AddTagException as exc:
             raise QgsProcessingException(
                 self.tr("Stored data tag add failed : {0}").format(exc)
             )

@@ -33,6 +33,6 @@ Pour cela :
     ![Paramètres du gestionnaire d'extensions QGIS](/static/images/qgis_extensions_settings.png)
 
 1. Installer l'extension depuis l'onglet `Non installées`
-1. L'activer si besoin dans `Installées` et désactiver les extensions inutiles (pour améliorer les performances et
+1. L'activer si besoin dans `Installées` et désactiver les extensions inutiles (pour améliorer les performances et réduire la surface de diagnostic)
 
     ![Extensions installées](/static/images/qgis_extensions_installed.png)

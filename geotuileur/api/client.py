@@ -103,8 +103,8 @@ class NetworkRequestsManager:
 
         # encode data
         data = QByteArray()
-        password = quote(password)
-
+        password = bytes(QUrl.toPercentEncoding(password))
+        password = password.decode("utf-8")
         data.append(
             f"grant_type=password&"
             f"client_id={self.plg_settings.auth_client_id}&"

@@ -6,7 +6,7 @@ category=Web
 hasProcessingProvider=yes
 description=Plugin associated with the IGN France service of the same name: Geotuileur.
 description[fr]=Plugin associé au service idoine de l'IGN France.
-icon=resources/images/default_icon.png
+icon=resources/images/logo-geotuileur.svg
 tags=vector tile,Géotuileur,IGN France,Géoplateforme,tippecanoe
 
 # credits and contact

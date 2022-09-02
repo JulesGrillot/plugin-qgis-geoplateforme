@@ -10,7 +10,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 
 # project
-from geotuileur.__about__ import DIR_PLUGIN_ROOT, __title__, __version__
+from geotuileur.__about__ import __icon_path__, __title__, __version__
 from geotuileur.processing.check_layer import CheckLayerAlgorithm
 from geotuileur.processing.delete_data import DeleteDataAlgorithm
 from geotuileur.processing.tile_creation import TileCreationAlgorithm
@@ -21,11 +21,11 @@ from geotuileur.processing.upload_database_integration import (
     UploadDatabaseIntegrationAlgorithm,
 )
 from geotuileur.processing.upload_publication import UploadPublicationAlgorithm
+from geotuileur.processing.vector_db_creation import VectorDatabaseCreationAlgorithm
 
 # ############################################################################
 # ########## Classes ###############
 # ##################################
-from geotuileur.processing.vector_db_creation import VectorDatabaseCreationAlgorithm
 
 
 class GeotuileurProvider(QgsProcessingProvider):
@@ -80,7 +80,7 @@ class GeotuileurProvider(QgsProcessingProvider):
         :return: provider icon
         :rtype: QIcon
         """
-        return QIcon(str(DIR_PLUGIN_ROOT / "resources/images/default_icon.png"))
+        return QIcon(str(__icon_path__))
 
     def tr(self, message: str) -> str:
         """Get the translation for a string using Qt translation API.

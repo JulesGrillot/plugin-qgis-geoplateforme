@@ -126,15 +126,13 @@ myst_substitutions = {
 myst_url_schemes = ("http", "https", "mailto")
 
 # OpenGraph
-# ogp_image = (
-#     f"{__about__.__uri_homepage__}/_static/plugin_screen_capture.png"
-# )
+ogp_image = f"{__about__.__uri_homepage__}/_static/geotuileur_portail_capture.png"
 ogp_site_name = f"{project} - Documentation"
 ogp_site_url = __about__.__uri_homepage__
 ogp_custom_meta_tags = [
     "<meta name='twitter:card' content='summary_large_image'>",
     f'<meta property="twitter:description" content="{description}" />',
-    # f'<meta property="twitter:image" content="{ogp_image}" />',
+    f'<meta property="twitter:image" content="{ogp_image}" />',
     '<meta property="twitter:site" content="@oslandia" />',
     f'<meta property="twitter:title" content="{project}" />',
 ]

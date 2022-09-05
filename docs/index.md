@@ -31,7 +31,7 @@ Installation <usage/installation>
 caption: Contribution guide
 maxdepth: 1
 ---
-Wiki (fr) <https://gitlab.com/Oslandia/qgis/ign-vectuileur/-/wikis/home>
+Wiki (fr) <https://gitlab.com/Oslandia/qgis/ign-geotuileur/-/wikis/home>
 development/contribute
 development/environment
 development/documentation

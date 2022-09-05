@@ -9,7 +9,7 @@ stages:
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_FOLDER/.cache/pip"
   PROJECT_FOLDER: "geotuileur"
-  REPO_PLUGIN_URL: "https://oslandia.gitlab.io/qgis/ign-vectuileur/"
+  REPO_PLUGIN_URL: "https://oslandia.gitlab.io/qgis/ign-geotuileur/"
 
 # Pip's cache doesn't store the python packages
 # https://pip.pypa.io/en/stable/reference/pip_install/#caching
@@ -119,8 +119,8 @@ sonarcloud-check:
   stage: 🤞 test
   needs: [test-unit, test-qgis]
   variables:
-    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
-    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar" # Defines the location of the analysis task cache
+    GIT_DEPTH: "0" # Tells git to fetch all the branches of the project, required by the analysis task
   image:
     name: sonarsource/sonar-scanner-cli:latest
   cache:
@@ -260,7 +260,7 @@ release-from-tag:
     assets:
       links:
         - name: "Packaged plugin"
-          url: "https://gitlab.com/Oslandia/qgis/ign-vectuileur/-/jobs/${ARTIFACT_JOB_ID}/artifacts/download?job=builder"
+          url: "https://gitlab.com/Oslandia/qgis/ign-geotuileur/-/jobs/${ARTIFACT_JOB_ID}/artifacts/download?job=builder"
 # deploy-to-qgis-repository:
 #   stage: 🚀 deploy
 #   image: python:3.9

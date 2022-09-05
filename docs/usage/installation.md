@@ -23,7 +23,7 @@ Pour cela :
 1. Ajouter cette URL dans les dépôts référencés dans le gestionnaire d'extensions de QGIS :
 
     ```html
-    https://oslandia.gitlab.io/qgis/ign-vectuileur/plugins.xml
+    https://oslandia.gitlab.io/qgis/ign-geotuileur/plugins.xml
     ```
 
     ![Dépôt personnalisé d'extensions QGIS](/static/images/qgis_extensions_custom_repository.png)

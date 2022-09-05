@@ -12,9 +12,9 @@ tags=vector tile,Géotuileur,IGN France,Géoplateforme,tippecanoe
 # credits and contact
 author=Oslandia, IGN France
 email=qgis@oslandia.com
-homepage=https://oslandia.gitlab.io/qgis/ign-vectuileur/
-repository=https://gitlab.com/Oslandia/qgis/ign-vectuileur/
-tracker=https://gitlab.com/Oslandia/qgis/ign-vectuileur/issues/
+homepage=https://oslandia.gitlab.io/qgis/ign-geotuileur/
+repository=https://gitlab.com/Oslandia/qgis/ign-geotuileur/
+tracker=https://gitlab.com/Oslandia/qgis/ign-geotuileur/issues/
 
 # experimental flag
 deprecated=False

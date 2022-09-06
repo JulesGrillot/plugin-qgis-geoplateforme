@@ -135,7 +135,7 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
 
             # Run timer for update check
             self.update_check_timer.start(
-                PlgOptionsManager.get_plg_settings().status_check_sleep / 1000.0
+                int(PlgOptionsManager.get_plg_settings().status_check_sleep / 1000.0)
             )
 
     def update_finished(self, context, successful, results):

@@ -46,6 +46,8 @@ git-hooks:
     - git fetch origin
   script:
     - pre-commit run --from-ref "origin/$CI_DEFAULT_BRANCH" --to-ref "$CI_COMMIT_SHA";
+  # temporarly disabled
+  allow_failure: true
 
 flake8:
   stage: 🐍 lint

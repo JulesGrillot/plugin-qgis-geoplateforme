@@ -189,47 +189,6 @@ class UploadRequestManager:
             )
         return nb_val
 
-    def get_upload_status(self, datastore: str, upload: str) -> str:
-        """
-        Get upload status.
-
-        Args:
-            datastore: (str) datastore id
-            upload: (str) upload id
-
-        Returns: (str) Upload status if upload available, raise UnavailableUploadException otherwise
-
-        """
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{upload}"))
-
-        # headers
-        req.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
-
-        # send request
-        resp = self.ntwk_requester_blk.get(req, forceRefresh=True)
-
-        # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
-            raise UnavailableUploadException(
-                f"Error while fetching upload : {self.ntwk_requester_blk.errorMessage()}"
-            )
-
-        # check response
-        req_reply = self.ntwk_requester_blk.reply()
-        if (
-            not req_reply.rawHeader(b"Content-Type")
-            == "application/json; charset=utf-8"
-        ):
-            raise UnavailableUploadException(
-                "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
-                    req_reply.rawHeader(b"Content-type")
-                )
-            )
-
-        data = json.loads(req_reply.content().data().decode("utf-8"))
-        return data["status"]
-
     def get_upload(self, datastore: str, upload: str) -> Upload:
         """
         Get upload.

@@ -9,6 +9,16 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
+# plugin
+from geotuileur.api.custom_exceptions import (
+    AddTagException,
+    CreateProcessingException,
+    DeleteStoredDataException,
+    LaunchExecutionException,
+    ReadStoredDataException,
+    UnavailableProcessingException,
+    UnavailableStoredData,
+)
 from geotuileur.api.processing import ProcessingRequestManager
 from geotuileur.api.stored_data import StoredDataRequestManager, StoredDataStatus
 from geotuileur.toolbelt import PlgOptionsManager
@@ -206,27 +216,27 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                 # Delete vector db stored data
                 stored_data_manager.delete(datastore, vector_db_stored_data_id)
 
-            except StoredDataRequestManager.UnavailableStoredData as exc:
+            except UnavailableStoredData as exc:
                 raise QgsProcessingException(
                     f"Can't retrieve vector db datastore for tile creation : {exc}"
                 )
-            except ProcessingRequestManager.UnavailableProcessingException as exc:
+            except UnavailableProcessingException as exc:
                 raise QgsProcessingException(
                     f"Can't retrieve processing for tile creation : {exc}"
                 )
-            except ProcessingRequestManager.CreateProcessingException as exc:
+            except CreateProcessingException as exc:
                 raise QgsProcessingException(
                     f"Can't create processing execution for tile creation : {exc}"
                 )
-            except ProcessingRequestManager.LaunchExecutionException as exc:
+            except LaunchExecutionException as exc:
                 raise QgsProcessingException(
                     f"Can't launch execution for tile creation : {exc}"
                 )
-            except StoredDataRequestManager.AddTagException as exc:
+            except AddTagException as exc:
                 raise QgsProcessingException(
                     f"Can't add tags to stored data for tile creation : {exc}"
                 )
-            except StoredDataRequestManager.DeleteStoredDataException as exc:
+            except DeleteStoredDataException as exc:
                 raise QgsProcessingException(
                     f"Can't delete vector db stored data after tile creation : {exc}"
                 )
@@ -331,5 +341,5 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                     )
                 )
 
-        except StoredDataRequestManager.ReadStoredDataException as exc:
+        except ReadStoredDataException as exc:
             raise QgsProcessingException(f"Stored data read failed : {exc}")

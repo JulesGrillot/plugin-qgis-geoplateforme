@@ -9,10 +9,14 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
-from geotuileur.api.configuration import ConfigurationRequestManager
-from geotuileur.api.offerings import OfferingsRequestManager
-
 # Plugin
+from geotuileur.api.configuration import ConfigurationRequestManager
+from geotuileur.api.custom_exceptions import (
+    DeleteStoredDataException,
+    UnavailableOfferingsException,
+    UnavailableStoredData,
+)
+from geotuileur.api.offerings import OfferingsRequestManager
 from geotuileur.api.stored_data import StoredDataRequestManager
 from geotuileur.toolbelt import PlgLogger
 
@@ -86,7 +90,7 @@ class DeleteDataAlgorithm(QgsProcessingAlgorithm):
             try:
                 manager_stored = StoredDataRequestManager()
                 result = manager_stored.get_stored_data(datastore_id, stored_data_id)
-            except StoredDataRequestManager.UnavailableStoredData as exc:
+            except UnavailableStoredData as exc:
                 raise QgsProcessingException(f"exc publication url : {exc}")
 
             if "tms_url" in result.tags:
@@ -107,14 +111,14 @@ class DeleteDataAlgorithm(QgsProcessingAlgorithm):
                         configuration_id_manager.delete_configuration(
                             datastore_id, configuration_id
                         )
-                except OfferingsRequestManager.UnavailableOfferingsException as exc:
+                except UnavailableOfferingsException as exc:
                     raise QgsProcessingException(f"exc publication url : {exc}")
 
             try:
 
                 manager_stored.delete(datastore_id, stored_data_id)
 
-            except StoredDataRequestManager.DeleteStoredDataException as exc:
+            except DeleteStoredDataException as exc:
                 raise QgsProcessingException(f"exc publication url : {exc}")
 
         return {}

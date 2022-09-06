@@ -6,6 +6,11 @@ from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QIcon, QPixmap
 from qgis.PyQt.QtWidgets import QAbstractItemView, QDialog, QHeaderView, QWidget
 
+from geotuileur.api.custom_exceptions import (
+    UnavailableExecutionException,
+    UnavailableStoredData,
+    UnavailableUploadException,
+)
 from geotuileur.api.processing import ProcessingRequestManager
 from geotuileur.api.stored_data import (
     StoredData,
@@ -114,7 +119,7 @@ class ReportDialog(QDialog):
                 widget = UploadLogWidget(self)
                 widget.set_upload(upload)
                 self.vlayout_execution.addWidget(widget)
-            except UploadRequestManager.UnavailableUploadException as exc:
+            except UnavailableUploadException as exc:
                 self.log(
                     self.tr("Can't define upload logs : {0}").format(exc), push=True
                 )
@@ -134,7 +139,7 @@ class ReportDialog(QDialog):
                     datastore=stored_data.datastore_id, stored_data=vectordb_id
                 )
                 self._add_stored_data_execution_logs(vectordb_stored_data)
-            except StoredDataRequestManager.UnavailableStoredData as exc:
+            except UnavailableStoredData as exc:
                 self.log(
                     self.tr("Can't define execution logs : {0}").format(exc), push=True
                 )
@@ -155,7 +160,7 @@ class ReportDialog(QDialog):
                 widget = ExecutionLogWidget(stored_data.datastore_id, self)
                 widget.set_processing_execution(execution)
                 self.vlayout_execution.addWidget(widget)
-        except ProcessingRequestManager.UnavailableExecutionException as exc:
+        except UnavailableExecutionException as exc:
             self.log(
                 self.tr("Can't define execution logs : {0}").format(exc), push=True
             )

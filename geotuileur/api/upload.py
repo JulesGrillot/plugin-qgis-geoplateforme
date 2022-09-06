@@ -6,9 +6,17 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import List
 
+# PyQGIS
 import requests
 from qgis.core import QgsApplication, QgsBlockingNetworkRequest, QgsSettings
-from qgis.PyQt.QtCore import QByteArray, QEventLoop, QFile, QIODevice, QUrl
+from qgis.PyQt.QtCore import (
+    QByteArray,
+    QCoreApplication,
+    QEventLoop,
+    QFile,
+    QIODevice,
+    QUrl,
+)
 from qgis.PyQt.QtNetwork import (
     QHttpMultiPart,
     QHttpPart,
@@ -16,8 +24,20 @@ from qgis.PyQt.QtNetwork import (
     QNetworkRequest,
 )
 
+# plugin
 from geotuileur.api.check import CheckExecution, CheckRequestManager
 from geotuileur.api.client import NetworkRequestsManager
+from geotuileur.api.custom_exceptions import (
+    DeleteUploadException,
+    FileUploadException,
+    InvalidToken,
+    ReadUploadException,
+    UnavailableExecutionException,
+    UnavailableUploadException,
+    UnavailableUploadFileTreeException,
+    UploadClosingException,
+    UploadCreationException,
+)
 from geotuileur.api.utils import qgs_blocking_get_request
 from geotuileur.toolbelt import PlgLogger, PlgOptionsManager
 
@@ -55,28 +75,7 @@ class Upload:
 
 
 class UploadRequestManager:
-    MAX_LIMIT = 50
-
-    class ReadUploadException(Exception):
-        pass
-
-    class DeleteUploadException(Exception):
-        pass
-
-    class UnavailableUploadException(Exception):
-        pass
-
-    class UploadCreationException(Exception):
-        pass
-
-    class UploadClosingException(Exception):
-        pass
-
-    class FileUploadException(Exception):
-        pass
-
-    class UnavailableUploadFileTreeException(Exception):
-        pass
+    MAX_LIMIT: int = 50
 
     def __init__(self):
         """
@@ -87,6 +86,18 @@ class UploadRequestManager:
         self.request_manager = NetworkRequestsManager()
         self.ntwk_requester_blk = QgsBlockingNetworkRequest()
         self.plg_settings = PlgOptionsManager.get_plg_settings()
+
+    def tr(self, message):
+        """Get the translation for a string using Qt translation API.
+        We implement this ourselves since we do not inherit QObject.
+
+        :param message: String for translation.
+        :type message: str, QString
+
+        :returns: Translated version of message.
+        :rtype: QString
+        """
+        return QCoreApplication.translate(self.__class__.__name__, message)
 
     def get_base_url(self, datastore: str) -> str:
         """
@@ -139,7 +150,7 @@ class UploadRequestManager:
         )
 
         req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk, req, self.ReadUploadException
+            self.ntwk_requester_blk, req, ReadUploadException
         )
         data = json.loads(req_reply.content().data().decode("utf-8"))
         uploads_id = [val["_id"] for val in data]
@@ -162,7 +173,7 @@ class UploadRequestManager:
         req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}?limit=1"))
 
         req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk, req, self.UnavailableUploadException
+            self.ntwk_requester_blk, req, UnavailableUploadException
         )
 
         content_range = req_reply.rawHeader(b"Content-Range").data().decode("utf-8")
@@ -173,7 +184,7 @@ class UploadRequestManager:
         if match:
             nb_val = int(match.group("nb_val"))
         else:
-            raise self.ReadUploadException(
+            raise ReadUploadException(
                 f"Invalid Content-Range {content_range} not min-max/nb_val as expected"
             )
         return nb_val
@@ -195,7 +206,7 @@ class UploadRequestManager:
         req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{upload}"))
 
         req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk, req, self.UnavailableUploadException
+            self.ntwk_requester_blk, req, UnavailableUploadException
         )
         data = json.loads(req_reply.content().data().decode("utf-8"))
         return self._upload_from_json(data, datastore)
@@ -219,7 +230,7 @@ class UploadRequestManager:
         if resp != QgsBlockingNetworkRequest.NoError:
             req_reply = self.ntwk_requester_blk.reply()
             data = json.loads(req_reply.content().data().decode("utf-8"))
-            raise self.DeleteUploadException(
+            raise DeleteUploadException(
                 f"Error while deleting upload : {self.ntwk_requester_blk.errorMessage()}. Reply error: {data}"
             )
 
@@ -268,7 +279,7 @@ class UploadRequestManager:
 
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
-            raise self.UnavailableUploadException(
+            raise UnavailableUploadException(
                 f"Error while fetching upload : {self.ntwk_requester_blk.errorMessage()}"
             )
 
@@ -278,7 +289,7 @@ class UploadRequestManager:
             not req_reply.rawHeader(b"Content-Type")
             == "application/json; charset=utf-8"
         ):
-            raise self.UnavailableUploadException(
+            raise UnavailableUploadException(
                 "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
                     req_reply.rawHeader(b"Content-type")
                 )
@@ -296,8 +307,8 @@ class UploadRequestManager:
                             datastore=datastore, exec_id=execution["_id"]
                         )
                     )
-        except CheckRequestManager.UnavailableExecutionException as exc:
-            raise self.UnavailableUploadException(
+        except UnavailableExecutionException as exc:
+            raise UnavailableUploadException(
                 f"Error while fetching upload check execution : {exc}"
             )
         return exec_list
@@ -345,7 +356,7 @@ class UploadRequestManager:
 
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
-            raise self.UploadCreationException(
+            raise UploadCreationException(
                 f"Error while creating upload : "
                 f"{self.ntwk_requester_blk.errorMessage()}"
             )
@@ -355,7 +366,7 @@ class UploadRequestManager:
             not req_reply.rawHeader(b"Content-Type")
             == "application/json; charset=utf-8"
         ):
-            raise self.UploadCreationException(
+            raise UploadCreationException(
                 "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
                     req_reply.rawHeader(b"Content-type")
                 )
@@ -411,14 +422,28 @@ class UploadRequestManager:
             if proxy_str:
                 session.proxies = {"http": proxy_str, "https": proxy_str}
 
-            check = self.request_manager.get_api_token()
-            data = json.loads(check.data().decode("utf-8"))
+            try:
+                check = self.request_manager.get_api_token()
+                data = json.loads(check.data().decode("utf-8"))
+            except InvalidToken as exc:
+                self.log(
+                    message=self.tr(
+                        "Authentication token returned is invalid. Trace: {}".format(
+                            exc
+                        )
+                    ),
+                    log_level=2,
+                    push=True,
+                    duration=0,
+                )
+                raise FileUploadException(exc)
+
             session.headers.update({"Authorization": "Bearer " + data["access_token"]})
 
             # Open file
             with open(filename, "rb") as file:
                 if not file:
-                    raise self.FileUploadException(f"Can't open {filename}")
+                    raise FileUploadException(f"Can't open {filename}")
 
                 # Define request param
                 files = {"filename": (filename, file)}
@@ -434,7 +459,7 @@ class UploadRequestManager:
                         )
                     else:
                         error = f"Error when uploading {filename} to {url}. HTTP error : {response.status_code}."
-                    raise self.FileUploadException(error)
+                    raise FileUploadException(error)
 
     def add_file(self, datastore: str, upload: str, filename: str) -> None:
         """
@@ -487,7 +512,7 @@ class UploadRequestManager:
 
         # check response
         if reply.error() != QgsBlockingNetworkRequest.NoError:
-            raise self.FileUploadException(reply.errorString())
+            raise FileUploadException(reply.errorString())
 
     def close_upload(self, datastore: str, upload: str) -> None:
         """
@@ -512,7 +537,7 @@ class UploadRequestManager:
 
         # check response
         if resp != QgsBlockingNetworkRequest.NoError:
-            raise self.UploadClosingException({self.ntwk_requester_blk.errorMessage()})
+            raise UploadClosingException({self.ntwk_requester_blk.errorMessage()})
 
     def get_upload_file_tree(self, datastore: str, upload: str) -> dict:
         """
@@ -533,7 +558,7 @@ class UploadRequestManager:
         req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{upload}/tree"))
 
         req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk, req, self.UnavailableUploadFileTreeException
+            self.ntwk_requester_blk, req, UnavailableUploadFileTreeException
         )
         data = json.loads(req_reply.content().data().decode("utf-8"))
         return data

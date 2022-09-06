@@ -14,6 +14,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QWidget
 
 # Plugin
+from geotuileur.api.custom_exceptions import UnavailableUserException
 from geotuileur.api.user import UserRequestsManager
 from geotuileur.toolbelt import PlgOptionsManager
 
@@ -45,7 +46,7 @@ class UserDialog(QDialog):
             manager = UserRequestsManager()
             user = manager.get_user()
             self.wdg_user.set_user(user)
-        except UserRequestsManager.UnavailableUserException as exc:
+        except UnavailableUserException as exc:
             QMessageBox.warning(
                 self,
                 self.tr("Unavailable user"),

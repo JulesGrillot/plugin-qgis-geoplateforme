@@ -9,8 +9,15 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
-# Plugin
 from geotuileur.api.configuration import Configuration, ConfigurationRequestManager
+
+# Plugin
+from geotuileur.api.custom_exceptions import (
+    AddTagException,
+    ConfigurationCreationException,
+    OfferingCreationException,
+    UnavailableEndpointException,
+)
 from geotuileur.api.datastore import DatastoreRequestManager
 from geotuileur.api.stored_data import StoredDataRequestManager
 from geotuileur.toolbelt import PlgLogger
@@ -151,7 +158,7 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
 
                 configuration_id = res
 
-            except ConfigurationRequestManager.ConfigurationCreationException as exc:
+            except ConfigurationCreationException as exc:
                 raise QgsProcessingException(f"exc configuration id : {exc}")
 
             # get the endpoint for the publication
@@ -162,7 +169,7 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
                 )
 
                 publication_endpoint = res
-            except DatastoreRequestManager.UnavailableEndpointException as exc:
+            except UnavailableEndpointException as exc:
                 raise QgsProcessingException(f"exc endpoint : {exc}")
 
             # create publication (offering)
@@ -176,7 +183,7 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
                     configuration_id=configuration_id,
                 )
                 publication_urls = res
-            except ConfigurationRequestManager.OfferingCreationException as exc:
+            except OfferingCreationException as exc:
                 raise QgsProcessingException(f"exc publication url : {exc}")
 
             # One url defined
@@ -192,7 +199,7 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
                     stored_data=stored_data_id,
                     tags={"tms_url": url_data, "published": "true"},
                 )
-            except StoredDataRequestManager.AddTagException as exc:
+            except AddTagException as exc:
                 raise QgsProcessingException(f"exc tag update url : {exc}")
 
             return {

@@ -16,6 +16,7 @@ from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtWidgets import QDialog
 
 # Plugin
+from geotuileur.api.custom_exceptions import UnavailableUserException
 from geotuileur.api.user import UserRequestsManager
 from geotuileur.gui.lne_validators import email_qval
 from geotuileur.toolbelt import PlgLogger, PlgOptionsManager
@@ -108,7 +109,7 @@ class AuthenticationDialog(QDialog):
                 duration=5,
             )
 
-        except UserRequestsManager.UnavailableUserException as exc:
+        except UnavailableUserException as exc:
             self.log(
                 message=self.tr(f"Invalid connection parameters: {exc}"),
                 log_level=2,

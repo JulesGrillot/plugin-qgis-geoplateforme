@@ -128,6 +128,22 @@ class PlgSettingsStructure:
 
 class PlgOptionsManager:
     @staticmethod
+    def disconnect() -> None:
+        """
+        Disconnect current user and remove authentication configuration
+
+        """
+        plg_settings = PlgOptionsManager.get_plg_settings()
+
+        # Remove current authentication configuration
+        if plg_settings.qgis_auth_id:
+            auth_manager = QgsApplication.authManager()
+            auth_manager.removeAuthenticationConfig(plg_settings.qgis_auth_id)
+
+        plg_settings.qgis_auth_id = None
+        PlgOptionsManager.save_from_object(plg_settings)
+
+    @staticmethod
     def get_plg_settings() -> PlgSettingsStructure:
         """Load and return plugin settings as a dictionary. \
         Useful to get user preferences across plugin logic.

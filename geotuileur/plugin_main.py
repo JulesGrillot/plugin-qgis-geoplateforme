@@ -18,6 +18,8 @@ from qgis.PyQt.QtWidgets import QAction, QToolBar
 
 # project
 from geotuileur.__about__ import DIR_PLUGIN_ROOT, __title__, __uri_homepage__
+from geotuileur.api.client import NetworkRequestsManager
+from geotuileur.api.custom_exceptions import InvalidToken
 from geotuileur.gui.dashboard.dlg_dashboard import DashboardDialog
 from geotuileur.gui.dlg_authentication import AuthenticationDialog
 from geotuileur.gui.dlg_settings import PlgOptionsFactory
@@ -300,9 +302,19 @@ class GeotuileurPlugin:
 
     def authentication(self) -> None:
         """Open authentication dialog."""
-        plg_settings = self.plg_settings.get_plg_settings()
 
-        if len(plg_settings.qgis_auth_id) == 0:
+        # Check connection by getting an API token
+        connection_valid = False
+        if len(self.plg_settings.get_plg_settings().qgis_auth_id):
+            try:
+                network_manager = NetworkRequestsManager()
+                network_manager.get_api_token()
+                connection_valid = True
+            except InvalidToken:
+                # Disconnect if invalid token
+                self.plg_settings.disconnect()
+
+        if not connection_valid:
             dlg_authentication = AuthenticationDialog(self.iface.mainWindow())
             dlg_authentication.exec_()
         else:

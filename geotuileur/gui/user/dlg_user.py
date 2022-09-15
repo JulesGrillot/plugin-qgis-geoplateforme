@@ -58,13 +58,5 @@ class UserDialog(QDialog):
         Disconnect current user and close dialog
 
         """
-        plg_settings = self.plg_settings.get_plg_settings()
-
-        # Remove current authentication configuration
-        if plg_settings.qgis_auth_id:
-            auth_manager = QgsApplication.authManager()
-            auth_manager.removeAuthenticationConfig(plg_settings.qgis_auth_id)
-
-        plg_settings.qgis_auth_id = None
-        self.plg_settings.save_from_object(plg_settings)
+        self.plg_settings.disconnect()
         super().accept()

@@ -15,8 +15,10 @@ from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtWidgets import QDialog
 
+from geotuileur.api.client import NetworkRequestsManager
+
 # Plugin
-from geotuileur.api.custom_exceptions import UnavailableUserException
+from geotuileur.api.custom_exceptions import InvalidToken, UnavailableUserException
 from geotuileur.api.user import UserRequestsManager
 from geotuileur.gui.lne_validators import email_qval
 from geotuileur.toolbelt import PlgLogger, PlgOptionsManager
@@ -96,8 +98,12 @@ class AuthenticationDialog(QDialog):
         """
         res = True
 
-        # Check connection to API by getting user information
+        # Check connection to API by getting token user information
         try:
+            network_manager = NetworkRequestsManager()
+            network_manager.plg_settings.qgis_auth_id = qgis_auth_id
+            network_manager.get_api_token()
+
             manager = UserRequestsManager()
             manager.plg_settings.qgis_auth_id = qgis_auth_id
             user = manager.get_user()
@@ -109,7 +115,7 @@ class AuthenticationDialog(QDialog):
                 duration=5,
             )
 
-        except UnavailableUserException as exc:
+        except (UnavailableUserException, InvalidToken) as exc:
             self.log(
                 message=self.tr(f"Invalid connection parameters: {exc}"),
                 log_level=2,

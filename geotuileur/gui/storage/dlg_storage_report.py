@@ -151,6 +151,15 @@ class StorageReportDialog(QDialog):
             self.tbv_integrated_in_database.resizeRowsToContents()
             self.tbv_integrated_in_database.resizeColumnsToContents()
 
+        self._update_progress_bars()
+
+    def _update_progress_bars(self):
+        """
+        Update progress bar with current datastore storage use
+
+        """
+        datastore_id = self.cbx_datastore.current_datastore_id()
+        if datastore_id:
             try:
                 manager = DatastoreRequestManager()
                 datastore = manager.get_datastore(datastore_id)
@@ -233,6 +242,7 @@ class StorageReportDialog(QDialog):
             manager.delete(datastore=upload.datastore_id, upload=upload.id)
             row = self.mdl_upload.get_upload_row(upload.id)
             self.mdl_upload.removeRow(row)
+            self._update_progress_bars()
         except DeleteUploadException as exc:
             self.log(
                 self.tr("Upload {0} delete error : {1}").format(upload.id, exc),
@@ -267,6 +277,7 @@ class StorageReportDialog(QDialog):
         if success:
             row = self.mdl_stored_data.get_stored_data_row(stored_data.id)
             self.mdl_stored_data.removeRow(row)
+            self._update_progress_bars()
         else:
             self.log(
                 self.tr("Stored data {0} delete error : {1}").format(

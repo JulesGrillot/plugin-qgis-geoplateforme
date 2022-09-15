@@ -12,14 +12,12 @@ from qgis.PyQt.QtCore import QCoreApplication
 from geotuileur.api.custom_exceptions import (
     AddTagException,
     CreateProcessingException,
-    DeleteUploadException,
     LaunchExecutionException,
     ReadStoredDataException,
     UnavailableProcessingException,
 )
 from geotuileur.api.processing import ProcessingRequestManager
 from geotuileur.api.stored_data import StoredDataRequestManager, StoredDataStatus
-from geotuileur.api.upload import UploadRequestManager
 from geotuileur.toolbelt import PlgOptionsManager
 
 
@@ -144,10 +142,6 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
                 # Wait for database integration
                 self._wait_database_integration(datastore, stored_data_id)
 
-                # Delete upload
-                upload_manager = UploadRequestManager()
-                upload_manager.delete(datastore, upload)
-
             except UnavailableProcessingException as exc:
                 raise QgsProcessingException(
                     f"Can't retrieve processing for database integration : {exc}"
@@ -163,10 +157,6 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
             except AddTagException as exc:
                 raise QgsProcessingException(
                     f"Can't add tags to stored data for database integration : {exc}"
-                )
-            except DeleteUploadException as exc:
-                raise QgsProcessingException(
-                    f"Can't delete upload after database integration : {exc}"
                 )
 
         return {self.CREATED_STORED_DATA_ID: stored_data_id}

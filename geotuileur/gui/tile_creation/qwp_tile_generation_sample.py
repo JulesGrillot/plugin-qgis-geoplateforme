@@ -31,6 +31,8 @@ class TileGenerationSamplePageWizard(QWizardPage):
             self,
         )
         self.gpb_extent.setMapCanvas(iface.mapCanvas())
+        # Extent always defined in WGS84
+        self.gpb_extent.setOutputCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
         self.chb_sample_generation.stateChanged.connect(self._sample_check_changed)
         self.setCommitPage(True)
 
@@ -39,11 +41,7 @@ class TileGenerationSamplePageWizard(QWizardPage):
         Initialize page before show.
 
         """
-        stored_data = (
-            self.qwp_tile_generation_edition.cbx_stored_data.current_stored_data()
-        )
-        srs = stored_data.srs
-        self.gpb_extent.setOutputCrs(QgsCoordinateReferenceSystem(srs))
+        pass
 
     def validatePage(self) -> bool:
         """
@@ -68,27 +66,23 @@ class TileGenerationSamplePageWizard(QWizardPage):
                 stored_data = (
                     self.qwp_tile_generation_edition.cbx_stored_data.current_stored_data()
                 )
-                srs = stored_data.srs
-                crs = QgsCoordinateReferenceSystem(srs)
-                crs_bounds = crs.bounds()
-                valid = crs_bounds.contains(bbox)
+                vlayer = stored_data.create_extent_layer()
+                extent = vlayer.extent()
+                valid = extent.contains(bbox)
                 if not valid:
                     QMessageBox.warning(
                         self,
                         self.tr("Invalid extent"),
                         self.tr(
-                            "Invalid extent. Stored data projection bounds is \n:"
+                            "Invalid extent. Stored data extent is \n:"
                             " x_min {0} y_min {1} x_max {2} y_max {3}."
                         ).format(
-                            crs_bounds.xMinimum(),
-                            crs_bounds.yMinimum(),
-                            crs_bounds.xMaximum(),
-                            crs_bounds.yMaximum(),
+                            extent.xMinimum(),
+                            extent.yMinimum(),
+                            extent.xMaximum(),
+                            extent.yMaximum(),
                         ),
                     )
-
-            # TODO : add check of sample bbox size and bounds for stored data extent
-            # => waiting for stored data extent geojson read
 
         return valid
 

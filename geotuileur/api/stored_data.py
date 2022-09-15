@@ -5,7 +5,11 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import List
 
-from qgis.core import QgsBlockingNetworkRequest, QgsVectorLayer
+from qgis.core import (
+    QgsBlockingNetworkRequest,
+    QgsCoordinateReferenceSystem,
+    QgsVectorLayer,
+)
 from qgis.PyQt.QtCore import QByteArray, QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
@@ -173,7 +177,9 @@ class StoredData:
         Returns: QgsVectorLayer (invalid layer if extent not defined)
 
         """
-        return QgsVectorLayer(json.dumps(self.extent), f"{self.name}-extent", "ogr")
+        layer = QgsVectorLayer(json.dumps(self.extent), f"{self.name}-extent", "ogr")
+        layer.setCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
+        return layer
 
 
 class StoredDataRequestManager:

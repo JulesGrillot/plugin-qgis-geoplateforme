@@ -6,7 +6,7 @@ from qgis.PyQt.QtCore import QModelIndex, QObject
 from qgis.PyQt.QtGui import QIcon, QStandardItemModel
 
 from geotuileur.api.custom_exceptions import UnavailableUploadFileTreeException
-from geotuileur.api.upload import Upload, UploadRequestManager
+from geotuileur.api.upload import Upload, UploadRequestManager, UploadStatus
 from geotuileur.toolbelt import PlgLogger
 
 
@@ -54,19 +54,20 @@ class UploadDetailsTreeModel(QStandardItemModel):
         Returns: (dict) upload file tree
 
         """
-        result = dict
+        result = dict()
+        status = UploadStatus(upload.status)
         if upload.tags and "file_tree" in upload.tags:
             file_tree = upload.tags["file_tree"]
             result = json.loads(file_tree)
-        else:
+        elif status != UploadStatus.DELETED:
             try:
                 manager = UploadRequestManager()
                 result = manager.get_upload_file_tree(upload.datastore_id, upload.id)
             except UnavailableUploadFileTreeException as exc:
                 self.log(
-                    self.tr("Can't define upload '{0}' file tree : {1}")
-                    .format(upload.id)
-                    .format(exc),
+                    self.tr("Can't define upload '{}' file tree : {}").format(
+                        upload.id, exc
+                    ),
                     push=True,
                 )
         return result

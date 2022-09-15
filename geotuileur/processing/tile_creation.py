@@ -13,7 +13,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from geotuileur.api.custom_exceptions import (
     AddTagException,
     CreateProcessingException,
-    DeleteStoredDataException,
+    DeleteUploadException,
     LaunchExecutionException,
     ReadStoredDataException,
     UnavailableProcessingException,
@@ -21,6 +21,7 @@ from geotuileur.api.custom_exceptions import (
 )
 from geotuileur.api.processing import ProcessingRequestManager
 from geotuileur.api.stored_data import StoredDataRequestManager, StoredDataStatus
+from geotuileur.api.upload import UploadRequestManager
 from geotuileur.toolbelt import PlgOptionsManager
 
 
@@ -213,8 +214,11 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                 # Wait for tile creation
                 self._wait_tile_creation(datastore, stored_data_id)
 
-                # Delete vector db stored data
-                stored_data_manager.delete(datastore, vector_db_stored_data_id)
+                # Delete upload
+                upload_manager = UploadRequestManager()
+                upload_manager.delete(
+                    datastore, vector_db_stored_data.tags["upload_id"]
+                )
 
             except UnavailableStoredData as exc:
                 raise QgsProcessingException(
@@ -236,9 +240,9 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                 raise QgsProcessingException(
                     f"Can't add tags to stored data for tile creation : {exc}"
                 )
-            except DeleteStoredDataException as exc:
+            except DeleteUploadException as exc:
                 raise QgsProcessingException(
-                    f"Can't delete vector db stored data after tile creation : {exc}"
+                    f"Can't delete upload after tile creation : {exc}"
                 )
 
         return {self.CREATED_STORED_DATA_ID: stored_data_id}

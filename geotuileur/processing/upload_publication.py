@@ -15,7 +15,9 @@ from geotuileur.api.configuration import Configuration, ConfigurationRequestMana
 from geotuileur.api.custom_exceptions import (
     AddTagException,
     ConfigurationCreationException,
+    DeleteStoredDataException,
     OfferingCreationException,
+    ReadStoredDataException,
     UnavailableEndpointException,
 )
 from geotuileur.api.datastore import DatastoreRequestManager
@@ -201,6 +203,19 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
                 )
             except AddTagException as exc:
                 raise QgsProcessingException(f"exc tag update url : {exc}")
+
+            try:
+                stored_data_manager = StoredDataRequestManager()
+                stored_data = stored_data_manager.get_stored_data(
+                    datastore, stored_data_id
+                )
+
+                # Delete vector db stored data
+                stored_data_manager.delete(datastore, stored_data.tags["vectordb_id"])
+            except (DeleteStoredDataException, ReadStoredDataException) as exc:
+                raise QgsProcessingException(
+                    f"Can't delete vector db stored data after tile publication : {exc}"
+                )
 
             return {
                 self.PUBLICATION_URL: url_data,

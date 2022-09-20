@@ -271,6 +271,8 @@ deploy-to-qgis-repository:
   image: python:3.9
   only:
     - tags
+  tags:
+    - docker
   before_script:
     - apt install git
     - python -m pip install -U -r requirements/packaging.txt

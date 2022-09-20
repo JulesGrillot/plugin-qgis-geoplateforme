@@ -16,6 +16,17 @@ Unreleased
 
 -->
 
+## 1.0.0-beta1 - 2022-09-20
+
+- Enable release on official QGIS plugins repository
+- Homogeneize behavior with geotuileur website on data deletion workflow (seee !118)
+- Various bug fixes:
+  - Explicitly convert check delay setting into integer (see !114)
+  - Update progress bar after delete (see !115)
+  - Fix CRS of extent of stored dataset (see !116)
+  - Improve authentication check with API token (see !119)
+- Improve password encoding using QUrl instead of Python (see !111)
+
 ## 0.11.0 - 2022-09-01
 
 - Fix password encoding (see #40 and !109)

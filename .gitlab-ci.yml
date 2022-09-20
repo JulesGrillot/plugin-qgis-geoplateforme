@@ -200,6 +200,7 @@ documentation:
   only:
     refs:
       - master
+      - tags
   before_script:
     - python -m pip install -U -r requirements/documentation.txt
   script:

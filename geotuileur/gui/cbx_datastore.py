@@ -15,8 +15,15 @@ class DatastoreComboBox(QComboBox):
         """
         super().__init__(parent)
 
-        self.mdl_datastore = DatastoreListModel()
+        self.mdl_datastore = DatastoreListModel(self)
         self.setModel(self.mdl_datastore)
+
+    def refresh(self) -> None:
+        """
+        Refresh DatastoreListModel
+
+        """
+        self.mdl_datastore.refresh()
 
     def set_datastore_id(self, datastore_id: str) -> None:
         """

@@ -16,7 +16,7 @@ Unreleased
 
 -->
 
-## 1.0.0-beta2 - 2022-xx-xx
+## 1.0.0-beta2 - 2022-09-23
 
 - Fix refresh of dashboard and storage report at first connection (see #128 #129)
 

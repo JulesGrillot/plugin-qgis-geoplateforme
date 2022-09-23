@@ -16,10 +16,14 @@ Unreleased
 
 -->
 
+## 1.0.0-beta2 - 2022-xx-xx
+
+- Fix refresh of dashboard and storage report at first connection (see #128 #129)
+
 ## 1.0.0-beta1 - 2022-09-20
 
 - Enable release on official QGIS plugins repository
-- Homogeneize behavior with geotuileur website on data deletion workflow (seee !118)
+- Homogeneize behavior with geotuileur website on data deletion workflow (see !118)
 - Various bug fixes:
   - Explicitly convert check delay setting into integer (see !114)
   - Update progress bar after delete (see !115)

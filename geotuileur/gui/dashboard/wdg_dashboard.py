@@ -143,6 +143,7 @@ class DashboardWidget(QWidget):
         QCoreApplication.processEvents()
 
         # Update datastore content
+        self.cbx_datastore.refresh()
         self._datastore_updated()
 
         # Enable new refresh

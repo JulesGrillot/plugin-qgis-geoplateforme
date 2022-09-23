@@ -88,6 +88,7 @@ class StorageReportDialog(QDialog):
         Force refresh of stored data model
 
         """
+        self.cbx_datastore.refresh()
         self._datastore_updated()
 
     def _init_table_view(self, tbv: QTableView, visible_storage: [StorageType]) -> None:

@@ -16,6 +16,10 @@ Unreleased
 
 -->
 
+## 1.0.0-beta3 - 2022-09-26
+
+- Fix upstream bug in qgis-plugin-ci (was too verbose by default)
+
 ## 1.0.0-beta2 - 2022-09-23
 
 - Fix refresh of dashboard and storage report at first connection (see #128 #129)

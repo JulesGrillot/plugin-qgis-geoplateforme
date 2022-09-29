@@ -16,6 +16,10 @@ Unreleased
 
 -->
 
+## 1.0.0 - 2022-09-29
+
+- First stable release since IGN publicized the project
+
 ## 1.0.0-beta3 - 2022-09-26
 
 - Fix upstream bug in qgis-plugin-ci (was too verbose by default)

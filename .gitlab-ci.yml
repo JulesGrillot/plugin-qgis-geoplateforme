@@ -7,7 +7,7 @@ stages:
 # Change pip's cache directory to be inside the project directory since we can
 # only cache local items.
 variables:
-  PIP_CACHE_DIR: "$CI_PROJECT_FOLDER/.cache/pip"
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   PROJECT_FOLDER: "geotuileur"
   REPO_PLUGIN_URL: "https://oslandia.gitlab.io/qgis/ign-geotuileur/"
 
@@ -46,8 +46,6 @@ git-hooks:
     - git fetch origin
   script:
     - pre-commit run --from-ref "origin/$CI_DEFAULT_BRANCH" --to-ref "$CI_COMMIT_SHA";
-  # temporarly disabled
-  allow_failure: true
 
 flake8:
   stage: 🐍 lint

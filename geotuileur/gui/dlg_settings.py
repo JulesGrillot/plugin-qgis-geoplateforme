@@ -74,7 +74,10 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
             QIcon(":images/themes/default/console/iconSyntaxErrorConsole.svg")
         )
         self.btn_report.pressed.connect(
-            partial(QDesktopServices.openUrl, QUrl(f"{__uri_tracker__}new/"))
+            partial(
+                QDesktopServices.openUrl,
+                QUrl(f"{__uri_tracker__}new?issuable_template=bug_report"),
+            )
         )
 
         self.btn_reset.setIcon(QIcon(QgsApplication.iconPath("mActionUndo.svg")))

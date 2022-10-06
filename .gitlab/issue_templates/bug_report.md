@@ -1,30 +1,40 @@
 <!--
 
-Thanks for taking the time to fill out this bug report correctly.
+Merci de prendre le temps de rapporter un problème.
 
-Please report only issues related to the plugin.
+ATTENTION : NOUS TRAITONS ICI UNIQUEMENT LES RAPPORTS D'ANOMALIE QUI CONCERNENT LE
+PLUGIN QGIS GEOTUILEUR.
+
+Pour les anomalies liées au service Geotuileur, voir : https://github.com/IGNF/geotuileur-site
+
+Mode d'emploi :
+
+- pour cocher une case, ajouter la lettre x entre les crochets à la place de l'espace
+- le texte entre les balises <!- et -> sont des commentaires invisbles une fois le ticket créé
+- il est possible de glisser/déposer des images
 
 -->
 
-## Compliance
+## Check-list
 
-- [ ] I'm running a version of QGIS supported by the plugin.
-- [ ] I've tried with a new profile. Some issues or crashes might be related to other plugins or specific configuration. You must try with a new profile to check if the issue remains. Read [this link](https://docs.qgis.org/3.16/en/docs/user_manual/introduction/qgis_configuration.html#working-with-user-profiles) how to create a new profile.
+> Afin de faciliter le travail de diagnostic, merci de vous assurer des points suivants. Ceux marqués d'une `*` sont obligatoires, les autres sont fortement recommandés :
 
-## Gravity
+- [ ] J'exécute une version maintenue et compatible avec le plugin de QGIS\*
+- [ ] Le problème concerne le plugin et non le service sous-jacent. Pour m'en assurer, j'ai effectué les mêmes actions sur [le site Geotuileur](https://portail-gpf-beta.ign.fr/)
+- [ ] J'ai essayé en installant le plugin dans un nouveau profil QGIS pour m'assurer que le problème n'est pas lié à une configuration ou un plugin spécifique. Voir [la documentation QGIS](https://docs.qgis.org/3.22/fr/docs/user_manual/introduction/qgis_configuration.html#working-with-user-profiles).
 
-<!-- Not the movie, but the impact of the bug -->
+## Gravité
 
-- [ ] bug or strange behavior
-- [ ] plugin crashes at startup
-- [ ] plugin crashes (at any other moment)
-- [ ] QGIS crashes
+- [ ] bug ou comportement étrange
+- [ ] le plugin plante au lancement de QGIS ou à son lancement
+- [ ] le plugin plante (à tout autre moment)
+- [ ] le plugin fait planter QGIS
 
-## Description of the bug
+## Description du problème
 
-<!-- Briefly describe the bug... -->
+<!-- Description du problème. Ne pas hésiter à déposer des captures d'écrans -->
 
-## Steps to reproduce the bug or the crash
+## Etapes pour reproduire l'anomalie
 
 Steps, sample datasets and qgis project file to reproduce the behavior. Screencasts or screenshots are more than welcome, you can drag&drop them in the text box.
 
@@ -33,13 +43,14 @@ Steps, sample datasets and qgis project file to reproduce the behavior. Screenca
 3. Scroll down to '...'
 4. See error
 
-## Environment context
+## Ma configuration
 
-<!--
-Fill the In the QGIS Help menu -> About, click in the table, Ctrl+A and then Ctrl+C. Finally paste here.
-        DO NOT make a screenshot.
- -->
+<!-- Le plus simple et complet est de copier/coller le contenu du menu Aide > A propos -->
 
-- Operating system: Windows 10/Ubuntu 20.04/CentOS 7....
-- QGIS version: ...
-- plugin version: ...
+- Système d'exploitation : Windows 10/Ubuntu 20.04/CentOS 7....
+- Version de QGIS :
+- Version de Python :
+- Version de Qt :
+- Version du plugin :
+- Mode d'installation de QGIS : paquets distribution Linux / OSGeo4W / installateur standalone (*.msi) / ...
+- Identifiant technique Geotuileur ([visible ici](https://portail-gpf-beta.ign.fr/mon-compte)) :

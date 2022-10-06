@@ -18,7 +18,7 @@ tracker=https://gitlab.com/Oslandia/qgis/ign-geotuileur/issues/
 
 # experimental flag
 deprecated=False
-experimental=True
+experimental=False
 qgisMinimumVersion=3.22
 qgisMaximumVersion=3.99
 

@@ -10,11 +10,9 @@
 
 ----
 
-{{ title }} est un plugin pour QGIS 3.22+ qui a pour objectif de permettre de reproduire le parcours utilisateur du site Géotuileur dont voici 2 vidéos le détaillant :
+{{ title }} est un plugin pour QGIS 3.22+ qui a pour objectif de permettre de reproduire le parcours utilisateur du site Géotuileur (voir [cette vidéo de présentation du portail](https://vimeo.com/722998381)). Voici une vidéo présentant le fonctionnement du plugin QGIS :
 
-<iframe src="https://player.vimeo.com/video/722998381?h=3dcf3a2ef0&amp;title=0&amp;byline=0&amp;portrait=0&amp;speed=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="100%" height="450" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="screen-recording.webm"></iframe>
-
-<iframe src="https://player.vimeo.com/video/768490951?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Géotuileur"></iframe>
+<iframe src="https://player.vimeo.com/video/768490951?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" width="100%" height="500px" title="Géotuileur"></iframe>
 
 ----
 

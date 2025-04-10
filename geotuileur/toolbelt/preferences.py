@@ -1,7 +1,7 @@
 #! python3  # noqa: E265
 
 """
-    Plugin settings.
+Plugin settings.
 """
 
 # standard
@@ -260,5 +260,4 @@ class PlgOptionsManager:
 
 
 if __name__ == "__main__":
-    fi = fields(PlgSettingsStructure)
-    print(fi)
+    pass

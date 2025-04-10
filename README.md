@@ -1,5 +1,10 @@
 # Geotuileur - QGIS Plugin
 
+> [!important]
+> 🇫🇷 Le portail Géotuileur ayant été fermé au profit de la [Géoplateforme](https://www.ign.fr/geoplateforme), ce plugin est désormais obsolète et non maintenu. La bonne nouvelle c'est que le projet de remplaçant a démarré 🥳  
+> 🇬🇧 This plugin is now officially deprecated. Please follow the new project.  
+> 👉 <https://github.com/Geoplateforme/plugin-qgis-geoplateforme>
+
 [![pipeline status](https://gitlab.com/Oslandia/qgis/ign-geotuileur/badges/master/pipeline.svg)](https://gitlab.com/Oslandia/qgis/ign-geotuileur/-/commits/master)
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)

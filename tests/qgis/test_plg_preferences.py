@@ -46,20 +46,21 @@ class TestPlgPreferences(unittest.TestCase):
         self.assertEqual(settings.version, __version__)
 
         # network and authentication
-        self.assertTrue(hasattr(settings, "url_geotuileur"))
-        self.assertIsInstance(settings.url_geotuileur, str)
-        self.assertEqual(settings.url_geotuileur, "https://portail-gpf-beta.ign.fr/")
+        self.assertTrue(hasattr(settings, "url_geoplateforme"))
+        self.assertIsInstance(settings.url_geoplateforme, str)
+        self.assertEqual(settings.url_geoplateforme, "https://portail-gpf-beta.ign.fr/")
 
         self.assertTrue(hasattr(settings, "url_api_entrepot"))
         self.assertIsInstance(settings.url_api_entrepot, str)
         self.assertEqual(
-            settings.url_api_entrepot, "https://gpf-beta.ign.fr/geotuileur/"
+            settings.url_api_entrepot, "https://gpf-beta.ign.fr/geoplateforme/"
         )
 
         self.assertTrue(hasattr(settings, "url_api_appendices"))
         self.assertIsInstance(settings.url_api_appendices, str)
         self.assertEqual(
-            settings.url_api_appendices, "https://gpf-beta.ign.fr/geotuileur/annexes/"
+            settings.url_api_appendices,
+            "https://gpf-beta.ign.fr/geoplateforme/annexes/",
         )
 
         self.assertTrue(hasattr(settings, "url_service_vt"))
@@ -76,7 +77,7 @@ class TestPlgPreferences(unittest.TestCase):
 
         self.assertTrue(hasattr(settings, "auth_client_id"))
         self.assertIsInstance(settings.auth_client_id, str)
-        self.assertEqual(settings.auth_client_id, "geotuileur-qgis-plugin")
+        self.assertEqual(settings.auth_client_id, "geoplateforme-qgis-plugin")
 
         self.assertTrue(hasattr(settings, "qgis_auth_id"))
         self.assertIsNone(settings.qgis_auth_id, None)

@@ -14,7 +14,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QVariant
 
-from geoplateforme.processing import GeotuileurProvider
+from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.check_layer import CheckLayerAlgorithm
 from tests.qgis.processings.conftest import QgsProcessingFeedBackTest
 
@@ -29,7 +29,7 @@ def alg() -> QgsProcessingAlgorithm:
     Returns: QgsProcessingAlgorithm
 
     """
-    algo_str = f"{GeotuileurProvider().id()}:{CheckLayerAlgorithm().name()}"
+    algo_str = f"{GeoplateformeProvider().id()}:{CheckLayerAlgorithm().name()}"
     alg = QgsApplication.processingRegistry().algorithmById(algo_str)
     assert alg is not None
     return alg

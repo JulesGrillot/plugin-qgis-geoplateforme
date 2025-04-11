@@ -14,8 +14,8 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QVariant
 
-from geotuileur.processing import GeotuileurProvider
-from geotuileur.processing.check_layer import CheckLayerAlgorithm
+from geoplateforme.processing import GeotuileurProvider
+from geoplateforme.processing.check_layer import CheckLayerAlgorithm
 from tests.qgis.processings.conftest import QgsProcessingFeedBackTest
 
 INVALID_CHARS = CheckLayerAlgorithm.get_invalid_characters()

@@ -1,8 +1,6 @@
 #!python3
 
-"""
-    Configuration for project documentation using Sphinx.
-"""
+"""Configuration for project documentation using Sphinx."""
 
 # standard
 import sys
@@ -12,7 +10,7 @@ from os import environ, path
 sys.path.insert(0, path.abspath(".."))  # move into project package
 
 # Package
-from geotuileur import __about__
+from geoplateforme import __about__
 
 # -- Build environment -----------------------------------------------------
 on_rtd = environ.get("READTHEDOCS", None) == "True"
@@ -94,6 +92,7 @@ html_theme_options = {
 # Configuration for intersphinx (refer to others docs).
 intersphinx_mapping = {
     "PyQt5": ("https://www.riverbankcomputing.com/static/Docs/PyQt5", None),
+    "PyQt6": ("https://www.riverbankcomputing.com/static/Docs/PyQt6/", None),
     "python": ("https://docs.python.org/3/", None),
     "qgis": ("https://qgis.org/pyqgis/master/", None),
 }

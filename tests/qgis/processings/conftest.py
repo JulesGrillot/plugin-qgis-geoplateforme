@@ -1,7 +1,7 @@
 import pytest
 from qgis.core import QgsApplication, QgsProcessingFeedback
 
-from geotuileur.processing import GeotuileurProvider
+from geoplateforme.processing import GeotuileurProvider
 
 
 class QgsProcessingFeedBackTest(QgsProcessingFeedback):

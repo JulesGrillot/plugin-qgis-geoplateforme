@@ -1,36 +1,62 @@
 {
     // Editor
     "editor.bracketPairColorization.enabled": true,
-    "editor.codeActionsOnSave": {
-        "source.organizeImports": "explicit"
-    },
-    "editor.formatOnSave": true,
     "editor.guides.bracketPairs": "active",
-    "editor.rulers": [
-        88
-    ],
-    "editor.wordWrapColumn": 88,
     "files.associations": {
         "./requirements/*.txt": "pip-requirements",
         "metadata.txt": "ini",
+        "**/*.model3": "xml",
         "**/*.ts": "xml",
         "**/*.ui": "xml"
     },
-    // Formatter
-    "python.formatting.provider": "black",
-    "python.formatting.blackArgs": [
-        "--target-version=py39"
-    ],
+    // JSON
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features",
+        "editor.formatOnSave": true,
+        "editor.quickSuggestions": {
+            "strings": true
+        },
+        "editor.suggest.insertMode": "replace"
+    },
+    // Markdown
+    "markdown.updateLinksOnFileMove.enabled": "prompt",
+    "markdown.updateLinksOnFileMove.enableForDirectories": true,
+    "markdown.validate.enabled": true,
+    "markdown.validate.fileLinks.markdownFragmentLinks": "warning",
+    "markdown.validate.fragmentLinks.enabled": "warning",
+    "[markdown]": {
+        "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+        "files.trimTrailingWhitespace": false,
+    },
+    // Python
+    "python.analysis.autoFormatStrings": false, // breaking PyQt translation
+    "python.analysis.typeCheckingMode": "basic",
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.terminal.activateEnvironment": true,
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports":"explicit"
+        },
+        "editor.rulers": [
+            88
+        ],
+        "editor.wordWrapColumn": 88,
+    },
+    "python.testing.unittestEnabled": true,
+    "python.testing.pytestEnabled": true,
     // Linter
-    "python.linting.enabled": true,
-    "python.linting.flake8Enabled": true,
-    "python.linting.flake8Args": [
+
+    "flake8.args": [
         "--config=setup.cfg",
         "--verbose"
     ],
-    "python.linting.pylintEnabled": false,
-    // Git
-    "git.enableCommitSigning": true,
+    "isort.args": [
+        "--profile",
+        "black"
+    ],
+    "isort.check": true,
     // Extensions
     "autoDocstring.docstringFormat": "sphinx"
 }

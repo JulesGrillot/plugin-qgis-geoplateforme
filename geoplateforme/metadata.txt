@@ -1,0 +1,27 @@
+[general]
+name=Geotuileur
+about=It allows an authenticated user to upload and host his data on the Geoplatform in order to distribute them via vector tile services for which he chooses a number of parameters.
+about[fr]=Permet à un utilisateur authentifié de téléverser et d'héberger ses données sur la Géoplateforme en vue de les diffuser via des services de tuiles vectorielles dont il choisit un certain nombre de paramètres.
+category=Web
+hasProcessingProvider=yes
+description=Plugin associated with the IGN France service of the same name: Geotuileur.
+description[fr]=Plugin associé au service idoine de l'IGN France.
+icon=resources/images/logo-geotuileur.svg
+tags=vector tile,Géotuileur,IGN France,Géoplateforme,tippecanoe
+
+# credits and contact
+author=Oslandia, IGN France
+email=qgis@oslandia.com
+homepage=https://geoplateforme.github.io/plugin-qgis-geoplateforme/
+repository=https://gitlab.com/Oslandia/qgis/ign-geotuileur/
+tracker=https://gitlab.com/Oslandia/qgis/ign-geotuileur/issues/
+
+# experimental flag
+deprecated=False
+experimental=False
+qgisMinimumVersion=3.22
+qgisMaximumVersion=3.99
+
+# versionnement
+version=1.0.0
+changelog=

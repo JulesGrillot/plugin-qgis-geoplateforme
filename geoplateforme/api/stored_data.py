@@ -244,13 +244,13 @@ class StoredDataRequestManager:
         )
 
         # headers
-        req.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+        req.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
 
         # send request
         resp = self.ntwk_requester_blk.get(req, forceRefresh=True)
 
         # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
+        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
             raise ReadStoredDataException(
                 f"Error while fetching stored data : {self.ntwk_requester_blk.errorMessage()}"
             )
@@ -290,13 +290,13 @@ class StoredDataRequestManager:
         req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}?limit=1"))
 
         # headers
-        req.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+        req.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
 
         # send request
         resp = self.ntwk_requester_blk.get(req, forceRefresh=True)
 
         # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
+        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
             raise ReadStoredDataException(
                 f"Error while fetching stored data : {self.ntwk_requester_blk.errorMessage()}"
             )
@@ -378,13 +378,13 @@ class StoredDataRequestManager:
         req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{stored_data}"))
 
         # headers
-        req.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+        req.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
 
         # send request
         resp = self.ntwk_requester_blk.get(req, forceRefresh=True)
 
         # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
+        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
             raise ReadStoredDataException(
                 f"Error while fetching stored data : {self.ntwk_requester_blk.errorMessage()}"
             )
@@ -421,7 +421,7 @@ class StoredDataRequestManager:
         resp = self.ntwk_requester_blk.deleteResource(req_delete)
 
         # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
+        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
             req_reply = self.ntwk_requester_blk.reply()
             data = json.loads(req_reply.content().data().decode("utf-8"))
             raise DeleteStoredDataException(
@@ -447,7 +447,7 @@ class StoredDataRequestManager:
         )
 
         # headers
-        req_post.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+        req_post.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
 
         # encode data
         data = QByteArray()
@@ -457,7 +457,7 @@ class StoredDataRequestManager:
         resp = self.ntwk_requester_blk.post(req_post, data=data, forceRefresh=True)
 
         # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
+        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
             raise AddTagException(
                 f"Error while adding tag to stored_data : {self.ntwk_requester_blk.errorMessage()}"
             )
@@ -484,13 +484,13 @@ class StoredDataRequestManager:
         req_del = QNetworkRequest(QUrl(url))
 
         # headers
-        req_del.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+        req_del.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
 
         # send request
         resp = self.ntwk_requester_blk.deleteResource(req_del)
 
         # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
+        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
             req_reply = self.ntwk_requester_blk.reply()
             data = json.loads(req_reply.content().data().decode("utf-8"))
             raise DeleteTagException(

@@ -50,11 +50,11 @@ class UploadCreationWidget(QWidget):
         ]
         self.flw_files_put.setFilter(";;".join(filter_strings))
         self.flw_files_put.fileChanged.connect(self.add_file_path)
-        self.flw_files_put.setStorageMode(QgsFileWidget.GetMultipleFiles)
+        self.flw_files_put.setStorageMode(QgsFileWidget.StorageMode.GetMultipleFiles)
 
         self.mdl_upload_files = UploadFilesTreeModel(self)
         self.trv_upload_files.setModel(self.mdl_upload_files)
-        self.trv_upload_files.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.trv_upload_files.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
 
     def get_name(self) -> str:
         """
@@ -145,7 +145,7 @@ class UploadCreationWidget(QWidget):
             error_string += self.tr("Invalid layers list are available in details.")
 
             msgBox = QMessageBox(
-                QMessageBox.Warning, self.tr("Invalid layers"), error_string
+                QMessageBox.Icon.Warning, self.tr("Invalid layers"), error_string
             )
             msgBox.setDetailedText(feedback.textLog())
             msgBox.exec()

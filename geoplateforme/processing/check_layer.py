@@ -67,7 +67,7 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterMultipleLayers(
                 name=self.INPUT_LAYERS,
-                layerType=QgsProcessing.TypeVectorAnyGeometry,
+                layerType=QgsProcessing.SourceType.TypeVectorAnyGeometry,
                 description=self.tr("Input layers"),
                 optional=True,
             )

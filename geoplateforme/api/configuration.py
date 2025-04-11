@@ -131,7 +131,7 @@ class ConfigurationRequestManager:
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req_post = QNetworkRequest(QUrl(self.get_base_url(datastore)))
         # headers
-        req_post.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+        req_post.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
 
         # encode data
         data = QByteArray()
@@ -149,7 +149,7 @@ class ConfigurationRequestManager:
         resp = self.ntwk_requester_blk.post(req_post, data=data)
 
         # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
+        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
             raise ConfigurationCreationException(
                 f"Error while creating configuration : "
                 f"{self.ntwk_requester_blk.errorMessage()}"
@@ -253,13 +253,13 @@ class ConfigurationRequestManager:
             QUrl(f"{self.get_base_url(datastore)}/{configuration_ids}")
         )
         # headers
-        req_get.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+        req_get.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
 
         # send request
         resp = self.ntwk_requester_blk.deleteResource(req_get)
 
         # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
+        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
             raise UnavailableConfigurationException(
                 f"Error while fetching processing : {self.ntwk_requester_blk.errorMessage()}"
             )
@@ -285,7 +285,7 @@ class ConfigurationRequestManager:
         )
 
         # headers
-        req_post.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+        req_post.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
 
         # encode data
         data = QByteArray()
@@ -300,7 +300,7 @@ class ConfigurationRequestManager:
         resp = self.ntwk_requester_blk.post(req_post, data=data)
 
         # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
+        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
             raise OfferingCreationException(
                 f"Error while creating publication : "
                 f"{self.ntwk_requester_blk.errorMessage()}"

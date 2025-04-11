@@ -130,7 +130,7 @@ class DashboardWidget(QWidget):
         )
         tbv.setModel(proxy_mdl)
         tbv.verticalHeader().setVisible(False)
-        tbv.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        tbv.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         tbv.clicked.connect(lambda index: self._item_clicked(index, proxy_mdl))
 
     def refresh(self) -> None:
@@ -243,10 +243,10 @@ class DashboardWidget(QWidget):
             self,
             "Delete data",
             "Are you sure you want to delete the data?",
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No,
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
         )
-        if reply == QMessageBox.Yes:
+        if reply == QMessageBox.StandardButton.Yes:
             data = {
                 DeleteDataAlgorithm.DATASTORE: stored_data.datastore_id,
                 DeleteDataAlgorithm.STORED_DATA: stored_data.id,
@@ -417,10 +417,10 @@ class DashboardWidget(QWidget):
             self,
             "Unpublish",
             "Are you sure you want to unpublish the data?",
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No,
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
         )
-        if reply == QMessageBox.Yes:
+        if reply == QMessageBox.StandardButton.Yes:
             data = {
                 UnpublishAlgorithm.DATASTORE: stored_data.datastore_id,
                 UnpublishAlgorithm.STORED_DATA: stored_data.id,

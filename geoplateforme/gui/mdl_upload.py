@@ -126,7 +126,7 @@ class UploadListModel(QStandardItemModel):
         self.insertRow(row)
 
         self.setData(self.index(row, self.NAME_COL), upload.name)
-        self.setData(self.index(row, self.NAME_COL), upload, Qt.UserRole)
+        self.setData(self.index(row, self.NAME_COL), upload, Qt.ItemDataRole.UserRole)
         self.setData(
             self.index(row, self.DATE_COL),
             as_datetime(upload.get_last_event_date()),

@@ -12,7 +12,7 @@ from pathlib import Path
 from qgis.core import QgsApplication, QgsSettings
 from qgis.gui import QgisInterface
 from qgis.PyQt.Qt import QUrl
-from qgis.PyQt.QtCore import QCoreApplication, QLocale, QTranslator
+from qgis.PyQt.QtCore import QCoreApplication, QLocale, QTranslator, Qt
 from qgis.PyQt.QtGui import QDesktopServices, QIcon
 from qgis.PyQt.QtWidgets import QAction, QToolBar
 
@@ -316,10 +316,10 @@ class GeotuileurPlugin:
 
         if not connection_valid:
             dlg_authentication = AuthenticationDialog(self.iface.mainWindow())
-            dlg_authentication.exec_()
+            dlg_authentication.exec()
         else:
             dlg_user = UserDialog(self.iface.mainWindow())
-            dlg_user.exec_()
+            dlg_user.exec()
         self._update_actions_availability()
 
     def _update_actions_availability(self) -> None:

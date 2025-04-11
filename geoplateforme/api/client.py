@@ -15,7 +15,7 @@ import logging
 # PyQGIS
 from qgis.core import QgsApplication, QgsAuthMethodConfig, QgsBlockingNetworkRequest
 from qgis.PyQt.Qt import QByteArray, QUrl
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # project
@@ -97,7 +97,7 @@ class NetworkRequestsManager:
 
         # headers
         qreq.setHeader(
-            QNetworkRequest.ContentTypeHeader, "application/x-www-form-urlencoded"
+            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/x-www-form-urlencoded"
         )
 
         # encode data
@@ -115,7 +115,7 @@ class NetworkRequestsManager:
         resp = self.ntwk_requester_blk.post(qreq, data=data, forceRefresh=True)
 
         # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
+        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
             err_msg = self.tr(
                 "Error while getting token: {}".format(
                     self.ntwk_requester_blk.errorMessage()

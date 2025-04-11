@@ -82,8 +82,8 @@ class GuiCommonUtils:
         target_qlabel.setToolTip(
             self.tr("Double-click me to copy my content into the clipboard.")
         )
-        target_qlabel.setTextInteractionFlags(Qt.TextSelectableByMouse)
-        target_qlabel.setCursor(QCursor(Qt.IBeamCursor))
+        target_qlabel.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+        target_qlabel.setCursor(QCursor(Qt.CursorShape.IBeamCursor))
 
         # connect event filter
         target_qlabel.parent().eventFilter = self.eventFilter
@@ -103,7 +103,7 @@ class GuiCommonUtils:
         :return: True if event has been handled. Note: retun bool is mandatory.
         :rtype: bool
         """
-        if event.type() == QEvent.MouseButtonDblClick:
+        if event.type() == QEvent.Type.MouseButtonDblClick:
             self.copy_widget_txt_to_clipboard(source)
             return True
         return False

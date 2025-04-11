@@ -58,9 +58,9 @@ class TileCreationWizard(QWizard):
         self.addPage(self.qwp_tile_generation_generalization)
         self.addPage(self.qwp_tile_generation_sample)
         self.addPage(self.qwp_tile_generation_status)
-        self.setOption(QWizard.NoBackButtonOnStartPage, True)
-        self.setOption(QWizard.NoBackButtonOnLastPage, True)
-        self.setOption(QWizard.NoCancelButtonOnLastPage, True)
+        self.setOption(QWizard.WizardOption.NoBackButtonOnStartPage, True)
+        self.setOption(QWizard.WizardOption.NoBackButtonOnLastPage, True)
+        self.setOption(QWizard.WizardOption.NoCancelButtonOnLastPage, True)
 
     def set_datastore_id(self, datastore_id: str) -> None:
         """

@@ -25,7 +25,7 @@ class UserWidget(QWidget):
 
         self.mdl_datastore = DatastoreListModel(self)
         self.tbv_datastore.setModel(self.mdl_datastore)
-        self.tbv_datastore.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tbv_datastore.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
 
         self.gui_utils.make_qlabel_copiable(self.lbl_id_value, self.lbl_id)
 

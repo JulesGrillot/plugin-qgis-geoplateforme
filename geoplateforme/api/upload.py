@@ -227,7 +227,7 @@ class UploadRequestManager:
         resp = self.ntwk_requester_blk.deleteResource(req_delete)
 
         # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
+        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
             req_reply = self.ntwk_requester_blk.reply()
             data = json.loads(req_reply.content().data().decode("utf-8"))
             raise DeleteUploadException(
@@ -272,13 +272,13 @@ class UploadRequestManager:
         req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{upload}/checks"))
 
         # headers
-        req.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+        req.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
 
         # send request
         resp = self.ntwk_requester_blk.get(req, forceRefresh=True)
 
         # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
+        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
             raise UnavailableUploadException(
                 f"Error while fetching upload : {self.ntwk_requester_blk.errorMessage()}"
             )
@@ -339,7 +339,7 @@ class UploadRequestManager:
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req_post = QNetworkRequest(QUrl(self.get_base_url(datastore)))
         # headers
-        req_post.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+        req_post.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
 
         # encode data
         data = QByteArray()
@@ -355,7 +355,7 @@ class UploadRequestManager:
         resp = self.ntwk_requester_blk.post(req_post, data=data)
 
         # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
+        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
             raise UploadCreationException(
                 f"Error while creating upload : "
                 f"{self.ntwk_requester_blk.errorMessage()}"
@@ -480,12 +480,12 @@ class UploadRequestManager:
         )
 
         # Create multipart
-        multipart = QHttpMultiPart(QHttpMultiPart.FormDataType)
+        multipart = QHttpMultiPart(QHttpMultiPart.ContentType.FormDataType)
         filepart = QHttpPart()
 
         # headers
         filepart.setHeader(
-            QNetworkRequest.ContentDispositionHeader,
+            QNetworkRequest.KnownHeaders.ContentDispositionHeader,
             f'form-data; name="filename" filename="{filename}"',
         )
 
@@ -493,7 +493,7 @@ class UploadRequestManager:
         file.setParent(
             multipart
         )  # we cannot delete the file now, so delete it with the multiPart
-        file.open(QIODevice.ReadOnly)
+        file.open(QIODevice.OpenModeFlag.ReadOnly)
 
         filepart.setBodyDevice(file)
         multipart.append(filepart)
@@ -511,7 +511,7 @@ class UploadRequestManager:
         loop.exec()
 
         # check response
-        if reply.error() != QgsBlockingNetworkRequest.NoError:
+        if reply.error() != QgsBlockingNetworkRequest.ErrorCode.NoError:
             raise FileUploadException(reply.errorString())
 
     def close_upload(self, datastore: str, upload: str) -> None:
@@ -530,13 +530,13 @@ class UploadRequestManager:
         )
 
         # headers
-        req_post.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+        req_post.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
 
         # send request
         resp = self.ntwk_requester_blk.post(req_post, data=QByteArray())
 
         # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
+        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
             raise UploadClosingException({self.ntwk_requester_blk.errorMessage()})
 
     def get_upload_file_tree(self, datastore: str, upload: str) -> dict:

@@ -82,13 +82,13 @@ class OfferingsRequestManager:
         req_get = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{offering_id}"))
 
         # headers
-        req_get.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+        req_get.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
 
         # send request
         resp = self.ntwk_requester_blk.deleteResource(req_get)
 
         # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
+        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
             raise UnavailableOfferingsException(
                 f"Error while fetching processing : {self.ntwk_requester_blk.errorMessage()}"
             )

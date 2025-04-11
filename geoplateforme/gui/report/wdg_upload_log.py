@@ -33,7 +33,7 @@ class UploadLogWidget(QWidget):
         )
         self.mdl_upload_details = UploadDetailsTreeModel(self)
         self.trv_upload_details.setModel(self.mdl_upload_details)
-        self.trv_upload_details.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.trv_upload_details.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
 
     def set_upload(self, upload: Upload) -> None:
         """

@@ -98,7 +98,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
         self.tableview_execution_list.setModel(self.mdl_execution_list)
 
         self.tableview_execution_list.horizontalHeader().setSectionResizeMode(
-            QHeaderView.ResizeToContents
+            QHeaderView.ResizeMode.ResizeToContents
         )
 
     def initializePage(self) -> None:

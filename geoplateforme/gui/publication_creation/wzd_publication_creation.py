@@ -27,9 +27,9 @@ class PublicationFormCreation(QWizard):
         self.addPage(self.qwp_publication_form)
         self.addPage(self.qwp_publication_status)
 
-        self.setOption(QWizard.NoBackButtonOnStartPage, True)
-        self.setOption(QWizard.NoBackButtonOnLastPage, True)
-        self.setOption(QWizard.NoCancelButtonOnLastPage, True)
+        self.setOption(QWizard.WizardOption.NoBackButtonOnStartPage, True)
+        self.setOption(QWizard.WizardOption.NoBackButtonOnLastPage, True)
+        self.setOption(QWizard.WizardOption.NoCancelButtonOnLastPage, True)
 
     def set_datastore_id(self, datastore_id: str) -> None:
         """
@@ -51,5 +51,5 @@ class PublicationFormCreation(QWizard):
 
     def accept(self) -> None:
         super().accept()
-        if self.result() == QDialog.Accepted:
+        if self.result() == QDialog.DialogCode.Accepted:
             self.restart()

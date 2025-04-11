@@ -53,7 +53,7 @@ def create_shape_file(
         str(layer_path),
         "UTF-8",
         fields,
-        QgsWkbTypes.Polygon,
+        QgsWkbTypes.Type.Polygon,
         QgsCoordinateReferenceSystem(crs_auth_id),
         "ESRI Shapefile",
     )

@@ -73,7 +73,7 @@ class TableRelationTreeModel(CheckStateModel):
                 )
                 if (
                     not self.check_state_enabled
-                    or self.data(attribute_index, Qt.CheckStateRole) == Qt.Checked
+                    or self.data(attribute_index, Qt.ItemDataRole.CheckStateRole) == Qt.CheckState.Checked
                 ):
                     result[table].append(self.data(attribute_index))
         return result
@@ -101,8 +101,8 @@ class TableRelationTreeModel(CheckStateModel):
         if self.check_state_enabled:
             self.setData(
                 self.index(row, self.NAME_COL),
-                Qt.Unchecked,
-                Qt.CheckStateRole,
+                Qt.CheckState.Unchecked,
+                Qt.ItemDataRole.CheckStateRole,
             )
         self.insertColumns(0, self.columnCount(), table_index)
 
@@ -116,7 +116,7 @@ class TableRelationTreeModel(CheckStateModel):
                 if self.check_state_enabled:
                     self.setData(
                         self.index(row, self.NAME_COL, table_index),
-                        Qt.Unchecked,
-                        Qt.CheckStateRole,
+                        Qt.CheckState.Unchecked,
+                        Qt.ItemDataRole.CheckStateRole,
                     )
                 self.setData(self.index(row, self.TYPE_COL, table_index), val)

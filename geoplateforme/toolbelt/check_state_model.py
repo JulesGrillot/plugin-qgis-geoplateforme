@@ -25,11 +25,11 @@ class CheckStateModel(QStandardItemModel):
         """
         # All item should be checkable
         flags = super().flags(index)
-        flags = flags | Qt.ItemIsUserCheckable | Qt.ItemIsAutoTristate
+        flags = flags | Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsAutoTristate
         return flags
 
     def setData(
-        self, index: QModelIndex, value: typing.Any, role: int = Qt.DisplayRole
+        self, index: QModelIndex, value: typing.Any, role: int = Qt.ItemDataRole.DisplayRole
     ) -> bool:
         """
         Override QStandardItemModel setData for child and parent CheckStateRole synchronization.
@@ -43,7 +43,7 @@ class CheckStateModel(QStandardItemModel):
 
         """
 
-        if role == Qt.CheckStateRole:
+        if role == Qt.ItemDataRole.CheckStateRole:
             newState = value
             oldState = self.data(index, role)
 
@@ -54,15 +54,15 @@ class CheckStateModel(QStandardItemModel):
             if newState != oldState:
                 self.itemCheckStateChanged.emit(index)
 
-            checked = newState == Qt.Checked
+            checked = newState == Qt.CheckState.Checked
 
             # update children CheckStateRole
             self.setChildrenChecked(index, checked)
 
             # update parent if valid and checkable
             parent = index.parent()
-            if parent.isValid() and self.flags(parent) & Qt.ItemIsAutoTristate:
-                if super().data(parent, Qt.CheckStateRole) is not None:
+            if parent.isValid() and self.flags(parent) & Qt.ItemFlag.ItemIsAutoTristate:
+                if super().data(parent, Qt.ItemDataRole.CheckStateRole) is not None:
                     super().setData(parent, self.childrenCheckState(parent), role)
         else:
             res = super().setData(index, value, role)
@@ -80,8 +80,8 @@ class CheckStateModel(QStandardItemModel):
         for i in range(0, self.rowCount(parent)):
             index = self.index(i, 0, parent)
             if index.isValid():
-                check_state = Qt.Checked if checked else Qt.Unchecked
-                self.setData(index, check_state, Qt.CheckStateRole)
+                check_state = Qt.CheckState.Checked if checked else Qt.CheckState.Unchecked
+                self.setData(index, check_state, Qt.ItemDataRole.CheckStateRole)
 
     def childrenCheckState(self, parent: QModelIndex) -> Qt.CheckState:
         """
@@ -98,16 +98,16 @@ class CheckStateModel(QStandardItemModel):
         nb_unchecked = 0
 
         for i in range(0, self.rowCount(parent)):
-            check_state = self.data(parent.child(i, 0), Qt.CheckStateRole)
-            if check_state == Qt.Checked:
+            check_state = self.data(parent.child(i, 0), Qt.ItemDataRole.CheckStateRole)
+            if check_state == Qt.CheckState.Checked:
                 nb_checked = nb_checked + 1
             else:
                 nb_unchecked = nb_unchecked + 1
 
         if total == nb_checked:
-            res = Qt.Checked
+            res = Qt.CheckState.Checked
         elif total == nb_unchecked:
-            res = Qt.Unchecked
+            res = Qt.CheckState.Unchecked
         else:
-            res = Qt.PartiallyChecked
+            res = Qt.CheckState.PartiallyChecked
         return res

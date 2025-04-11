@@ -26,13 +26,13 @@ def qgs_blocking_get_request(
 
     """
     # headers
-    req.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+    req.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
 
     # send request
     resp = ntwk_requester_blk.get(req, forceRefresh=True)
 
     # check response
-    if resp != QgsBlockingNetworkRequest.NoError:
+    if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
         raise exception_type(ntwk_requester_blk.errorMessage())
 
     # check response
@@ -52,7 +52,7 @@ def as_localized_datetime(date: str) -> str:
     :rtype: str
     """
     try:
-        dt = QDateTime.fromString(date, Qt.ISODate)
+        dt = QDateTime.fromString(date, Qt.DateFormat.ISODate)
         return dt.toString(Qt.DefaultLocaleLongDate)
     except Exception as exc:
         logger.error(f"Datetime parseing failded. Trace: {exc}")
@@ -66,7 +66,7 @@ def as_datetime(date: str) -> QDateTime:
     :rtype: QDateTime
     """
     try:
-        dt = QDateTime.fromString(date, Qt.ISODate)
+        dt = QDateTime.fromString(date, Qt.DateFormat.ISODate)
         return dt
     except Exception as exc:
         logger.error(f"Datetime parseing failded. Trace: {exc}")

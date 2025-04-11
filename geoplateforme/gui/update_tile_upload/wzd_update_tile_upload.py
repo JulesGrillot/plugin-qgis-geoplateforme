@@ -29,9 +29,9 @@ class UpdateTileUploadWizard(QWizard):
         )
         self.addPage(self.qwp_update_tile_upload_edition)
         self.addPage(self.qwp_update_tile_upload_run)
-        self.setOption(QWizard.NoBackButtonOnStartPage, True)
-        self.setOption(QWizard.NoBackButtonOnLastPage, True)
-        self.setOption(QWizard.NoCancelButtonOnLastPage, True)
+        self.setOption(QWizard.WizardOption.NoBackButtonOnStartPage, True)
+        self.setOption(QWizard.WizardOption.NoBackButtonOnLastPage, True)
+        self.setOption(QWizard.WizardOption.NoCancelButtonOnLastPage, True)
 
     def set_datastore_id(self, datastore_id: str) -> None:
         """

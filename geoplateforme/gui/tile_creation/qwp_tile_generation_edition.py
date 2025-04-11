@@ -69,7 +69,7 @@ class TileGenerationEditionPageWizard(QWizardPage):
         self.levels_range_slider.setLow(self.MIN_ZOOM_LEVEL)
         self.levels_range_slider.setHigh(self.MAX_ZOOM_LEVEL)
         self.levels_range_slider.setOrientation(QtCore.Qt.Horizontal)
-        self.levels_range_slider.setTickPosition(QSlider.TicksBelow)
+        self.levels_range_slider.setTickPosition(QSlider.TickPosition.TicksBelow)
         self.levels_range_slider.setTickInterval(1)
 
         # Connect zoom level change to scale widget update

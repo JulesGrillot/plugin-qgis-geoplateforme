@@ -75,10 +75,10 @@ class StorageReportDialog(QDialog):
         self.tbv_upload.setModel(self.mdl_upload)
         # Connection for delete
         self.tbv_upload.clicked.connect(lambda index: self._upload_item_clicked(index))
-        self.tbv_upload.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        self.tbv_upload.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         # Remove vertical header and disable edit
         self.tbv_upload.verticalHeader().setVisible(False)
-        self.tbv_upload.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tbv_upload.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
 
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
         self._datastore_updated()
@@ -103,10 +103,10 @@ class StorageReportDialog(QDialog):
         proxy_mdl = self._create_proxy_model(visible_storage=visible_storage)
         tbv.setModel(proxy_mdl)
 
-        tbv.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        tbv.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         # Remove vertical header and disable edit
         tbv.verticalHeader().setVisible(False)
-        tbv.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        tbv.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
 
         # Remove some columns
         tbv.setColumnHidden(self.mdl_stored_data.STATUS_COL, True)

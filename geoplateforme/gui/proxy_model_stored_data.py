@@ -78,7 +78,7 @@ class StoredDataProxyModel(QSortFilterProxyModel):
             type_index = self.sourceModel().index(
                 source_row, StoredDataListModel.TYPE_COL, source_parent
             )
-            type_value = self.sourceModel().data(type_index, Qt.DisplayRole)
+            type_value = self.sourceModel().data(type_index, Qt.ItemDataRole.DisplayRole)
 
             result = type_value in self.filter_type
 
@@ -87,7 +87,7 @@ class StoredDataProxyModel(QSortFilterProxyModel):
             status_index = self.sourceModel().index(
                 source_row, StoredDataListModel.STATUS_COL, source_parent
             )
-            status_value = self.sourceModel().data(status_index, Qt.DisplayRole)
+            status_value = self.sourceModel().data(status_index, Qt.ItemDataRole.DisplayRole)
             if status_value:
                 status = StoredDataStatus[status_value]
                 if len(self.invisible_status):
@@ -100,7 +100,7 @@ class StoredDataProxyModel(QSortFilterProxyModel):
             name_index = self.sourceModel().index(
                 source_row, StoredDataListModel.NAME_COL, source_parent
             )
-            stored_data = self.sourceModel().data(name_index, Qt.UserRole)
+            stored_data = self.sourceModel().data(name_index, Qt.ItemDataRole.UserRole)
             if stored_data:
                 result = stored_data.get_current_step() in self.steps
 
@@ -109,7 +109,7 @@ class StoredDataProxyModel(QSortFilterProxyModel):
             name_index = self.sourceModel().index(
                 source_row, StoredDataListModel.NAME_COL, source_parent
             )
-            stored_data = self.sourceModel().data(name_index, Qt.UserRole)
+            stored_data = self.sourceModel().data(name_index, Qt.ItemDataRole.UserRole)
             if stored_data:
                 result = stored_data.get_storage_type() in self.storage_types
 

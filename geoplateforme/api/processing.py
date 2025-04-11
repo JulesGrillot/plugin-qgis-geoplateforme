@@ -115,7 +115,7 @@ class ProcessingRequestManager:
         req_post = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/executions"))
 
         # headers
-        req_post.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+        req_post.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
 
         # encode data
         data = QByteArray()
@@ -125,7 +125,7 @@ class ProcessingRequestManager:
         resp = self.ntwk_requester_blk.post(req_post, data=data, forceRefresh=True)
 
         # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
+        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
             raise CreateProcessingException(
                 f"Error while creating processing execution : {self.ntwk_requester_blk.errorMessage()}"
             )
@@ -162,7 +162,7 @@ class ProcessingRequestManager:
         )
 
         # headers
-        req_post.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+        req_post.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
 
         # send request
         resp = self.ntwk_requester_blk.post(
@@ -170,7 +170,7 @@ class ProcessingRequestManager:
         )
 
         # check response
-        if resp != QgsBlockingNetworkRequest.NoError:
+        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
             raise LaunchExecutionException(
                 f"Error while launching execution : {self.ntwk_requester_blk.errorMessage()}"
             )

@@ -15,7 +15,7 @@ Usage from the repo root folder:
 import os
 from unittest.mock import patch
 
-# standard library
+# PyQGIS
 from qgis.testing import unittest
 
 # project
@@ -39,7 +39,7 @@ class TestPlgPreferences(unittest.TestCase):
         # global
         self.assertTrue(hasattr(settings, "debug_mode"))
         self.assertIsInstance(settings.debug_mode, bool)
-        self.assertEqual(settings.debug_mode, False)
+        self.assertFalse(settings.debug_mode)
 
         self.assertTrue(hasattr(settings, "version"))
         self.assertIsInstance(settings.version, str)
@@ -80,7 +80,6 @@ class TestPlgPreferences(unittest.TestCase):
 
         self.assertTrue(hasattr(settings, "qgis_auth_id"))
         self.assertIsNone(settings.qgis_auth_id, None)
-        self.assertEqual(settings.qgis_auth_id, None)
 
     def test_bool_env_variable(self):
         """Test settings with environment value."""
@@ -89,37 +88,37 @@ class TestPlgPreferences(unittest.TestCase):
             os.environ, {f"{PREFIX_ENV_VARIABLE}DEBUG_MODE": "true"}, clear=True
         ):
             settings = manager.get_plg_settings()
-            self.assertEqual(settings.debug_mode, True)
+            self.assertTrue(settings.debug_mode)
 
         with patch.dict(
             os.environ, {f"{PREFIX_ENV_VARIABLE}DEBUG_MODE": "false"}, clear=True
         ):
             settings = manager.get_plg_settings()
-            self.assertEqual(settings.debug_mode, False)
+            self.assertFalse(settings.debug_mode)
 
         with patch.dict(
             os.environ, {f"{PREFIX_ENV_VARIABLE}DEBUG_MODE": "on"}, clear=True
         ):
             settings = manager.get_plg_settings()
-            self.assertEqual(settings.debug_mode, True)
+            self.assertTrue(settings.debug_mode)
 
         with patch.dict(
             os.environ, {f"{PREFIX_ENV_VARIABLE}DEBUG_MODE": "off"}, clear=True
         ):
             settings = manager.get_plg_settings()
-            self.assertEqual(settings.debug_mode, False)
+            self.assertFalse(settings.debug_mode)
 
         with patch.dict(
             os.environ, {f"{PREFIX_ENV_VARIABLE}DEBUG_MODE": "1"}, clear=True
         ):
             settings = manager.get_plg_settings()
-            self.assertEqual(settings.debug_mode, True)
+            self.assertTrue(settings.debug_mode)
 
         with patch.dict(
             os.environ, {f"{PREFIX_ENV_VARIABLE}DEBUG_MODE": "0"}, clear=True
         ):
             settings = manager.get_plg_settings()
-            self.assertEqual(settings.debug_mode, False)
+            self.assertFalse(settings.debug_mode)
 
         with patch.dict(
             os.environ,
@@ -127,7 +126,7 @@ class TestPlgPreferences(unittest.TestCase):
             clear=True,
         ):
             settings = manager.get_plg_settings()
-            self.assertEqual(settings.debug_mode, False)
+            self.assertFalse(settings.debug_mode)
 
 
 # ############################################################################

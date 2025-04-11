@@ -14,7 +14,7 @@ from geoplateforme.api.stored_data import StoredDataStatus, StoredDataStep
 class UpdatePublicationPageWizard(QWizardPage):
     def __init__(self, parent=None):
         """
-        QWizardPage to update current geotuileur publication
+        QWizardPage to update current geoplateforme publication
 
         Args:None
 

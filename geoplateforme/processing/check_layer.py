@@ -49,7 +49,7 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
         return "check_layer"
 
     def displayName(self):
-        return self.tr("Check layers for IGN Geotuileur")
+        return self.tr("Check layers for IGN Geoplateforme")
 
     def group(self):
         return self.tr("")

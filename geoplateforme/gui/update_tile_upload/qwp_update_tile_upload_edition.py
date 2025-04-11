@@ -12,7 +12,7 @@ from geoplateforme.api.stored_data import StoredDataStep
 class UpdateTileUploadEditionPageWizard(QWizardPage):
     def __init__(self, parent=None):
         """
-        QWizardPage to define current geotuileur import data
+        QWizardPage to define current geoplateforme import data
 
         Args:
             parent: parent QObject

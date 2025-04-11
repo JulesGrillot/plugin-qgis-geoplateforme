@@ -14,7 +14,7 @@ from geoplateforme.gui.update_tile_upload.qwp_update_tile_upload_run import (
 class UpdateTileUploadWizard(QWizard):
     def __init__(self, parent=None):
         """
-        QWizard to for geotuileur data import
+        QWizard to for geoplateforme data import
 
         Args:
             parent: parent QObject

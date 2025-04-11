@@ -140,7 +140,7 @@
          </size>
         </property>
         <property name="text">
-         <string>This space is used by Geotuileur for vector tiles pyramid file storage.</string>
+         <string>This space is used by Geoplateforme for vector tiles pyramid file storage.</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
@@ -203,7 +203,7 @@
          </size>
         </property>
         <property name="text">
-         <string>This space is used by Geotuileur for vector tiles pyramid storage. It's more efficient that file storage.</string>
+         <string>This space is used by Geoplateforme for vector tiles pyramid storage. It's more efficient that file storage.</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
@@ -319,7 +319,7 @@
   <customwidget>
    <class>DatastoreComboBox</class>
    <extends>QComboBox</extends>
-   <header>geotuileur.gui.cbx_datastore</header>
+   <header>geoplateforme.gui.cbx_datastore</header>
   </customwidget>
  </customwidgets>
  <resources/>

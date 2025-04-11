@@ -23,7 +23,7 @@ from geoplateforme.gui.tile_creation.qwp_tile_generation_status import (
 class TileCreationWizard(QWizard):
     def __init__(self, parent=None):
         """
-        QWizard to create tile vector in geotuileur platform
+        QWizard to create tile vector in geoplateforme platform
 
         Args:
             parent: parent QObject

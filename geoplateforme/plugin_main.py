@@ -12,7 +12,7 @@ from pathlib import Path
 from qgis.core import QgsApplication, QgsSettings
 from qgis.gui import QgisInterface
 from qgis.PyQt.Qt import QUrl
-from qgis.PyQt.QtCore import QCoreApplication, QLocale, QTranslator, Qt
+from qgis.PyQt.QtCore import QCoreApplication, QLocale, Qt, QTranslator
 from qgis.PyQt.QtGui import QDesktopServices, QIcon
 from qgis.PyQt.QtWidgets import QAction, QToolBar
 
@@ -30,11 +30,11 @@ from geoplateforme.gui.storage.dlg_storage_report import StorageReportDialog
 from geoplateforme.gui.tile_creation.wzd_tile_creation import TileCreationWizard
 from geoplateforme.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
 from geoplateforme.gui.user.dlg_user import UserDialog
-from geoplateforme.processing import GeotuileurProvider
+from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.toolbelt import PlgLogger, PlgOptionsManager
 
 
-class GeotuileurPlugin:
+class GeoplateformePlugin:
     def __init__(self, iface: QgisInterface):
         """Constructor.
 
@@ -189,7 +189,7 @@ class GeotuileurPlugin:
         self.iface.addPluginToWebMenu(__title__, self.action_help)
 
         # -- Toolbar
-        self.toolbar = QToolBar("GeotuileurToolbar")
+        self.toolbar = QToolBar("GeoplateformeToolbar")
         self.iface.addToolBar(self.toolbar)
         self.toolbar.addAction(self.action_authentication)
         self.toolbar.addAction(self.action_dashboard)
@@ -203,7 +203,7 @@ class GeotuileurPlugin:
         self.initProcessing()
 
     def initProcessing(self):
-        self.provider = GeotuileurProvider()
+        self.provider = GeoplateformeProvider()
         QgsApplication.processingRegistry().addProvider(self.provider)
 
     def unload(self):

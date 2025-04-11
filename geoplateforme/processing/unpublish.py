@@ -26,7 +26,7 @@ class UnpublishAlgorithm(QgsProcessingAlgorithm):
 
     def tr(self, string):
         return QCoreApplication.translate(
-            "Unpublish for IGN Geotuileur platform", string
+            "Unpublish for IGN Geoplateforme platform", string
         )
 
     def createInstance(self):
@@ -49,7 +49,7 @@ class UnpublishAlgorithm(QgsProcessingAlgorithm):
 
     def shortHelpString(self):
         return self.tr(
-            "Unpublish in geotuileur platform.\n"
+            "Unpublish in geoplateforme platform.\n"
             "Input parameters are defined in a .json file.\n"
             "Available parameters:\n"
             "{\n"

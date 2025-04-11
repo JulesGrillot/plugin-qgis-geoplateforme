@@ -28,7 +28,7 @@ from geoplateforme.processing.vector_db_creation import VectorDatabaseCreationAl
 # ##################################
 
 
-class GeotuileurProvider(QgsProcessingProvider):
+class GeoplateformeProvider(QgsProcessingProvider):
     """
     Processing provider class.
     """
@@ -53,7 +53,7 @@ class GeotuileurProvider(QgsProcessingProvider):
         :return: provider ID
         :rtype: str
         """
-        return "geotuileur"
+        return "geoplateforme"
 
     def name(self) -> str:
         """Returns the provider name, which is used to describe the provider
@@ -72,7 +72,7 @@ class GeotuileurProvider(QgsProcessingProvider):
         :return: provider long name
         :rtype: str
         """
-        return self.tr("Geotuileur - Tools")
+        return self.tr("Geoplateforme - Tools")
 
     def icon(self) -> QIcon:
         """QIcon used for your provider inside the Processing toolbox menu.

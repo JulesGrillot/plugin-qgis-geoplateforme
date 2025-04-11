@@ -39,7 +39,7 @@ class OfferingsRequestManager:
 
     def get_offerings_id(self, datastore: str, stored_data: str) -> list:
         """
-        Get offerings id for a specific stored data on Geotuileur entrepot
+        Get offerings id for a specific stored data on Geoplateforme entrepot
 
         Args:
             datastore id :(str)
@@ -82,7 +82,9 @@ class OfferingsRequestManager:
         req_get = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{offering_id}"))
 
         # headers
-        req_get.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
+        req_get.setHeader(
+            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
+        )
 
         # send request
         resp = self.ntwk_requester_blk.deleteResource(req_get)

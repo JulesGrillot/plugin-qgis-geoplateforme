@@ -15,7 +15,7 @@ from qgis.PyQt.QtWidgets import QAbstractItemView, QMessageBox, QShortcut, QWidg
 # Plugin
 from geoplateforme.gui.lne_validators import alphanum_qval
 from geoplateforme.gui.upload_creation.mdl_upload_files import UploadFilesTreeModel
-from geoplateforme.processing import GeotuileurProvider
+from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.check_layer import CheckLayerAlgorithm
 
 
@@ -54,7 +54,9 @@ class UploadCreationWidget(QWidget):
 
         self.mdl_upload_files = UploadFilesTreeModel(self)
         self.trv_upload_files.setModel(self.mdl_upload_files)
-        self.trv_upload_files.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.trv_upload_files.setEditTriggers(
+            QAbstractItemView.EditTrigger.NoEditTriggers
+        )
 
     def get_name(self) -> str:
         """
@@ -118,7 +120,7 @@ class UploadCreationWidget(QWidget):
     def _check_input_layers(self) -> bool:
         valid = True
 
-        algo_str = f"{GeotuileurProvider().id()}:{CheckLayerAlgorithm().name()}"
+        algo_str = f"{GeoplateformeProvider().id()}:{CheckLayerAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
         params = {CheckLayerAlgorithm.INPUT_LAYERS: self.get_filenames()}

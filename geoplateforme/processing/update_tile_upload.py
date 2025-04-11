@@ -76,7 +76,7 @@ class UpdateTileUploadAlgorithm(QgsProcessingAlgorithm):
 
     def shortHelpString(self):
         return self.tr(
-            "Update tile upload in geotuileur platform.\n"
+            "Update tile upload in geoplateforme platform.\n"
             "Input parameters are defined in a .json file.\n"
             "Available parameters:\n"
             "{\n"
@@ -193,7 +193,7 @@ class UpdateTileUploadAlgorithm(QgsProcessingAlgorithm):
         Returns: (str) created upload id
 
         """
-        algo_str = f"geotuileur:{VectorDatabaseCreationAlgorithm().name()}"
+        algo_str = f"geoplateforme:{VectorDatabaseCreationAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
         data = {
             VectorDatabaseCreationAlgorithm.DATASTORE: datastore,
@@ -237,7 +237,7 @@ class UpdateTileUploadAlgorithm(QgsProcessingAlgorithm):
         Returns: (str) created pyramid stored data
 
         """
-        algo_str = f"geotuileur:{TileCreationAlgorithm().name()}"
+        algo_str = f"geoplateforme:{TileCreationAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
         data = {
             TileCreationAlgorithm.DATASTORE: datastore,

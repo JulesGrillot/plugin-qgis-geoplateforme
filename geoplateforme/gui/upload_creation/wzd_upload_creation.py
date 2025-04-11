@@ -12,7 +12,7 @@ from geoplateforme.gui.upload_creation.qwp_upload_edition import UploadEditionPa
 class UploadCreationWizard(QWizard):
     def __init__(self, parent=None):
         """
-        QWizard to for geotuileur data import
+        QWizard to for geoplateforme data import
 
         Args:
             parent: parent QObject

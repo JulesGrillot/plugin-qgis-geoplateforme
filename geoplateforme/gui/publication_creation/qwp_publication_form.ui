@@ -71,17 +71,17 @@
   <customwidget>
    <class>DatastoreComboBox</class>
    <extends>QComboBox</extends>
-   <header>geotuileur.gui.cbx_datastore</header>
+   <header>geoplateforme.gui.cbx_datastore</header>
   </customwidget>
   <customwidget>
    <class>StoredDataComboBox</class>
    <extends>QComboBox</extends>
-   <header>geotuileur.gui.cbx_stored_data</header>
+   <header>geoplateforme.gui.cbx_stored_data</header>
   </customwidget>
   <customwidget>
    <class>PublicationForm</class>
    <extends>QWidget</extends>
-   <header location="global">geotuileur.gui.publication_creation.wdg_publication_form.h</header>
+   <header location="global">geoplateforme.gui.publication_creation.wdg_publication_form.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

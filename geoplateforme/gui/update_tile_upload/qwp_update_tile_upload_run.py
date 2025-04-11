@@ -33,7 +33,7 @@ from geoplateforme.gui.mdl_execution_list import ExecutionListModel
 from geoplateforme.gui.update_tile_upload.qwp_update_tile_upload_edition import (
     UpdateTileUploadEditionPageWizard,
 )
-from geoplateforme.processing import GeotuileurProvider
+from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.update_tile_upload import (
     UpdateTileUploadAlgorithm,
     UpdateTileUploadProcessingFeedback,
@@ -46,7 +46,7 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
         self, qwp_upload_edition: UpdateTileUploadEditionPageWizard, parent=None
     ):
         """
-        QWizardPage to update tile upload in geotuileur platform
+        QWizardPage to update tile upload in geoplateforme platform
 
         Args:
             parent: parent QObject
@@ -111,7 +111,9 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
 
         """
         self.log("Launch UpdateTileUploadAlgorithm")
-        algo_str = f"{GeotuileurProvider().id()}:{UpdateTileUploadAlgorithm().name()}"
+        algo_str = (
+            f"{GeoplateformeProvider().id()}:{UpdateTileUploadAlgorithm().name()}"
+        )
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
         data = {

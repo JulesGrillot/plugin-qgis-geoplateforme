@@ -40,7 +40,7 @@ from geoplateforme.gui.tile_creation.qwp_tile_generation_generalization import (
 from geoplateforme.gui.tile_creation.qwp_tile_generation_sample import (
     TileGenerationSamplePageWizard,
 )
-from geoplateforme.processing import GeotuileurProvider
+from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.tile_creation import (
     TileCreationAlgorithm,
     TileCreationProcessingFeedback,
@@ -141,7 +141,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
         Run TileCreationAlgorithm with parameters defined from previous QWizardPage
 
         """
-        algo_str = f"{GeotuileurProvider().id()}:{TileCreationAlgorithm().name()}"
+        algo_str = f"{GeoplateformeProvider().id()}:{TileCreationAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
         datastore_id = (

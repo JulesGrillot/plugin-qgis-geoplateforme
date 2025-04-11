@@ -131,17 +131,17 @@
   <customwidget>
    <class>DatastoreComboBox</class>
    <extends>QComboBox</extends>
-   <header>geotuileur.gui.cbx_datastore</header>
+   <header>geoplateforme.gui.cbx_datastore</header>
   </customwidget>
   <customwidget>
    <class>StoredDataComboBox</class>
    <extends>QComboBox</extends>
-   <header>geotuileur.gui.cbx_stored_data</header>
+   <header>geoplateforme.gui.cbx_stored_data</header>
   </customwidget>
   <customwidget>
    <class>RangeSlider</class>
    <extends>QWidget</extends>
-   <header>geotuileur.toolbelt.range_slider</header>
+   <header>geoplateforme.toolbelt.range_slider</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

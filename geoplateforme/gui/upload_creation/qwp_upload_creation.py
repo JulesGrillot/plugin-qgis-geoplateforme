@@ -30,7 +30,7 @@ from geoplateforme.api.stored_data import StoredDataRequestManager, StoredDataSt
 from geoplateforme.api.upload import UploadRequestManager
 from geoplateforme.gui.mdl_execution_list import ExecutionListModel
 from geoplateforme.gui.upload_creation.qwp_upload_edition import UploadEditionPageWizard
-from geoplateforme.processing import GeotuileurProvider
+from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.vector_db_creation import (
     VectorDatabaseCreationAlgorithm,
     VectorDatabaseCreationProcessingFeedback,
@@ -41,7 +41,7 @@ from geoplateforme.toolbelt import PlgLogger, PlgOptionsManager
 class UploadCreationPageWizard(QWizardPage):
     def __init__(self, qwp_upload_edition: UploadEditionPageWizard, parent=None):
         """
-        QWizardPage to define create upload to geotuileur platform
+        QWizardPage to define create upload to geoplateforme platform
 
         Args:
             parent: parent QObject
@@ -105,7 +105,7 @@ class UploadCreationPageWizard(QWizardPage):
 
         """
         algo_str = (
-            f"{GeotuileurProvider().id()}:{VectorDatabaseCreationAlgorithm().name()}"
+            f"{GeoplateformeProvider().id()}:{VectorDatabaseCreationAlgorithm().name()}"
         )
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 

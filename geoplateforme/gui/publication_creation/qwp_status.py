@@ -17,7 +17,7 @@ from geoplateforme.api.stored_data import StoredDataRequestManager
 from geoplateforme.gui.publication_creation.qwp_publication_form import (
     PublicationFormPageWizard,
 )
-from geoplateforme.processing import GeotuileurProvider
+from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.upload_publication import UploadPublicationAlgorithm
 from geoplateforme.toolbelt import PlgLogger, PlgOptionsManager
 
@@ -99,7 +99,9 @@ class PublicationStatut(QWizardPage):
         with open(filename, "w") as file:
             json.dump(data, file)
 
-        algo_str = f"{GeotuileurProvider().id()}:{UploadPublicationAlgorithm().name()}"
+        algo_str = (
+            f"{GeoplateformeProvider().id()}:{UploadPublicationAlgorithm().name()}"
+        )
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
         params = {UploadPublicationAlgorithm.INPUT_JSON: filename}
         context = QgsProcessingContext()
@@ -111,8 +113,10 @@ class PublicationStatut(QWizardPage):
         if success:
             self.url_data = result["publication_url"]
             plg_settings = PlgOptionsManager.get_plg_settings()
-            url_geotuileur = plg_settings.url_geotuileur
-            self.url_publication = f"{url_geotuileur}viewer?tiles_url={self.url_data}"
+            url_geoplateforme = plg_settings.url_geoplateforme
+            self.url_publication = (
+                f"{url_geoplateforme}viewer?tiles_url={self.url_data}"
+            )
 
         else:
             self.btn_publication.setEnabled(False)

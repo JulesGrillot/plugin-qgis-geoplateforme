@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>GeotuileurSettingsForm</class>
- <widget class="QWidget" name="GeotuileurSettingsForm">
+ <class>GeoplateformeSettingsForm</class>
+ <widget class="QWidget" name="GeoplateformeSettingsForm">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -94,7 +94,7 @@
          </size>
         </property>
         <property name="placeholderText">
-         <string notr="true">https://gpf-beta.ign.fr/geotuileur/</string>
+         <string notr="true">https://gpf-beta.ign.fr/geoplateforme/</string>
         </property>
        </widget>
       </item>
@@ -135,7 +135,7 @@
          </size>
         </property>
         <property name="placeholderText">
-         <string notr="true">geotuileur-qgis-plugin</string>
+         <string notr="true">geoplateforme-qgis-plugin</string>
         </property>
        </widget>
       </item>
@@ -172,7 +172,7 @@
        </widget>
       </item>
       <item row="0" column="0">
-       <widget class="QLabel" name="lbl_url_geotuileur">
+       <widget class="QLabel" name="lbl_url_geoplateforme">
         <property name="minimumSize">
          <size>
           <width>50</width>
@@ -245,7 +245,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="lne_url_geotuileur">
+       <widget class="QLineEdit" name="lne_url_geoplateforme">
         <property name="minimumSize">
          <size>
           <width>150</width>
@@ -368,7 +368,7 @@
          </size>
         </property>
         <property name="placeholderText">
-         <string notr="true">https://gpf-beta.ign.fr/geotuileur/annexes/</string>
+         <string notr="true">https://gpf-beta.ign.fr/geoplateforme/annexes/</string>
         </property>
        </widget>
       </item>

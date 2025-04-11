@@ -140,7 +140,7 @@
   <customwidget>
    <class>DatastoreComboBox</class>
    <extends>QComboBox</extends>
-   <header>geotuileur.gui.cbx_datastore</header>
+   <header>geoplateforme.gui.cbx_datastore</header>
   </customwidget>
  </customwidgets>
  <resources/>

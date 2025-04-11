@@ -38,7 +38,7 @@ from geoplateforme.gui.update_tile_upload.wzd_update_tile_upload import (
     UpdateTileUploadWizard,
 )
 from geoplateforme.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
-from geoplateforme.processing import GeotuileurProvider
+from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.delete_data import DeleteDataAlgorithm
 from geoplateforme.processing.unpublish import UnpublishAlgorithm
 from geoplateforme.toolbelt import PlgLogger
@@ -256,7 +256,7 @@ class DashboardWidget(QWidget):
             ).name
             with open(filename, "w") as file:
                 json.dump(data, file)
-            algo_str = f"{GeotuileurProvider().id()}:{DeleteDataAlgorithm().name()}"
+            algo_str = f"{GeoplateformeProvider().id()}:{DeleteDataAlgorithm().name()}"
             alg = QgsApplication.processingRegistry().algorithmById(algo_str)
             params = {DeleteDataAlgorithm.INPUT_JSON: filename}
             context = QgsProcessingContext()
@@ -430,7 +430,7 @@ class DashboardWidget(QWidget):
             ).name
             with open(filename, "w") as file:
                 json.dump(data, file)
-            algo_str = f"{GeotuileurProvider().id()}:{UnpublishAlgorithm().name()}"
+            algo_str = f"{GeoplateformeProvider().id()}:{UnpublishAlgorithm().name()}"
             alg = QgsApplication.processingRegistry().algorithmById(algo_str)
             params = {UnpublishAlgorithm.INPUT_JSON: filename}
             context = QgsProcessingContext()

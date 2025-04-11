@@ -272,7 +272,9 @@ class UploadRequestManager:
         req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{upload}/checks"))
 
         # headers
-        req.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
+        req.setHeader(
+            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
+        )
 
         # send request
         resp = self.ntwk_requester_blk.get(req, forceRefresh=True)
@@ -321,7 +323,7 @@ class UploadRequestManager:
         srs: str,
     ) -> Upload:
         """
-        Create upload on Geotuileur entrepot
+        Create upload on Geoplateforme entrepot
 
         Args:
             datastore: (str) datastore id
@@ -339,7 +341,9 @@ class UploadRequestManager:
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         req_post = QNetworkRequest(QUrl(self.get_base_url(datastore)))
         # headers
-        req_post.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
+        req_post.setHeader(
+            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
+        )
 
         # encode data
         data = QByteArray()
@@ -516,7 +520,7 @@ class UploadRequestManager:
 
     def close_upload(self, datastore: str, upload: str) -> None:
         """
-        Close upload on Geotuileur entrepot
+        Close upload on Geoplateforme entrepot
 
         Args:
             datastore: (str) datastore id
@@ -530,7 +534,9 @@ class UploadRequestManager:
         )
 
         # headers
-        req_post.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
+        req_post.setHeader(
+            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
+        )
 
         # send request
         resp = self.ntwk_requester_blk.post(req_post, data=QByteArray())

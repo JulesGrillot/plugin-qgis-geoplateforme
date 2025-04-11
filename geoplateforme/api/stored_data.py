@@ -162,9 +162,9 @@ class StoredData:
                 elif "initial_pyramid_id" in self.tags:
                     result = StoredDataStep.TILE_UPDATE
                 # "published tag" should be defined if a tile is published
-                # cf : https://github.com/IGNF/geotuileur-site/blob/master/docs/developer/workflow.md#3-publier
+                # cf : https://github.com/IGNF/geoplateforme-site/blob/master/docs/developer/workflow.md#3-publier
                 # But it seems that the tag is not added
-                # an issue was created : https://github.com/IGNF/geotuileur-site/issues/94
+                # an issue was created : https://github.com/IGNF/geoplateforme-site/issues/94
                 # If pyramid is not in TILE_SAMPLE or TILE_UPDATE steps it means that it's published if tms_url available
                 elif "published" in self.tags or "tms_url" in self.tags:
                     result = StoredDataStep.PUBLISHED
@@ -244,7 +244,9 @@ class StoredDataRequestManager:
         )
 
         # headers
-        req.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
+        req.setHeader(
+            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
+        )
 
         # send request
         resp = self.ntwk_requester_blk.get(req, forceRefresh=True)
@@ -290,7 +292,9 @@ class StoredDataRequestManager:
         req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}?limit=1"))
 
         # headers
-        req.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
+        req.setHeader(
+            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
+        )
 
         # send request
         resp = self.ntwk_requester_blk.get(req, forceRefresh=True)
@@ -378,7 +382,9 @@ class StoredDataRequestManager:
         req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{stored_data}"))
 
         # headers
-        req.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
+        req.setHeader(
+            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
+        )
 
         # send request
         resp = self.ntwk_requester_blk.get(req, forceRefresh=True)
@@ -447,7 +453,9 @@ class StoredDataRequestManager:
         )
 
         # headers
-        req_post.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
+        req_post.setHeader(
+            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
+        )
 
         # encode data
         data = QByteArray()
@@ -484,7 +492,9 @@ class StoredDataRequestManager:
         req_del = QNetworkRequest(QUrl(url))
 
         # headers
-        req_del.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
+        req_del.setHeader(
+            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
+        )
 
         # send request
         resp = self.ntwk_requester_blk.deleteResource(req_del)

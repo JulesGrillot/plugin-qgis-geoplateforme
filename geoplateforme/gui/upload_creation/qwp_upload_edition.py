@@ -9,7 +9,7 @@ from qgis.PyQt.QtWidgets import QWizardPage
 class UploadEditionPageWizard(QWizardPage):
     def __init__(self, parent=None):
         """
-        QWizardPage to define current geotuileur import data
+        QWizardPage to define current geoplateforme import data
 
         Args:
             parent: parent QObject

@@ -82,7 +82,7 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
 
     def shortHelpString(self):
         return self.tr(
-            "Tile creation in geotuileur platform.\n"
+            "Tile creation in geoplateforme platform.\n"
             "Input parameters are defined in a .json file.\n"
             "Available parameters:\n"
             "{\n"

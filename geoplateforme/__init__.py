@@ -18,6 +18,6 @@ def classFactory(iface):
     :param iface: A QGIS interface instance.
     :type iface: QgsInterface
     """
-    from .plugin_main import GeotuileurPlugin
+    from .plugin_main import GeoplateformePlugin
 
-    return GeotuileurPlugin(iface)
+    return GeoplateformePlugin(iface)

@@ -26,7 +26,7 @@ from geoplateforme.toolbelt import PlgLogger, PlgOptionsManager
 
 class AuthenticationDialog(QDialog):
     def __init__(self, parent=None):
-        """Dialog to define current geotuileur connection as authentication config.
+        """Dialog to define current geoplateforme connection as authentication config.
 
         :param parent: parent widget, defaults to None
         :type parent: QObject, optional
@@ -55,7 +55,7 @@ class AuthenticationDialog(QDialog):
         )
 
     def connect(self) -> None:
-        """Check connection parameter and define current geotuileur authentication config
+        """Check connection parameter and define current geoplateforme authentication config
         if connection is valid.
         """
         # Retrieve form data

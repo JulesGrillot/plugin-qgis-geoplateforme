@@ -70,7 +70,7 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
 
     def shortHelpString(self):
         return self.tr(
-            "Create vector db stored data in geotuileur platform.\n"
+            "Create vector db stored data in geoplateforme platform.\n"
             "Input parameters are defined in a .json file.\n"
             "Available parameters:\n"
             "{\n"
@@ -140,7 +140,7 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         Returns: (str) created upload id
 
         """
-        algo_str = f"geotuileur:{UploadCreationAlgorithm().name()}"
+        algo_str = f"geoplateforme:{UploadCreationAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
         data = {
             UploadCreationAlgorithm.DATASTORE: datastore,
@@ -181,7 +181,7 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         Returns: (str) created vector db stored data id
 
         """
-        algo_str = f"geotuileur:{UploadDatabaseIntegrationAlgorithm().name()}"
+        algo_str = f"geoplateforme:{UploadDatabaseIntegrationAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
         data = {
             UploadDatabaseIntegrationAlgorithm.DATASTORE: datastore,

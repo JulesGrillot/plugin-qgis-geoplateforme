@@ -68,7 +68,7 @@
   <customwidget>
    <class>UserWidget</class>
    <extends>QWidget</extends>
-   <header>geotuileur.gui.user.wdg_user</header>
+   <header>geoplateforme.gui.user.wdg_user</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

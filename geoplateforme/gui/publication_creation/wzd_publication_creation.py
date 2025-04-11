@@ -13,7 +13,7 @@ from geoplateforme.gui.publication_creation.qwp_status import PublicationStatut
 class PublicationFormCreation(QWizard):
     def __init__(self, parent=None):
         """
-        QWizard to for geotuileur publication
+        QWizard to for geoplateforme publication
 
         Args:
             parent: parent None

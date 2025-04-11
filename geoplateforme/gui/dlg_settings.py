@@ -92,7 +92,7 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
             debug_mode=self.opt_debug.isChecked(),
             version=__version__,
             # network and authentication
-            url_geotuileur=self.lne_url_geotuileur.text(),
+            url_geoplateforme=self.lne_url_geoplateforme.text(),
             url_api_entrepot=self.lne_url_api_entrepot.text(),
             url_service_vt=self.lne_url_service_vt.text(),
             url_auth=self.lne_url_auth.text(),
@@ -126,7 +126,7 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
         self.lbl_version_saved_value.setText(settings.version)
 
         # network and authentication
-        self.lne_url_geotuileur.setText(settings.url_geotuileur)
+        self.lne_url_geoplateforme.setText(settings.url_geoplateforme)
         self.lne_url_api_entrepot.setText(settings.url_api_entrepot)
         self.lne_url_api_appendices.setText(settings.url_api_appendices)
         self.lne_url_service_vt.setText(settings.url_service_vt)

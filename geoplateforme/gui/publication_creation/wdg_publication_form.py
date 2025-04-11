@@ -13,7 +13,7 @@ from geoplateforme.gui.lne_validators import alphanum_qval, url_qval
 class PublicationForm(QWidget):
     def __init__(self, parent=QWidget):
         """
-        QWidget to for geotuileur data publication
+        QWidget to for geoplateforme data publication
 
         Args:
             parent: parent QWidget

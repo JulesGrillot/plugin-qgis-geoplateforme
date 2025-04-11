@@ -86,4 +86,4 @@ SOURCES= ../../plugin_main.py \
     ../../toolbelt/preferences.py \
     ../../toolbelt/range_slider.py
 
-TRANSLATIONS = geotuileur_fr.ts
+TRANSLATIONS = geoplateforme_fr.ts

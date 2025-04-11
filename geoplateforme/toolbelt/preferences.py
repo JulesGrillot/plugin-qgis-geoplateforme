@@ -19,7 +19,7 @@ from geoplateforme.toolbelt.env_var_parser import EnvVarParser
 # ########## Classes ###############
 # ##################################
 
-CFG_AUTH_NAME = "geotuileur_cfg"
+CFG_AUTH_NAME = "geoplateforme_cfg"
 PREFIX_ENV_VARIABLE = "QGIS_GEOPLATEFORME_"
 
 
@@ -54,13 +54,13 @@ class PlgSettingsStructure:
     version: str = __version__
 
     # network and authentication
-    url_geotuileur: str = "https://portail-gpf-beta.ign.fr/"
-    url_api_entrepot: str = "https://gpf-beta.ign.fr/geotuileur/"
-    url_api_appendices: str = "https://gpf-beta.ign.fr/geotuileur/annexes/"
+    url_geoplateforme: str = "https://portail-gpf-beta.ign.fr/"
+    url_api_entrepot: str = "https://gpf-beta.ign.fr/geoplateforme/"
+    url_api_appendices: str = "https://gpf-beta.ign.fr/geoplateforme/annexes/"
     url_service_vt: str = "https://vt-gpf-beta.ign.fr/"
     url_auth: str = "https://compte-gpf-beta.ign.fr/"
     auth_realm: str = "demo"
-    auth_client_id: str = "geotuileur-qgis-plugin"
+    auth_client_id: str = "geoplateforme-qgis-plugin"
     qgis_auth_id: str = None
 
     # status check sleep (in seconds)
@@ -99,7 +99,7 @@ class PlgSettingsStructure:
         """
         # not working for now. See #95
         # return f"{self.url_auth}auth/realms/{self.auth_realm}/login-actions/authenticate?client_id={self.auth_client_id}"
-        return f"{self.url_geotuileur}login"
+        return f"{self.url_geoplateforme}login"
 
     def create_auth_config(self, username: str, password: str) -> QgsAuthMethodConfig:
         """

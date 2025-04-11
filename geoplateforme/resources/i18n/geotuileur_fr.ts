@@ -234,7 +234,7 @@
     </message>
 </context>
 <context>
-    <name>GeotuileurPlugin</name>
+    <name>GeoplateformePlugin</name>
     <message>
         <location filename="../../plugin_main.py" line="160"/>
         <source>Help</source>
@@ -277,15 +277,15 @@
     </message>
 </context>
 <context>
-    <name>GeotuileurProvider</name>
+    <name>GeoplateformeProvider</name>
     <message>
         <location filename="../../processing/provider.py" line="75"/>
-        <source>Geotuileur - Tools</source>
-        <translation>Geotuileur - Outillage</translation>
+        <source>Geoplateforme - Tools</source>
+        <translation>Geoplateforme - Outillage</translation>
     </message>
 </context>
 <context>
-    <name>GeotuileurSettingsForm</name>
+    <name>GeoplateformeSettingsForm</name>
     <message>
         <location filename="../../gui/dlg_settings.ui" line="75"/>
         <source>Service settings</source>
@@ -527,8 +527,8 @@
     <name>ResultCode</name>
     <message>
         <location filename="../../processing/check_layer.py" line="52"/>
-        <source>Check layers for IGN Geotuileur</source>
-        <translation>Vérifier les couches pour IGN Geotuileur</translation>
+        <source>Check layers for IGN Geoplateforme</source>
+        <translation>Vérifier les couches pour IGN Geoplateforme</translation>
     </message>
     <message>
         <location filename="../../processing/check_layer.py" line="67"/>
@@ -590,12 +590,12 @@
     </message>
     <message>
         <location filename="../../gui/storage/dlg_storage_report.ui" line="143"/>
-        <source>This space is used by Geotuileur for vector tiles pyramid file storage.</source>
+        <source>This space is used by Geoplateforme for vector tiles pyramid file storage.</source>
         <translation>Cet espace est utilisé par le Géotuileur pour le stockage des pyramides de tuiles vectorielles.</translation>
     </message>
     <message>
         <location filename="../../gui/storage/dlg_storage_report.ui" line="206"/>
-        <source>This space is used by Geotuileur for vector tiles pyramid storage. It&apos;s more efficient that file storage.</source>
+        <source>This space is used by Geoplateforme for vector tiles pyramid storage. It&apos;s more efficient that file storage.</source>
         <translation>Cet espace est utilisé par le Géotuileur pour le stockage des pyramides de tuiles vectorielles. Il est plus performant que le stockage sous forme de fichiers.</translation>
     </message>
     <message>
@@ -724,7 +724,7 @@
     </message>
     <message>
         <location filename="../../processing/tile_creation.py" line="84"/>
-        <source>Tile creation in geotuileur platform.
+        <source>Tile creation in geoplateforme platform.
 Input parameters are defined in a .json file.
 Available parameters:
 {
@@ -925,7 +925,7 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
     </message>
     <message>
         <location filename="../../processing/unpublish.py" line="51"/>
-        <source>Unpublish in geotuileur platform.
+        <source>Unpublish in geoplateforme platform.
 Input parameters are defined in a .json file.
 Available parameters:
 {
@@ -949,7 +949,7 @@ Available parameters:
     </message>
     <message>
         <location filename="../../processing/update_tile_upload.py" line="78"/>
-        <source>Update tile upload in geotuileur platform.
+        <source>Update tile upload in geoplateforme platform.
 Input parameters are defined in a .json file.
 Available parameters:
 {
@@ -1126,7 +1126,7 @@ Returns created stored data in {self.CREATED_STORED_DATA_ID} results</source>
     </message>
     <message>
         <location filename="../../processing/upload_creation.py" line="75"/>
-        <source>Create upload in geotuileur platform.
+        <source>Create upload in geoplateforme platform.
 Input parameters are defined in a .json file.
 Available parameters:
 {
@@ -1365,7 +1365,7 @@ Returns created upload id in {self.CREATED_UPLOAD_ID} results</source>
     </message>
     <message>
         <location filename="../../processing/upload_database_integration.py" line="72"/>
-        <source>Integration of geotuileur platform upload in database.
+        <source>Integration of geoplateforme platform upload in database.
 Input parameters are defined in a .json file.
 Available parameters:
 {
@@ -1543,7 +1543,7 @@ Returns created stored data id in {self.CREATED_STORED_DATA_ID} results</source>
     </message>
     <message>
         <location filename="../../processing/upload_publication.py" line="79"/>
-        <source>Publication in geotuileur platform.
+        <source>Publication in geoplateforme platform.
 Input parameters are defined in a .json file.
 Available parameters:
 {
@@ -1643,7 +1643,7 @@ Returns created configuration id in {self.PUBLICATION_URL} results</source>
     </message>
     <message>
         <location filename="../../processing/vector_db_creation.py" line="72"/>
-        <source>Create vector db stored data in geotuileur platform.
+        <source>Create vector db stored data in geoplateforme platform.
 Input parameters are defined in a .json file.
 Available parameters:
 {

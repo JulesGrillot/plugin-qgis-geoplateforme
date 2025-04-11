@@ -76,7 +76,7 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
 
     def shortHelpString(self):
         return self.tr(
-            "Publication in geotuileur platform.\n"
+            "Publication in geoplateforme platform.\n"
             "Input parameters are defined in a .json file.\n"
             "Available parameters:\n"
             "{\n"

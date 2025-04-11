@@ -26,7 +26,7 @@ from geoplateforme.gui.mdl_stored_data import StoredDataListModel
 from geoplateforme.gui.mdl_upload import UploadListModel
 from geoplateforme.gui.proxy_model_stored_data import StoredDataProxyModel
 from geoplateforme.gui.report.dlg_report import ReportDialog
-from geoplateforme.processing import GeotuileurProvider
+from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.delete_data import DeleteDataAlgorithm
 from geoplateforme.toolbelt import PlgLogger
 
@@ -75,7 +75,9 @@ class StorageReportDialog(QDialog):
         self.tbv_upload.setModel(self.mdl_upload)
         # Connection for delete
         self.tbv_upload.clicked.connect(lambda index: self._upload_item_clicked(index))
-        self.tbv_upload.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        self.tbv_upload.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.ResizeMode.Stretch
+        )
         # Remove vertical header and disable edit
         self.tbv_upload.verticalHeader().setVisible(False)
         self.tbv_upload.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
@@ -267,7 +269,7 @@ class StorageReportDialog(QDialog):
         ).name
         with open(filename, "w") as file:
             json.dump(data, file)
-        algo_str = f"{GeotuileurProvider().id()}:{DeleteDataAlgorithm().name()}"
+        algo_str = f"{GeoplateformeProvider().id()}:{DeleteDataAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
         params = {DeleteDataAlgorithm.INPUT_JSON: filename}
         context = QgsProcessingContext()

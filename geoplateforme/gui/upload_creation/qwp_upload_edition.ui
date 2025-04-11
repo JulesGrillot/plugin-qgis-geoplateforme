@@ -42,12 +42,12 @@
   <customwidget>
    <class>DatastoreComboBox</class>
    <extends>QComboBox</extends>
-   <header>geotuileur.gui.cbx_datastore</header>
+   <header>geoplateforme.gui.cbx_datastore</header>
   </customwidget>
   <customwidget>
    <class>UploadCreationWidget</class>
    <extends>QWidget</extends>
-   <header>geotuileur.gui.upload_creation.wdg_upload_creation</header>
+   <header>geoplateforme.gui.upload_creation.wdg_upload_creation</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

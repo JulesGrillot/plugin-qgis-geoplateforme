@@ -70,7 +70,7 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
 
     def shortHelpString(self):
         return self.tr(
-            "Integration of geotuileur platform upload in database.\n"
+            "Integration of geoplateforme platform upload in database.\n"
             "Input parameters are defined in a .json file.\n"
             "Available parameters:\n"
             "{\n"

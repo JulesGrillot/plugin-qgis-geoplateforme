@@ -1,5 +1,6 @@
 # Testing dependencies
 # --------------------
 
-pytest-cov>=4
-packaging>=23
+packaging>=24.2
+pytest-cov>=6.1.1
+pytest-qgis>=2.1.0

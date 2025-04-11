@@ -1,4 +1,4 @@
-# {{ title }} - Documentation
+# Plugin QGIS {{ title }} - Documentation
 
 > **Description:** {{ description }}  
 > **Author and contributors:** {{ author }}  

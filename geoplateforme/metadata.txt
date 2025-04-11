@@ -1,27 +1,26 @@
 [general]
-name=Geotuileur
-about=It allows an authenticated user to upload and host his data on the Geoplatform in order to distribute them via vector tile services for which he chooses a number of parameters.
-about[fr]=Permet à un utilisateur authentifié de téléverser et d'héberger ses données sur la Géoplateforme en vue de les diffuser via des services de tuiles vectorielles dont il choisit un certain nombre de paramètres.
-category=Web
-hasProcessingProvider=yes
-description=Plugin associated with the IGN France service of the same name: Geotuileur.
-description[fr]=Plugin associé au service idoine de l'IGN France.
+name=Géoplateforme
+about=Tirer parti de la puissance de la Géoplateforme directement depuis QGIS !
+category=None
+hasProcessingProvider=True
+description=Connectez-vous avec votre compte cartes.gouv.fr, accédez à votre communauté, publiez vos données sous forme de services hébergés sur la Géoplateforme de l'IGN.
 icon=resources/images/logo-geotuileur.svg
-tags=vector tile,Géotuileur,IGN France,Géoplateforme,tippecanoe
+tags=IGN,Géoplateforme,téléversement,publication,Entrepôt
 
 # credits and contact
 author=Oslandia, IGN France
 email=qgis@oslandia.com
 homepage=https://geoplateforme.github.io/plugin-qgis-geoplateforme/
-repository=https://gitlab.com/Oslandia/qgis/ign-geotuileur/
-tracker=https://gitlab.com/Oslandia/qgis/ign-geotuileur/issues/
+repository=https://github.com/Geoplateforme/plugin-qgis-geoplateforme/
+tracker=https://github.com/Geoplateforme/plugin-qgis-geoplateforme//issues/
 
 # experimental flag
 deprecated=False
-experimental=False
-qgisMinimumVersion=3.22
+experimental=True
+qgisMinimumVersion=3.40.4
 qgisMaximumVersion=3.99
+qt6_compatible=True
 
 # versionnement
-version=1.0.0
+version=0.1.0
 changelog=

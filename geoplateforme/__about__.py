@@ -45,7 +45,7 @@ def plugin_metadata_as_dict() -> dict:
     Returns:
         dict: dict of dicts.
     """
-    config = ConfigParser()
+    config = ConfigParser(interpolation=None)
     if PLG_METADATA_FILE.is_file():
         config.read(PLG_METADATA_FILE.resolve(), encoding="UTF-8")
         return {s: dict(config.items(s)) for s in config.sections()}
@@ -66,7 +66,7 @@ __email__: str = __plugin_md__.get("general").get("email")
 __icon_path__: Path = DIR_PLUGIN_ROOT.resolve() / __plugin_md__.get("general").get(
     "icon"
 )
-__keywords__: list = [
+__keywords__: list[str] = [
     t.strip() for t in __plugin_md__.get("general").get("repository").split("tags")
 ]
 __license__: str = "GPLv2+"

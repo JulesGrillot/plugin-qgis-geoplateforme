@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>WizardPage</class>
+ <widget class="QWizardPage" name="WizardPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1002</width>
+    <height>982</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>WizardPage</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="2" column="0" colspan="3">
+    <widget class="PublicationForm" name="wdg_publication_form" native="true"/>
+   </item>
+   <item row="1" column="2">
+    <widget class="StoredDataComboBox" name="cbx_stored_data"/>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="lbl_datastore">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Datastore</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="lbl_stored_data">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Dataset</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="DatastoreComboBox" name="cbx_datastore"/>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>DatastoreComboBox</class>
+   <extends>QComboBox</extends>
+   <header>geoplateforme.gui.cbx_datastore</header>
+  </customwidget>
+  <customwidget>
+   <class>StoredDataComboBox</class>
+   <extends>QComboBox</extends>
+   <header>geoplateforme.gui.cbx_stored_data</header>
+  </customwidget>
+  <customwidget>
+   <class>PublicationForm</class>
+   <extends>QWidget</extends>
+   <header location="global">geoplateforme.gui.publication_creation.wdg_publication_form.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

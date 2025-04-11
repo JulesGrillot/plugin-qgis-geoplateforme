@@ -2,7 +2,7 @@
 
 ## Version stable (recommandée)
 
-Le plugin {{ title }} est publié sur le dépôt officiel des extensions de QGIS : <https://plugins.qgis.org/plugins/geotuileur/>.
+Le plugin {{ title }} est publié sur le dépôt officiel des extensions de QGIS : <https://plugins.qgis.org/plugins/geoplateforme/>.
 
 ## Versions expérimentales
 
@@ -23,16 +23,16 @@ Pour cela :
 1. Ajouter cette URL dans les dépôts référencés dans le gestionnaire d'extensions de QGIS :
 
     ```html
-    https://oslandia.gitlab.io/qgis/ign-geotuileur/plugins.xml
+    https://geoplateforme.github.io/plugin-qgis-geoplateforme/plugins.xml
     ```
 
-    ![Dépôt personnalisé d'extensions QGIS](/static/images/qgis_extensions_custom_repository.png)
+    ![Dépôt personnalisé d'extensions QGIS](../static/images/qgis_extensions_custom_repository.png)
 
 1. Activer les extensions expérimentales et la recherche de mise à jour au démarrage
 
-    ![Paramètres du gestionnaire d'extensions QGIS](/static/images/qgis_extensions_settings.png)
+    ![Paramètres du gestionnaire d'extensions QGIS](../static/images/qgis_extensions_settings.png)
 
 1. Installer l'extension depuis l'onglet `Non installées`
 1. L'activer si besoin dans `Installées` et désactiver les extensions inutiles (pour améliorer les performances et réduire la surface de diagnostic)
 
-    ![Extensions installées](/static/images/qgis_extensions_installed.png)
+    ![Extensions installées](../static/images/qgis_extensions_installed.png)

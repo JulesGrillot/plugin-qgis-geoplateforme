@@ -127,7 +127,5 @@ dmypy.json
 
 # -- CUSTOM ----
 *.zip
-# .vscode/
 *.qm
-release.md
-geotuileur/**/*.db
+plugin_geoplateforme/

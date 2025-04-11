@@ -1,0 +1,26 @@
+[general]
+name=Géoplateforme
+about=Tirer parti de la puissance de la Géoplateforme directement depuis QGIS !
+category=None
+hasProcessingProvider=True
+description=Connectez-vous avec votre compte cartes.gouv.fr, accédez à votre communauté, publiez vos données sous forme de services hébergés sur la Géoplateforme de l'IGN.
+icon=resources/images/logo.svg
+tags=IGN,Géoplateforme,téléversement,publication,Entrepôt
+
+# credits and contact
+author=Oslandia, IGN France
+email=qgis@oslandia.com
+homepage=https://geoplateforme.github.io/plugin-qgis-geoplateforme/
+repository=https://github.com/Geoplateforme/plugin-qgis-geoplateforme/
+tracker=https://github.com/Geoplateforme/plugin-qgis-geoplateforme//issues/
+
+# experimental flag
+deprecated=False
+experimental=True
+qgisMinimumVersion=3.40.4
+qgisMaximumVersion=3.99
+qt6_compatible=True
+
+# versionnement
+version=0.1.0
+changelog=

@@ -30,5 +30,5 @@ Example: `feature/authentication-logic`
 
 ### Special branches
 
-- `master`: the main branch.
+- `main`: the default branch.
 - `archive/*`: branches used to store legacy code for history reasons. Do not use them for new work.

@@ -1,26 +1,26 @@
 #! python3  # noqa: E265
 
 """
-    Quick and dirty test of API authentication and basic usage.
+Quick and dirty test of API authentication and basic usage.
 
-    Additionnal dependencies:
+Additionnal dependencies:
 
-    - requests
+- requests
 
-    Usage:
+Usage:
 
-    1. change the username in the script
-    2. store your password in an environment variable named `GPF_USER_PASSWORD`.
-    Typically:
-    
-    - Bash: `export GPF_USER_PASSWORD='my_password'`
-    - PowerShell: `$env:GPF_USER_PASSWORD = 'my_password'`
-    3. run:
+1. change the username in the script
+2. store your password in an environment variable named `GPF_USER_PASSWORD`.
+Typically:
 
-    - Linux: `python3 dev_auth_flow_requests.py`
-    - Windows: `py -3 dev_auth_flow_requests.py`
+- Bash: `export GPF_USER_PASSWORD='my_password'`
+- PowerShell: `$env:GPF_USER_PASSWORD = 'my_password'`
+3. run:
 
-    BE CAREFUL: do not commit if you write your credentials in the code
+- Linux: `python3 dev_auth_flow_requests.py`
+- Windows: `py -3 dev_auth_flow_requests.py`
+
+BE CAREFUL: do not commit if you write your credentials in the code
 """
 
 # standard
@@ -35,7 +35,7 @@ USER_NAME = ""
 USER_PASSWORD = getenv("GPF_USER_PASSWORD")
 CLIENT_ID = "guichet"
 TOKEN_URL = "https://iam-ign-qa-ext.cegedim.cloud/auth/realms/demo/protocol/openid-connect/token"
-API_URL = "https://plage-geotuileur.cegedim.cloud/api/v1/"
+API_URL = "https://plage-geoplateforme.cegedim.cloud/api/v1/"
 
 
 # -- FUNCTIONS

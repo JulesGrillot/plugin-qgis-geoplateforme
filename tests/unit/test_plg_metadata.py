@@ -1,13 +1,13 @@
 #! python3  # noqa E265
 
 """
-    Usage from the repo root folder:
+Usage from the repo root folder:
 
-    .. code-block:: bash
-        # for whole tests
-        python -m unittest tests.unit.test_plg_metadata
-        # for specific test
-        python -m unittest tests.unit.test_plg_metadata.TestPluginMetadata.test_version_semver
+.. code-block:: bash
+    # for whole tests
+    python -m unittest tests.unit.test_plg_metadata
+    # for specific test
+    python -m unittest tests.unit.test_plg_metadata.TestPluginMetadata.test_version_semver
 """
 
 # standard library
@@ -15,10 +15,10 @@ import unittest
 from pathlib import Path
 
 # 3rd party
-from semver import VersionInfo
+from packaging.version import parse
 
 # project
-from geotuileur import __about__
+from geoplateforme import __about__
 
 # ############################################################################
 # ########## Classes #############
@@ -26,7 +26,6 @@ from geotuileur import __about__
 
 
 class TestPluginMetadata(unittest.TestCase):
-
     """Test about module"""
 
     def test_metadata_types(self):
@@ -66,14 +65,17 @@ class TestPluginMetadata(unittest.TestCase):
             __about__.__plugin_md__.get("general").get("qgismaximumversion"), str
         )
 
-        self.assertLessEqual(
-            float(__about__.__plugin_md__.get("general").get("qgisminimumversion")),
-            float(__about__.__plugin_md__.get("general").get("qgismaximumversion")),
+        min_version_parsed = parse(
+            __about__.__plugin_md__.get("general").get("qgisminimumversion")
         )
+        max_version_parsed = parse(
+            __about__.__plugin_md__.get("general").get("qgismaximumversion")
+        )
+        self.assertLessEqual(min_version_parsed, max_version_parsed)
 
     def test_version_semver(self):
         """Test if version comply with semantic versioning."""
-        self.assertTrue(VersionInfo.isvalid(__about__.__version__))
+        self.assertTrue(parse(__about__.__version__))
 
 
 # ############################################################################

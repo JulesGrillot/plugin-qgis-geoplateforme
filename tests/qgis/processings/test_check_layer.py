@@ -14,8 +14,8 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QVariant
 
-from geotuileur.processing import GeotuileurProvider
-from geotuileur.processing.check_layer import CheckLayerAlgorithm
+from geoplateforme.processing import GeoplateformeProvider
+from geoplateforme.processing.check_layer import CheckLayerAlgorithm
 from tests.qgis.processings.conftest import QgsProcessingFeedBackTest
 
 INVALID_CHARS = CheckLayerAlgorithm.get_invalid_characters()
@@ -29,7 +29,7 @@ def alg() -> QgsProcessingAlgorithm:
     Returns: QgsProcessingAlgorithm
 
     """
-    algo_str = f"{GeotuileurProvider().id()}:{CheckLayerAlgorithm().name()}"
+    algo_str = f"{GeoplateformeProvider().id()}:{CheckLayerAlgorithm().name()}"
     alg = QgsApplication.processingRegistry().algorithmById(algo_str)
     assert alg is not None
     return alg
@@ -53,7 +53,7 @@ def create_shape_file(
         str(layer_path),
         "UTF-8",
         fields,
-        QgsWkbTypes.Polygon,
+        QgsWkbTypes.Type.Polygon,
         QgsCoordinateReferenceSystem(crs_auth_id),
         "ESRI Shapefile",
     )

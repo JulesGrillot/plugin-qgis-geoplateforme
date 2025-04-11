@@ -1,7 +1,7 @@
 import pytest
 from qgis.core import QgsApplication, QgsProcessingFeedback
 
-from geotuileur.processing import GeotuileurProvider
+from geoplateforme.processing import GeoplateformeProvider
 
 
 class QgsProcessingFeedBackTest(QgsProcessingFeedback):
@@ -42,14 +42,14 @@ class QgsProcessingFeedBackTest(QgsProcessingFeedback):
 
 
 @pytest.fixture(autouse=True)
-def add_provider(qgis_processing) -> GeotuileurProvider:
+def add_provider(qgis_processing) -> GeoplateformeProvider:
     """
-    Add GeotuileurProvider to processing registry and remove it after use
+    Add GeoplateformeProvider to processing registry and remove it after use
 
     Args:
         qgis_processing: pytest-qgis fixture to initialize qgis processing
     """
-    prov = GeotuileurProvider()
+    prov = GeoplateformeProvider()
     QgsApplication.processingRegistry().addProvider(prov)
     yield prov
     QgsApplication.processingRegistry().removeProvider(prov)

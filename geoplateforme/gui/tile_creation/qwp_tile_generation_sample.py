@@ -63,9 +63,7 @@ class TileGenerationSamplePageWizard(QWizardPage):
                 )
 
             if valid:
-                stored_data = (
-                    self.qwp_tile_generation_edition.cbx_stored_data.current_stored_data()
-                )
+                stored_data = self.qwp_tile_generation_edition.cbx_stored_data.current_stored_data()
                 vlayer = stored_data.create_extent_layer()
                 extent = vlayer.extent()
                 valid = extent.contains(bbox)

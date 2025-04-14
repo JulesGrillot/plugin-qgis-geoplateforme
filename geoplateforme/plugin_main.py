@@ -12,7 +12,7 @@ from pathlib import Path
 from qgis.core import QgsApplication, QgsSettings
 from qgis.gui import QgisInterface
 from qgis.PyQt.Qt import QUrl
-from qgis.PyQt.QtCore import QCoreApplication, QLocale, Qt, QTranslator
+from qgis.PyQt.QtCore import QCoreApplication, QLocale, QTranslator
 from qgis.PyQt.QtGui import QDesktopServices, QIcon
 from qgis.PyQt.QtWidgets import QAction, QToolBar
 

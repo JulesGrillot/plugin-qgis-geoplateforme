@@ -186,8 +186,8 @@ class UploadFilesTreeModel(QStandardItemModel):
         # Load layers from gpkg
         fileinfo = QtCore.QFileInfo(filename)
         if fileinfo.exists() and fileinfo.suffix() == "gpkg":
-            for l in ogr.Open(filename):
-                layer_name = l.GetName()
+            for layer in ogr.Open(filename):
+                layer_name = layer.GetName()
                 layer = QgsVectorLayer(f"{filename}|layername={layer_name}", layer_name)
                 if layer.isValid():
                     row = self.rowCount(parent)

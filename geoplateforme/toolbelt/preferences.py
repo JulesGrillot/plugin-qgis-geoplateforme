@@ -63,7 +63,7 @@ class PlgSettingsStructure:
     url_auth: str = ""
     auth_realm: str = ""
     auth_client_id: str = ""
-    qgis_auth_id: str = None
+    qgis_auth_id: Optional[str] = None
 
     # status check sleep (in seconds)
     status_check_sleep: int = 1

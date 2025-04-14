@@ -3,7 +3,7 @@
 """Script to generate the translation profile for a PyQt project, listing Python,
 forms (ui) and targetted translation files. This script is intended to be run from the
 root of the project, and will create a file named `plugin_translation.pro` in the
-`oslandia/resources/i18n` directory.
+`geoplateforme/resources/i18n` directory.
 
 TODO: remove the get_relative_paths function if your stack is Python 3.12+, which added
 the walk_up option in pathlib.Path.relative_to(). It would be a cleaner solution.

@@ -82,7 +82,9 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
             filename = layer.dataProvider().dataSourceUri()
             fileinfo = QtCore.QFileInfo(filename)
             if fileinfo.exists() and fileinfo.suffix() == "gpkg":
-                gpkg_layers = [layer.GetName() for layer in ogr.Open(filename)]
+                gpkg_layers = [
+                    gpkg_layer.GetName() for gpkg_layer in ogr.Open(filename)
+                ]
                 for layer_name in gpkg_layers:
                     layers.append(
                         QgsVectorLayer(f"{filename}|layername={layer_name}", layer_name)

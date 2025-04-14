@@ -84,6 +84,10 @@ class User:
         Returns: User
 
         """
+        if "first_name" not in data:
+            data["first_name"] = None
+        if "last_name" not in data:
+            data["last_name"] = None
         res = cls(
             _id=data["_id"],
             first_name=data["first_name"],
@@ -151,17 +155,14 @@ class UserRequestsManager:
 
         # check response
         req_reply = self.ntwk_requester_blk.reply()
-        if (
-            not req_reply.rawHeader(b"Content-Type")
-            == "application/json; charset=utf-8"
-        ):
+        if not req_reply.rawHeader(b"Content-Type") == "application/json":
             raise UnavailableUserException(
-                "Response mime-type is '{}' not 'application/json; charset=utf-8' as required.".format(
+                "Response mime-type is '{}' not 'application/json' as required.".format(
                     req_reply.rawHeader(b"Content-type")
                 )
             )
 
-        data = json.loads(req_reply.content().data().decode("utf-8"))
+        data = json.loads(req_reply.content().data())
         return User.from_json(data)
 
     def tr(self, message: str) -> str:

@@ -9,7 +9,7 @@ from dataclasses import dataclass
 # PyQGIS
 from qgis.core import QgsBlockingNetworkRequest
 from qgis.PyQt.Qt import QUrl
-from qgis.PyQt.QtCore import QCoreApplication, Qt
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # project
@@ -137,7 +137,9 @@ class UserRequestsManager:
         req = QNetworkRequest(QUrl(f"{self.get_base_url()}/me"))
 
         # headers
-        req.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
+        req.setHeader(
+            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
+        )
 
         # send request
         resp = self.ntwk_requester_blk.get(req, forceRefresh=True)

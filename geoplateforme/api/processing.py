@@ -115,7 +115,9 @@ class ProcessingRequestManager:
         req_post = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/executions"))
 
         # headers
-        req_post.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
+        req_post.setHeader(
+            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
+        )
 
         # encode data
         data = QByteArray()
@@ -162,7 +164,9 @@ class ProcessingRequestManager:
         )
 
         # headers
-        req_post.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json")
+        req_post.setHeader(
+            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
+        )
 
         # send request
         resp = self.ntwk_requester_blk.post(

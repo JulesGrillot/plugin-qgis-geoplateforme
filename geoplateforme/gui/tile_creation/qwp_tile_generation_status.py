@@ -243,9 +243,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
                 upload_manager = UploadRequestManager()
                 processing_manager = ProcessingRequestManager()
                 stored_data_manager = StoredDataRequestManager()
-                datastore_id = (
-                    self.qwp_tile_generation_edition.cbx_datastore.current_datastore_id()
-                )
+                datastore_id = self.qwp_tile_generation_edition.cbx_datastore.current_datastore_id()
 
                 stored_data = stored_data_manager.get_stored_data(
                     datastore=datastore_id, stored_data=self.created_stored_data_id

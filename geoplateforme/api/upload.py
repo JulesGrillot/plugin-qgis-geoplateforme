@@ -30,7 +30,6 @@ from geoplateforme.api.client import NetworkRequestsManager
 from geoplateforme.api.custom_exceptions import (
     DeleteUploadException,
     FileUploadException,
-    InvalidToken,
     ReadUploadException,
     UnavailableExecutionException,
     UnavailableUploadException,
@@ -406,22 +405,22 @@ class UploadRequestManager:
             if proxy_str:
                 session.proxies = {"http": proxy_str, "https": proxy_str}
 
-            try:
-                check = self.request_manager.get_api_token()
-                data = json.loads(check.data().decode("utf-8"))
-            except InvalidToken as exc:
-                self.log(
-                    message=self.tr(
-                        "Authentication token returned is invalid. Trace: {}".format(
-                            exc
-                        )
-                    ),
-                    log_level=2,
-                    push=True,
-                    duration=0,
-                )
-                raise FileUploadException(exc)
-
+            # try:
+            #     check = self.request_manager.get_api_token()
+            #     data = json.loads(check.data().decode("utf-8"))
+            # except InvalidToken as exc:
+            #     self.log(
+            #         message=self.tr(
+            #             "Authentication token returned is invalid. Trace: {}".format(
+            #                 exc
+            #             )
+            #         ),
+            #         log_level=2,
+            #         push=True,
+            #         duration=0,
+            #     )
+            #     raise FileUploadException(exc)
+            data = {}
             session.headers.update({"Authorization": "Bearer " + data["access_token"]})
 
             # Open file

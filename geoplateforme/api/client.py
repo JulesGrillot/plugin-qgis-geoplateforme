@@ -9,7 +9,6 @@ Perform network request.
 # ##################################
 
 # Standard library
-import json
 import logging
 
 # PyQGIS
@@ -18,7 +17,6 @@ from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # project
-from geoplateforme.api.custom_exceptions import InvalidToken
 from geoplateforme.toolbelt.log_handler import PlgLogger
 from geoplateforme.toolbelt.preferences import PlgOptionsManager
 
@@ -67,6 +65,7 @@ class NetworkRequestsManager:
                 return self.test_url(url=url, method="get")
             return False
 
+<<<<<<< HEAD
     def get_api_token(self) -> QByteArray:
         """Get API token.
 
@@ -146,6 +145,8 @@ class NetworkRequestsManager:
         self.log("Token received", log_level=4)
         return req_reply.content()
 
+=======
+>>>>>>> 58277b2 (first cleanup commit)
     def tr(self, message: str) -> str:
         """Get the translation for a string using Qt translation API.
 

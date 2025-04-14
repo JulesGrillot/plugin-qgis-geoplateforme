@@ -58,8 +58,6 @@ class PlgSettingsStructure:
     # network and authentication
     url_geoplateforme: str = "https://cartes.gouv.fr/"
     url_api_entrepot: str = "https://data.geopf.fr/api"
-    url_api_appendices: str = ""
-    url_service_vt: str = ""
     url_auth: str = ""
     auth_realm: str = ""
     auth_client_id: str = ""

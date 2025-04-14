@@ -93,7 +93,6 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
             # network and authentication
             url_geoplateforme=self.lne_url_geoplateforme.text(),
             url_api_entrepot=self.lne_url_api_entrepot.text(),
-            url_service_vt=self.lne_url_service_vt.text(),
             url_auth=self.lne_url_auth.text(),
             auth_realm=self.lne_auth_realm.text(),
             auth_client_id=self.lne_auth_client_id.text(),
@@ -127,8 +126,6 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
         # network and authentication
         self.lne_url_geoplateforme.setText(settings.url_geoplateforme)
         self.lne_url_api_entrepot.setText(settings.url_api_entrepot)
-        self.lne_url_api_appendices.setText(settings.url_api_appendices)
-        self.lne_url_service_vt.setText(settings.url_service_vt)
         self.lne_url_auth.setText(settings.url_auth)
         self.lne_auth_realm.setText(settings.auth_realm)
         self.lne_auth_client_id.setText(settings.auth_client_id)

@@ -7,7 +7,6 @@ from enum import Enum
 from typing import List
 
 # PyQGIS
-import requests
 from qgis.core import QgsApplication, QgsBlockingNetworkRequest, QgsSettings
 from qgis.PyQt.QtCore import (
     QByteArray,
@@ -381,67 +380,6 @@ class UploadRequestManager:
         else:
             proxyStr = "https://" + proxyStr
         return proxyStr
-
-    def add_file_with_requests(
-        self, datastore: str, upload: str, filename: str
-    ) -> None:
-        """
-        Add file to upload by using python package requests
-
-        Args:
-            datastore: (str) datastore id
-            upload: (str) upload id
-            filename: (str) file to import
-        """
-        self.log(
-            f"{__name__}.add_file_with_requests(datastore:{datastore}, upload: {upload}, filename: {filename})"
-        )
-
-        # Get api token for requests
-        with requests.Session() as session:
-            # Add proxy params
-            proxy_str = self.get_qgis_proxy_params_str()
-            if proxy_str:
-                session.proxies = {"http": proxy_str, "https": proxy_str}
-
-            # try:
-            #     check = self.request_manager.get_api_token()
-            #     data = json.loads(check.data().decode("utf-8"))
-            # except InvalidToken as exc:
-            #     self.log(
-            #         message=self.tr(
-            #             "Authentication token returned is invalid. Trace: {}".format(
-            #                 exc
-            #             )
-            #         ),
-            #         log_level=2,
-            #         push=True,
-            #         duration=0,
-            #     )
-            #     raise FileUploadException(exc)
-            data = {}
-            session.headers.update({"Authorization": "Bearer " + data["access_token"]})
-
-            # Open file
-            with open(filename, "rb") as file:
-                if not file:
-                    raise FileUploadException(f"Can't open {filename}")
-
-                # Define request param
-                files = {"filename": (filename, file)}
-                url = f"{self.get_base_url(datastore)}/{upload}/data"
-                response = session.post(url, verify=False, timeout=300, files=files)
-
-                # Check response
-                if not response.ok:
-                    if response.content:
-                        error = (
-                            f"Error when uploading {filename} to {url}. HTTP error : {response.status_code}.\n"
-                            f" Response content : {response.text} "
-                        )
-                    else:
-                        error = f"Error when uploading {filename} to {url}. HTTP error : {response.status_code}."
-                    raise FileUploadException(error)
 
     def add_file(self, datastore: str, upload: str, filename: str) -> None:
         """

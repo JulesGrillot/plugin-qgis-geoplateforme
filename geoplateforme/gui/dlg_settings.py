@@ -24,10 +24,9 @@ from geoplateforme.__about__ import (
     __uri_tracker__,
     __version__,
 )
-from geoplateforme.api.client import NetworkRequestsManager
 from geoplateforme.api.custom_exceptions import UnavailableUserException
 from geoplateforme.api.user import UserRequestsManager
-from geoplateforme.toolbelt import PlgLogger, PlgOptionsManager
+from geoplateforme.toolbelt import NetworkRequestsManager, PlgLogger, PlgOptionsManager
 from geoplateforme.toolbelt.preferences import PlgSettingsStructure
 
 # ############################################################################
@@ -93,10 +92,6 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
             # network and authentication
             url_geoplateforme=self.lne_url_geoplateforme.text(),
             url_api_entrepot=self.lne_url_api_entrepot.text(),
-            url_service_vt=self.lne_url_service_vt.text(),
-            url_auth=self.lne_url_auth.text(),
-            auth_realm=self.lne_auth_realm.text(),
-            auth_client_id=self.lne_auth_client_id.text(),
             qgis_auth_id=self.cbb_auth_config_select.configId(),
         )
         return new_settings
@@ -127,11 +122,6 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
         # network and authentication
         self.lne_url_geoplateforme.setText(settings.url_geoplateforme)
         self.lne_url_api_entrepot.setText(settings.url_api_entrepot)
-        self.lne_url_api_appendices.setText(settings.url_api_appendices)
-        self.lne_url_service_vt.setText(settings.url_service_vt)
-        self.lne_url_auth.setText(settings.url_auth)
-        self.lne_auth_realm.setText(settings.auth_realm)
-        self.lne_auth_client_id.setText(settings.auth_client_id)
         self.cbb_auth_config_select.setConfigId(settings.qgis_auth_id)
 
     def reset_settings(self):

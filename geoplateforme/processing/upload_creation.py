@@ -116,7 +116,7 @@ class UploadCreationAlgorithm(QgsProcessingAlgorithm):
 
                 # Add files
                 for filename in files:
-                    manager.add_file_with_requests(
+                    manager.add_file(
                         datastore=datastore, upload=upload.id, filename=filename
                     )
 

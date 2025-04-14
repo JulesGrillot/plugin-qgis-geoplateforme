@@ -58,50 +58,15 @@ class PlgSettingsStructure:
     # network and authentication
     url_geoplateforme: str = "https://cartes.gouv.fr/"
     url_api_entrepot: str = "https://data.geopf.fr/api"
-    url_api_appendices: str = ""
-    url_service_vt: str = ""
-    url_auth: str = ""
-    auth_realm: str = ""
-    auth_client_id: str = ""
     qgis_auth_id: Optional[str] = None
 
     # status check sleep (in seconds)
     status_check_sleep: int = 1
 
     @property
-    def url_authentication_token(self) -> str:
-        """Return the URL to get the token from the authentication service."""
-        return f"{self.url_auth}auth/realms/{self.auth_realm}/protocol/openid-connect/token"
-
-    @property
-    def url_authentication_redirect(self) -> str:
-        """Return the URL to redirect to the authentication service."""
-        return f"{self.url_auth}login/check"
-
-    @property
     def base_url_api_entrepot(self) -> str:
         """Return the URL for API entrepot"""
         return f"{self.url_api_entrepot}"
-
-    @property
-    def url_forgotten_password(self) -> str:
-        """URL where an user can reset its credentials.
-
-        :return: reset URL
-        :rtype: str
-        """
-        return f"{self.url_auth}auth/realms/{self.auth_realm}/login-actions/reset-credentials?client_id={self.auth_client_id}"
-
-    @property
-    def url_sign_in(self) -> str:
-        """URL where an user can register himself to create an account.
-
-        :return: registration URL
-        :rtype: str
-        """
-        # not working for now. See #95
-        # return f"{self.url_auth}auth/realms/{self.auth_realm}/login-actions/authenticate?client_id={self.auth_client_id}"
-        return f"{self.url_geoplateforme}login"
 
     def create_auth_config(self) -> Optional[QgsAuthMethodConfig]:
         """Create QgsAuthMethodConfig for OAuth2 authentification.

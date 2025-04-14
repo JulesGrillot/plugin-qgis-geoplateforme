@@ -7,10 +7,9 @@ from qgis.core import QgsBlockingNetworkRequest
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
-from geoplateforme.api.client import NetworkRequestsManager
 from geoplateforme.api.custom_exceptions import UnavailableExecutionException
 from geoplateforme.api.utils import qgs_blocking_get_request
-from geoplateforme.toolbelt import PlgLogger, PlgOptionsManager
+from geoplateforme.toolbelt import NetworkRequestsManager, PlgLogger, PlgOptionsManager
 
 logger = logging.getLogger(__name__)
 

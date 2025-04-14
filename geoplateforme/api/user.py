@@ -8,8 +8,7 @@ from dataclasses import dataclass
 
 # PyQGIS
 from qgis.core import QgsBlockingNetworkRequest
-from qgis.PyQt.Qt import QUrl
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # project

@@ -75,7 +75,7 @@
       <enum>Qt::DefaultContextMenu</enum>
      </property>
      <property name="toolTip">
-      <string>Open https://git.oslandia.net in your default web browser to authorize the plugin.</string>
+      <string>Open https://cartes.gouv.fr in your default web browser to authorize the plugin.</string>
      </property>
      <property name="text">
       <string>Authenticate the plugin using your cartes.gouv.fr account</string>

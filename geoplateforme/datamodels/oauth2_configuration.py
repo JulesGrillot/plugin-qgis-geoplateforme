@@ -43,12 +43,12 @@ class OAuth2Configuration:
     configType: int = 1
     customHeader: str = ""
     description: str = (
-        "Authentication related to the Oslandia plugin to give access to the GitLab "
-        "ticketing and helpdesk to end-customers who subscribed to Oslandia's support offer ."
+        "Authentication related to the Géoplateforme plugin to give access to cartes.gouv.fr "
+        "access your community, publish your data as services hosted on the IGN Geoplatform."
     )
     grantFlow: int = 0
     id: str = ""
-    name: str = "oslandia_plugin_cfg"
+    name: str = "geoplateforme_plugin_cfg"
     objectName: str = ""
     password: str = ""
     persistToken: bool = True
@@ -57,9 +57,13 @@ class OAuth2Configuration:
     redirectUrl: str = "callback"
     refreshTokenUrl: str = ""
     requestTimeout: int = 30
-    requestUrl: str = "https://git.oslandia.net/oauth/authorize"
+    requestUrl: str = (
+        "https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/auth"
+    )
     scope: str = "api"
-    tokenUrl: str = "https://git.oslandia.net/oauth/token"
+    tokenUrl: str = (
+        "https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/token"
+    )
     username: str = ""
     version: int = 1
 
@@ -190,7 +194,7 @@ class OAuth2Configuration:
         """
         json_config_filepath = Path(
             getenv(
-                "PLUGIN_OSLANDIA_OAUTH2_CONFIG",
+                "PLUGIN_GEOPLATEFORME_OAUTH2_CONFIG",
                 DIR_PLUGIN_ROOT.joinpath("auth/oauth2_config.json"),
             )
         )

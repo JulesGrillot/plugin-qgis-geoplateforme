@@ -451,7 +451,7 @@ class NetworkRequestsManager:
         fp = QFile(str(file_path))
         fp.open(QIODevice.OpenModeFlag.ReadOnly)
 
-        boundary = f"----OslandiaQGISPluginBoundary{uuid.uuid4().hex}"
+        boundary = f"----GeoplateformeQGISPluginBoundary{uuid.uuid4().hex}"
 
         body_list = []
 

@@ -93,9 +93,6 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
             # network and authentication
             url_geoplateforme=self.lne_url_geoplateforme.text(),
             url_api_entrepot=self.lne_url_api_entrepot.text(),
-            url_auth=self.lne_url_auth.text(),
-            auth_realm=self.lne_auth_realm.text(),
-            auth_client_id=self.lne_auth_client_id.text(),
             qgis_auth_id=self.cbb_auth_config_select.configId(),
         )
         return new_settings
@@ -126,9 +123,6 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
         # network and authentication
         self.lne_url_geoplateforme.setText(settings.url_geoplateforme)
         self.lne_url_api_entrepot.setText(settings.url_api_entrepot)
-        self.lne_url_auth.setText(settings.url_auth)
-        self.lne_auth_realm.setText(settings.auth_realm)
-        self.lne_auth_client_id.setText(settings.auth_client_id)
         self.cbb_auth_config_select.setConfigId(settings.qgis_auth_id)
 
     def reset_settings(self):

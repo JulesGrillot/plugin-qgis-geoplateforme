@@ -94,27 +94,7 @@
          </size>
         </property>
         <property name="placeholderText">
-         <string notr="true">https://gpf-beta.ign.fr/geoplateforme/</string>
-        </property>
-       </widget>
-      </item>
-
-      <item row="6" column="1">
-       <widget class="QLineEdit" name="lne_auth_client_id">
-        <property name="minimumSize">
-         <size>
-          <width>150</width>
-          <height>25</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>1000</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="placeholderText">
-         <string notr="true">geoplateforme-qgis-plugin</string>
+         <string notr="true">https://data.geopf.fr/api</string>
         </property>
        </widget>
       </item>
@@ -130,25 +110,6 @@
          </size>
         </property>
        </spacer>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="lbl_url_auth">
-        <property name="minimumSize">
-         <size>
-          <width>50</width>
-          <height>25</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Authentication:</string>
-        </property>
-       </widget>
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="lbl_url_geoplateforme">
@@ -172,28 +133,6 @@
         </property>
         <property name="scaledContents">
          <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QLineEdit" name="lne_url_auth">
-        <property name="minimumSize">
-         <size>
-          <width>150</width>
-          <height>25</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>1000</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="inputMethodHints">
-         <set>Qt::ImhUrlCharactersOnly</set>
-        </property>
-        <property name="placeholderText">
-         <string notr="true">https://compte-gpf-beta.ign.fr/</string>
         </property>
        </widget>
       </item>
@@ -245,70 +184,10 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="lbl_auth_realm">
-        <property name="minimumSize">
-         <size>
-          <width>50</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Authentication realm:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QLineEdit" name="lne_auth_realm">
-        <property name="minimumSize">
-         <size>
-          <width>150</width>
-          <height>25</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>1000</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="inputMethodHints">
-         <set>Qt::ImhLatinOnly|Qt::ImhPreferLowercase</set>
-        </property>
-        <property name="placeholderText">
-         <string notr="true">demo</string>
-        </property>
-       </widget>
-      </item>
       <item row="7" column="0">
        <widget class="QLabel" name="lbl_account">
         <property name="text">
          <string>Account:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="lbl_auth_client_id">
-        <property name="minimumSize">
-         <size>
-          <width>50</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Client ID:</string>
         </property>
        </widget>
       </item>

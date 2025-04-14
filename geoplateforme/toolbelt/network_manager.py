@@ -489,3 +489,23 @@ class NetworkRequestsManager:
             content_type_header=content_type_header,
         )
         return req_reply
+
+    def test_url(self, url: str, method: str = "head") -> bool:
+        """Test if URL is reachable. First, try a HEAD then a GET.
+
+        :param url: URL to test.
+        :type url: str
+        :param method: _description_, defaults to "head"
+        :type method: str, optional
+
+        :return: True if URL is reachable.
+        :rtype: bool
+        """
+        try:
+            req = QNetworkRequest(QUrl(url))
+            self.ntwk_requester.head(req)
+            return True
+        except Exception:
+            if method == "head":
+                return self.test_url(url=url, method="get")
+            return False

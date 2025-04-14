@@ -26,7 +26,6 @@ from qgis.PyQt.QtNetwork import (
 
 # plugin
 from geoplateforme.api.check import CheckExecution, CheckRequestManager
-from geoplateforme.api.client import NetworkRequestsManager
 from geoplateforme.api.custom_exceptions import (
     DeleteUploadException,
     FileUploadException,
@@ -38,7 +37,7 @@ from geoplateforme.api.custom_exceptions import (
     UploadCreationException,
 )
 from geoplateforme.api.utils import qgs_blocking_get_request
-from geoplateforme.toolbelt import PlgLogger, PlgOptionsManager
+from geoplateforme.toolbelt import NetworkRequestsManager, PlgLogger, PlgOptionsManager
 
 logger = logging.getLogger(__name__)
 

@@ -24,8 +24,7 @@ from geoplateforme.api.custom_exceptions import (
 from geoplateforme.api.user import UserRequestsManager
 from geoplateforme.constants import OAUTH_DECLARED_REDIRECT_PORTS
 from geoplateforme.datamodels.oauth2_configuration import OAuth2Configuration
-from geoplateforme.toolbelt import PlgLogger, PlgOptionsManager
-from geoplateforme.toolbelt.network_manager import NetworkRequestsManager
+from geoplateforme.toolbelt import NetworkRequestsManager, PlgLogger, PlgOptionsManager
 
 # only for type checking
 if TYPE_CHECKING:
@@ -49,7 +48,7 @@ class AuthenticationDialog(QDialog):
 
         # toolbelt
         self.log = PlgLogger().log
-        self.ntwk_requester_blk = NetworkRequestsManager()
+        self.request_manager = NetworkRequestsManager()
         self.plg_settings_mngr = PlgOptionsManager()
         self.plg_settings = self.plg_settings_mngr.get_plg_settings()
 
@@ -220,7 +219,7 @@ class AuthenticationDialog(QDialog):
             )
 
         # if port is available
-        if self.ntwk_requester_blk.is_port_available(
+        if self.request_manager.is_port_available(
             port=oauth2cfg.redirectPort,
         ):
             self.log(
@@ -260,7 +259,7 @@ class AuthenticationDialog(QDialog):
                 )
                 continue
             # check if the port is available
-            if self.ntwk_requester_blk.is_port_available(
+            if self.request_manager.is_port_available(
                 port=possible_port,
             ):
                 # if available, set it in the configuration

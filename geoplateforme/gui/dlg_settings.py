@@ -24,10 +24,9 @@ from geoplateforme.__about__ import (
     __uri_tracker__,
     __version__,
 )
-from geoplateforme.api.client import NetworkRequestsManager
 from geoplateforme.api.custom_exceptions import UnavailableUserException
 from geoplateforme.api.user import UserRequestsManager
-from geoplateforme.toolbelt import PlgLogger, PlgOptionsManager
+from geoplateforme.toolbelt import NetworkRequestsManager, PlgLogger, PlgOptionsManager
 from geoplateforme.toolbelt.preferences import PlgSettingsStructure
 
 # ############################################################################

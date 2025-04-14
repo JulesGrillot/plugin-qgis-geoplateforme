@@ -39,13 +39,6 @@ repos:
           - python
           - pyi
 
-  - repo: https://github.com/python/black
-    rev: 25.1.0
-    hooks:
-      - id: black
-        args:
-          - --target-version=py39
-
   # Disabled until PyQt translation support f-strings
   # - repo: https://github.com/asottile/pyupgrade
   #   rev: v3.15.0

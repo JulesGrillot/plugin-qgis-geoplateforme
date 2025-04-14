@@ -45,7 +45,7 @@ tooling:
         - .pre-commit-config.yaml
         - setup.cfg
 
-UI:
+UI/UX:
   - head-branch:
     - ^ui
     - ui

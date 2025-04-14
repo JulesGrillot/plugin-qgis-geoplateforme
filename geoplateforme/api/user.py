@@ -84,7 +84,6 @@ class User:
         Returns: User
 
         """
-        print(data)
         if "first_name" not in data:
             data["first_name"] = None
         if "last_name" not in data:

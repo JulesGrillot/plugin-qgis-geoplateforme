@@ -3,7 +3,7 @@ import math
 import re
 from dataclasses import dataclass
 from enum import Enum
-from typing import List
+from typing import List, Optional
 
 from qgis.core import (
     QgsBlockingNetworkRequest,
@@ -230,7 +230,7 @@ class StoredDataRequestManager:
         return result
 
     def get_stored_data_detailed_list(
-        self, datastore: str, tags: dict = None
+        self, datastore: str, tags: Optional[dict] = None
     ) -> List[StoredData]:
         """
         Get detailed list of stored data
@@ -299,7 +299,11 @@ class StoredDataRequestManager:
         return data
 
     def _get_stored_data_detailed_list(
-        self, datastore: str, page: int = 1, limit: int = MAX_LIMIT, tags: dict = None
+        self,
+        datastore: str,
+        page: int = 1,
+        limit: int = MAX_LIMIT,
+        tags: Optional[dict] = None,
     ) -> List[StoredData]:
         """
         Get detailed list of stored data
@@ -346,7 +350,9 @@ class StoredDataRequestManager:
             for stored_data in stored_datas_id
         ]
 
-    def _get_nb_available_stored_data(self, datastore: str, tags: dict = None) -> int:
+    def _get_nb_available_stored_data(
+        self, datastore: str, tags: Optional[dict] = None
+    ) -> int:
         """
         Get number of available stored data
 

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from qgis.core import QgsApplication
 from qgis.PyQt import QtCore
 from qgis.PyQt.QtCore import QObject, QSize, Qt, QVariant
@@ -147,7 +149,7 @@ class StoredDataListModel(QStandardItemModel):
 
         return result
 
-    def set_datastore(self, datastore: str, dataset: str = None) -> None:
+    def set_datastore(self, datastore: str, dataset: Optional[str] = None) -> None:
         """
         Refresh QStandardItemModel data with current datastore stored data
 
@@ -157,7 +159,7 @@ class StoredDataListModel(QStandardItemModel):
         manager = StoredDataRequestManager()
         try:
             if dataset:
-                tags = {"datasheet_name": f"{dataset}"}
+                tags = {"datasheet_name": dataset}
                 stored_datas = manager.get_stored_data_detailed_list(datastore, tags)
             else:
                 stored_datas = manager.get_stored_data_detailed_list(datastore)

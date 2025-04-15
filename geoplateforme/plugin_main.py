@@ -305,25 +305,6 @@ class GeoplateformePlugin:
         self.dlg_auth.finished.connect(self._update_actions_availability)
         self.dlg_auth.show()
 
-        # # Check connection by getting an API token
-        # connection_valid = False
-        # if len(self.plg_settings.get_plg_settings().qgis_auth_id):
-        #     try:
-        #         network_manager = NetworkRequestsManager()
-        #         network_manager.get_api_token()
-        #         connection_valid = True
-        #     except InvalidToken:
-        #         # Disconnect if invalid token
-        #         self.plg_settings.disconnect()
-
-        # if not connection_valid:
-        #     dlg_authentication = AuthenticationDialog(self.iface.mainWindow())
-        #     dlg_authentication.exec()
-        # else:
-        #     dlg_user = UserDialog(self.iface.mainWindow())
-        #     dlg_user.exec()
-        # self._update_actions_availability()
-
     def _update_actions_availability(self) -> None:
         """
         Update actions availability if user is connected or not
@@ -333,10 +314,10 @@ class GeoplateformePlugin:
         enabled = len(plg_settings.qgis_auth_id) != 0
 
         self.action_dashboard.setEnabled(enabled)
-        self.action_storage_report.setEnabled(enabled)
-        self.action_import.setEnabled(enabled)
-        self.action_tile_create.setEnabled(enabled)
-        self.action_publication.setEnabled(enabled)
+        self.action_storage_report.setEnabled(False)
+        self.action_import.setEnabled(False)
+        self.action_tile_create.setEnabled(False)
+        self.action_publication.setEnabled(False)
 
     def display_dashboard(self) -> None:
         """

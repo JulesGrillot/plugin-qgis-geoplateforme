@@ -98,6 +98,7 @@ class DashboardWidget(QWidget):
         )
 
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
+        self.cbx_dataset.activated.connect(self._dataset_updated)
 
         self.btn_refresh.clicked.connect(self.refresh)
         self.btn_refresh.setIcon(QIcon(":/images/themes/default/mActionRefresh.svg"))
@@ -480,8 +481,18 @@ class DashboardWidget(QWidget):
         Update stored data combobox when datastore is updated
 
         """
+        self.cbx_dataset.set_datastore_id(self.cbx_datastore.current_datastore_id())
+
+    def _dataset_updated(self) -> None:
+        """
+        Update stored data combobox when dataset is updated
+
+        """
         QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
-        self.mdl_stored_data.set_datastore(self.cbx_datastore.current_datastore_id())
+        self.mdl_stored_data.set_datastore(
+            self.cbx_datastore.current_datastore_id(),
+            self.cbx_dataset.current_dataset_name(),
+        )
 
         self.tbv_actions_to_finish.resizeRowsToContents()
         self.tbv_actions_to_finish.resizeColumnsToContents()

@@ -147,7 +147,7 @@ class StoredDataListModel(QStandardItemModel):
 
         return result
 
-    def set_datastore(self, datastore: str) -> None:
+    def set_datastore(self, datastore: str, dataset: str = None) -> None:
         """
         Refresh QStandardItemModel data with current datastore stored data
 
@@ -156,7 +156,11 @@ class StoredDataListModel(QStandardItemModel):
 
         manager = StoredDataRequestManager()
         try:
-            stored_datas = manager.get_stored_data_list(datastore)
+            if dataset:
+                tags = {"datasheet_name": f"{dataset}"}
+                stored_datas = manager.get_stored_data_detailed_list(datastore, tags)
+            else:
+                stored_datas = manager.get_stored_data_detailed_list(datastore)
             for stored_data in stored_datas:
                 self.insert_stored_data(stored_data)
         except ReadStoredDataException as exc:

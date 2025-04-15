@@ -206,12 +206,15 @@ class StoredDataRequestManager:
         self.ntwk_requester_blk = QgsBlockingNetworkRequest()
         self.plg_settings = PlgOptionsManager.get_plg_settings()
 
-    def get_stored_data_list(self, datastore: str) -> List[StoredData]:
+    def get_stored_data_list(
+        self, datastore: str, with_tags: bool = False
+    ) -> List[StoredData]:
         """
         Get list of stored data
 
         Args:
             datastore: (str) datastore id
+            with_tags: (bool) get tags in response if true
 
         Returns: list of available stored data, raise ReadStoredDataException otherwise
         """
@@ -221,11 +224,40 @@ class StoredDataRequestManager:
         nb_request = math.ceil(nb_value / self.MAX_LIMIT)
         result = []
         for page in range(0, nb_request):
-            result += self._get_stored_data_list(datastore, page + 1, self.MAX_LIMIT)
+            result += self._get_stored_data_list(
+                datastore, page + 1, self.MAX_LIMIT, with_tags
+            )
+        return result
+
+    def get_stored_data_detailed_list(
+        self, datastore: str, tags: dict = None
+    ) -> List[StoredData]:
+        """
+        Get detailed list of stored data
+
+        Args:
+            datastore: (str) datastore id
+            tags: (dict) list of tags to filter data
+
+        Returns: list of available stored data, raise ReadStoredDataException otherwise
+        """
+        self.log(f"{__name__}.get_stored_data_detailed_list(datastore:{datastore})")
+
+        nb_value = self._get_nb_available_stored_data(datastore, tags)
+        nb_request = math.ceil(nb_value / self.MAX_LIMIT)
+        result = []
+        for page in range(0, nb_request):
+            result += self._get_stored_data_detailed_list(
+                datastore, page + 1, self.MAX_LIMIT, tags
+            )
         return result
 
     def _get_stored_data_list(
-        self, datastore: str, page: int = 1, limit: int = MAX_LIMIT
+        self,
+        datastore: str,
+        page: int = 1,
+        limit: int = MAX_LIMIT,
+        with_tags: bool = False,
     ) -> List[StoredData]:
         """
         Get list of stored data
@@ -234,13 +266,60 @@ class StoredDataRequestManager:
             datastore: (str) datastore id
             page: (int) page number (start at 1)
             limit: (int)
+            with_tags: (bool) get tags in response if true
 
         Returns: list of available stored data, raise ReadStoredDataException otherwise
         """
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
 
+        add_tags = ""
+        if with_tags:
+            add_tags = "&fields=tags"
         req = QNetworkRequest(
-            QUrl(f"{self.get_base_url(datastore)}?page={page}&limit={limit}")
+            QUrl(f"{self.get_base_url(datastore)}?page={page}&limit={limit}{add_tags}")
+        )
+        # headers
+        req.setHeader(
+            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
+        )
+
+        # send request
+        resp = self.ntwk_requester_blk.get(req, forceRefresh=True)
+
+        # check response
+        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
+            raise ReadStoredDataException(
+                f"Error while fetching stored data : {self.ntwk_requester_blk.errorMessage()}"
+            )
+
+        # check response
+        req_reply = self.ntwk_requester_blk.reply()
+        data = json.loads(req_reply.content().data())
+
+        return data
+
+    def _get_stored_data_detailed_list(
+        self, datastore: str, page: int = 1, limit: int = MAX_LIMIT, tags: dict = None
+    ) -> List[StoredData]:
+        """
+        Get detailed list of stored data
+
+        Args:
+            datastore: (str) datastore id
+            page: (int) page number (start at 1)
+            limit: (int)
+            tags: (dict) list of tags to filter data
+
+        Returns: list of available stored data, raise ReadStoredDataException otherwise
+        """
+        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
+
+        tags_url = ""
+        if tags:
+            for key, value in dict.items(tags):
+                tags_url += f"&tags[{key}]={value}"
+        req = QNetworkRequest(
+            QUrl(f"{self.get_base_url(datastore)}?page={page}&limit={limit}{tags_url}")
         )
 
         # headers
@@ -267,12 +346,13 @@ class StoredDataRequestManager:
             for stored_data in stored_datas_id
         ]
 
-    def _get_nb_available_stored_data(self, datastore: str) -> int:
+    def _get_nb_available_stored_data(self, datastore: str, tags: dict = None) -> int:
         """
         Get number of available stored data
 
         Args:
             datastore: (str) datastore id
+            tags: (dict) list of tags to filter data
 
         Returns: (int) number of available data, raise ReadStoredDataException in case of request error
 
@@ -280,7 +360,11 @@ class StoredDataRequestManager:
         self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
 
         # For now read with maximum limit possible
-        req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}?limit=1"))
+        tags_url = ""
+        if tags:
+            for key, value in dict.items(tags):
+                tags_url += f"&tags[{key}]={value}"
+        req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}?limit=1{tags_url}"))
 
         # headers
         req.setHeader(

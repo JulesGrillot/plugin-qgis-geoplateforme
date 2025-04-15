@@ -32,19 +32,7 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="3" column="0" colspan="2">
-    <widget class="QgsCollapsibleGroupBox" name="gbb_running_actions">
-     <property name="title">
-      <string>Running actions</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0">
-       <widget class="QTableView" name="tbl_running_actions"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="4" column="0" colspan="2">
+   <item row="5" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBox" name="gbp_publicated_tiles">
      <property name="title">
       <string>Publicated tiles</string>
@@ -54,6 +42,25 @@
        <widget class="QTableView" name="tbl_publicated_tiles"/>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="lbl_dataset">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Dataset</string>
+     </property>
     </widget>
    </item>
    <item row="0" column="0">
@@ -75,7 +82,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0" colspan="2">
+   <item row="3" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBox" name="gpb_actions_to_finish">
      <property name="title">
       <string>Actions to finish</string>
@@ -87,10 +94,22 @@
      </layout>
     </widget>
    </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QgsCollapsibleGroupBox" name="gbb_running_actions">
+     <property name="title">
+      <string>Running actions</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QTableView" name="tbl_running_actions"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item row="0" column="1">
     <widget class="DatastoreComboBox" name="cbx_datastore"/>
    </item>
-   <item row="1" column="0" colspan="2">
+   <item row="2" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QPushButton" name="btn_refresh">
@@ -128,6 +147,9 @@
      </item>
     </layout>
    </item>
+   <item row="1" column="1">
+    <widget class="DatasetComboBox" name="cbx_dataset"/>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -141,6 +163,11 @@
    <class>DatastoreComboBox</class>
    <extends>QComboBox</extends>
    <header>geoplateforme.gui.cbx_datastore</header>
+  </customwidget>
+  <customwidget>
+   <class>DatasetComboBox</class>
+   <extends>QComboBox</extends>
+   <header>geoplateforme.gui.cbx_dataset</header>
   </customwidget>
  </customwidgets>
  <resources/>

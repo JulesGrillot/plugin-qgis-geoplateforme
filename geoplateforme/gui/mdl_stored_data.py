@@ -91,7 +91,7 @@ class StoredDataListModel(QStandardItemModel):
                 status_value = self.data(
                     self.index(index.row(), self.STATUS_COL), QtCore.Qt.DisplayRole
                 )
-                status = StoredDataStatus[status_value]
+                status = status_value
 
                 filename_suffix = ""
                 if status == StoredDataStatus.UNSTABLE:
@@ -129,7 +129,7 @@ class StoredDataListModel(QStandardItemModel):
                 self.index(index.row(), self.NAME_COL), QtCore.Qt.UserRole
             )
             if stored_data:
-                status = StoredDataStatus[stored_data.status]
+                status = stored_data.status
                 if status == StoredDataStatus.GENERATING:
                     result = self.tr("Progress")
                 elif status == StoredDataStatus.GENERATED:
@@ -160,9 +160,9 @@ class StoredDataListModel(QStandardItemModel):
         try:
             if dataset:
                 tags = {"datasheet_name": dataset}
-                stored_datas = manager.get_stored_data_detailed_list(datastore, tags)
+                stored_datas = manager.get_stored_data_list(datastore, tags=tags)
             else:
-                stored_datas = manager.get_stored_data_detailed_list(datastore)
+                stored_datas = manager.get_stored_data_list(datastore)
             for stored_data in stored_datas:
                 self.insert_stored_data(stored_data)
         except ReadStoredDataException as exc:

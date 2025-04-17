@@ -1,3 +1,5 @@
+from typing import Optional
+
 # PyQGIS
 from qgis.core import QgsApplication
 from qgis.PyQt import QtCore
@@ -19,11 +21,10 @@ class UploadListModel(QStandardItemModel):
     DELETE_COL = 4
 
     def __init__(self, parent: QObject = None):
-        """
-        QStandardItemModel for upload list display
+        """QStandardItemModel for upload list display
 
-        Args:
-            parent: QObject parent
+        :param parent: parent
+        :type parent: QObject
         """
         super().__init__(parent)
         self.log = PlgLogger().log
@@ -38,14 +39,13 @@ class UploadListModel(QStandardItemModel):
         )
 
     def get_upload_row(self, upload_id: str) -> int:
-        """
-        Get upload row from upload id, returns -1 if upload not available
+        """Get upload row from upload id, returns -1 if upload not available
 
-        Args:
-            upload_id: (str) upload id
+        :param upload_id: upload id
+        :type upload_id: str
 
-        Returns: (int) upload id row, -1 if upload not available
-
+        :return: upload id row, -1 if upload not available
+        :rtype: int
         """
         result = -1
         for row in range(0, self.rowCount()):
@@ -57,22 +57,22 @@ class UploadListModel(QStandardItemModel):
     def data(
         self, index: QtCore.QModelIndex, role: int = QtCore.Qt.DisplayRole
     ) -> QVariant:
-        """
-        Override QStandardItemModel data() for :
-        - decoration role for status icon
+        """Override QStandardItemModel data() for decoration role for status icon
 
         Args:
-            index: QModelIndex
-            role: Qt role
+        :param index: index
+        :type index: QModelIndex
+        :param role: Qt role
+        :type role: int
 
-        Returns: QVariant
-
+        :return: data at index with role
+        :rtype: QVariant
         """
         result = super().data(index, role)
         if role == QtCore.Qt.DecorationRole:
             if index.column() == self.STATUS_COL:
                 status_value = self.data(index, QtCore.Qt.DisplayRole)
-                result = self._get_status_icon(UploadStatus[status_value])
+                result = self._get_status_icon(status_value)
             elif index.column() == self.DELETE_COL:
                 result = QIcon(QgsApplication.iconPath("mActionRemove.svg"))
 
@@ -80,6 +80,15 @@ class UploadListModel(QStandardItemModel):
 
     @staticmethod
     def _get_status_icon(status: UploadStatus) -> QPixmap:
+        """Return icon from an upload status
+
+        Args:
+        :param status: upload status
+        :type status: UploadStatus
+
+        :return: pixmap icon
+        :rtype: QPixmap
+        """
         if status == UploadStatus.CREATED:
             result = QIcon(QgsApplication.iconPath("mTaskQueued.svg")).pixmap(
                 QSize(16, 16)
@@ -102,16 +111,25 @@ class UploadListModel(QStandardItemModel):
             )
         return result
 
-    def set_datastore(self, datastore: str) -> None:
-        """
-        Refresh QStandardItemModel data with current datastore upload
+    def set_datastore(
+        self, datastore_id: str, dataset_name: Optional[str] = None
+    ) -> None:
+        """Refresh QStandardItemModel data with current datastore upload
 
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param dataset_name: dataset name
+        :type dataset_name: str, optional
         """
         self.removeRows(0, self.rowCount())
 
         manager = UploadRequestManager()
         try:
-            uploads = manager.get_upload_list(datastore)
+            if dataset_name:
+                tags = {"datasheet_name": dataset_name}
+                uploads = manager.get_upload_list(datastore_id, tags)
+            else:
+                uploads = manager.get_upload_list(datastore_id)
             for upload in uploads:
                 self.insert_upload(upload)
         except ReadUploadException as exc:
@@ -122,6 +140,11 @@ class UploadListModel(QStandardItemModel):
             )
 
     def insert_upload(self, upload: Upload) -> None:
+        """Insert upload in model
+
+        :param upload: upload to insert
+        :type upload: Upload
+        """
         row = self.rowCount()
         self.insertRow(row)
 
@@ -131,5 +154,5 @@ class UploadListModel(QStandardItemModel):
             self.index(row, self.DATE_COL),
             as_datetime(upload.get_last_event_date()),
         )
-        self.setData(self.index(row, self.ID_COL), upload.id)
+        self.setData(self.index(row, self.ID_COL), upload._id)
         self.setData(self.index(row, self.STATUS_COL), upload.status)

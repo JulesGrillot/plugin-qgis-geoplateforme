@@ -4,28 +4,20 @@ import math
 import re
 from dataclasses import dataclass
 from enum import Enum
-from typing import List
+from typing import List, Optional, Self
 
 # PyQGIS
-from qgis.core import QgsApplication, QgsBlockingNetworkRequest, QgsSettings
 from qgis.PyQt.QtCore import (
     QByteArray,
     QCoreApplication,
-    QEventLoop,
-    QFile,
-    QIODevice,
     QUrl,
-)
-from qgis.PyQt.QtNetwork import (
-    QHttpMultiPart,
-    QHttpPart,
-    QNetworkAccessManager,
-    QNetworkRequest,
 )
 
 # plugin
 from geoplateforme.api.check import CheckExecution, CheckRequestManager
 from geoplateforme.api.custom_exceptions import (
+    AddTagException,
+    DeleteTagException,
     DeleteUploadException,
     FileUploadException,
     ReadUploadException,
@@ -35,7 +27,6 @@ from geoplateforme.api.custom_exceptions import (
     UploadClosingException,
     UploadCreationException,
 )
-from geoplateforme.api.utils import qgs_blocking_get_request
 from geoplateforme.toolbelt import NetworkRequestsManager, PlgLogger, PlgOptionsManager
 
 logger = logging.getLogger(__name__)
@@ -52,23 +43,284 @@ class UploadStatus(Enum):
     DELETED = "DELETED"
 
 
+class UploadType(Enum):
+    VECTOR = "VECTOR"
+    RASTER = "RASTER"
+    ARCHIVE = "ARCHIVE"
+    ROK4PYRAMID = "ROK4-PYRAMID"
+    INDEX = "INDEX"
+    HISTORICIMAGERY = "HISTORIC-IMAGERY"
+    POINTCLOUD = "POINT-CLOUD"
+    PYRAMID3D = "PYRAMID-3D"
+
+
+class UploadVisibility(Enum):
+    PRIVATE = "PRIVATE"
+    REFERENCED = "REFERENCED"
+    PUBLIC = "PUBLIC"
+
+
+class UploadField(Enum):
+    NAME = "name"
+    DESCRIPTION = "description"
+    TYPE = "type"
+    VISIBILITY = "visibility"
+    STATUS = "status"
+    SRS = "srs"
+    CONTACT = "contact"
+    SIZE = "size"
+    LASTEVENT = "last_event"
+    TAGS = "tags"
+    BBOX = "bbox"
+
+
 @dataclass
 class Upload:
-    id: str
+    _id: str
     datastore_id: str
-    name: str
-    description: str
-    srs: str
-    status: str
-    size: int = 0
-    tags: dict = None
-    last_event: dict = None
+    is_detailed: bool = False
+    # Optional
+    _name: Optional[str] = None
+    _type: Optional[UploadType] = None
+    _visibility: Optional[UploadVisibility] = None
+    _description: Optional[str] = None
+    _srs: Optional[str] = None
+    _status: Optional[UploadStatus] = None
+    _contact: Optional[str] = None
+    _size: Optional[int] = None
+    _tags: Optional[dict] = None
+    _extent: Optional[dict] = None
+    _type_infos: Optional[dict] = None
+    _extra: Optional[dict] = None
+    _last_event: Optional[dict] = None
+
+    @property
+    def name(self) -> str:
+        """Returns the name of the upload.
+
+        :return: upload name
+        :rtype: str
+        """
+        if not self._name and not self.is_detailed:
+            self.update_from_api()
+        return self._name
+
+    @property
+    def type(self) -> UploadType:
+        """Returns the type of the upload.
+
+        :return: upload type
+        :rtype: UploadType
+        """
+        if not self._type and not self.is_detailed:
+            self.update_from_api()
+        return self._type
+
+    @property
+    def status(self) -> UploadStatus:
+        """Returns the status of the upload.
+
+        :return: upload status
+        :rtype: UploadStatus
+        """
+        if not self._status and not self.is_detailed:
+            self.update_from_api()
+        return self._status
+
+    @property
+    def visibility(self) -> UploadVisibility:
+        """Returns the visibility of the upload.
+
+        :return: upload visibility
+        :rtype: UploadVisibility
+        """
+        if not self._visibility and not self.is_detailed:
+            self.update_from_api()
+        return self._visibility
+
+    @property
+    def description(self) -> str:
+        """Returns the description of the upload.
+
+        :return: upload description
+        :rtype: str
+        """
+        if not self._description and not self.is_detailed:
+            self.update_from_api()
+        return self._description
+
+    @property
+    def contact(self) -> str:
+        """Returns the contact of the upload.
+
+        :return: upload contact
+        :rtype: str
+        """
+        if not self._contact and not self.is_detailed:
+            self.update_from_api()
+        return self._contact
+
+    @property
+    def tags(self) -> dict:
+        """Returns the tags of the upload.
+
+        :return: upload tags
+        :rtype: dict
+        """
+        if not self._tags and not self.is_detailed:
+            self.update_from_api()
+        return self._tags
+
+    @property
+    def type_infos(self) -> dict:
+        """Returns the type_infos of the upload.
+
+        :return: upload type_infos
+        :rtype: dict
+        """
+        if not self._type_infos and not self.is_detailed:
+            self.update_from_api()
+        return self._type_infos
+
+    @property
+    def extra(self) -> dict:
+        """Returns the extra of the upload.
+
+        :return: upload extra
+        :rtype: dict
+        """
+        if not self._extra and not self.is_detailed:
+            self.update_from_api()
+        return self._extra
+
+    @property
+    def size(self) -> int:
+        """Returns the size of the upload.
+
+        :return: upload size
+        :rtype: int
+        """
+        if not self._size and not self.is_detailed:
+            self.update_from_api()
+        return self._size
+
+    @property
+    def srs(self) -> str:
+        """Returns the srs of the upload.
+
+        :return: upload srs
+        :rtype: str
+        """
+        if not self._srs and not self.is_detailed:
+            self.update_from_api()
+        return self._srs
+
+    @property
+    def extent(self) -> dict:
+        """Returns the extent of the upload.
+
+        :return: upload extent
+        :rtype: dict
+        """
+        if not self._extent and not self.is_detailed:
+            self.update_from_api()
+        return self._extent
+
+    @property
+    def last_event(self) -> dict:
+        """Returns the last_event of the upload.
+
+        :return: upload last_event
+        :rtype: dict
+        """
+        if not self._last_event and not self.is_detailed:
+            self.update_from_api()
+        return self._last_event
+
+    def update_from_api(self):
+        """Update the upload by calling API details."""
+        manager = UploadRequestManager()
+        data = manager.get_upload_json(self.datastore_id, self._id)
+
+        if "name" in data:
+            self._name = data["name"]
+        if "type" in data:
+            self._type = UploadType(data["type"])
+        if "status" in data:
+            self._status = UploadStatus(data["status"])
+        if "visibility" in data:
+            self._visibility = UploadVisibility(data["visibility"])
+        if "description" in data:
+            self._description = data["description"]
+        if "contact" in data:
+            self._contact = data["contact"]
+        if "extra" in data:
+            self._extra = data["extra"]
+        if "tags" in data:
+            self._tags = data["tags"]
+        if "type_infos" in data:
+            self._type_infos = data["type_infos"]
+        if "size" in data:
+            self._size = data["size"]
+        if "srs" in data:
+            self._srs = data["srs"]
+        if "last_event" in data:
+            self._last_event = data["last_event"]
+        if "extent" in data:
+            self._extent = data["extent"]
+        self.is_detailed = True
 
     def get_last_event_date(self) -> str:
         result = ""
         if self.last_event and "date" in self.last_event:
             result = self.last_event["date"]
         return result
+
+    @classmethod
+    def from_dict(cls, datastore_id: str, val: dict) -> Self:
+        """Load object from a dict.
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param val: dict value to load
+        :type val: dict
+
+        :return: object with attributes filled from dict.
+        :rtype: Upload
+        """
+        res = cls(
+            _id=val["_id"],
+            datastore_id=datastore_id,
+        )
+
+        if "name" in val:
+            res._name = val["name"]
+        if "type" in val:
+            res._type = UploadType(val["type"])
+        if "status" in val:
+            res._status = UploadStatus(val["status"])
+        if "visibility" in val:
+            res._visibility = UploadVisibility(val["visibility"])
+        if "description" in val:
+            res._description = val["description"]
+        if "contact" in val:
+            res._contact = val["contact"]
+        if "extra" in val:
+            res._extra = val["extra"]
+        if "tags" in val:
+            res._tags = val["tags"]
+        if "type_infos" in val:
+            res._type_infos = val["type_infos"]
+        if "size" in val:
+            res._size = val["size"]
+        if "srs" in val:
+            res._srs = val["srs"]
+        if "last_event" in val:
+            res._last_event = val["last_event"]
+        if "extent" in val:
+            res._extent = val["extent"]
+
+        return res
 
 
 class UploadRequestManager:
@@ -81,7 +333,6 @@ class UploadRequestManager:
         """
         self.log = PlgLogger().log
         self.request_manager = NetworkRequestsManager()
-        self.ntwk_requester_blk = QgsBlockingNetworkRequest()
         self.plg_settings = PlgOptionsManager.get_plg_settings()
 
     def tr(self, message):
@@ -110,69 +361,118 @@ class UploadRequestManager:
             f"{self.plg_settings.base_url_api_entrepot}/datastores/{datastore}/uploads"
         )
 
-    def get_upload_list(self, datastore: str) -> List[Upload]:
-        """
-        Get list of upload
+    def get_upload_list(
+        self,
+        datastore_id: str,
+        with_fields: Optional[List[UploadField]] = None,
+        tags: Optional[dict] = None,
+    ) -> List[Upload]:
+        """Get list of upload
 
-        Args:
-            datastore: (str) datastore id
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param with_fields: list of field to be add to the response
+        :type with_fields: List[UploadField], optional
+        :param tags: list of tags to filter data
+        :type tags: dict, optional
 
-        Returns: list of available upload, raise ReadUploadException otherwise
+        :raises ReadUploadException: when error occur during requesting the API
+
+        :return: list of available upload
+        :rtype: List[Upload]
         """
-        self.log(f"{__name__}.get_upload_list(datastore:{datastore})")
-        nb_value = self._get_nb_available_upload(datastore)
+        self.log(f"{__name__}.get_upload_list(datastore:{datastore_id})")
+        nb_value = self._get_nb_available_upload(datastore_id)
         nb_request = math.ceil(nb_value / self.MAX_LIMIT)
         result = []
         for page in range(0, nb_request):
-            result += self._get_upload_list(datastore, page + 1, self.MAX_LIMIT)
+            result += self._get_upload_list(
+                datastore_id, page + 1, self.MAX_LIMIT, with_fields, tags
+            )
         return result
 
     def _get_upload_list(
-        self, datastore: str, page: int = 1, limit: int = MAX_LIMIT
+        self,
+        datastore_id: str,
+        page: int = 1,
+        limit: int = MAX_LIMIT,
+        with_fields: Optional[List[UploadField]] = None,
+        tags: Optional[dict] = None,
     ) -> List[Upload]:
+        """Get list of upload
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param page: page number (start at 1)
+        :type page: int
+        :param limit: nb response per pages
+        :type limit: int
+        :param with_fields: list of field to be add to the response
+        :type with_fields: List[UploadField], optional
+        :param tags: list of tags to filter data
+        :type tags: dict, optional
+
+        :raises ReadUploadException: when error occur during requesting the API
+
+        :return: list of available upload
+        :rtype: List[Upload]
         """
-        Get list of upload
 
-        Args:
-            datastore: (str) datastore id
-            page: (int) page number (start at 1)
-            limit: (int)
+        # request additionnal fields
+        add_fields = ""
+        if with_fields:
+            for field in with_fields:
+                add_fields += f"&fields={field.value}"
+        # Add filter on tags
+        tags_url = ""
+        if tags:
+            for key, value in dict.items(tags):
+                tags_url += f"&tags[{key}]={value}"
 
-        Returns: list of available upload, raise ReadUploadException otherwise
+        try:
+            reply = self.request_manager.get_url(
+                url=QUrl(
+                    f"{self.get_base_url(datastore_id)}?page={page}&limit={limit}{add_fields}{tags_url}"
+                ),
+                config_id=self.plg_settings.qgis_auth_id,
+            )
+        except ConnectionError as err:
+            raise ReadUploadException(f"Error while fetching upload : {err}")
+
+        data = json.loads(reply.data())
+
+        return [Upload.from_dict(datastore_id, upload) for upload in data]
+
+    def _get_nb_available_upload(
+        self, datastore_id: str, tags: Optional[dict] = None
+    ) -> int:
+        """Get number of available upload
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param tags: list of tags to filter data
+        :type tags: dict, optional
+
+        :raises ReadUploadException: when error occur during requesting the API
+
+        :return: number of available data
+        :rtype: int
         """
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-
-        req = QNetworkRequest(
-            QUrl(f"{self.get_base_url(datastore)}?page={page}&limit={limit}")
-        )
-
-        req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk, req, ReadUploadException
-        )
-        data = json.loads(req_reply.content().data().decode("utf-8"))
-        uploads_id = [val["_id"] for val in data]
-
-        return [self.get_upload(datastore, upload) for upload in uploads_id]
-
-    def _get_nb_available_upload(self, datastore: str) -> int:
-        """
-        Get number of available upload
-
-        Args:
-            datastore: (str) datastore id
-
-        Returns: (int) number of available data, raise ReadUploadException in case of request error
-
-        """
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-
         # For now read with maximum limit possible
-        req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}?limit=1"))
+        tags_url = ""
+        if tags:
+            for key, value in dict.items(tags):
+                tags_url += f"&tags[{key}]={value}"
+        try:
+            req_reply = self.request_manager.get_url(
+                url=QUrl(f"{self.get_base_url(datastore_id)}?limit=1{tags_url}"),
+                config_id=self.plg_settings.qgis_auth_id,
+                return_req_reply=True,
+            )
+        except ConnectionError as err:
+            raise ReadUploadException(f"Error while fetching upload: {err}")
 
-        req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk, req, UnavailableUploadException
-        )
-
+        # check response
         content_range = req_reply.rawHeader(b"Content-Range").data().decode("utf-8")
         match = re.match(
             r"(?P<min>\d+)\s?-\s?(?P<max>\d+)?\s?\/?\s?(?P<nb_val>\d+|\*)?",
@@ -186,105 +486,155 @@ class UploadRequestManager:
             )
         return nb_val
 
-    def get_upload(self, datastore: str, upload: str) -> Upload:
-        """
-        Get upload.
+    def get_upload(self, datastore_id: str, upload_id: str) -> Upload:
+        """Get upload
 
-        Args:
-            datastore: (str) datastore id
-            upload: (str) upload id
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param upload_id: upload id
+        :type upload_id: str
 
-        Returns: (upload) Upload if available, raise UnavailableUploadException otherwise
+        :raises UnavailableUploadException: when error occur during requesting the API
 
-        """
-        self.log(f"{__name__}.get_upload(datastore:{datastore}, upload: {upload})")
-
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{upload}"))
-
-        req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk, req, UnavailableUploadException
-        )
-        data = json.loads(req_reply.content().data().decode("utf-8"))
-        return self._upload_from_json(data, datastore)
-
-    def delete(self, datastore: str, upload: str) -> None:
-        """
-        Delete an upload. Raise DeleteUploadException if an error occurs
-
-        Args:
-            datastore: (str) datastore id
-            upload: (str) upload id
-        """
-        self.log(f"{__name__}.delete(datastore:{datastore}, upload: {upload})")
-
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req_delete = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{upload}"))
-        # send request
-        resp = self.ntwk_requester_blk.deleteResource(req_delete)
-
-        # check response
-        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
-            req_reply = self.ntwk_requester_blk.reply()
-            data = json.loads(req_reply.content().data().decode("utf-8"))
-            raise DeleteUploadException(
-                f"Error while deleting upload : {self.ntwk_requester_blk.errorMessage()}. Reply error: {data}"
-            )
-
-    @staticmethod
-    def _upload_from_json(data, datastore: str) -> Upload:
-        upload = Upload(
-            id=data["_id"],
-            datastore_id=datastore,
-            name=data["name"],
-            description=data["description"],
-            srs=data["srs"],
-            status=data["status"],
-        )
-        if "size" in data:
-            upload.size = data["size"]
-        if "tags" in data:
-            upload.tags = data["tags"]
-        if "last_event" in data:
-            upload.last_event = data["last_event"]
-        return upload
-
-    def get_upload_checks_execution(
-        self, datastore: str, upload: str
-    ) -> List[CheckExecution]:
-        """
-        Get upload checks execution.
-
-        Args:
-            datastore: (str) datastore id
-            upload: (str) upload id
-
-        Returns: [Execution] Upload checks execution list if upload available, raise UnavailableUploadException otherwise
+        :return: Upload if available
+        :rtype: Upload
         """
         self.log(
-            f"{__name__}.get_upload_checks_execution(datastore:{datastore}, upload: {upload})"
+            f"{__name__}.get_upload(datastore:{datastore_id}, upload: {upload_id})"
         )
 
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{upload}/checks"))
-
-        # headers
-        req.setHeader(
-            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
+        return Upload.from_dict(
+            datastore_id, self.get_upload_json(datastore_id, upload_id)
         )
 
-        # send request
-        resp = self.ntwk_requester_blk.get(req, forceRefresh=True)
+    def get_upload_json(self, datastore_id: str, upload_id: str) -> dict:
+        """Get dict values of upload
 
-        # check response
-        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
-            raise UnavailableUploadException(
-                f"Error while fetching upload : {self.ntwk_requester_blk.errorMessage()}"
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param upload_id: upload id
+        :type upload_id: str
+
+        :raises UnavailableUploadException: when error occur during requesting the API
+
+        :return: dict values of upload
+        :rtype: dict
+        """
+        try:
+            reply = self.request_manager.get_url(
+                url=QUrl(f"{self.get_base_url(datastore_id)}/{upload_id}"),
+                config_id=self.plg_settings.qgis_auth_id,
             )
+            return json.loads(reply.data())
+        except ConnectionError as err:
+            raise UnavailableUploadException(f"Error while fetching upload : {err}")
+
+    def delete(self, datastore_id: str, upload_id: str) -> None:
+        """Delete an upload.
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param upload_id: upload id
+        :type upload_id: str
+
+        :raises DeleteUploadException: when error occur during requesting the API
+        """
+        self.log(f"{__name__}.delete(datastore:{datastore_id}, upload: {upload_id})")
+
+        try:
+            self.request_manager.delete_url(
+                url=QUrl(f"{self.get_base_url(datastore_id)}/{upload_id}"),
+                config_id=self.plg_settings.qgis_auth_id,
+            )
+        except ConnectionError as err:
+            raise DeleteUploadException(f"Error while deleting upload : {err}.")
+
+    def add_tags(self, datastore_id: str, upload_id: str, tags: dict) -> None:
+        """Add tags to upload
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param upload_id: upload id
+        :type upload_id: str
+        :param tags: dictionary of tags
+        :type tags: dict
+
+        :raises AddTagException: when error occur during requesting the API
+        """
+        self.log(
+            f"{__name__}.add_tags(datastore:{datastore_id},upload:{upload_id}, tags:{tags})"
+        )
+
+        try:
+            # encode data
+            data = QByteArray()
+            data.append(json.dumps(tags))
+            self.request_manager.post_url(
+                url=QUrl(f"{self.get_base_url(datastore_id)}/{upload_id}/tags"),
+                config_id=self.plg_settings.qgis_auth_id,
+                data=data,
+            )
+        except ConnectionError as err:
+            raise AddTagException(f"Error while adding tag to upload : {err}")
+
+    def delete_tags(self, datastore_id: str, upload_id: str, tags: list[str]) -> None:
+        """Delete tags of upload
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param upload_id: upload id
+        :type upload_id: str
+        :param tags: list of tags to delete
+        :type tags: list[str]
+
+        :raises DeleteTagException: when error occur during requesting the API
+        """
+        self.log(
+            f"{__name__}.delete_tags(datastore:{datastore_id},upload:{upload_id}, tags:{tags})"
+        )
+
+        url = f"{self.get_base_url(datastore_id)}/{upload_id}/tags?"
+        # Add all tag to remove
+        for tag in tags:
+            url += f"&tags={tag}"
+
+        try:
+            self.request_manager.delete_url(
+                url=QUrl(url),
+                config_id=self.plg_settings.qgis_auth_id,
+            )
+        except ConnectionError as err:
+            raise DeleteTagException(f"Error while deleting tags for upload : {err}")
+
+    def get_upload_checks_execution(
+        self, datastore_id: str, upload_id: str
+    ) -> List[CheckExecution]:
+        """Get upload checks execution.
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param upload_id: upload id
+        :type upload_id: str
+
+        :raises UnavailableUploadException: when error occur during requesting the API
+
+        :return: Upload checks execution list if upload available
+        :rtype: List[CheckExecution]
+        """
+        self.log(
+            f"{__name__}.get_upload_checks_execution(datastore:{datastore_id}, upload: {upload_id})"
+        )
+
+        try:
+            reply = self.request_manager.get_url(
+                url=QUrl(f"{self.get_base_url(datastore_id)}/{upload_id}/checks"),
+                config_id=self.plg_settings.qgis_auth_id,
+            )
+        except ConnectionError as err:
+            raise UnavailableUploadException(f"Error while fetching upload : {err}")
 
         # check response
-        req_reply = self.ntwk_requester_blk.reply()
-        data = json.loads(req_reply.content().data())
+        data = json.loads(reply.data())
         exec_list = []
 
         try:
@@ -293,7 +643,7 @@ class UploadRequestManager:
                 for execution in executions:
                     exec_list.append(
                         check_manager.get_execution(
-                            datastore=datastore, exec_id=execution["_id"]
+                            datastore=datastore_id, exec_id=execution["_id"]
                         )
                     )
         except UnavailableExecutionException as exc:
@@ -304,183 +654,129 @@ class UploadRequestManager:
 
     def create_upload(
         self,
-        datastore: str,
+        datastore_id: str,
         name: str,
         description: str,
         srs: str,
     ) -> Upload:
-        """
-        Create upload on Geoplateforme entrepot
+        """Create upload on Geoplateforme entrepot
 
-        Args:
-            datastore: (str) datastore id
-            name: (str) upload name
-            description: (str) upload description
-            srs: (QgsCoordinateReferenceSystem) upload srs
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param name: upload name
+        :type name: str
+        :param description: upload description
+        :type description: str
+        :param srs: upload srs
+        :type srs: str
 
-        Returns: Upload if creation succeeded, raise UploadCreationException otherwise
+        :raises UploadCreationException: when error occur during requesting the API
 
+        :return: Upload if creation succeeded
+        :rtype: Upload
         """
         self.log(
-            f"{__name__}.create_upload(datastore:{datastore}, name: {name}, description: {description}, srs: {srs})"
+            f"{__name__}.create_upload(datastore:{datastore_id}, name: {name}, description: {description}, srs: {srs})"
         )
 
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req_post = QNetworkRequest(QUrl(self.get_base_url(datastore)))
-        # headers
-        req_post.setHeader(
-            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
-        )
-
-        # encode data
-        data = QByteArray()
-        data_map = {
-            "description": description,
-            "name": name,
-            "type": "VECTOR",
-            "srs": srs,
-        }
-        data.append(json.dumps(data_map))
-
-        # send request
-        resp = self.ntwk_requester_blk.post(req_post, data=data)
-
-        # check response
-        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
-            raise UploadCreationException(
-                f"Error while creating upload : "
-                f"{self.ntwk_requester_blk.errorMessage()}"
+        try:
+            # encode data
+            data = QByteArray()
+            data_map = {
+                "description": description,
+                "name": name,
+                "type": "VECTOR",
+                "srs": srs,
+            }
+            data.append(json.dumps(data_map))
+            reply = self.request_manager.post_url(
+                url=QUrl(self.get_base_url(datastore_id)),
+                config_id=self.plg_settings.qgis_auth_id,
+                data=data,
             )
+        except ConnectionError as err:
+            raise UploadCreationException(f"Error while creating upload : {err}")
+
         # check response type
-        req_reply = self.ntwk_requester_blk.reply()
-        data = json.loads(req_reply.content().data())
-        return self._upload_from_json(data, datastore)
+        data = json.loads(reply.data())
+        return Upload.from_dict(datastore_id, data)
 
-    @staticmethod
-    def get_qgis_proxy_params_str() -> str:
-        """Gets the proxy params from QGIS settings.
-        Returns None if proxy is not enabled in QGIS. Otherwise,
-        returns proxy params in a single string"""
-        sett = QgsSettings()
-        proxyEnabled = sett.value("proxy/proxyEnabled", "")
-        proxyType = sett.value("proxy/proxyType", "")
-        proxyHost = sett.value("proxy/proxyHost", "")
-        proxyPort = sett.value("proxy/proxyPort", "")
-        proxyUser = sett.value("proxy/proxyUser", "")
-        proxyPassword = sett.value("proxy/proxyPassword", "")
-        if proxyEnabled != "true":
-            return ""
-        if not proxyHost:
-            return ""
-        proxyStr = proxyHost + ":" + proxyPort
-        if proxyUser:
-            proxyStr = proxyUser + ":" + proxyPassword + "@" + proxyStr
-        if proxyType == "Socks5Proxy":
-            proxyStr = "socks5://" + proxyStr
-        else:
-            proxyStr = "https://" + proxyStr
-        return proxyStr
+    def add_file(self, datastore_id: str, upload_id: str, filename: str) -> None:
+        """Add file to upload by using QNetworkAccessManager and QHttpMultiPart
 
-    def add_file(self, datastore: str, upload: str, filename: str) -> None:
-        """
-        Add file to upload by using QNetworkAccessManager and QHttpMultiPart
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param upload_id: upload id
+        :type upload_id: str
+        :param filename: file to import
+        :type filename: str
 
-        Args:
-            datastore: (str) datastore id
-            upload: (str) upload id
-            filename: (str) file to import
+        :raises FileUploadException: when error occur during requesting the API
         """
         self.log(
-            f"{__name__}.add_file(datastore:{datastore}, upload: {upload}, filename: {filename})"
+            f"{__name__}.add_file(datastore:{datastore_id}, upload: {upload_id}, filename: {filename})"
         )
 
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req_post = QNetworkRequest(
-            QUrl(f"{self.get_base_url(datastore)}/{upload}/data")
-        )
+        try:
+            self.request_manager.post_file(
+                url=QUrl(self.get_base_url(datastore_id)),
+                config_id=self.plg_settings.qgis_auth_id,
+                file_path=filename,
+            )
+        except ConnectionError as err:
+            raise FileUploadException(f"Error while posting upload file : {err}")
 
-        # Create multipart
-        multipart = QHttpMultiPart(QHttpMultiPart.ContentType.FormDataType)
-        filepart = QHttpPart()
+    def close_upload(self, datastore_id: str, upload_id: str) -> None:
+        """Close upload on Geoplateforme entrepot
 
-        # headers
-        filepart.setHeader(
-            QNetworkRequest.KnownHeaders.ContentDispositionHeader,
-            f'form-data; name="filename" filename="{filename}"',
-        )
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param upload_id: upload id
+        :type upload_id: str
 
-        file = QFile(filename)
-        file.setParent(
-            multipart
-        )  # we cannot delete the file now, so delete it with the multiPart
-        file.open(QIODevice.OpenModeFlag.ReadOnly)
-
-        filepart.setBodyDevice(file)
-        multipart.append(filepart)
-
-        networkManager = QNetworkAccessManager(self.ntwk_requester_blk)
-        QgsApplication.authManager().updateNetworkRequest(
-            req_post, self.plg_settings.qgis_auth_id
-        )
-        reply = networkManager.post(req_post, multipart)
-        multipart.setParent(reply)
-
-        # Add event loop to wait for reply execution
-        loop = QEventLoop()
-        reply.finished.connect(loop.quit)
-        loop.exec()
-
-        # check response
-        if reply.error() != QgsBlockingNetworkRequest.ErrorCode.NoError:
-            raise FileUploadException(reply.errorString())
-
-    def close_upload(self, datastore: str, upload: str) -> None:
-        """
-        Close upload on Geoplateforme entrepot
-
-        Args:
-            datastore: (str) datastore id
-            upload: (str) upload id
-        """
-        self.log(f"{__name__}.close_upload(datastore:{datastore}, upload: {upload})")
-
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req_post = QNetworkRequest(
-            QUrl(f"{self.get_base_url(datastore)}/{upload}/close")
-        )
-
-        # headers
-        req_post.setHeader(
-            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
-        )
-
-        # send request
-        resp = self.ntwk_requester_blk.post(req_post, data=QByteArray())
-
-        # check response
-        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
-            raise UploadClosingException({self.ntwk_requester_blk.errorMessage()})
-
-    def get_upload_file_tree(self, datastore: str, upload: str) -> dict:
-        """
-        Get upload file tree.
-
-        Args:
-            datastore: (str) datastore id
-            upload: (str) upload id
-
-        Returns: (dict) Upload file tree if available, raise UnavailableUploadFileTreeException otherwise
-
+        :raises UploadClosingException: when error occur during requesting the API
         """
         self.log(
-            f"{__name__}.get_upload_file_tree(datastore:{datastore}, upload: {upload})"
+            f"{__name__}.close_upload(datastore:{datastore_id}, upload: {upload_id})"
         )
 
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{upload}/tree"))
+        try:
+            # encode data
+            data = QByteArray()
+            self.request_manager.post_url(
+                url=QUrl(f"{self.get_base_url(datastore_id)}/{upload_id}/close"),
+                config_id=self.plg_settings.qgis_auth_id,
+                data=data,
+            )
+        except ConnectionError as err:
+            raise UploadClosingException(f"Error while closing upload : {err}")
 
-        req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk, req, UnavailableUploadFileTreeException
+    def get_upload_file_tree(self, datastore_id: str, upload_id: str) -> dict:
+        """Get upload file tree.
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param upload_id: upload name
+        :type upload_id: str
+
+        :raises UnavailableUploadFileTreeException: when error occur during requesting the API
+
+        :return: Upload file tree if available
+        :rtype: dict
+        """
+        self.log(
+            f"{__name__}.get_upload_file_tree(datastore:{datastore_id}, upload: {upload_id})"
         )
-        data = json.loads(req_reply.content().data().decode("utf-8"))
+
+        try:
+            reply = self.request_manager.get_url(
+                url=QUrl(f"{self.get_base_url(datastore_id)}/{upload_id}/close"),
+                config_id=self.plg_settings.qgis_auth_id,
+            )
+        except ConnectionError as err:
+            raise UnavailableUploadFileTreeException(
+                f"Error while fetching file tree : {err}"
+            )
+
+        data = json.loads(reply.data())
         return data

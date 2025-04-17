@@ -29,7 +29,7 @@ class StoredDataListModel(QStandardItemModel):
     OTHER_ACTIONS_COL = 8
 
     def __init__(self, parent: QObject = None):
-        """QStandardItemModel for datastore list display
+        """QStandardItemModel for stored data list display
 
         :param parent: parent
         :type parent: QObject

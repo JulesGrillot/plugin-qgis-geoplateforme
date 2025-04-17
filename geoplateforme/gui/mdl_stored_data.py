@@ -29,11 +29,10 @@ class StoredDataListModel(QStandardItemModel):
     OTHER_ACTIONS_COL = 8
 
     def __init__(self, parent: QObject = None):
-        """
-        QStandardItemModel for datastore list display
+        """QStandardItemModel for datastore list display
 
-        Args:
-            parent: QObject parent
+        :param parent: parent
+        :type parent: QObject
         """
         super().__init__(parent)
         self.log = PlgLogger().log
@@ -52,14 +51,13 @@ class StoredDataListModel(QStandardItemModel):
         )
 
     def get_stored_data_row(self, stored_data_id: str) -> int:
-        """
-        Get stored data row from stored data id, returns -1 if stored data not available
+        """Get stored data row from stored data id, returns -1 if stored data not available
 
-        Args:
-            stored_data_id: (str) stored data id
+        :param stored_data_id: stored data id
+        :type stored_data_id: str
 
-        Returns: (int) stored data id row, -1 if stored data not available
-
+        :return: stored data id row, -1 if stored data not available
+        :rtype: int
         """
         result = -1
         for row in range(0, self.rowCount()):
@@ -71,16 +69,16 @@ class StoredDataListModel(QStandardItemModel):
     def data(
         self, index: QtCore.QModelIndex, role: int = QtCore.Qt.DisplayRole
     ) -> QVariant:
-        """
-        Override QStandardItemModel data() for :
-        - decoration role for status icon
+        """Override QStandardItemModel data() for decoration role for status icon
 
         Args:
-            index: QModelIndex
-            role: Qt role
+        :param index: index
+        :type index: QModelIndex
+        :param role: Qt role
+        :type role: int
 
-        Returns: QVariant
-
+        :return: data at index with role
+        :rtype: QVariant
         """
         result = super().data(index, role)
         if role == QtCore.Qt.DecorationRole:
@@ -149,20 +147,25 @@ class StoredDataListModel(QStandardItemModel):
 
         return result
 
-    def set_datastore(self, datastore: str, dataset: Optional[str] = None) -> None:
-        """
-        Refresh QStandardItemModel data with current datastore stored data
+    def set_datastore(
+        self, datastore_id: str, dataset_name: Optional[str] = None
+    ) -> None:
+        """Refresh QStandardItemModel data with current datastore stored data
 
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param dataset_name: dataset name
+        :type dataset_name: str, optional
         """
         self.removeRows(0, self.rowCount())
 
         manager = StoredDataRequestManager()
         try:
-            if dataset:
-                tags = {"datasheet_name": dataset}
-                stored_datas = manager.get_stored_data_list(datastore, tags=tags)
+            if dataset_name:
+                tags = {"datasheet_name": dataset_name}
+                stored_datas = manager.get_stored_data_list(datastore_id, tags=tags)
             else:
-                stored_datas = manager.get_stored_data_list(datastore)
+                stored_datas = manager.get_stored_data_list(datastore_id)
             for stored_data in stored_datas:
                 self.insert_stored_data(stored_data)
         except ReadStoredDataException as exc:
@@ -173,6 +176,11 @@ class StoredDataListModel(QStandardItemModel):
             )
 
     def insert_stored_data(self, stored_data: StoredData) -> None:
+        """Insert stored data in model
+
+        :param stored_data: stored data to insert
+        :type stored_data: StoredData
+        """
         row = self.rowCount()
         self.insertRow(row)
 

@@ -283,6 +283,7 @@ class StoredData:
         return self._last_event
 
     def update_from_api(self):
+        """Update the stored data by calling API details."""
         manager = StoredDataRequestManager()
         data = manager.get_stored_data_json(self.datastore_id, self.id)
 
@@ -319,6 +320,11 @@ class StoredData:
         self.is_detailed = True
 
     def get_last_event_date(self) -> str:
+        """Returns the stored data last_event date.
+
+        :return: stored data last_event date
+        :rtype: str
+        """
         result = ""
         if not self.last_event and not self.is_detailed:
             self.update_from_api()
@@ -327,6 +333,11 @@ class StoredData:
         return result
 
     def get_storage_type(self) -> StorageType:
+        """Returns the the stored data storage type.
+
+        :return: stored data storage type
+        :rtype: StorageType
+        """
         result = StorageType.UNDEFINED
         if not self.is_detailed:
             self.update_from_api()
@@ -335,6 +346,11 @@ class StoredData:
         return result
 
     def get_tables(self) -> List[TableRelation]:
+        """Returns the list of the stored data relation tables.
+
+        :return: stored data relation tables
+        :rtype: List[TableRelation]
+        """
         tables = []
         if not self.is_detailed:
             self.update_from_api()
@@ -348,7 +364,12 @@ class StoredData:
             ]
         return tables
 
-    def zoom_levels(self) -> List:
+    def zoom_levels(self) -> List[str]:
+        """Returns the list of the stored data zoom levels.
+
+        :return: stored data zoom levels
+        :rtype: List[str]
+        """
         zoom_levels = []
         if not self.is_detailed:
             self.update_from_api()
@@ -357,11 +378,10 @@ class StoredData:
         return zoom_levels
 
     def get_current_step(self) -> StoredDataStep:
-        """
-        Define current stored data step from available tags.
+        """Define current stored data step from available tags.
 
-        Returns: StoredDataStep
-
+        :return: current stored data step
+        :rtype: StoredDataStep
         """
         if self.type == StoredDataType.VECTORDB:
             result = self._get_vector_db_step()
@@ -372,11 +392,10 @@ class StoredData:
         return result
 
     def _get_vector_db_step(self) -> StoredDataStep:
-        """
-        Define current stored data step for vector-db from available tags.
+        """Define current stored data step for vector-db from available tags.
 
-        Returns: StoredDataStep
-
+        :return: current stored data step
+        :rtype: StoredDataStep
         """
         if not self.tags and not self.is_detailed:
             self.update_from_api()
@@ -393,11 +412,10 @@ class StoredData:
         return result
 
     def _get_pyramid_step(self) -> StoredDataStep:
-        """
-        Define current stored data step for pyramid from available tags.
+        """Define current stored data step for pyramid from available tags.
 
-        Returns: StoredDataStep
-
+        :return: current stored data step
+        :rtype: StoredDataStep
         """
         result = StoredDataStep.UNDEFINED
         if not self.tags and not self.is_detailed:
@@ -424,10 +442,10 @@ class StoredData:
         return result
 
     def create_extent_layer(self) -> QgsVectorLayer:
-        """
-        Create extent layer from geojson contains in extent key
+        """Create extent layer from geojson contains in extent key
 
-        Returns: QgsVectorLayer (invalid layer if extent not defined)
+        :return: vector layer from stored data extent (invalid layer if extent not defined)
+        :rtype: QgsVectorLayer
 
         """
         if not self.is_detailed:
@@ -440,12 +458,13 @@ class StoredData:
     def from_dict(cls, datastore_id: str, val: dict) -> Self:
         """Load object from a dict.
 
-        Args
-            datastore_id: (str) datastore id
-            val (dict): dict value to load
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param val: dict value to load
+        :type val: dict
 
-        Return
-            Self: object with attributes filled from dict.
+        :return: object with attributes filled from dict.
+        :rtype: StoredData
         """
         res = cls(
             id=val["_id"],
@@ -490,22 +509,19 @@ class StoredDataRequestManager:
     MAX_LIMIT = 50
 
     def get_base_url(self, datastore_id: str) -> str:
+        """Get base url for stored data for a datastore
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+
+        :return: url for stored data
+        :rtype: str
         """
-        Get base url for stored data for a datastore
 
-        Args:
-            datastore_id: (str) datastore id
-
-        Returns: url for uploads
-
-        """
         return f"{self.plg_settings.base_url_api_entrepot}/datastores/{datastore_id}/stored_data"
 
     def __init__(self):
-        """
-        Helper for stored_data request
-
-        """
+        """Helper for stored_data request"""
         self.log = PlgLogger().log
         self.request_manager = NetworkRequestsManager()
         self.plg_settings = PlgOptionsManager.get_plg_settings()
@@ -516,15 +532,19 @@ class StoredDataRequestManager:
         with_fields: Optional[List[StoredDataFeild]] = None,
         tags: Optional[dict] = None,
     ) -> List[StoredData]:
-        """
-        Get list of stored data
+        """Get list of stored data
 
-        Args:
-            datastore: (str) datastore id
-            with_fields: (Optional[List[StoredDataFeild]]) list of field to be add to the response
-            tags: (Optional[dict]) list of tags to filter data
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param with_fields: list of field to be add to the response
+        :type with_fields: List[StoredDataFeild], optional
+        :param tags: list of tags to filter data
+        :type tags: dict, optional
 
-        Returns: list of available stored data, raise ReadStoredDataException otherwise
+        :raises ReadStoredDataException: when error occur during requesting the API
+
+        :return: list of available stored data
+        :rtype: List[StoredData]
         """
         self.log(f"{__name__}.get_stored_data_list(datastore:{datastore})")
 
@@ -545,18 +565,25 @@ class StoredDataRequestManager:
         with_fields: Optional[List[StoredDataFeild]] = None,
         tags: Optional[dict] = None,
     ) -> List[StoredData]:
-        """
-        Get list of stored data
+        """Get list of stored data
 
-        Args:
-            datastore_id: (str) datastore id
-            page: (int) page number (start at 1)
-            limit: (int)
-            with_fields: (List[StoredDataFeild]) list of field to be add to the response
-            tags: (dict) list of tags to filter data
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param page: page number (start at 1)
+        :type page: int
+        :param limit: nb response per pages
+        :type limit: int
+        :param with_fields: list of field to be add to the response
+        :type with_fields: List[StoredDataFeild], optional
+        :param tags: list of tags to filter data
+        :type tags: dict, optional
 
-        Returns: list of available stored data, raise ReadStoredDataException otherwise
+        :raises ReadStoredDataException: when error occur during requesting the API
+
+        :return: list of available stored data
+        :rtype: List[StoredData]
         """
+
         # request additionnal fields
         add_fields = ""
         if with_fields:
@@ -581,15 +608,17 @@ class StoredDataRequestManager:
     def _get_nb_available_stored_data(
         self, datastore_id: str, tags: Optional[dict] = None
     ) -> int:
-        """
-        Get number of available stored data
+        """Get number of available stored data
 
-        Args:
-            datastore_id: (str) datastore id
-            tags: (dict) list of tags to filter data
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param tags: list of tags to filter data
+        :type tags: dict, optional
 
-        Returns: (int) number of available data, raise ReadStoredDataException in case of request error
+        :raises ReadStoredDataException: when error occur during requesting the API
 
+        :return: number of available data
+        :rtype: int
         """
         # For now read with maximum limit possible
         tags_url = ""
@@ -620,14 +649,17 @@ class StoredDataRequestManager:
         return nb_val
 
     def get_stored_data(self, datastore_id: str, stored_data_id: str) -> StoredData:
-        """
-        Get stored data by id
+        """Get stored data by id
 
-        Args:
-            datastore_id: (str) datastore id
-            stored_data_id: (str) stored data id
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param stored_data_id: stored data id
+        :type stored_data_id: str
 
-        Returns: stored data, raise ReadStoredDataException otherwise
+        :raises ReadStoredDataException: when error occur during requesting the API
+
+        :return: stored data
+        :rtype: StoredData
         """
         self.log(
             f"{__name__}.get_stored_data(datastore:{datastore_id},stored_data:{stored_data_id})"
@@ -637,14 +669,17 @@ class StoredDataRequestManager:
         )
 
     def get_stored_data_json(self, datastore_id: str, stored_data_id: str) -> dict:
-        """
-        Get dict values of stored data
+        """Get dict values of stored data
 
-        Args:
-            datastore_id: (str) datastore id
-            stored_data_id: (str) stored data id
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param stored_data_id: stored data id
+        :type stored_data_id: str
 
-        Returns: dict values of stored data, raise ReadStoredDataException otherwise
+        :raises ReadStoredDataException: when error occur during requesting the API
+
+        :return: dict values of stored data
+        :rtype: dict
         """
         try:
             reply = self.request_manager.get_url(
@@ -656,12 +691,14 @@ class StoredDataRequestManager:
             raise ReadStoredDataException(f"Error while fetching stored data : {err}")
 
     def delete(self, datastore_id: str, stored_data_id: str) -> None:
-        """
-        Delete a stored data. Raise DeleteStoredDataException if an error occurs
+        """Delete a stored data.
 
-        Args:
-            datastore_id: (str) datastore id
-            stored_data_id: (str) stored data id
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param stored_data_id: stored data id
+        :type stored_data_id: str
+
+        :raises DeleteStoredDataException: when error occur during requesting the API
         """
         self.log(
             f"{__name__}.delete(datastore:{datastore_id},stored_data:{stored_data_id})"
@@ -678,13 +715,16 @@ class StoredDataRequestManager:
             )
 
     def add_tags(self, datastore_id: str, stored_data_id: str, tags: dict) -> None:
-        """
-        Add tags to stored data
+        """Add tags to stored data
 
-        Args:
-            datastore_id:  (str) datastore id
-            stored_data_id: (str) stored_data id
-            tags: (dict) dictionary of tags
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param stored_data_id: stored data id
+        :type stored_data_id: str
+        :param tags: dictionary of tags
+        :type tags: dict
+
+        :raises AddTagException: when error occur during requesting the API
         """
         self.log(
             f"{__name__}.add_tags(datastore:{datastore_id},stored_data:{stored_data_id}, tags:{tags})"
@@ -702,14 +742,19 @@ class StoredDataRequestManager:
         except ConnectionError as err:
             raise AddTagException(f"Error while adding tag to stored_data : {err}")
 
-    def delete_tags(self, datastore_id: str, stored_data_id: str, tags: list) -> None:
-        """
-        Delete tags of stored data
+    def delete_tags(
+        self, datastore_id: str, stored_data_id: str, tags: list[str]
+    ) -> None:
+        """Delete tags of stored data
 
-        Args:
-            datastore_id:  (str) datastore id
-            stored_data_id: (str) stored_data id
-            tags: (list) list of tags
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param stored_data_id: stored data id
+        :type stored_data_id: str
+        :param tags: list of tags to delete
+        :type tags: list[str]
+
+        :raises DeleteTagException: when error occur during requesting the API
         """
         self.log(
             f"{__name__}.delete_tags(datastore:{datastore_id},stored_data:{stored_data_id}, tags:{tags})"

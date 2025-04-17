@@ -6,12 +6,10 @@ from enum import Enum
 from typing import List, Optional, Self
 
 from qgis.core import (
-    QgsBlockingNetworkRequest,
     QgsCoordinateReferenceSystem,
     QgsVectorLayer,
 )
 from qgis.PyQt.QtCore import QByteArray, QUrl
-from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # plugin
 from geoplateforme.api.custom_exceptions import (
@@ -598,11 +596,14 @@ class StoredDataRequestManager:
         if tags:
             for key, value in dict.items(tags):
                 tags_url += f"&tags[{key}]={value}"
-        req_reply = self.request_manager.get_url(
-            url=QUrl(f"{self.get_base_url(datastore_id)}?limit=1{tags_url}"),
-            config_id=self.plg_settings.qgis_auth_id,
-            return_req_reply=True,
-        )
+        try:
+            req_reply = self.request_manager.get_url(
+                url=QUrl(f"{self.get_base_url(datastore_id)}?limit=1{tags_url}"),
+                config_id=self.plg_settings.qgis_auth_id,
+                return_req_reply=True,
+            )
+        except ConnectionError as err:
+            raise ReadStoredDataException(f"Error while fetching stored data : {err}")
 
         # check response
         content_range = req_reply.rawHeader(b"Content-Range").data().decode("utf-8")
@@ -645,11 +646,14 @@ class StoredDataRequestManager:
 
         Returns: dict values of stored data, raise ReadStoredDataException otherwise
         """
-        reply = self.request_manager.get_url(
-            url=QUrl(f"{self.get_base_url(datastore_id)}/{stored_data_id}"),
-            config_id=self.plg_settings.qgis_auth_id,
-        )
-        return json.loads(reply.data())
+        try:
+            reply = self.request_manager.get_url(
+                url=QUrl(f"{self.get_base_url(datastore_id)}/{stored_data_id}"),
+                config_id=self.plg_settings.qgis_auth_id,
+            )
+            return json.loads(reply.data())
+        except ConnectionError as err:
+            raise ReadStoredDataException(f"Error while fetching stored data : {err}")
 
     def delete(self, datastore_id: str, stored_data_id: str) -> None:
         """
@@ -663,19 +667,14 @@ class StoredDataRequestManager:
             f"{__name__}.delete(datastore:{datastore_id},stored_data:{stored_data_id})"
         )
 
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req_delete = QNetworkRequest(
-            QUrl(f"{self.get_base_url(datastore_id)}/{stored_data_id}")
-        )
-        # send request
-        resp = self.ntwk_requester_blk.deleteResource(req_delete)
-
-        # check response
-        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
-            req_reply = self.ntwk_requester_blk.reply()
-            data = json.loads(req_reply.content().data().decode("utf-8"))
+        try:
+            self.request_manager.delete_url(
+                url=QUrl(f"{self.get_base_url(datastore_id)}/{stored_data_id}"),
+                config_id=self.plg_settings.qgis_auth_id,
+            )
+        except ConnectionError as err:
             raise DeleteStoredDataException(
-                f"Error while deleting stored_data : {self.ntwk_requester_blk.errorMessage()}. Reply error: {data}"
+                f"Error while deleting stored_data : {err}."
             )
 
     def add_tags(self, datastore_id: str, stored_data_id: str, tags: dict) -> None:
@@ -691,28 +690,17 @@ class StoredDataRequestManager:
             f"{__name__}.add_tags(datastore:{datastore_id},stored_data:{stored_data_id}, tags:{tags})"
         )
 
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req_post = QNetworkRequest(
-            QUrl(f"{self.get_base_url(datastore_id)}/{stored_data_id}/tags")
-        )
-
-        # headers
-        req_post.setHeader(
-            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
-        )
-
-        # encode data
-        data = QByteArray()
-        data.append(json.dumps(tags))
-
-        # send request
-        resp = self.ntwk_requester_blk.post(req_post, data=data, forceRefresh=True)
-
-        # check response
-        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
-            raise AddTagException(
-                f"Error while adding tag to stored_data : {self.ntwk_requester_blk.errorMessage()}"
+        try:
+            # encode data
+            data = QByteArray()
+            data.append(json.dumps(tags))
+            self.request_manager.post_url(
+                url=QUrl(f"{self.get_base_url(datastore_id)}/{stored_data_id}/tags"),
+                config_id=self.plg_settings.qgis_auth_id,
+                data=data,
             )
+        except ConnectionError as err:
+            raise AddTagException(f"Error while adding tag to stored_data : {err}")
 
     def delete_tags(self, datastore_id: str, stored_data_id: str, tags: list) -> None:
         """
@@ -727,26 +715,17 @@ class StoredDataRequestManager:
             f"{__name__}.delete_tags(datastore:{datastore_id},stored_data:{stored_data_id}, tags:{tags})"
         )
 
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
         url = f"{self.get_base_url(datastore_id)}/{stored_data_id}/tags?"
         # Add all tag to remove
         for tag in tags:
             url += f"&tags={tag}"
 
-        req_del = QNetworkRequest(QUrl(url))
-
-        # headers
-        req_del.setHeader(
-            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
-        )
-
-        # send request
-        resp = self.ntwk_requester_blk.deleteResource(req_del)
-
-        # check response
-        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
-            req_reply = self.ntwk_requester_blk.reply()
-            data = json.loads(req_reply.content().data().decode("utf-8"))
+        try:
+            self.request_manager.delete_url(
+                url=QUrl(url),
+                config_id=self.plg_settings.qgis_auth_id,
+            )
+        except ConnectionError as err:
             raise DeleteTagException(
-                f"Error while deleting tags for stored data : {self.ntwk_requester_blk.errorMessage()}. Reply error: {data}"
+                f"Error while deleting tags for stored data : {err}"
             )

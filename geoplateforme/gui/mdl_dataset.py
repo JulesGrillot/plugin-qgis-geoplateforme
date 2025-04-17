@@ -2,7 +2,7 @@ from qgis.PyQt.QtCore import QObject
 from qgis.PyQt.QtGui import QStandardItemModel
 
 from geoplateforme.api.custom_exceptions import UnavailableUserException
-from geoplateforme.api.stored_data import StoredDataFeild, StoredDataRequestManager
+from geoplateforme.api.stored_data import StoredDataField, StoredDataRequestManager
 from geoplateforme.toolbelt import PlgLogger
 
 
@@ -56,7 +56,7 @@ class DatasetListModel(QStandardItemModel):
                 if self.datastore_id:
                     manager = StoredDataRequestManager()
                     stored_datas = manager.get_stored_data_list(
-                        self.datastore_id, [StoredDataFeild.TAGS]
+                        self.datastore_id, [StoredDataField.TAGS]
                     )
 
                     for stored_data in stored_datas:

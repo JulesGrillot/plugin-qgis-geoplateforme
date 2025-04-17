@@ -184,7 +184,7 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                 tags = {
                     "upload_id": vector_db_stored_data.tags["upload_id"],
                     "proc_int_id": vector_db_stored_data.tags["proc_int_id"],
-                    "vectordb_id": vector_db_stored_data.id,
+                    "vectordb_id": vector_db_stored_data._id,
                     "pyramid_id": stored_data_id,
                     "proc_pyr_creat_id": exec_id,
                 }
@@ -202,7 +202,7 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                 }
                 stored_data_manager.add_tags(
                     datastore=datastore,
-                    stored_data=vector_db_stored_data.id,
+                    stored_data=vector_db_stored_data._id,
                     tags=vector_db_tag,
                 )
 

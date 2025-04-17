@@ -92,7 +92,7 @@ class ReportDialog(QDialog):
         self.lbl_status.setText(self._get_status_text(stored_data))
 
         self.lne_name.setText(stored_data.name)
-        self.lne_id.setText(stored_data.id)
+        self.lne_id.setText(stored_data._id)
         self.mdl_stored_data_details.set_stored_data(stored_data)
         self.gpx_data_structure.setVisible(len(stored_data.get_tables()) != 0)
         self.mdl_table_relation.set_stored_data_tables(stored_data)
@@ -160,7 +160,7 @@ class ReportDialog(QDialog):
         try:
             manager = ProcessingRequestManager()
             executions = manager.get_stored_data_executions(
-                datastore=stored_data.datastore_id, stored_data=stored_data.id
+                datastore=stored_data.datastore_id, stored_data=stored_data._id
             )
             for execution in executions:
                 widget = ExecutionLogWidget(stored_data.datastore_id, self)

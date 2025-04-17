@@ -53,7 +53,7 @@ class StoredDataStatus(Enum):
     DELETED = "DELETED"
 
 
-class StoredDataFeild(Enum):
+class StoredDataField(Enum):
     NAME = "name"
     DESCRIPTION = "description"
     TYPE = "type"
@@ -97,7 +97,7 @@ class TableRelation:
 
 @dataclass
 class StoredData:
-    id: str
+    _id: str
     datastore_id: str
     is_detailed: bool = False
     # Optional
@@ -285,7 +285,7 @@ class StoredData:
     def update_from_api(self):
         """Update the stored data by calling API details."""
         manager = StoredDataRequestManager()
-        data = manager.get_stored_data_json(self.datastore_id, self.id)
+        data = manager.get_stored_data_json(self.datastore_id, self._id)
 
         if "name" in data:
             self._name = data["name"]
@@ -467,7 +467,7 @@ class StoredData:
         :rtype: StoredData
         """
         res = cls(
-            id=val["_id"],
+            _id=val["_id"],
             datastore_id=datastore_id,
         )
 
@@ -529,7 +529,7 @@ class StoredDataRequestManager:
     def get_stored_data_list(
         self,
         datastore: str,
-        with_fields: Optional[List[StoredDataFeild]] = None,
+        with_fields: Optional[List[StoredDataField]] = None,
         tags: Optional[dict] = None,
     ) -> List[StoredData]:
         """Get list of stored data
@@ -562,7 +562,7 @@ class StoredDataRequestManager:
         datastore_id: str,
         page: int = 1,
         limit: int = MAX_LIMIT,
-        with_fields: Optional[List[StoredDataFeild]] = None,
+        with_fields: Optional[List[StoredDataField]] = None,
         tags: Optional[dict] = None,
     ) -> List[StoredData]:
         """Get list of stored data
@@ -595,12 +595,16 @@ class StoredDataRequestManager:
             for key, value in dict.items(tags):
                 tags_url += f"&tags[{key}]={value}"
 
-        reply = self.request_manager.get_url(
-            url=QUrl(
-                f"{self.get_base_url(datastore_id)}?page={page}&limit={limit}{add_fields}{tags_url}"
-            ),
-            config_id=self.plg_settings.qgis_auth_id,
-        )
+        try:
+            reply = self.request_manager.get_url(
+                url=QUrl(
+                    f"{self.get_base_url(datastore_id)}?page={page}&limit={limit}{add_fields}{tags_url}"
+                ),
+                config_id=self.plg_settings.qgis_auth_id,
+            )
+        except ConnectionError as err:
+            raise ReadStoredDataException(f"Error while fetching stored data : {err}")
+
         data = json.loads(reply.data())
 
         return [StoredData.from_dict(datastore_id, stored_data) for stored_data in data]

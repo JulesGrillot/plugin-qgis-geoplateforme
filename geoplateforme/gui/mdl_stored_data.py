@@ -192,7 +192,7 @@ class StoredDataListModel(QStandardItemModel):
             self.index(row, self.DATE_COL),
             as_datetime(stored_data.get_last_event_date()),
         )
-        self.setData(self.index(row, self.ID_COL), stored_data.id)
+        self.setData(self.index(row, self.ID_COL), stored_data._id)
         self.setData(self.index(row, self.TYPE_COL), stored_data.type)
         self.setData(self.index(row, self.STATUS_COL), stored_data.status)
         self.setData(self.index(row, self.OTHER_ACTIONS_COL), "...")

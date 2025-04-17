@@ -262,7 +262,7 @@ class StorageReportDialog(QDialog):
 
         data = {
             DeleteDataAlgorithm.DATASTORE: stored_data.datastore_id,
-            DeleteDataAlgorithm.STORED_DATA: stored_data.id,
+            DeleteDataAlgorithm.STORED_DATA: stored_data._id,
         }
         filename = tempfile.NamedTemporaryFile(
             prefix=f"qgis_{__title_clean__}_", suffix=".json"
@@ -277,13 +277,13 @@ class StorageReportDialog(QDialog):
         result, success = alg.run(parameters=params, context=context, feedback=feedback)
 
         if success:
-            row = self.mdl_stored_data.get_stored_data_row(stored_data.id)
+            row = self.mdl_stored_data.get_stored_data_row(stored_data._id)
             self.mdl_stored_data.removeRow(row)
             self._update_progress_bars()
         else:
             self.log(
                 self.tr("Stored data {0} delete error : {1}").format(
-                    stored_data.id, feedback.textLog()
+                    stored_data._id, feedback.textLog()
                 ),
                 log_level=1,
                 push=True,

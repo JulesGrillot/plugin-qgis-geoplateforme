@@ -103,56 +103,221 @@ class StoredData:
     datastore_id: str
     is_detailed: bool = False
     # Optional
-    name: Optional[str] = None
-    type: Optional[StoredDataType] = None
-    status: Optional[StoredDataStatus] = None
-    visibility: Optional[StoredDataVisibility] = None
-    description: Optional[str] = None
-    edition: Optional[dict] = None
-    contact: Optional[str] = None
-    tags: Optional[dict] = None
-    type_infos: Optional[dict] = None
-    extra: Optional[dict] = None
-    size: Optional[int] = None
-    srs: Optional[str] = None
-    extent: Optional[dict] = None
-    storage: Optional[dict] = None
-    last_event: Optional[dict] = None
+    _name: Optional[str] = None
+    _type: Optional[StoredDataType] = None
+    _status: Optional[StoredDataStatus] = None
+    _visibility: Optional[StoredDataVisibility] = None
+    _description: Optional[str] = None
+    _edition: Optional[dict] = None
+    _contact: Optional[str] = None
+    _tags: Optional[dict] = None
+    _type_infos: Optional[dict] = None
+    _extra: Optional[dict] = None
+    _size: Optional[int] = None
+    _srs: Optional[str] = None
+    _extent: Optional[dict] = None
+    _storage: Optional[dict] = None
+    _last_event: Optional[dict] = None
+
+    @property
+    def name(self) -> str:
+        """Returns the name of the stored data.
+
+        :return: stored data name
+        :rtype: str
+        """
+        if not self._name and not self.is_detailed:
+            self.update_from_api()
+        return self._name
+
+    @property
+    def type(self) -> StoredDataType:
+        """Returns the type of the stored data.
+
+        :return: stored data type
+        :rtype: StoredDataType
+        """
+        if not self._type and not self.is_detailed:
+            self.update_from_api()
+        return self._type
+
+    @property
+    def status(self) -> StoredDataStatus:
+        """Returns the status of the stored data.
+
+        :return: stored data status
+        :rtype: StoredDataStatus
+        """
+        if not self._status and not self.is_detailed:
+            self.update_from_api()
+        return self._status
+
+    @property
+    def visibility(self) -> StoredDataVisibility:
+        """Returns the visibility of the stored data.
+
+        :return: stored data visibility
+        :rtype: StoredDataVisibility
+        """
+        if not self._visibility and not self.is_detailed:
+            self.update_from_api()
+        return self._visibility
+
+    @property
+    def description(self) -> str:
+        """Returns the description of the stored data.
+
+        :return: stored data description
+        :rtype: str
+        """
+        if not self._description and not self.is_detailed:
+            self.update_from_api()
+        return self._description
+
+    @property
+    def edition(self) -> dict:
+        """Returns the edition of the stored data.
+
+        :return: stored data edition
+        :rtype: dict
+        """
+        if not self._edition and not self.is_detailed:
+            self.update_from_api()
+        return self._edition
+
+    @property
+    def contact(self) -> str:
+        """Returns the contact of the stored data.
+
+        :return: stored data contact
+        :rtype: str
+        """
+        if not self._contact and not self.is_detailed:
+            self.update_from_api()
+        return self._contact
+
+    @property
+    def tags(self) -> dict:
+        """Returns the tags of the stored data.
+
+        :return: stored data tags
+        :rtype: dict
+        """
+        if not self._tags and not self.is_detailed:
+            self.update_from_api()
+        return self._tags
+
+    @property
+    def type_infos(self) -> dict:
+        """Returns the type_infos of the stored data.
+
+        :return: stored data type_infos
+        :rtype: dict
+        """
+        if not self._type_infos and not self.is_detailed:
+            self.update_from_api()
+        return self._type_infos
+
+    @property
+    def extra(self) -> dict:
+        """Returns the extra of the stored data.
+
+        :return: stored data extra
+        :rtype: dict
+        """
+        if not self._extra and not self.is_detailed:
+            self.update_from_api()
+        return self._extra
+
+    @property
+    def size(self) -> int:
+        """Returns the size of the stored data.
+
+        :return: stored data size
+        :rtype: int
+        """
+        if not self._size and not self.is_detailed:
+            self.update_from_api()
+        return self._size
+
+    @property
+    def srs(self) -> str:
+        """Returns the srs of the stored data.
+
+        :return: stored data srs
+        :rtype: str
+        """
+        if not self._srs and not self.is_detailed:
+            self.update_from_api()
+        return self._srs
+
+    @property
+    def extent(self) -> dict:
+        """Returns the extent of the stored data.
+
+        :return: stored data extent
+        :rtype: dict
+        """
+        if not self._extent and not self.is_detailed:
+            self.update_from_api()
+        return self._extent
+
+    @property
+    def storage(self) -> dict:
+        """Returns the storage of the stored data.
+
+        :return: stored data storage
+        :rtype: dict
+        """
+        if not self._storage and not self.is_detailed:
+            self.update_from_api()
+        return self._storage
+
+    @property
+    def last_event(self) -> dict:
+        """Returns the last_event of the stored data.
+
+        :return: stored data last_event
+        :rtype: dict
+        """
+        if not self._last_event and not self.is_detailed:
+            self.update_from_api()
+        return self._last_event
 
     def update_from_api(self):
         manager = StoredDataRequestManager()
         data = manager.get_stored_data_json(self.datastore_id, self.id)
 
         if "name" in data:
-            self.name = data["name"]
+            self._name = data["name"]
         if "type" in data:
-            self.type = StoredDataType(data["type"])
+            self._type = StoredDataType(data["type"])
         if "status" in data:
-            self.status = StoredDataStatus(data["status"])
+            self._status = StoredDataStatus(data["status"])
         if "visibility" in data:
-            self.visibility = StoredDataVisibility(data["visibility"])
+            self._visibility = StoredDataVisibility(data["visibility"])
         if "description" in data:
-            self.description = data["description"]
+            self._description = data["description"]
         if "edition" in data:
-            self.edition = data["edition"]
+            self._edition = data["edition"]
         if "contact" in data:
-            self.contact = data["contact"]
+            self._contact = data["contact"]
         if "extra" in data:
-            self.extra = data["extra"]
+            self._extra = data["extra"]
         if "tags" in data:
-            self.tags = data["tags"]
+            self._tags = data["tags"]
         if "type_infos" in data:
-            self.type_infos = data["type_infos"]
+            self._type_infos = data["type_infos"]
         if "size" in data:
-            self.size = data["size"]
+            self._size = data["size"]
         if "srs" in data:
-            self.srs = data["srs"]
+            self._srs = data["srs"]
         if "storage" in data:
-            self.storage = data["storage"]
+            self._storage = data["storage"]
         if "last_event" in data:
-            self.last_event = data["last_event"]
+            self._last_event = data["last_event"]
         if "extent" in data:
-            self.extent = data["extent"]
+            self._extent = data["extent"]
         self.is_detailed = True
 
     def get_last_event_date(self) -> str:
@@ -290,35 +455,35 @@ class StoredData:
         )
 
         if "name" in val:
-            res.name = val["name"]
+            res._name = val["name"]
         if "type" in val:
-            res.type = StoredDataType(val["type"])
+            res._type = StoredDataType(val["type"])
         if "status" in val:
-            res.status = StoredDataStatus(val["status"])
+            res._status = StoredDataStatus(val["status"])
         if "visibility" in val:
-            res.visibility = StoredDataVisibility(val["visibility"])
+            res._visibility = StoredDataVisibility(val["visibility"])
         if "description" in val:
-            res.description = val["description"]
+            res._description = val["description"]
         if "edition" in val:
-            res.edition = val["edition"]
+            res._edition = val["edition"]
         if "contact" in val:
-            res.contact = val["contact"]
+            res._contact = val["contact"]
         if "extra" in val:
-            res.extra = val["extra"]
+            res._extra = val["extra"]
         if "tags" in val:
-            res.tags = val["tags"]
+            res._tags = val["tags"]
         if "type_infos" in val:
-            res.type_infos = val["type_infos"]
+            res._type_infos = val["type_infos"]
         if "size" in val:
-            res.size = val["size"]
+            res._size = val["size"]
         if "srs" in val:
-            res.srs = val["srs"]
+            res._srs = val["srs"]
         if "storage" in val:
-            res.storage = val["storage"]
+            res.s_torage = val["storage"]
         if "last_event" in val:
-            res.last_event = val["last_event"]
+            res._last_event = val["last_event"]
         if "extent" in val:
-            res.extent = val["extent"]
+            res._extent = val["extent"]
 
         return res
 

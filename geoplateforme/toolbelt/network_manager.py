@@ -96,6 +96,8 @@ class NetworkRequestsManager:
     def build_request(
         self,
         url: Optional[QUrl] = None,
+        config_id: Optional[str] = None,
+        headers: Optional[dict] = None,
         http_content_type: str = "application/json",
         http_user_agent: str = f"{__title__}/{__version__}",
     ) -> QNetworkRequest:
@@ -103,6 +105,10 @@ class NetworkRequestsManager:
 
         :param url: request url, defaults to None
         :type url: QUrl, optional
+        :param config_id: QGIS auth config ID, defaults to None
+        :type config_id: str, optional
+        :param headers: headers to add to the request, defaults to None
+        :type headers: dict, optional
         :param http_content_type: content type, defaults to "application/json"
         :type http_content_type: str, optional
         :param http_user_agent: http user agent, defaults to f"{__title__}/{__version__}"
@@ -112,15 +118,28 @@ class NetworkRequestsManager:
         :rtype: QNetworkRequest
         """
         # create network object
+        auth_manager = QgsApplication.authManager()
         qreq = QNetworkRequest(url=url)
+        auth_manager.updateNetworkRequest(qreq, config_id)
 
         # headers
-        headers = {
+        all_headers = {
             b"Accept": bytes(http_content_type, "utf8"),
             b"User-Agent": bytes(http_user_agent, "utf8"),
         }
-        for k, v in headers.items():
-            qreq.setRawHeader(k, v)
+        if headers:
+            all_headers.update(headers)
+        try:
+            for k, v in all_headers.items():
+                qreq.setRawHeader(k, v)
+        except Exception as err:
+            self.log(
+                message=self.tr(
+                    "Something went wrong during request preparation: {}"
+                ).format(err),
+                log_level=2,
+                push=False,
+            )
 
         return qreq
 
@@ -130,6 +149,7 @@ class NetworkRequestsManager:
         config_id: Optional[str] = None,
         debug_log_response: bool = True,
         return_req_reply=False,
+        headers: Optional[dict] = None,
     ) -> Union[QByteArray, QgsNetworkReplyContent]:
         """Send a get method.
 
@@ -141,6 +161,8 @@ class NetworkRequestsManager:
         :type debug_log_response: bool, optional
         :param return_req_reply: option to return request reply instead of request reply content, defaults to False
         :type return_req_reply: bool, optional
+        :param headers: headers to add to the request, defaults to None
+        :type headers: dict, optional
 
         :raises ConnectionError: if any problem occurs during feed fetching.
         :raises TypeError: if response mime-type is not valid
@@ -149,9 +171,7 @@ class NetworkRequestsManager:
         :rtype: QByteArray
         """
 
-        auth_manager = QgsApplication.authManager()
-        req = QNetworkRequest(url)
-        auth_manager.updateNetworkRequest(req, config_id)
+        req = self.build_request(url=url, config_id=config_id, headers=headers)
 
         # send request
         try:
@@ -211,13 +231,99 @@ class NetworkRequestsManager:
             self.log(message=err_msg, log_level=Qgis.MessageLevel.Critical, push=True)
             return QByteArray()
 
+    def delete_url(
+        self,
+        url: QUrl,
+        config_id: Optional[str] = None,
+        debug_log_response: bool = True,
+        return_req_reply=False,
+        headers: Optional[dict] = None,
+    ) -> Union[QByteArray, QgsNetworkReplyContent]:
+        """Send a get method.
+
+        :param url: URL to request
+        :type url: QUrl
+        :param config_id: QGIS auth config ID, defaults to None
+        :type config_id: str, optional
+        :param debug_log_response: option to do not log decoded content in debug mode, defaults to True
+        :type debug_log_response: bool, optional
+        :param return_req_reply: option to return request reply instead of request reply content, defaults to False
+        :type return_req_reply: bool, optional
+        :param headers: headers to add to the request, defaults to None
+        :type headers: dict, optional
+
+        :raises ConnectionError: if any problem occurs during feed fetching.
+        :raises TypeError: if response mime-type is not valid
+
+        :return: feed response in bytes
+        :rtype: QByteArray
+        """
+
+        req = self.build_request(url=url, config_id=config_id, headers=headers)
+
+        # send request
+        try:
+            req_status = self.ntwk_requester.deleteResource(request=req)
+
+            # check if request is fine
+            if req_status != QgsBlockingNetworkRequest.ErrorCode.NoError:
+                self.log(
+                    message=self.ntwk_requester.errorMessage(),
+                    log_level=Qgis.MessageLevel.Critical,
+                    push=True,
+                )
+                raise ConnectionError(self.ntwk_requester.errorMessage())
+
+            req_reply = self.ntwk_requester.reply()
+
+            if req_reply.error() != QNetworkReply.NetworkError.NoError:
+                self.log(
+                    message=req_reply.errorString(),
+                    log_level=Qgis.MessageLevel.Critical,
+                    push=1,
+                )
+                raise ConnectionError(req_reply.errorString())
+
+            if PlgOptionsManager.get_plg_settings().debug_mode:
+                if debug_log_response:
+                    self.log(
+                        message="DELETE response: {} ({})".format(
+                            req_reply.content().data().decode("utf-8"),
+                            convert_octets(req_reply.content().size()),
+                        ),
+                        log_level=Qgis.MessageLevel.NoLevel,
+                        push=False,
+                    )
+                else:
+                    self.log(
+                        message="DELETE response from {}. Received content size: {}".format(
+                            url.toString(), convert_octets(req_reply.content().size())
+                        ),
+                        log_level=Qgis.MessageLevel.NoLevel,
+                        push=False,
+                    )
+
+            if return_req_reply:
+                return req_reply
+            return req_reply.content()
+
+        except Exception as err:
+            err_msg = self.tr(
+                "DELETE request on URL {} (with auth config {}) failed. Trace: {}".format(
+                    url, config_id, err
+                )
+            )
+
+            self.log(message=err_msg, log_level=Qgis.MessageLevel.Critical, push=True)
+            return QByteArray()
+
     def post_url(
         self,
         url: QUrl,
         data: Optional[QByteArray] = None,
         config_id: Optional[str] = None,
-        content_type_header: str = "",
         debug_log_response: bool = True,
+        headers: Optional[dict] = None,
     ) -> Optional[QByteArray]:
         """Send a post method with data option.
         :raises ConnectionError: if any problem occurs during feed fetching.
@@ -229,21 +335,15 @@ class NetworkRequestsManager:
         :type data: QByteArray, optional
         :param config_id: QGIS auth config ID, defaults to None
         :type config_id: str, optional
-        :param content_type_header: content type header for request, defaults to ""
-        :type content_type_header: str, optional
         :param debug_log_response: option to do not log decoded content in debug mode, defaults to True
         :type debug_log_response: bool, optional
+        :param headers: headers to add to the request, defaults to None
+        :type headers: dict, optional
 
         :return: feed response in bytes
         :rtype: QByteArray
         """
-        auth_manager = QgsApplication.authManager()
-        req = QNetworkRequest(url)
-        if content_type_header:
-            req.setHeader(
-                QNetworkRequest.KnownHeaders.ContentTypeHeader, content_type_header
-            )
-        auth_manager.updateNetworkRequest(req, config_id)
+        req = self.build_request(url=url, config_id=config_id, headers=headers)
 
         # send request
         try:
@@ -302,8 +402,8 @@ class NetworkRequestsManager:
         url: QUrl,
         data: Optional[QByteArray] = None,
         config_id: Optional[str] = None,
-        content_type_header: str = "",
         debug_log_response: bool = True,
+        headers: Optional[dict] = None,
     ) -> Optional[QByteArray]:
         """Send a put method with data option.
         :raises ConnectionError: if any problem occurs during feed fetching.
@@ -319,17 +419,13 @@ class NetworkRequestsManager:
         :type content_type_header: str, optional
         :param debug_log_response: option to do not log decoded content in debug mode, defaults to True
         :type debug_log_response: bool, optional
+        :param headers: headers to add to the request, defaults to None
+        :type headers: dict, optional
 
         :return: feed response in bytes
         :rtype: QByteArray
         """
-        auth_manager = QgsApplication.authManager()
-        req = QNetworkRequest(url)
-        if content_type_header:
-            req.setHeader(
-                QNetworkRequest.KnownHeaders.ContentTypeHeader, content_type_header
-            )
-        auth_manager.updateNetworkRequest(req, config_id)
+        req = self.build_request(url=url, config_id=config_id, headers=headers)
 
         # send request
         try:

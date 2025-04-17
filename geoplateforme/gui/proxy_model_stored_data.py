@@ -2,7 +2,12 @@ from typing import List
 
 from qgis.PyQt.QtCore import QModelIndex, QObject, QSortFilterProxyModel, Qt
 
-from geoplateforme.api.stored_data import StorageType, StoredDataStatus, StoredDataStep
+from geoplateforme.api.stored_data import (
+    StorageType,
+    StoredDataStatus,
+    StoredDataStep,
+    StoredDataType,
+)
 from geoplateforme.gui.mdl_stored_data import StoredDataListModel
 
 
@@ -15,60 +20,56 @@ class StoredDataProxyModel(QSortFilterProxyModel):
         self.steps = []
         self.storage_types = []
 
-    def set_filter_type(self, filter_type: List) -> None:
-        """
-        Define filter of expected stored data type
+    def set_filter_type(self, filter_type: List[StoredDataType]) -> None:
+        """Define filter of expected stored data type
 
-        Args:
-            filter_type: expected stored data type
+        :param filter_type: expected stored data type
+        :type filter_type: List[StoredDataType]
         """
         self.filter_type = filter_type
 
-    def set_visible_steps(self, steps: [StoredDataStep]) -> None:
-        """
-        Define filter of visible steps for stored data
+    def set_visible_steps(self, steps: List[StoredDataStep]) -> None:
+        """Define filter of visible steps for stored data
 
-        Args:
-            steps: List[StoredDataStep] visible step list
+        :param steps: visible step list
+        :type steps: List[StoredDataStep]
         """
         self.steps = steps
 
-    def set_visible_storage_type(self, storage_types: [StorageType]) -> None:
-        """
-        Define filter of visible storage type for stored data
+    def set_visible_storage_type(self, storage_types: List[StorageType]) -> None:
+        """Define filter of visible storage type for stored data
 
-        Args:
-            storage_types: List[StorageType] visible storage type list
+        :param storage_types: visible storage type list
+        :type storage_types: List[StorageType]
         """
         self.storage_types = storage_types
 
     def set_visible_status(self, status: List[StoredDataStatus]) -> None:
-        """
-        Define filter of visible status for stored data
+        """Define filter of visible status for stored data
 
-        Args:
-            status: List[StoredDataStatus] visible status list
+        :param status: visible status list
+        :type status: List[StoredDataStatus]
         """
         self.visible_status = status
 
     def set_invisible_status(self, status: List[StoredDataStatus]) -> None:
-        """
-        Define filter of inviseble status for stored data
+        """Define filter of inviseble status for stored data
 
-        Args:
-            status: List[StoredDataStatus] invisible status list
+        :param status: invisible status list
+        :type status: List[StoredDataStatus]
         """
         self.invisible_status = status
 
     def filterAcceptsRow(self, source_row: int, source_parent: QModelIndex) -> bool:
-        """
-        Filter visible rows for stored data
+        """Filter visible rows for stored data
 
-        Args:
-            source_row: (int) source row
-            source_parent: (QModelIndex) source parent
+        :param source_row: source row
+        :type source_row: int
+        :param source_parent: source parent
+        :type source_parent: QModelIndex
 
-        Returns: True if row is visible, False otherwise
+        :return: True if row is visible, False otherwise
+        :rtype: bool
 
         """
         result = True
@@ -78,11 +79,9 @@ class StoredDataProxyModel(QSortFilterProxyModel):
             type_index = self.sourceModel().index(
                 source_row, StoredDataListModel.TYPE_COL, source_parent
             )
-            type_value = self.sourceModel().data(
-                type_index, Qt.ItemDataRole.DisplayRole
-            )
-
-            result = type_value in self.filter_type
+            stored_data = self.sourceModel().data(type_index, Qt.ItemDataRole.UserRole)
+            if stored_data:
+                result = stored_data.type in self.filter_type
 
         # Check stored data status
         if (len(self.visible_status) or len(self.invisible_status)) and result:
@@ -93,7 +92,7 @@ class StoredDataProxyModel(QSortFilterProxyModel):
                 status_index, Qt.ItemDataRole.DisplayRole
             )
             if status_value:
-                status = StoredDataStatus[status_value]
+                status = status_value
                 if len(self.invisible_status):
                     result &= status not in self.invisible_status
                 if len(self.visible_status):

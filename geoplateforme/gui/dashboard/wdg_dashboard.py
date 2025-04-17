@@ -250,7 +250,7 @@ class DashboardWidget(QWidget):
         if reply == QMessageBox.StandardButton.Yes:
             data = {
                 DeleteDataAlgorithm.DATASTORE: stored_data.datastore_id,
-                DeleteDataAlgorithm.STORED_DATA: stored_data.id,
+                DeleteDataAlgorithm.STORED_DATA: stored_data._id,
             }
             filename = tempfile.NamedTemporaryFile(
                 prefix=f"qgis_{__title_clean__}_", suffix=".json"
@@ -266,13 +266,13 @@ class DashboardWidget(QWidget):
                 parameters=params, context=context, feedback=feedback
             )
             if success:
-                row = self.mdl_stored_data.get_stored_data_row(stored_data.id)
+                row = self.mdl_stored_data.get_stored_data_row(stored_data._id)
                 self.mdl_stored_data.removeRow(row)
 
             else:
                 self.log(
                     self.tr("delete data error").format(
-                        stored_data.id, feedback.textLog()
+                        stored_data._id, feedback.textLog()
                     ),
                     log_level=1,
                     push=True,
@@ -308,7 +308,7 @@ class DashboardWidget(QWidget):
         QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
         publication_wizard = TileCreationWizard(self)
         publication_wizard.set_datastore_id(stored_data.datastore_id)
-        publication_wizard.set_stored_data_id(stored_data.id)
+        publication_wizard.set_stored_data_id(stored_data._id)
         QGuiApplication.restoreOverrideCursor()
         publication_wizard.show()
 
@@ -322,7 +322,7 @@ class DashboardWidget(QWidget):
         QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
         publication_wizard = PublicationFormCreation(self)
         publication_wizard.set_datastore_id(stored_data.datastore_id)
-        publication_wizard.set_stored_data_id(stored_data.id)
+        publication_wizard.set_stored_data_id(stored_data._id)
         QGuiApplication.restoreOverrideCursor()
         publication_wizard.show()
 
@@ -373,7 +373,7 @@ class DashboardWidget(QWidget):
         QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
         publication_wizard = UpdatePublicationWizard(self)
         publication_wizard.set_datastore_id(stored_data.datastore_id)
-        publication_wizard.set_stored_data_id(stored_data.id)
+        publication_wizard.set_stored_data_id(stored_data._id)
 
         QGuiApplication.restoreOverrideCursor()
         publication_wizard.show()
@@ -424,7 +424,7 @@ class DashboardWidget(QWidget):
         if reply == QMessageBox.StandardButton.Yes:
             data = {
                 UnpublishAlgorithm.DATASTORE: stored_data.datastore_id,
-                UnpublishAlgorithm.STORED_DATA: stored_data.id,
+                UnpublishAlgorithm.STORED_DATA: stored_data._id,
             }
             filename = tempfile.NamedTemporaryFile(
                 prefix=f"qgis_{__title_clean__}_", suffix=".json"
@@ -447,7 +447,7 @@ class DashboardWidget(QWidget):
             else:
                 self.log(
                     self.tr("Unpublish error ").format(
-                        stored_data.id, feedback.textLog()
+                        stored_data._id, feedback.textLog()
                     ),
                     log_level=1,
                     push=True,

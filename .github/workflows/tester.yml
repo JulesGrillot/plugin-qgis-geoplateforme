@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - '**.py'
+      - "**.py"
       - .github/workflows/tester.yml
       - requirements/testing.txt
 
@@ -13,14 +13,13 @@ on:
     branches:
       - main
     paths:
-      - '**.py'
+      - "**.py"
       - .github/workflows/tester.yml
       - requirements/testing.txt
 
 env:
   PROJECT_FOLDER: "geoplateforme"
   PYTHON_VERSION: 3.9
-
 
 jobs:
   tests-unit:

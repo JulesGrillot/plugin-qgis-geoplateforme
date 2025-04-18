@@ -41,7 +41,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+# Global environment variables
 env:
+  PROJECT_FOLDER: geoplateforme
   PYTHON_VERSION: 3.12
 
 jobs:

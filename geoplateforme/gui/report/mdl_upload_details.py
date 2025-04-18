@@ -33,7 +33,7 @@ class UploadDetailsTreeModel(QStandardItemModel):
         self.removeRows(0, self.rowCount())
 
         self._insert_details_row(self.tr("Name"), upload.name)
-        self._insert_details_row(self.tr("ID"), upload.id)
+        self._insert_details_row(self.tr("ID"), upload._id)
         self._insert_details_row(self.tr("SRS"), upload.srs)
         self._insert_details_row(self.tr("Size"), str(f"{upload.size / 1e6} Mo"))
 
@@ -62,11 +62,11 @@ class UploadDetailsTreeModel(QStandardItemModel):
         elif status != UploadStatus.DELETED:
             try:
                 manager = UploadRequestManager()
-                result = manager.get_upload_file_tree(upload.datastore_id, upload.id)
+                result = manager.get_upload_file_tree(upload.datastore_id, upload._id)
             except UnavailableUploadFileTreeException as exc:
                 self.log(
                     self.tr("Can't define upload '{}' file tree : {}").format(
-                        upload.id, exc
+                        upload._id, exc
                     ),
                     push=True,
                 )

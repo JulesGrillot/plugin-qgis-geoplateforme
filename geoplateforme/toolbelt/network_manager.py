@@ -35,7 +35,10 @@ from qgis.PyQt.QtCore import (
     QIODevice,
     QUrl,
 )
-from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
+from qgis.PyQt.QtNetwork import (
+    QNetworkReply,
+    QNetworkRequest,
+)
 
 # project
 from geoplateforme.__about__ import __title__, __version__
@@ -531,6 +534,8 @@ class NetworkRequestsManager:
         url: QUrl,
         file_path: Path,
         config_id: Optional[str] = None,
+        debug_log_response: bool = True,
+        headers: Optional[dict] = None,
     ) -> Optional[QByteArray]:
         """Post a file using multipart/form-data
 
@@ -540,6 +545,11 @@ class NetworkRequestsManager:
         :type file_path: Path
         :param config_id: authentication configuration ID, defaults to None
         :type config_id: Optional[str], optional
+        :param debug_log_response: option to do not log decoded content in debug mode, defaults to True
+        :type debug_log_response: bool, optional
+        :param headers: headers to add to the request, defaults to None
+        :type headers: dict, optional
+
         :return: feed response in bytes
         :rtype: Optional[QByteArray]
         """
@@ -576,13 +586,18 @@ class NetworkRequestsManager:
         body = b"\r\n".join(body_list)
 
         # Define content header with multipart/form-data and used boundary
-        content_type_header = f"multipart/form-data; boundary={boundary}"
+        all_headers = {
+            b"Content-Type": bytes(f"multipart/form-data; boundary={boundary}", "utf8"),
+        }
+        if headers:
+            all_headers.update(headers)
 
         req_reply = self.post_url(
             url=url,
             data=body,
             config_id=config_id,
-            content_type_header=content_type_header,
+            debug_log_response=debug_log_response,
+            headers=all_headers,
         )
         return req_reply
 

@@ -241,13 +241,13 @@ class StorageReportDialog(QDialog):
         """
         try:
             manager = UploadRequestManager()
-            manager.delete(datastore=upload.datastore_id, upload=upload.id)
-            row = self.mdl_upload.get_upload_row(upload.id)
+            manager.delete(datastore=upload.datastore_id, upload=upload._id)
+            row = self.mdl_upload.get_upload_row(upload._id)
             self.mdl_upload.removeRow(row)
             self._update_progress_bars()
         except DeleteUploadException as exc:
             self.log(
-                self.tr("Upload {0} delete error : {1}").format(upload.id, exc),
+                self.tr("Upload {0} delete error : {1}").format(upload._id, exc),
                 log_level=1,
                 push=True,
             )

@@ -5,18 +5,17 @@ on:
     branches:
       - main
     paths:
-      - '**.py'
+      - "**.py"
 
   pull_request:
     branches:
       - main
     paths:
-      - '**.py'
+      - "**.py"
 
 env:
   PROJECT_FOLDER: "geoplateforme"
   PYTHON_VERSION: 3.9
-
 
 jobs:
   lint-py:

@@ -240,7 +240,8 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
                     and "proc_int_id" in stored_data.tags.keys()
                 ):
                     execution = processing_manager.get_execution(
-                        datastore=datastore_id, exec_id=stored_data.tags["proc_int_id"]
+                        datastore_id=datastore_id,
+                        exec_id=stored_data.tags["proc_int_id"],
                     )
             except (
                 UnavailableProcessingException,
@@ -277,7 +278,7 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
                     and "proc_pyr_creat_id" in stored_data.tags.keys()
                 ):
                     execution = processing_manager.get_execution(
-                        datastore=datastore_id,
+                        datastore_id=datastore_id,
                         exec_id=stored_data.tags["proc_pyr_creat_id"],
                     )
 

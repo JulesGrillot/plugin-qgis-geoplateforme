@@ -288,7 +288,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
                     and "proc_pyr_creat_id" in stored_data.tags.keys()
                 ):
                     execution = processing_manager.get_execution(
-                        datastore=datastore_id,
+                        datastore_id=datastore_id,
                         exec_id=stored_data.tags["proc_pyr_creat_id"],
                     )
 

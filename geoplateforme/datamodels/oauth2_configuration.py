@@ -110,6 +110,8 @@ class OAuth2Configuration:
         configuration.
         :type qgis_config_map: dict
 
+        :raises InvalidOAuthConfiguration: when config map is not JSON compliant
+
         :return: instance of OAuth2Configuration populated with the data from the
         configuration map.
         :rtype: OAuth2Configuration

@@ -111,17 +111,17 @@ class UploadCreationAlgorithm(QgsProcessingAlgorithm):
 
                 # Create upload
                 upload = manager.create_upload(
-                    datastore=datastore, name=name, description=description, srs=srs
+                    datastore_id=datastore, name=name, description=description, srs=srs
                 )
 
                 # Add files
                 for filename in files:
                     manager.add_file(
-                        datastore=datastore, upload=upload._id, filename=filename
+                        datastore_id=datastore, upload_id=upload._id, filename=filename
                     )
 
                 # Close upload
-                manager.close_upload(datastore=datastore, upload=upload._id)
+                manager.close_upload(datastore_id=datastore, upload_id=upload._id)
 
                 # Get create upload id
                 upload_id = upload._id

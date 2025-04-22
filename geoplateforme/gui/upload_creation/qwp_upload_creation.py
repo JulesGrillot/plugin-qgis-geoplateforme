@@ -114,6 +114,7 @@ class UploadCreationPageWizard(QWizardPage):
             VectorDatabaseCreationAlgorithm.NAME: self.qwp_upload_edition.wdg_upload_creation.get_name(),
             VectorDatabaseCreationAlgorithm.SRS: self.qwp_upload_edition.wdg_upload_creation.get_crs(),
             VectorDatabaseCreationAlgorithm.FILES: self.qwp_upload_edition.wdg_upload_creation.get_filenames(),
+            VectorDatabaseCreationAlgorithm.DATASET_NAME: self.qwp_upload_edition.wdg_upload_creation.get_name(),
         }
         filename = tempfile.NamedTemporaryFile(suffix=".json").name
         with open(filename, "w") as file:

@@ -1,5 +1,6 @@
 import json
 import tempfile
+from typing import Tuple
 
 from qgis.core import (
     QgsApplication,
@@ -11,6 +12,9 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
+from geoplateforme.api.custom_exceptions import AddTagException
+from geoplateforme.api.stored_data import StoredDataRequestManager
+from geoplateforme.api.upload import UploadRequestManager
 from geoplateforme.processing.upload_creation import UploadCreationAlgorithm
 from geoplateforme.processing.upload_database_integration import (
     UploadDatabaseIntegrationAlgorithm,
@@ -35,6 +39,7 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
     NAME = "name"
     FILES = "files"
     SRS = "srs"
+    DATASET_NAME = "dataset_name"
 
     CREATED_UPLOAD_ID = "CREATED_UPLOAD_ID"
     CREATED_STORED_DATA_ID = "CREATED_STORED_DATA_ID"
@@ -76,6 +81,7 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
             "{\n"
             f'    "{self.DATASTORE}": datastore id (str),\n'
             f'    "{self.NAME}": wanted stored data name (str),\n'
+            f'    "{self.DATASET_NAME}": dataset name, used for tag definition (str),\n'
             f'    "{self.FILES}": upload full file path list [str],\n'
             f'    "{self.SRS}": upload SRS (str) must be in IGNF or EPSG repository,\n'
             "}\n"
@@ -102,6 +108,7 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
             files = data[self.FILES]
             srs = data[self.SRS]
             datastore = data[self.DATASTORE]
+            dataset_name = data[self.DATASET_NAME]
 
             # Create upload
             upload_id = self._create_upload(
@@ -109,8 +116,31 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
             )
 
             # Run database integration
-            vector_db_stored_data_id = self._database_integration(
+            vector_db_stored_data_id, exec_id = self._database_integration(
                 name, datastore, upload_id, context, feedback
+            )
+
+            stored_data_tags = {
+                "upload_id": upload_id,
+                "datasheet_name": dataset_name,
+                "proc_int_id": exec_id,
+            }
+            upload_tags = {
+                "vectordb_id": vector_db_stored_data_id,
+                "proc_int_id": exec_id,
+                "datasheet_name": dataset_name,
+            }
+
+            self._add_upload_tag(
+                datastore_id=datastore,
+                upload_id=upload_id,
+                tags=upload_tags,
+            )
+
+            self._add_stored_data_tag(
+                datastore_id=datastore,
+                stored_data_id=vector_db_stored_data_id,
+                tags=stored_data_tags,
             )
 
         return {
@@ -153,12 +183,29 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         with open(filename, "w") as file:
             json.dump(data, file)
         params = {UploadCreationAlgorithm.INPUT_JSON: filename}
+
         results, successful = alg.run(params, context, feedback)
         if successful:
             created_upload_id = results[UploadCreationAlgorithm.CREATED_UPLOAD_ID]
         else:
             raise QgsProcessingException(self.tr("Upload creation failed"))
         return created_upload_id
+
+    def _add_upload_tag(
+        self, datastore_id: str, upload_id: str, tags: dict[str, str]
+    ) -> None:
+        try:
+            # Update stored data tags
+            manager = UploadRequestManager()
+            manager.add_tags(
+                datastore_id=datastore_id,
+                upload_id=upload_id,
+                tags=tags,
+            )
+        except AddTagException as exc:
+            raise QgsProcessingException(
+                self.tr("Upload tag add failed : {0}").format(exc)
+            )
 
     def _database_integration(
         self,
@@ -167,7 +214,7 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         upload_id: str,
         context: QgsProcessingContext,
         feedback: QgsProcessingFeedback,
-    ) -> str:
+    ) -> Tuple[str, str]:
         """
         Launch database integration for an upload
 
@@ -178,7 +225,7 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
             context: QgsProcessingContext
             feedback: QgsProcessingFeedback
 
-        Returns: (str) created vector db stored data id
+        Returns: Tuple(str,str) created vector db stored data id, processing exec id
 
         """
         algo_str = f"geoplateforme:{UploadDatabaseIntegrationAlgorithm().name()}"
@@ -197,6 +244,23 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
             vector_db_stored_data_id = results[
                 UploadDatabaseIntegrationAlgorithm.CREATED_STORED_DATA_ID
             ]
+            exec_id = results[UploadDatabaseIntegrationAlgorithm.PROCESSING_EXEC_ID]
         else:
             raise QgsProcessingException(self.tr("Upload database integration failed"))
-        return vector_db_stored_data_id
+        return vector_db_stored_data_id, exec_id
+
+    def _add_stored_data_tag(
+        self, datastore_id: str, stored_data_id: str, tags: dict[str, str]
+    ) -> None:
+        try:
+            # Update stored data tags
+            manager = StoredDataRequestManager()
+            manager.add_tags(
+                datastore_id=datastore_id,
+                stored_data_id=stored_data_id,
+                tags=tags,
+            )
+        except AddTagException as exc:
+            raise QgsProcessingException(
+                self.tr("Stored data tag add failed : {0}").format(exc)
+            )

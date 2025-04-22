@@ -37,6 +37,7 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
     UPLOAD = "upload"
     STORED_DATA_NAME = "stored_data_name"
 
+    PROCESSING_EXEC_ID = "PROCESSING_EXEC_ID"
     CREATED_STORED_DATA_ID = "CREATED_STORED_DATA_ID"
 
     def tr(self, message: str) -> str:
@@ -129,7 +130,10 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
                     feedback.created_vector_db_id = stored_data_id
 
                 # Update stored data tags
-                tags = {"upload_id": upload, "proc_int_id": exec_id}
+                tags = {
+                    "upload_id": upload,
+                    "proc_int_id": exec_id,
+                }
                 stored_data_manager.add_tags(
                     datastore_id=datastore,
                     stored_data_id=stored_data_val["_id"],
@@ -161,7 +165,10 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
                     f"Can't add tags to stored data for database integration : {exc}"
                 )
 
-        return {self.CREATED_STORED_DATA_ID: stored_data_id}
+        return {
+            self.CREATED_STORED_DATA_ID: stored_data_id,
+            self.PROCESSING_EXEC_ID: exec_id,
+        }
 
     def _wait_database_integration(
         self, datastore: str, vector_db_stored_data_id: str

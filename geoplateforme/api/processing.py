@@ -91,7 +91,7 @@ class ProcessingRequestManager:
 
         processing_list = json.loads(reply.data())
         for processing in processing_list:
-            if processing["name"] == name:
+            if processing["name"].startswith(name):
                 return Processing(name=processing["name"], _id=processing["_id"])
 
         raise UnavailableProcessingException("Processing not available in server")

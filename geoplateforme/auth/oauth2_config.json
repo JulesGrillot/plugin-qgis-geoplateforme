@@ -1,15 +1,17 @@
 {
     "accessMethod": 0,
-    "grantFlow": 0,
-    "configType": 1,
     "clientId": null,
     "clientSecret": null,
-    "requestUrl": "https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/auth",
-    "tokenUrl": "https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/token",
+    "configType": 1,
+    "description": "Authentication related to the Geoplateforme plugin.",
+    "grantFlow": 0,
+    "name": "geoplateforme_plugin_cfg",
     "redirectPort": 7070,
     "redirectUrl": "callback",
-    "persistToken": false,
+    "requestUrl": "https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/auth",
+    "persistToken": true,
     "requestTimeout": 30,
-    "version": 1,
-    "scope": ""
+    "scope": "",
+    "tokenUrl": "https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/token",
+    "version": 1
 }

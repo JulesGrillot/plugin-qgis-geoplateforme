@@ -5,6 +5,13 @@ env:
   PYTHON_VERSION: 3.9
 
 on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/package_and_release.yml
+      - requirements/packaging.txt
+
   push:
     branches:
       - main
@@ -85,6 +92,19 @@ jobs:
           name: translations-build
           path: ${{ env.PROJECT_FOLDER }}
 
+      - name: Include oAuth credentials into packaged plugin
+        run: |
+          #  check if attributes are
+          jq -e 'has("clientId") and has("clientSecret")' ${{ env.PROJECT_FOLDER }}/auth/oauth2_config.json > /dev/null \
+            || { echo "❌ Les clés 'clientId' ou 'clientSecret' sont absentes du fichier JSON."; exit 1; }
+
+          # include oAuth credentials
+          tmpfile=$(mktemp)
+          jq --arg oauth_client_id "${{ secrets.OAUTH_CLIENT_ID }}" \
+             --arg oauth_client_secret "${{ secrets.OAUTH_CLIENT_SECRET }}" \
+             '.clientId = $oauth_client_id | .clientSecret = $oauth_client_secret' \
+              ${{ env.PROJECT_FOLDER }}/auth/oauth2_config.json > "$tmpfile" && mv "$tmpfile" ${{ env.PROJECT_FOLDER }}/auth/oauth2_config.json
+
       - name: Amend gitignore to include compiled translations and add it to tracked files
         run: |
           # include compiled translations
@@ -141,6 +161,20 @@ jobs:
         with:
           name: translations-build
           path: ${{ env.PROJECT_FOLDER }}
+
+      - name: Include oAuth credentials into packaged plugin
+        run: |
+          #  check if attributes are
+          jq -e 'has("clientId") and has("clientSecret")' ${{ env.PROJECT_FOLDER }}/auth/oauth2_config.json > /dev/null \
+            || { echo "❌ Les clés 'clientId' ou 'clientSecret' sont absentes du fichier JSON."; exit 1; }
+
+          # include oAuth credentials
+          tmpfile=$(mktemp)
+          jq --arg oauth_client_id "${{ secrets.OAUTH_CLIENT_ID }}" \
+             --arg oauth_client_secret "${{ secrets.OAUTH_CLIENT_SECRET }}" \
+             '.clientId = $oauth_client_id | .clientSecret = $oauth_client_secret' \
+              ${{ env.PROJECT_FOLDER }}/auth/oauth2_config.json > "$tmpfile" && mv "$tmpfile" ${{ env.PROJECT_FOLDER }}/auth/oauth2_config.json
+
 
       - name: Amend gitignore to include compiled translations and add it to tracked files
         run: |

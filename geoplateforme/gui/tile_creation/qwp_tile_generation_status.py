@@ -157,7 +157,6 @@ class TileGenerationStatusPageWizard(QWizardPage):
             TileCreationAlgorithm.VECTOR_DB_STORED_DATA_ID: vector_db_stored_id,
             TileCreationAlgorithm.STORED_DATA_NAME: self.qwp_tile_generation_edition.lne_flux.text(),
             TileCreationAlgorithm.TIPPECANOE_OPTIONS: self.qwp_tile_generation_generalization.get_tippecanoe_value(),
-            TileCreationAlgorithm.TMS: "PM",
             TileCreationAlgorithm.BOTTOM_LEVEL: str(
                 self.qwp_tile_generation_edition.get_bottom_level()
             ),

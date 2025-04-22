@@ -41,7 +41,6 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
     VECTOR_DB_STORED_DATA_ID = "vector_db_stored_data_id"
     STORED_DATA_NAME = "stored_data_name"
     TIPPECANOE_OPTIONS = "tippecanoe_options"
-    TMS = "tms"
     BOTTOM_LEVEL = "bottom_level"
     TOP_LEVEL = "top_level"
     COMPOSITION = "composition"
@@ -90,7 +89,6 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
             f'    "{self.DATASTORE}": datastore id (str),\n'
             f'    "{self.VECTOR_DB_STORED_DATA_ID}": vector db stored data is used for tile creation (str),\n'
             f'    "{self.TIPPECANOE_OPTIONS}": tippecanoe option for tile creation (str),\n'
-            f'    "{self.TMS}": tile matrix set (str) available options are "PM" or "4326",\n'
             f'    "{self.BOTTOM_LEVEL}": tile bottom level (str), value between 1 and 21,\n'
             f'    "{self.TOP_LEVEL}": tile top level (str), value between 1 and 21,\n'
             f'    "{self.COMPOSITION}": table composition ([]): define attributes and levels for each table,\n'
@@ -126,7 +124,6 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
             tippecanoe_options = data[self.TIPPECANOE_OPTIONS]
             vector_db_stored_data_id = data[self.VECTOR_DB_STORED_DATA_ID]
 
-            tms = data[self.TMS]
             bottom_level = data[self.BOTTOM_LEVEL]
             top_level = data[self.TOP_LEVEL]
             try:
@@ -144,7 +141,6 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                 )
                 # Execution parameters
                 exec_params = {
-                    "tms": tms,
                     "bottom_level": str(bottom_level),
                     "top_level": str(top_level),
                 }
@@ -261,7 +257,6 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
             self.DATASTORE,
             self.TIPPECANOE_OPTIONS,
             self.VECTOR_DB_STORED_DATA_ID,
-            self.TMS,
             self.BOTTOM_LEVEL,
             self.TOP_LEVEL,
         ]

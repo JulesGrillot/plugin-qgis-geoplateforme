@@ -112,8 +112,8 @@ class StorageReportDialog(QDialog):
 
         # Remove some columns
         tbv.setColumnHidden(self.mdl_stored_data.STATUS_COL, True)
-        tbv.setColumnHidden(self.mdl_stored_data.ACTION_COL, True)
-        tbv.setColumnHidden(self.mdl_stored_data.OTHER_ACTIONS_COL, True)
+        # tbv.setColumnHidden(self.mdl_stored_data.ACTION_COL, True)
+        # tbv.setColumnHidden(self.mdl_stored_data.OTHER_ACTIONS_COL, True)
 
         # Connection for delete and report actions
         tbv.clicked.connect(lambda index: self._item_clicked(index, proxy_mdl))

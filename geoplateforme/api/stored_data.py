@@ -319,12 +319,6 @@ class StoredData:
             self._extent = data["extent"]
         self.is_detailed = True
 
-    def get_type(self) -> StoredDataType:
-        result = StoredDataType.UNDEFINED
-        if self.type:
-            result = StoredDataType(self.type)
-        return result
-
     def get_last_event_date(self) -> str:
         """Returns the stored data last_event date.
 

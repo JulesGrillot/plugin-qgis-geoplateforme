@@ -775,7 +775,7 @@ class UploadRequestManager:
 
         try:
             reply = self.request_manager.get_url(
-                url=QUrl(f"{self.get_base_url(datastore_id)}/{upload_id}/close"),
+                url=QUrl(f"{self.get_base_url(datastore_id)}/{upload_id}/tree"),
                 config_id=self.plg_settings.qgis_auth_id,
             )
         except ConnectionError as err:

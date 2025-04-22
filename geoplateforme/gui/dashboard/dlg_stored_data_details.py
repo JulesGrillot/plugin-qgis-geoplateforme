@@ -25,7 +25,7 @@ from geoplateforme.gui.report.wdg_upload_log import UploadLogWidget
 from geoplateforme.toolbelt import PlgLogger
 
 
-class ReportDialog(QDialog):
+class StoredDataDetailsDialog(QDialog):
     def __init__(self, parent: QWidget = None):
         """
         QDialog to display report for a stored data
@@ -37,11 +37,11 @@ class ReportDialog(QDialog):
         self.log = PlgLogger().log
 
         uic.loadUi(
-            os.path.join(os.path.dirname(__file__), "dlg_report.ui"),
+            os.path.join(os.path.dirname(__file__), "dlg_stored_data_details.ui"),
             self,
         )
 
-        self.setWindowTitle(self.tr("Report"))
+        self.setWindowTitle(self.tr("Details"))
 
         self._stored_data = None
 
@@ -142,7 +142,7 @@ class ReportDialog(QDialog):
             try:
                 manager = StoredDataRequestManager()
                 vectordb_stored_data = manager.get_stored_data(
-                    datastore=stored_data.datastore_id, stored_data=vectordb_id
+                    datastore_id=stored_data.datastore_id, stored_data_id=vectordb_id
                 )
                 self._add_stored_data_execution_logs(vectordb_stored_data)
             except UnavailableStoredData as exc:

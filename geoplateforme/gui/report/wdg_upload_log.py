@@ -51,7 +51,7 @@ class UploadLogWidget(QWidget):
         try:
             manager = UploadRequestManager()
             executions = manager.get_upload_checks_execution(
-                datastore=upload.datastore_id, upload=upload._id
+                datastore_id=upload.datastore_id, upload_id=upload._id
             )
             for execution in executions:
                 widget = ExecutionLogWidget(upload.datastore_id, self)

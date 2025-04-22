@@ -30,6 +30,7 @@ from geoplateforme.api.stored_data import (
     StoredDataStep,
     StoredDataType,
 )
+from geoplateforme.gui.dashboard.dlg_stored_data_details import StoredDataDetailsDialog
 from geoplateforme.gui.mdl_stored_data import StoredDataListModel
 from geoplateforme.gui.mdl_upload import UploadListModel
 from geoplateforme.gui.proxy_model_stored_data import StoredDataProxyModel
@@ -82,7 +83,7 @@ class DashboardWidget(QWidget):
         self.tbv_upload.verticalHeader().setVisible(False)
         self.tbv_upload.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.tbv_list.append(self.tbv_upload)
-        self.tbv_upload.clicked.connect(
+        self.tbv_upload.pressed.connect(
             lambda index: self._item_clicked(index, self.mdl_upload, self.tbv_upload)
         )
 
@@ -113,6 +114,9 @@ class DashboardWidget(QWidget):
             visible_status=[],
         )
         self.tbv_list.append(self.tbv_pyramid_raster)
+
+        # Hide detail zone
+        self.detail_zone.hide()
 
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
         self.cbx_dataset.activated.connect(self._dataset_updated)
@@ -149,7 +153,7 @@ class DashboardWidget(QWidget):
         tbv.setModel(proxy_mdl)
         tbv.verticalHeader().setVisible(False)
         tbv.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-        tbv.clicked.connect(
+        tbv.pressed.connect(
             lambda index: self._item_clicked(index, self.mdl_stored_data, tbv)
         )
 
@@ -183,13 +187,19 @@ class DashboardWidget(QWidget):
         for table in self.tbv_list:
             if table != tbv:
                 table.clearSelection()
+        # Hide detail zone
+        self.detail_zone.hide()
         # Get StoredData
         item = model.data(
             model.index(index.row(), model.NAME_COL),
             QtCore.Qt.UserRole,
         )
         if item:
-            print("affiche detail")
+            if isinstance(model, StoredDataListModel):
+                detail_dialog = StoredDataDetailsDialog(self)
+                detail_dialog.set_stored_data(item)
+                self.detail_widget_layout.addWidget(detail_dialog)
+                self.detail_zone.show()
 
     def _stored_data_main_action(self, stored_data: StoredData):
         """

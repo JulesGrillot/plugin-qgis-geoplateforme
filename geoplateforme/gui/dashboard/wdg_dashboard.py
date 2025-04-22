@@ -10,8 +10,9 @@ from qgis.core import (
     QgsProject,
     QgsVectorTileLayer,
 )
+from qgis.gui import QgsMetadataWidget
 from qgis.PyQt import QtCore, uic
-from qgis.PyQt.QtCore import QCoreApplication, QModelIndex
+from qgis.PyQt.QtCore import QAbstractItemModel, QCoreApplication, QModelIndex
 from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon
 from qgis.PyQt.QtWidgets import (
     QAbstractItemView,
@@ -23,8 +24,15 @@ from qgis.PyQt.QtWidgets import (
 )
 
 from geoplateforme.__about__ import __title_clean__
-from geoplateforme.api.stored_data import StoredData, StoredDataStatus, StoredDataStep
+from geoplateforme.api.stored_data import (
+    StoredData,
+    StoredDataStatus,
+    StoredDataStep,
+    StoredDataType,
+)
+from geoplateforme.gui.dashboard.dlg_stored_data_details import StoredDataDetailsDialog
 from geoplateforme.gui.mdl_stored_data import StoredDataListModel
+from geoplateforme.gui.mdl_upload import UploadListModel
 from geoplateforme.gui.proxy_model_stored_data import StoredDataProxyModel
 from geoplateforme.gui.publication_creation.wzd_publication_creation import (
     PublicationFormCreation,
@@ -34,10 +42,6 @@ from geoplateforme.gui.tile_creation.wzd_tile_creation import TileCreationWizard
 from geoplateforme.gui.update_publication.wzd_update_publication import (
     UpdatePublicationWizard,
 )
-from geoplateforme.gui.update_tile_upload.wzd_update_tile_upload import (
-    UpdateTileUploadWizard,
-)
-from geoplateforme.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
 from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.delete_data import DeleteDataAlgorithm
 from geoplateforme.processing.unpublish import UnpublishAlgorithm
@@ -60,42 +64,60 @@ class DashboardWidget(QWidget):
             self,
         )
 
+        # Add metadata widget
+        self.metadata = QgsMetadataWidget()
+        self.metadata.setMode(QgsMetadataWidget.Mode.ProjectMetadata)
+        self.metadata_layout.addWidget(self.metadata)
+
+        # Create model for upload display
+        self.mdl_upload = UploadListModel(self)
+
         # Create model for stored data display
         self.mdl_stored_data = StoredDataListModel(self)
 
+        # List of table view
+        self.tbv_list = []
+
+        # Initialize upload table view
+        self.tbv_upload.setModel(self.mdl_upload)
+        self.tbv_upload.verticalHeader().setVisible(False)
+        self.tbv_upload.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.tbv_list.append(self.tbv_upload)
+        self.tbv_upload.pressed.connect(
+            lambda index: self._item_clicked(index, self.mdl_upload, self.tbv_upload)
+        )
+
         # Create proxy model for each table
-
-        # Action to finish
+        # Vector DB
         self._init_table_view(
-            tbv=self.tbv_actions_to_finish,
-            visible_steps=[
-                StoredDataStep.TILE_GENERATION,
-                StoredDataStep.TILE_SAMPLE,
-                StoredDataStep.TILE_UPDATE,
-                StoredDataStep.TILE_PUBLICATION,
-            ],
-            visible_status=[StoredDataStatus.GENERATED, StoredDataStatus.UNSTABLE],
-        )
-        self.tbv_actions_to_finish.setColumnHidden(
-            self.mdl_stored_data.OTHER_ACTIONS_COL, True
-        )
-
-        # Running actions
-        self._init_table_view(
-            tbv=self.tbl_running_actions,
+            tbv=self.tbv_vector_db,
+            filter_type=[StoredDataType.VECTORDB],
             visible_steps=[],
-            visible_status=[StoredDataStatus.GENERATING],
+            visible_status=[],
         )
-        self.tbl_running_actions.setColumnHidden(
-            self.mdl_stored_data.OTHER_ACTIONS_COL, True
-        )
+        self.tbv_list.append(self.tbv_vector_db)
 
-        # Publicated tiles
+        # Pyramids vector
         self._init_table_view(
-            tbv=self.tbl_publicated_tiles,
-            visible_steps=[StoredDataStep.PUBLISHED],
-            visible_status=[StoredDataStatus.GENERATED],
+            tbv=self.tbv_pyramid_vector,
+            filter_type=[StoredDataType.PYRAMIDVECTOR],
+            visible_steps=[],
+            visible_status=[],
         )
+        self.tbv_list.append(self.tbv_pyramid_vector)
+
+        # Pyramids raster
+        self._init_table_view(
+            tbv=self.tbv_pyramid_raster,
+            filter_type=[StoredDataType.PYRAMIDRASTER],
+            visible_steps=[],
+            visible_status=[],
+        )
+        self.tbv_list.append(self.tbv_pyramid_raster)
+
+        # remove detail zone
+        self.detail_dialog = None
+        self.remove_detail_zone()
 
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
         self.cbx_dataset.activated.connect(self._dataset_updated)
@@ -106,33 +128,33 @@ class DashboardWidget(QWidget):
         self.btn_create.clicked.connect(self._create)
         self.btn_create.setIcon(QIcon(":/images/themes/default/mActionAdd.svg"))
 
-        self.btn_update.clicked.connect(self._update)
-        self.btn_update.setIcon(QIcon(":/images/themes/default/mActionRedo.svg"))
-
         self._datastore_updated()
 
     def _init_table_view(
         self,
         tbv: QTableView,
-        visible_steps: [StoredDataStep],
-        visible_status: [StoredDataStatus],
+        filter_type: List[StoredDataType],
+        visible_steps: List[StoredDataStep],
+        visible_status: List[StoredDataStatus],
     ) -> None:
         """
         Initialization of a table view for specific stored data steps and status visibility
 
         Args:
             tbv:  QTableView table view
-            visible_steps: [StoredDataStep] visible stored data steps
-            visible_status: [StoredDataStatus] visible stored data status
+            filter_type: List[StoredDataType] visible types
+            visible_steps: List[StoredDataStep] visible stored data steps
+            visible_status: List[StoredDataStatus] visible stored data status
         """
         proxy_mdl = self._create_proxy_model(
+            filter_type=filter_type,
             visible_steps=visible_steps,
             visible_status=visible_status,
         )
         tbv.setModel(proxy_mdl)
         tbv.verticalHeader().setVisible(False)
         tbv.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-        tbv.clicked.connect(lambda index: self._item_clicked(index, proxy_mdl))
+        tbv.pressed.connect(lambda index: self._item_clicked(index, proxy_mdl, tbv))
 
     def refresh(self) -> None:
         """
@@ -151,7 +173,7 @@ class DashboardWidget(QWidget):
         self.btn_refresh.setEnabled(True)
 
     def _item_clicked(
-        self, index: QModelIndex, proxy_model: StoredDataProxyModel
+        self, index: QModelIndex, model: QAbstractItemModel, tbv: QTableView
     ) -> None:
         """
         Launch action for selected table item depending on clicked column
@@ -160,20 +182,31 @@ class DashboardWidget(QWidget):
             index: selected index
             proxy_model: used StoredDataProxyModel
         """
+        # Remove other selections
+        for table in self.tbv_list:
+            if table != tbv:
+                table.clearSelection()
+        # Hide detail zone
+        self.remove_detail_zone()
         # Get StoredData
-        stored_data = proxy_model.data(
-            proxy_model.index(index.row(), self.mdl_stored_data.NAME_COL),
+        item = model.data(
+            model.index(index.row(), 0),
             QtCore.Qt.UserRole,
         )
-        if stored_data:
-            if index.column() == self.mdl_stored_data.ACTION_COL:
-                self._stored_data_main_action(stored_data)
-            elif index.column() == self.mdl_stored_data.DELETE_COL:
-                self._delete(stored_data)
-            elif index.column() == self.mdl_stored_data.REPORT_COL:
-                self._show_report(stored_data)
-            elif index.column() == self.mdl_stored_data.OTHER_ACTIONS_COL:
-                self._stored_data_other_actions(stored_data)
+        if item:
+            if isinstance(model, StoredDataProxyModel):
+                self.detail_dialog = StoredDataDetailsDialog(self)
+                self.detail_dialog.set_stored_data(item)
+                self.detail_widget_layout.addWidget(self.detail_dialog)
+                self.detail_zone.show()
+
+    def remove_detail_zone(self):
+        """Hide detail zone and remove attached widgets"""
+        # Hide detail zone
+        self.detail_zone.hide()
+        if self.detail_dialog:
+            self.detail_widget_layout.removeWidget(self.detail_dialog)
+            self.detail_dialog = None
 
     def _stored_data_main_action(self, stored_data: StoredData):
         """
@@ -383,20 +416,11 @@ class DashboardWidget(QWidget):
         Show upload creation wizard with current datastore
 
         """
-        import_wizard = UploadCreationWizard(self)
-        import_wizard.set_datastore_id(self.cbx_datastore.current_datastore_id())
-        import_wizard.show()
-
-    def _update(self) -> None:
-        """
-        Show update wizard with current datastore
-
-        """
-        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
-        wizard = UpdateTileUploadWizard(self)
-        wizard.set_datastore_id(self.cbx_datastore.current_datastore_id())
-        QGuiApplication.restoreOverrideCursor()
-        wizard.show()
+        QMessageBox.information(
+            self,
+            "Create new Dataset:",
+            "Creating a new Dataset will be avaliable soon !!",
+        )
 
     def _compare(self, stored_data: StoredData) -> None:
         """
@@ -455,6 +479,7 @@ class DashboardWidget(QWidget):
 
     def _create_proxy_model(
         self,
+        filter_type: List[StoredDataType],
         visible_steps: List[StoredDataStep],
         visible_status: List[StoredDataStatus],
     ) -> StoredDataProxyModel:
@@ -462,8 +487,9 @@ class DashboardWidget(QWidget):
         Create StoredDataProxyModel with filters
 
         Args:
-            visible_steps: [StoredDataStep] visible stored data steps
-            visible_status: [StoredDataStatus] visible stored data status
+            filter_type: List[StoredDataType] visible types
+            visible_steps: List[StoredDataStep] visible stored data steps
+            visible_status: List[StoredDataStatus] visible stored data status
 
         Returns: StoredDataProxyModel
 
@@ -471,6 +497,7 @@ class DashboardWidget(QWidget):
         proxy_mdl = StoredDataProxyModel(self)
         proxy_mdl.setSourceModel(self.mdl_stored_data)
 
+        proxy_mdl.set_filter_type(filter_type)
         proxy_mdl.set_visible_steps(visible_steps)
         proxy_mdl.set_visible_status(visible_status)
 
@@ -488,18 +515,31 @@ class DashboardWidget(QWidget):
         Update stored data combobox when dataset is updated
 
         """
-        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
+        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
+
+        # remove detail zone
+        self.remove_detail_zone()
+
+        self.mdl_upload.set_datastore(
+            self.cbx_datastore.current_datastore_id(),
+            self.cbx_dataset.current_dataset_name(),
+        )
+
         self.mdl_stored_data.set_datastore(
             self.cbx_datastore.current_datastore_id(),
             self.cbx_dataset.current_dataset_name(),
         )
 
-        self.tbv_actions_to_finish.resizeRowsToContents()
-        self.tbv_actions_to_finish.resizeColumnsToContents()
+        self.tbv_upload.resizeRowsToContents()
+        # self.tbv_upload.resizeColumnsToContents()
 
-        self.tbl_running_actions.resizeRowsToContents()
-        self.tbl_running_actions.resizeColumnsToContents()
+        self.tbv_vector_db.resizeRowsToContents()
+        # self.tbv_vector_db.resizeColumnsToContents()
 
-        self.tbl_publicated_tiles.resizeRowsToContents()
-        self.tbl_publicated_tiles.resizeColumnsToContents()
+        self.tbv_pyramid_vector.resizeRowsToContents()
+        # self.tbv_pyramid_vector.resizeColumnsToContents()
+
+        self.tbv_pyramid_raster.resizeRowsToContents()
+        # self.tbv_pyramid_raster.resizeColumnsToContents()
+
         QGuiApplication.restoreOverrideCursor()

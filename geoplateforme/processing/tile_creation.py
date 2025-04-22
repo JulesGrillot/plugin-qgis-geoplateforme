@@ -162,7 +162,7 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
 
                 # Create execution
                 data_map = {
-                    "processing": processing.id,
+                    "processing": processing._id,
                     "inputs": {"stored_data": [vector_db_stored_data_id]},
                     "output": {"stored_data": {"name": stored_data_name}},
                     "parameters": exec_params,

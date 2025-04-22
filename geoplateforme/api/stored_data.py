@@ -528,7 +528,7 @@ class StoredDataRequestManager:
 
     def get_stored_data_list(
         self,
-        datastore: str,
+        datastore_id: str,
         with_fields: Optional[List[StoredDataField]] = None,
         tags: Optional[dict] = None,
     ) -> List[StoredData]:
@@ -546,14 +546,14 @@ class StoredDataRequestManager:
         :return: list of available stored data
         :rtype: List[StoredData]
         """
-        self.log(f"{__name__}.get_stored_data_list(datastore:{datastore})")
+        self.log(f"{__name__}.get_stored_data_list(datastore:{datastore_id})")
 
-        nb_value = self._get_nb_available_stored_data(datastore, tags)
+        nb_value = self._get_nb_available_stored_data(datastore_id, tags)
         nb_request = math.ceil(nb_value / self.MAX_LIMIT)
         result = []
         for page in range(0, nb_request):
             result += self._get_stored_data_list(
-                datastore, page + 1, self.MAX_LIMIT, with_fields, tags
+                datastore_id, page + 1, self.MAX_LIMIT, with_fields, tags
             )
         return result
 
@@ -606,7 +606,6 @@ class StoredDataRequestManager:
             raise ReadStoredDataException(f"Error while fetching stored data : {err}")
 
         data = json.loads(reply.data())
-
         return [StoredData.from_dict(datastore_id, stored_data) for stored_data in data]
 
     def _get_nb_available_stored_data(

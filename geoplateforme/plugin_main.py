@@ -65,6 +65,7 @@ class GeoplateformePlugin:
 
         self.toolbar = None
         self.dlg_dashboard = None
+        self.dlg_dashboard_old = None
         self.dlg_storage_report = None
 
         self.action_authentication = None

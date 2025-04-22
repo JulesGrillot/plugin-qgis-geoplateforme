@@ -2,8 +2,8 @@ import os
 
 from qgis.core import QgsApplication, QgsProject
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QSize
-from qgis.PyQt.QtGui import QIcon, QPixmap
+from qgis.PyQt.QtCore import QSize, Qt
+from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon, QPixmap
 from qgis.PyQt.QtWidgets import QAbstractItemView, QDialog, QHeaderView, QWidget
 
 from geoplateforme.api.custom_exceptions import (
@@ -25,7 +25,7 @@ from geoplateforme.gui.report.wdg_upload_log import UploadLogWidget
 from geoplateforme.toolbelt import PlgLogger
 
 
-class ReportDialog(QDialog):
+class StoredDataDetailsDialog(QDialog):
     def __init__(self, parent: QWidget = None):
         """
         QDialog to display report for a stored data
@@ -37,11 +37,11 @@ class ReportDialog(QDialog):
         self.log = PlgLogger().log
 
         uic.loadUi(
-            os.path.join(os.path.dirname(__file__), "dlg_report.ui"),
+            os.path.join(os.path.dirname(__file__), "dlg_stored_data_details.ui"),
             self,
         )
 
-        self.setWindowTitle(self.tr("Report"))
+        self.setWindowTitle(self.tr("Details"))
 
         self._stored_data = None
 
@@ -65,6 +65,7 @@ class ReportDialog(QDialog):
         )
 
         self.btn_add_extent_layer.pressed.connect(self._add_extent_layer)
+        self.btn_load_report.pressed.connect(self._load_generation_report)
 
     def set_stored_data(self, stored_data: StoredData) -> None:
         """
@@ -75,9 +76,19 @@ class ReportDialog(QDialog):
         """
         self._stored_data = stored_data
         self._set_stored_data_details(stored_data)
-        self._add_upload_log(stored_data)
-        self._add_vectordb_stored_data_logs(stored_data)
-        self._add_stored_data_execution_logs(stored_data)
+
+    def _load_generation_report(self) -> None:
+        """
+        Define displayed stored data
+
+        Args:
+            stored_data: StoredData
+        """
+        QGuiApplication.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))
+        self._add_upload_log(self._stored_data)
+        self._add_vectordb_stored_data_logs(self._stored_data)
+        self._add_stored_data_execution_logs(self._stored_data)
+        QGuiApplication.restoreOverrideCursor()
 
     def _set_stored_data_details(self, stored_data: StoredData) -> None:
         """
@@ -142,7 +153,7 @@ class ReportDialog(QDialog):
             try:
                 manager = StoredDataRequestManager()
                 vectordb_stored_data = manager.get_stored_data(
-                    datastore=stored_data.datastore_id, stored_data=vectordb_id
+                    datastore_id=stored_data.datastore_id, stored_data_id=vectordb_id
                 )
                 self._add_stored_data_execution_logs(vectordb_stored_data)
             except UnavailableStoredData as exc:
@@ -160,7 +171,7 @@ class ReportDialog(QDialog):
         try:
             manager = ProcessingRequestManager()
             executions = manager.get_stored_data_executions(
-                datastore=stored_data.datastore_id, stored_data=stored_data._id
+                datastore_id=stored_data.datastore_id, stored_data_id=stored_data._id
             )
             for execution in executions:
                 widget = ExecutionLogWidget(stored_data.datastore_id, self)

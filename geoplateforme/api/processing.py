@@ -2,9 +2,7 @@ import json
 from dataclasses import dataclass
 from enum import Enum
 
-from qgis.core import QgsBlockingNetworkRequest
 from qgis.PyQt.QtCore import QByteArray, QUrl
-from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # plugin
 from geoplateforme.api.custom_exceptions import (
@@ -13,8 +11,7 @@ from geoplateforme.api.custom_exceptions import (
     UnavailableExecutionException,
     UnavailableProcessingException,
 )
-from geoplateforme.api.utils import qgs_blocking_get_request
-from geoplateforme.toolbelt import PlgLogger, PlgOptionsManager
+from geoplateforme.toolbelt import NetworkRequestsManager, PlgLogger, PlgOptionsManager
 
 
 class ExecutionStatus(Enum):
@@ -28,7 +25,7 @@ class ExecutionStatus(Enum):
 
 @dataclass
 class Execution:
-    id: str
+    _id: str
     status: str
     name: str
     creation: str
@@ -43,7 +40,7 @@ class Execution:
 @dataclass
 class Processing:
     name: str
-    id: str
+    _id: str
 
 
 class ProcessingRequestManager:
@@ -53,182 +50,181 @@ class ProcessingRequestManager:
 
         """
         self.log = PlgLogger().log
-        self.ntwk_requester_blk = QgsBlockingNetworkRequest()
+        self.request_manager = NetworkRequestsManager()
         self.plg_settings = PlgOptionsManager.get_plg_settings()
 
-    def get_base_url(self, datastore: str) -> str:
+    def get_base_url(self, datastore_id: str) -> str:
+        """Get base url for processings for a datastore
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+
+        :return: url for processings
+        :rtype: str
         """
-        Get base url for processings for a datastore
+        return f"{self.plg_settings.base_url_api_entrepot}/datastores/{datastore_id}/processings"
 
-        Args:
-            datastore: (str) datastore id
+    def get_processing(self, datastore_id: str, name: str) -> Processing:
+        """Get processing from name.
 
-        Returns: url for processings
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param name: wanted processing name
+        :type name: str
 
+        :raises UnavailableProcessingException: when error occur during requesting the API
+
+        :return: processing
+        :rtype: Processing
         """
-        return f"{self.plg_settings.base_url_api_entrepot}/datastores/{datastore}/processings"
+        self.log(f"{__name__}.get_processing(datastore:{datastore_id},name:{name})")
 
-    def get_processing(self, datastore: str, name: str) -> Processing:
-        """
-        Get processing from name.
+        try:
+            reply = self.request_manager.get_url(
+                url=QUrl(f"{self.get_base_url(datastore_id)}"),
+                config_id=self.plg_settings.qgis_auth_id,
+            )
+        except ConnectionError as err:
+            raise UnavailableProcessingException(
+                f"Error while fetching processing : {err}"
+            )
 
-        Raises UnavailableProcessingException if processing not available or error in request
-
-        Args:
-            datastore: (str) datastore id
-            name: (str) wanted processing name
-
-        Returns: Processing
-
-        """
-        self.log(f"{__name__}.get_processing(datastore:{datastore},name:{name})")
-
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}"))
-
-        req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk, req, UnavailableProcessingException
-        )
-        processing_list = json.loads(req_reply.content().data().decode("utf-8"))
+        processing_list = json.loads(reply.data())
         for processing in processing_list:
             if processing["name"] == name:
-                return Processing(name=processing["name"], id=processing["_id"])
+                return Processing(name=processing["name"], _id=processing["_id"])
 
         raise UnavailableProcessingException("Processing not available in server")
 
-    def create_processing_execution(self, datastore: str, input_map: dict) -> dict:
-        """
-        Create a processing execution from an input map
+    def create_processing_execution(self, datastore_id: str, input_map: dict) -> dict:
+        """Create a processing execution from an input map
 
-        Args:
-            datastore: (str) datastore id
-            input_map: (dict) input map containing processing id
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param input_map: input map containing processing id
+        :type input_map: dict
 
-        Returns: (dict) result map containing created execution in _id
+        :raises CreateProcessingException: when error occur during requesting the API
 
+        :return: result map containing created execution in _id
+        :rtype: dict
         """
         self.log(
-            f"{__name__}.create_processing_execution(datastore:{datastore},input_map:{input_map})"
+            f"{__name__}.create_processing_execution(datastore:{datastore_id},input_map:{input_map})"
         )
 
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req_post = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/executions"))
+        try:
+            # encode data
+            data = QByteArray()
+            data.append(json.dumps(input_map))
 
-        # headers
-        req_post.setHeader(
-            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
-        )
-
-        # encode data
-        data = QByteArray()
-        data.append(json.dumps(input_map))
-
-        # send request
-        resp = self.ntwk_requester_blk.post(req_post, data=data, forceRefresh=True)
-
-        # check response
-        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
+            reply = self.request_manager.post_url(
+                url=QUrl(f"{self.get_base_url(datastore_id)}/executions"),
+                config_id=self.plg_settings.qgis_auth_id,
+                data=data,
+            )
+        except ConnectionError as err:
             raise CreateProcessingException(
-                f"Error while creating processing execution : {self.ntwk_requester_blk.errorMessage()}"
+                f"Error while creating processing execution : {err}"
             )
 
-        # check response
-        req_reply = self.ntwk_requester_blk.reply()
-        res = json.loads(req_reply.content().data())
+        res = json.loads(reply.data())
         return res
 
-    def launch_execution(self, datastore: str, exec_id: str) -> None:
-        """
-        Launch execution
+    def launch_execution(self, datastore_id: str, exec_id: str) -> None:
+        """Launch execution
 
-        Args:
-            datastore: (str) datastore id
-            exec_id: (str) execution id (see create_processing_execution)
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param exec_id: execution id
+        :type exec_id: str
+
+        :raises LaunchExecutionException: when error occur during requesting the API
         """
         self.log(
-            f"{__name__}.launch_execution(datastore:{datastore},exec_id:{exec_id})"
+            f"{__name__}.launch_execution(datastore:{datastore_id},exec_id:{exec_id})"
         )
 
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req_post = QNetworkRequest(
-            QUrl(f"{self.get_base_url(datastore)}/executions/{exec_id}/launch")
+        try:
+            self.request_manager.post_url(
+                url=QUrl(
+                    f"{self.get_base_url(datastore_id)}/executions/{exec_id}/launch"
+                ),
+                config_id=self.plg_settings.qgis_auth_id,
+                data=QByteArray(),
+            )
+        except ConnectionError as err:
+            raise LaunchExecutionException(f"Error while launching executions : {err}")
+
+    def get_execution(self, datastore_id: str, exec_id: str) -> Execution:
+        """Get execution.
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param exec_id: execution id
+        :type exec_id: str
+
+        :raises UnavailableExecutionException: when error occur during requesting the API
+
+        :return: Execution if execution available
+        :rtype: Execution
+        """
+        self.log(
+            f"{__name__}.get_execution(datastore:{datastore_id},exec_id:{exec_id})"
         )
 
-        # headers
-        req_post.setHeader(
-            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
-        )
-
-        # send request
-        resp = self.ntwk_requester_blk.post(
-            req_post, data=QByteArray(), forceRefresh=True
-        )
-
-        # check response
-        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
-            raise LaunchExecutionException(
-                f"Error while launching execution : {self.ntwk_requester_blk.errorMessage()}"
+        try:
+            reply = self.request_manager.get_url(
+                url=QUrl(f"{self.get_base_url(datastore_id)}/executions/{exec_id}"),
+                config_id=self.plg_settings.qgis_auth_id,
+            )
+        except ConnectionError as err:
+            raise UnavailableExecutionException(
+                f"Error while fetching executions : {err}"
             )
 
-    def get_execution(self, datastore: str, exec_id: str) -> Execution:
-        """
-        Get execution.
-
-        Args:
-            datastore: (str) datastore id
-            exec_id: (str) execution id
-
-        Returns: Execution execution if execution available, raise UnavailableExecutionException otherwise
-        """
-        self.log(f"{__name__}.get_execution(datastore:{datastore},exec_id:{exec_id})")
-
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req = QNetworkRequest(
-            QUrl(f"{self.get_base_url(datastore)}/executions/{exec_id}")
-        )
-
-        req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk, req, UnavailableExecutionException
-        )
-        data = json.loads(req_reply.content().data().decode("utf-8"))
-
+        data = json.loads(reply.data())
         execution = self._execution_from_json(data)
         return execution
 
     def get_stored_data_executions(
-        self, datastore: str, stored_data: str
-    ) -> [Execution]:
-        """
-        Get stored data execution.
+        self, datastore_id: str, stored_data_id: str
+    ) -> list[Execution]:
+        """Get executions list for a stored data.
 
-        Args:
-            datastore: (str) datastore id
-            stored_data: (str) stored data id
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param stored_data_id: stored_data id
+        :type stored_data_id: str
 
-        Returns: [Execution] list of execution if stored data available, raise UnavailableExecutionException otherwise
+        :raises UnavailableExecutionException: when error occur during requesting the API
+
+        :return: List of execution if stored data available
+        :rtype: list[Execution]
         """
         self.log(
-            f"{__name__}.get_stored_data_executions(datastore:{datastore},stored_data:{stored_data})"
+            f"{__name__}.get_stored_data_executions(datastore:{datastore_id},stored_data:{stored_data_id})"
         )
 
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req = QNetworkRequest(
-            QUrl(
-                f"{self.get_base_url(datastore)}/executions/?output_stored_data={stored_data}"
+        try:
+            reply = self.request_manager.get_url(
+                url=QUrl(
+                    f"{self.get_base_url(datastore_id)}/executions?output_stored_data={stored_data_id}"
+                ),
+                config_id=self.plg_settings.qgis_auth_id,
             )
-        )
-
-        req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk, req, UnavailableExecutionException
-        )
-        data = json.loads(req_reply.content().data().decode("utf-8"))
-        execution_list = [self.get_execution(datastore, e["_id"]) for e in data]
-        return execution_list
+            data = json.loads(reply.data())
+            execution_list = [self.get_execution(datastore_id, e["_id"]) for e in data]
+            return execution_list
+        except ConnectionError as err:
+            raise UnavailableExecutionException(
+                f"Error while fetching executions : {err}"
+            )
 
     @staticmethod
     def _execution_from_json(data) -> Execution:
         execution = Execution(
-            id=data["_id"],
+            _id=data["_id"],
             status=data["status"],
             name=data["processing"]["name"],
             creation=data["creation"],
@@ -244,30 +240,32 @@ class ProcessingRequestManager:
             execution.finish = data["finish"]
         return execution
 
-    def get_execution_logs(self, datastore: str, exec_id: str) -> str:
-        """
-        Get execution logs.
+    def get_execution_logs(self, datastore_id: str, exec_id: str) -> str:
+        """Get execution logs.
 
-        Args:
-            datastore: (str) datastore id
-            exec_id: (str) execution id
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param exec_id: execution id
+        :type exec_id: str
 
-        Returns: (str) Execution logs if execution available, raise UnavailableExecutionException otherwise
+        :raises UnavailableExecutionException: when error occur during requesting the API
+
+        :return: Execution logs if execution available
+        :rtype: str
         """
         self.log(
-            f"{__name__}.get_execution_logs(datastore:{datastore},exec_id:{exec_id})"
+            f"{__name__}.get_execution_logs(datastore:{datastore_id},exec_id:{exec_id})"
         )
 
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req = QNetworkRequest(
-            QUrl(f"{self.get_base_url(datastore)}/executions/{exec_id}/logs")
-        )
-
-        req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk,
-            req,
-            UnavailableExecutionException,
-            expected_type="plain/text; charset=utf-8",
-        )
-        data = req_reply.content().data().decode("utf-8")
-        return data
+        try:
+            reply = self.request_manager.get_url(
+                url=QUrl(
+                    f"{self.get_base_url(datastore_id)}/executions/{exec_id}/logs"
+                ),
+                config_id=self.plg_settings.qgis_auth_id,
+            )
+            return reply.data().decode("utf-8")
+        except ConnectionError as err:
+            raise UnavailableExecutionException(
+                f"Error while fetching execution logs : {err}"
+            )

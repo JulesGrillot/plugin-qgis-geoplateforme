@@ -110,7 +110,7 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
 
                 # Create execution
                 data_map = {
-                    "processing": processing.id,
+                    "processing": processing._id,
                     "inputs": {"upload": [upload]},
                     "output": {"stored_data": {"name": stored_data_name}},
                     "parameters": {},

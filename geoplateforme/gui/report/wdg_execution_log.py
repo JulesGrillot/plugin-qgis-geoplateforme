@@ -58,7 +58,7 @@ class ExecutionLogWidget(QWidget):
         self.lbl_execution_time.setText(as_localized_datetime(execution.creation))
         try:
             manager = ProcessingRequestManager()
-            logs = self.tr("Execution ID :{0}\n").format(execution.id)
+            logs = self.tr("Execution ID :{0}\n").format(execution._id)
             if execution.output:
                 if "stored_data" in execution.output:
                     logs += self.tr("Output stored data ID :{0}\n").format(
@@ -66,7 +66,7 @@ class ExecutionLogWidget(QWidget):
                     )
 
             logs += self.tr("Logs:\n")
-            logs += manager.get_execution_logs(self.datastore, execution.id)
+            logs += manager.get_execution_logs(self.datastore, execution._id)
             self.tbw_logs.setPlainText(logs)
         except UnavailableExecutionException as exc:
             self.tbw_logs.setPlainText(

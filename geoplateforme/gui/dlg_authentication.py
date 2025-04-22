@@ -17,6 +17,7 @@ from qgis.PyQt.QtWidgets import QDialog
 # Plugin
 from geoplateforme.__about__ import DIR_PLUGIN_ROOT
 from geoplateforme.api.custom_exceptions import (
+    InvalidOAuthConfiguration,
     InvalidOAuthPort,
     UnavailablePortException,
     UnavailableUserException,
@@ -163,10 +164,14 @@ class AuthenticationDialog(QDialog):
                 push=True,
                 duration=5,
             )
-
-        except UnavailableUserException as exc:
+        except InvalidOAuthConfiguration:
             self.log(
-                message=self.tr("Authentication failed. Trace: {}".format(exc)),
+                message=self.tr(
+                    "Invalid oAuth2 configuration ({}) loaded. "
+                    "Please check your settings.".format(
+                        qgis_auth_config.id(),
+                    )
+                ),
                 log_level=Qgis.MessageLevel.Critical,
                 push=True,
                 duration=30,
@@ -187,6 +192,16 @@ class AuthenticationDialog(QDialog):
             res = False
 
             self.qgrp_requirements.setCollapsed(False)
+
+        except UnavailableUserException as exc:
+            self.log(
+                message=self.tr("Authentication failed. Trace: {}".format(exc)),
+                log_level=Qgis.MessageLevel.Critical,
+                push=True,
+                duration=30,
+                parent_location=self,
+            )
+            res = False
 
         return res
 
@@ -230,7 +245,7 @@ class AuthenticationDialog(QDialog):
                     )
                 ),
                 push=True,
-                duration=5,
+                duration=3,
                 parent_location=self,
             )
             return True

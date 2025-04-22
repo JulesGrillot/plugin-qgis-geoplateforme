@@ -142,7 +142,7 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
 
                 # Launch execution
                 processing_manager.launch_execution(
-                    datastore=datastore, exec_id=exec_id
+                    datastore_id=datastore, exec_id=exec_id
                 )
 
                 # Wait for database integration

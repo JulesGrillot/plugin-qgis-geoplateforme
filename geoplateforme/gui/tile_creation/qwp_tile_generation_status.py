@@ -75,6 +75,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
             os.path.join(os.path.dirname(__file__), "qwp_tile_generation_status.ui"),
             self,
         )
+        self.tbw_errors.setVisible(False)
 
         # Task and feedback for tile creation
         self.create_tile_task_id = None
@@ -303,7 +304,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
                 )
 
     def _stop_timer_and_display_error(self, error: str) -> None:
-        self.upload_check_timer.stop()
+        self.create_tile_check_timer.stop()
         self.setTitle(error)
         self.loading_movie.stop()
         self.lbl_step_icon.setMovie(QMovie())

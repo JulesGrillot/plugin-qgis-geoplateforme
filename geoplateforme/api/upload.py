@@ -7,11 +7,7 @@ from enum import Enum
 from typing import List, Optional, Self
 
 # PyQGIS
-from qgis.PyQt.QtCore import (
-    QByteArray,
-    QCoreApplication,
-    QUrl,
-)
+from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QFileInfo, QUrl
 
 # plugin
 from geoplateforme.api.check import CheckExecution, CheckRequestManager
@@ -726,7 +722,9 @@ class UploadRequestManager:
 
         try:
             self.request_manager.post_file(
-                url=QUrl(self.get_base_url(datastore_id)),
+                url=QUrl(
+                    f"{self.get_base_url(datastore_id)}/{upload_id}/data?path={QFileInfo(filename).fileName()}"
+                ),
                 config_id=self.plg_settings.qgis_auth_id,
                 file_path=filename,
             )

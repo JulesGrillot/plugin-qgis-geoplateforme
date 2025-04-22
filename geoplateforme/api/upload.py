@@ -578,6 +578,7 @@ class UploadRequestManager:
                 url=QUrl(f"{self.get_base_url(datastore_id)}/{upload_id}/tags"),
                 config_id=self.plg_settings.qgis_auth_id,
                 data=data,
+                headers={b"Content-Type": bytes("application/json", "utf8")},
             )
         except ConnectionError as err:
             raise AddTagException(f"Error while adding tag to upload : {err}")
@@ -698,6 +699,7 @@ class UploadRequestManager:
                 url=QUrl(self.get_base_url(datastore_id)),
                 config_id=self.plg_settings.qgis_auth_id,
                 data=data,
+                headers={b"Content-Type": bytes("application/json", "utf8")},
             )
         except ConnectionError as err:
             raise UploadCreationException(f"Error while creating upload : {err}")
@@ -752,6 +754,7 @@ class UploadRequestManager:
                 url=QUrl(f"{self.get_base_url(datastore_id)}/{upload_id}/close"),
                 config_id=self.plg_settings.qgis_auth_id,
                 data=data,
+                headers={b"Content-Type": bytes("application/json", "utf8")},
             )
         except ConnectionError as err:
             raise UploadClosingException(f"Error while closing upload : {err}")

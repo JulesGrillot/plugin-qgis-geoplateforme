@@ -6,7 +6,11 @@ from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtWidgets import QMessageBox, QSlider, QWizardPage
 
 # Plugin
-from geoplateforme.api.stored_data import StoredDataStatus, StoredDataStep
+from geoplateforme.api.stored_data import (
+    StoredDataStatus,
+    StoredDataStep,
+    StoredDataType,
+)
 from geoplateforme.gui.lne_validators import alphanum_qval
 
 
@@ -50,8 +54,10 @@ class TileGenerationEditionPageWizard(QWizardPage):
         )
 
         # Only display stored data ready for pyramid generation
-        self.cbx_stored_data.set_filter_type(["VECTOR-DB"])
-        self.cbx_stored_data.set_visible_steps([StoredDataStep.TILE_GENERATION])
+        self.cbx_stored_data.set_filter_type([StoredDataType.VECTORDB])
+        self.cbx_stored_data.set_visible_steps(
+            [StoredDataStep.TILE_CREATED, StoredDataStep.TILE_GENERATION]
+        )
         self.cbx_stored_data.set_visible_status([StoredDataStatus.GENERATED])
 
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)

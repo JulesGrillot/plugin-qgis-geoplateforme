@@ -8,7 +8,11 @@ from qgis.PyQt.QtWidgets import QWizardPage
 # plugin
 from geoplateforme.api.configuration import ConfigurationRequestManager
 from geoplateforme.api.custom_exceptions import UnavailableConfigurationException
-from geoplateforme.api.stored_data import StoredDataStatus, StoredDataStep
+from geoplateforme.api.stored_data import (
+    StoredDataStatus,
+    StoredDataStep,
+    StoredDataType,
+)
 
 
 class UpdatePublicationPageWizard(QWizardPage):
@@ -33,7 +37,7 @@ class UpdatePublicationPageWizard(QWizardPage):
 
         # Only display pyramid generation ready for publication
 
-        self.cbx_stored_data.set_filter_type(["ROK4-PYRAMID-VECTOR"])
+        self.cbx_stored_data.set_filter_type([StoredDataType.PYRAMIDVECTOR])
         self.cbx_stored_data.set_visible_steps([StoredDataStep.PUBLISHED])
         self.cbx_stored_data.set_visible_status([StoredDataStatus.GENERATED])
 

@@ -5,7 +5,11 @@ import os
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QWizardPage
 
-from geoplateforme.api.stored_data import StoredDataStatus, StoredDataStep
+from geoplateforme.api.stored_data import (
+    StoredDataStatus,
+    StoredDataStep,
+    StoredDataType,
+)
 
 
 class PublicationFormPageWizard(QWizardPage):
@@ -25,7 +29,7 @@ class PublicationFormPageWizard(QWizardPage):
         )
 
         # Only display pyramid generation ready for publication
-        self.cbx_stored_data.set_filter_type(["ROK4-PYRAMID-VECTOR"])
+        self.cbx_stored_data.set_filter_type([StoredDataType.PYRAMIDVECTOR])
         self.cbx_stored_data.set_visible_steps([StoredDataStep.TILE_PUBLICATION])
         self.cbx_stored_data.set_visible_status([StoredDataStatus.GENERATED])
 

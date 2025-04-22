@@ -515,7 +515,7 @@ class DashboardWidget(QWidget):
         Update stored data combobox when dataset is updated
 
         """
-        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
+        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
 
         # remove detail zone
         self.remove_detail_zone()

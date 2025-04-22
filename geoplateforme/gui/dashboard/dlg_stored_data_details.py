@@ -84,7 +84,7 @@ class StoredDataDetailsDialog(QDialog):
         Args:
             stored_data: StoredData
         """
-        QGuiApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        QGuiApplication.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))
         self._add_upload_log(self._stored_data)
         self._add_vectordb_stored_data_logs(self._stored_data)
         self._add_stored_data_execution_logs(self._stored_data)

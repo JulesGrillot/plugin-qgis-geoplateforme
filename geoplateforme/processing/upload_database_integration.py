@@ -131,7 +131,9 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
                 # Update stored data tags
                 tags = {"upload_id": upload, "proc_int_id": exec_id}
                 stored_data_manager.add_tags(
-                    datastore=datastore, stored_data=stored_data_val["_id"], tags=tags
+                    datastore_id=datastore,
+                    stored_data_id=stored_data_val["_id"],
+                    tags=tags,
                 )
 
                 # Launch execution
@@ -174,17 +176,17 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
         try:
             manager = StoredDataRequestManager()
             stored_data = manager.get_stored_data(
-                datastore=datastore, stored_data=vector_db_stored_data_id
+                datastore_id=datastore, stored_data_id=vector_db_stored_data_id
             )
-            status = StoredDataStatus(stored_data.status)
+            status = stored_data.status
             while (
                 status != StoredDataStatus.GENERATED
                 and status != StoredDataStatus.UNSTABLE
             ):
                 stored_data = manager.get_stored_data(
-                    datastore=datastore, stored_data=vector_db_stored_data_id
+                    datastore_id=datastore, stored_data_id=vector_db_stored_data_id
                 )
-                status = StoredDataStatus(stored_data.status)
+                status = stored_data.status
                 sleep(PlgOptionsManager.get_plg_settings().status_check_sleep)
 
             if status == StoredDataStatus.UNSTABLE:

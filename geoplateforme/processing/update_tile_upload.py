@@ -278,13 +278,13 @@ class UpdateTileUploadAlgorithm(QgsProcessingAlgorithm):
             # Update stored data tags
             manager = StoredDataRequestManager()
             manager.add_tags(
-                datastore=datastore,
-                stored_data=created_stored_data,
+                datastore_id=datastore,
+                stored_data_id=created_stored_data,
                 tags={"initial_pyramid_id": initial_stored_data_id},
             )
             manager.add_tags(
-                datastore=datastore,
-                stored_data=initial_stored_data_id,
+                datastore_id=datastore,
+                stored_data_id=initial_stored_data_id,
                 tags={"update_pyramid_id": created_stored_data},
             )
         except AddTagException as exc:

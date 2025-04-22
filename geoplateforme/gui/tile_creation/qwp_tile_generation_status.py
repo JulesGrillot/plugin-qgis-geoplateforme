@@ -246,19 +246,21 @@ class TileGenerationStatusPageWizard(QWizardPage):
                 datastore_id = self.qwp_tile_generation_edition.cbx_datastore.current_datastore_id()
 
                 stored_data = stored_data_manager.get_stored_data(
-                    datastore=datastore_id, stored_data=self.created_stored_data_id
+                    datastore_id=datastore_id,
+                    stored_data_id=self.created_stored_data_id,
                 )
 
                 if stored_data.tags and "upload_id" in stored_data.tags.keys():
                     check_execution_list = upload_manager.get_upload_checks_execution(
-                        datastore=datastore_id, upload=stored_data.tags["upload_id"]
+                        datastore_id=datastore_id,
+                        upload_id=stored_data.tags["upload_id"],
                     )
                     self.mdl_execution_list.set_check_execution_list(
                         check_execution_list
                     )
 
                 # Stop timer if stored_data generated
-                status = StoredDataStatus[stored_data.status]
+                status = stored_data.status
                 if status == StoredDataStatus.GENERATED:
                     self.create_tile_check_timer.stop()
                     self.loading_movie.stop()

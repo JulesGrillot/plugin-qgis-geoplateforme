@@ -14,7 +14,7 @@ from geoplateforme.api.custom_exceptions import (
     UnavailableProcessingException,
 )
 from geoplateforme.api.utils import qgs_blocking_get_request
-from geoplateforme.toolbelt import PlgLogger, PlgOptionsManager
+from geoplateforme.toolbelt import NetworkRequestsManager, PlgLogger, PlgOptionsManager
 
 
 class ExecutionStatus(Enum):
@@ -53,6 +53,7 @@ class ProcessingRequestManager:
 
         """
         self.log = PlgLogger().log
+        self.request_manager = NetworkRequestsManager()
         self.ntwk_requester_blk = QgsBlockingNetworkRequest()
         self.plg_settings = PlgOptionsManager.get_plg_settings()
 
@@ -211,19 +212,20 @@ class ProcessingRequestManager:
             f"{__name__}.get_stored_data_executions(datastore:{datastore},stored_data:{stored_data})"
         )
 
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req = QNetworkRequest(
-            QUrl(
-                f"{self.get_base_url(datastore)}/executions/?output_stored_data={stored_data}"
+        try:
+            reply = self.request_manager.get_url(
+                url=QUrl(
+                    f"{self.get_base_url(datastore)}/executions?output_stored_data={stored_data}"
+                ),
+                config_id=self.plg_settings.qgis_auth_id,
             )
-        )
-
-        req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk, req, UnavailableExecutionException
-        )
-        data = json.loads(req_reply.content().data().decode("utf-8"))
-        execution_list = [self.get_execution(datastore, e["_id"]) for e in data]
-        return execution_list
+            data = json.loads(reply.data())
+            execution_list = [self.get_execution(datastore, e["_id"]) for e in data]
+            return execution_list
+        except ConnectionError as err:
+            raise UnavailableExecutionException(
+                f"Error while fetching executions : {err}"
+            )
 
     @staticmethod
     def _execution_from_json(data) -> Execution:
@@ -267,7 +269,6 @@ class ProcessingRequestManager:
             self.ntwk_requester_blk,
             req,
             UnavailableExecutionException,
-            expected_type="plain/text; charset=utf-8",
         )
         data = req_reply.content().data().decode("utf-8")
         return data

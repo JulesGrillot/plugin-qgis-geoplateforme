@@ -12,8 +12,8 @@ from qgis.core import (
 )
 from qgis.gui import QgsMetadataWidget
 from qgis.PyQt import QtCore, uic
-from qgis.PyQt.QtCore import QCoreApplication, QModelIndex
-from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon, QStandardItemModel
+from qgis.PyQt.QtCore import QAbstractItemModel, QCoreApplication, QModelIndex
+from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon
 from qgis.PyQt.QtWidgets import (
     QAbstractItemView,
     QAction,
@@ -115,8 +115,9 @@ class DashboardWidget(QWidget):
         )
         self.tbv_list.append(self.tbv_pyramid_raster)
 
-        # Hide detail zone
-        self.detail_zone.hide()
+        # remove detail zone
+        self.detail_dialog = None
+        self.remove_detail_zone()
 
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
         self.cbx_dataset.activated.connect(self._dataset_updated)
@@ -153,9 +154,7 @@ class DashboardWidget(QWidget):
         tbv.setModel(proxy_mdl)
         tbv.verticalHeader().setVisible(False)
         tbv.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-        tbv.pressed.connect(
-            lambda index: self._item_clicked(index, self.mdl_stored_data, tbv)
-        )
+        tbv.pressed.connect(lambda index: self._item_clicked(index, proxy_mdl, tbv))
 
     def refresh(self) -> None:
         """
@@ -174,7 +173,7 @@ class DashboardWidget(QWidget):
         self.btn_refresh.setEnabled(True)
 
     def _item_clicked(
-        self, index: QModelIndex, model: QStandardItemModel, tbv: QTableView
+        self, index: QModelIndex, model: QAbstractItemModel, tbv: QTableView
     ) -> None:
         """
         Launch action for selected table item depending on clicked column
@@ -188,18 +187,26 @@ class DashboardWidget(QWidget):
             if table != tbv:
                 table.clearSelection()
         # Hide detail zone
-        self.detail_zone.hide()
+        self.remove_detail_zone()
         # Get StoredData
         item = model.data(
-            model.index(index.row(), model.NAME_COL),
+            model.index(index.row(), 0),
             QtCore.Qt.UserRole,
         )
         if item:
-            if isinstance(model, StoredDataListModel):
-                detail_dialog = StoredDataDetailsDialog(self)
-                detail_dialog.set_stored_data(item)
-                self.detail_widget_layout.addWidget(detail_dialog)
+            if isinstance(model, StoredDataProxyModel):
+                self.detail_dialog = StoredDataDetailsDialog(self)
+                self.detail_dialog.set_stored_data(item)
+                self.detail_widget_layout.addWidget(self.detail_dialog)
                 self.detail_zone.show()
+
+    def remove_detail_zone(self):
+        """Hide detail zone and remove attached widgets"""
+        # Hide detail zone
+        self.detail_zone.hide()
+        if self.detail_dialog:
+            self.detail_widget_layout.removeWidget(self.detail_dialog)
+            self.detail_dialog = None
 
     def _stored_data_main_action(self, stored_data: StoredData):
         """
@@ -509,6 +516,9 @@ class DashboardWidget(QWidget):
 
         """
         QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
+
+        # remove detail zone
+        self.remove_detail_zone()
 
         self.mdl_upload.set_datastore(
             self.cbx_datastore.current_datastore_id(),

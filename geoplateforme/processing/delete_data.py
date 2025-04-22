@@ -85,7 +85,6 @@ class DeleteDataAlgorithm(QgsProcessingAlgorithm):
             data = json.load(file)
             datastore_id = data[self.DATASTORE]
             stored_data_id = data[self.STORED_DATA]
-            print(stored_data_id)
             try:
                 manager_stored = StoredDataRequestManager()
                 result = manager_stored.get_stored_data(datastore_id, stored_data_id)

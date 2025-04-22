@@ -606,7 +606,6 @@ class StoredDataRequestManager:
             raise ReadStoredDataException(f"Error while fetching stored data : {err}")
 
         data = json.loads(reply.data())
-
         return [StoredData.from_dict(datastore_id, stored_data) for stored_data in data]
 
     def _get_nb_available_stored_data(

@@ -2,8 +2,8 @@ import os
 
 from qgis.core import QgsApplication, QgsProject
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QSize
-from qgis.PyQt.QtGui import QIcon, QPixmap
+from qgis.PyQt.QtCore import QSize, Qt
+from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon, QPixmap
 from qgis.PyQt.QtWidgets import QAbstractItemView, QDialog, QHeaderView, QWidget
 
 from geoplateforme.api.custom_exceptions import (
@@ -65,6 +65,7 @@ class StoredDataDetailsDialog(QDialog):
         )
 
         self.btn_add_extent_layer.pressed.connect(self._add_extent_layer)
+        self.btn_load_report.pressed.connect(self._load_generation_report)
 
     def set_stored_data(self, stored_data: StoredData) -> None:
         """
@@ -75,9 +76,19 @@ class StoredDataDetailsDialog(QDialog):
         """
         self._stored_data = stored_data
         self._set_stored_data_details(stored_data)
-        self._add_upload_log(stored_data)
-        self._add_vectordb_stored_data_logs(stored_data)
-        self._add_stored_data_execution_logs(stored_data)
+
+    def _load_generation_report(self) -> None:
+        """
+        Define displayed stored data
+
+        Args:
+            stored_data: StoredData
+        """
+        QGuiApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        self._add_upload_log(self._stored_data)
+        self._add_vectordb_stored_data_logs(self._stored_data)
+        self._add_stored_data_execution_logs(self._stored_data)
+        QGuiApplication.restoreOverrideCursor()
 
     def _set_stored_data_details(self, stored_data: StoredData) -> None:
         """

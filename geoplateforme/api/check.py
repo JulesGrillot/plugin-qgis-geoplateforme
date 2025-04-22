@@ -120,7 +120,6 @@ class CheckRequestManager:
             self.ntwk_requester_blk,
             req,
             UnavailableExecutionException,
-            expected_type="plain/text; charset=utf-8",
         )
         data = req_reply.content().data().decode("utf-8")
         return data

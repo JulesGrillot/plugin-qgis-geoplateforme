@@ -168,7 +168,7 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                     "parameters": exec_params,
                 }
                 res = processing_manager.create_processing_execution(
-                    datastore=datastore, input_map=data_map
+                    datastore_id=datastore, input_map=data_map
                 )
                 stored_data_val = res["output"]["stored_data"]
                 exec_id = res["_id"]

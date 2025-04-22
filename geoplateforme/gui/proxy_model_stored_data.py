@@ -92,7 +92,7 @@ class StoredDataProxyModel(QSortFilterProxyModel):
                 status_index, Qt.ItemDataRole.DisplayRole
             )
             if status_value:
-                status = status_value
+                status = StoredDataStatus(status_value)
                 if len(self.invisible_status):
                     result &= status not in self.invisible_status
                 if len(self.visible_status):

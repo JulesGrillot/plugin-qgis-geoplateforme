@@ -171,7 +171,7 @@ class StoredDataDetailsDialog(QDialog):
         try:
             manager = ProcessingRequestManager()
             executions = manager.get_stored_data_executions(
-                datastore=stored_data.datastore_id, stored_data=stored_data._id
+                datastore_id=stored_data.datastore_id, stored_data_id=stored_data._id
             )
             for execution in executions:
                 widget = ExecutionLogWidget(stored_data.datastore_id, self)

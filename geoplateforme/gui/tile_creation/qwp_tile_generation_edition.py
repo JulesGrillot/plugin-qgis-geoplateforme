@@ -63,7 +63,8 @@ class TileGenerationEditionPageWizard(QWizardPage):
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
         self._datastore_updated()
 
-        self.cbx_dataset.activated.connect(self._dataset_updated)
+        self.cbx_dataset.currentIndexChanged.connect(self._dataset_updated)
+        self._dataset_updated()
 
         self.cbx_stored_data.currentIndexChanged.connect(self._stored_data_updated)
         self._stored_data_updated()
@@ -173,6 +174,7 @@ class TileGenerationEditionPageWizard(QWizardPage):
             self.cbx_datastore.current_datastore_id(),
             self.cbx_dataset.current_dataset_name(),
         )
+        self._stored_data_updated()
 
     def _stored_data_updated(self) -> None:
         """

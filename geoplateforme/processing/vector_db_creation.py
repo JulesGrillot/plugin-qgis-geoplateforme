@@ -157,18 +157,23 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         context: QgsProcessingContext,
         feedback: QgsProcessingFeedback,
     ) -> str:
-        """
+        """Create upload for a list of files
 
-        Args:
-            datastore : (str) datastore id
-            files: [str] full file path list
-            name: (str) upload name
-            srs: (str) upload srs
-            context: QgsProcessingContext
-            feedback: QgsProcessingFeedback
-
-        Returns: (str) created upload id
-
+        :param datastore: datastore id
+        :type datastore: str
+        :param files: full file path list
+        :type files: str]
+        :param name: upload name
+        :type name: str
+        :param srs: upload srs
+        :type srs: str
+        :param context: context of processing
+        :type context: QgsProcessingContext
+        :param feedback: feedback for processing
+        :type feedback: QgsProcessingFeedback
+        :raises QgsProcessingException: propagate error in case of upload creation exception
+        :return: id of created upload
+        :rtype: str
         """
         algo_str = f"geoplateforme:{UploadCreationAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
@@ -194,6 +199,16 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
     def _add_upload_tag(
         self, datastore_id: str, upload_id: str, tags: dict[str, str]
     ) -> None:
+        """Add tags to an upload
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param upload_id: upload id
+        :type upload_id: str
+        :param tags: tags
+        :type tags: dict[str, str]
+        :raises QgsProcessingException: propagate error in case of tag add exception
+        """
         try:
             # Update stored data tags
             manager = UploadRequestManager()
@@ -215,19 +230,23 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         context: QgsProcessingContext,
         feedback: QgsProcessingFeedback,
     ) -> Tuple[str, str]:
+        """Launch database integration for an upload
+
+        :param name: stored data name
+        :type name: str
+        :param datastore: datastore id
+        :type datastore: str
+        :param upload_id: upload id
+        :type upload_id: str
+        :param context: context of processing
+        :type context: QgsProcessingContext
+        :param feedback: feedback for processing
+        :type feedback: QgsProcessingFeedback
+        :raises QgsProcessingException: an error occured when creating the database
+        :return: created stored data id, processing execution id used for creation
+        :rtype: Tuple[str, str]
         """
-        Launch database integration for an upload
 
-        Args:
-            name: (str) stored data name
-            datastore : (str) datastore id
-            upload_id:  (str) upload id
-            context: QgsProcessingContext
-            feedback: QgsProcessingFeedback
-
-        Returns: Tuple(str,str) created vector db stored data id, processing exec id
-
-        """
         algo_str = f"geoplateforme:{UploadDatabaseIntegrationAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
         data = {
@@ -252,6 +271,16 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
     def _add_stored_data_tag(
         self, datastore_id: str, stored_data_id: str, tags: dict[str, str]
     ) -> None:
+        """Add tags to a stored data
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param stored_data_id: stored data id
+        :type stored_data_id: str
+        :param tags: tags
+        :type tags: dict[str, str]
+        :raises QgsProcessingException: propagate error in case of tag add exception
+        """
         try:
             # Update stored data tags
             manager = StoredDataRequestManager()

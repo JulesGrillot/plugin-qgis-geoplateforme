@@ -317,7 +317,7 @@ class GeoplateformePlugin:
         self.action_dashboard.setEnabled(enabled)
         self.action_storage_report.setEnabled(False)
         self.action_import.setEnabled(True)
-        self.action_tile_create.setEnabled(False)
+        self.action_tile_create.setEnabled(True)
         self.action_publication.setEnabled(False)
 
     def display_dashboard(self) -> None:

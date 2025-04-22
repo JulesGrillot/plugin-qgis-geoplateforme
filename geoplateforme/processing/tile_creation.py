@@ -48,6 +48,8 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
     ATTRIBUTES = "attributes"
     BBOX = "bbox"
 
+    DATASET_NAME = "dataset_name"
+
     CREATED_STORED_DATA_ID = "CREATED_STORED_DATA_ID"
 
     def tr(self, message: str) -> str:
@@ -87,6 +89,7 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
             "{\n"
             f'    "{self.STORED_DATA_NAME}": wanted stored data name (str),\n'
             f'    "{self.DATASTORE}": datastore id (str),\n'
+            f'    "{self.DATASET_NAME}": dataset name (str),\n'
             f'    "{self.VECTOR_DB_STORED_DATA_ID}": vector db stored data is used for tile creation (str),\n'
             f'    "{self.TIPPECANOE_OPTIONS}": tippecanoe option for tile creation (str),\n'
             f'    "{self.BOTTOM_LEVEL}": tile bottom level (str), value between 1 and 21,\n'
@@ -123,6 +126,7 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
             datastore = data[self.DATASTORE]
             tippecanoe_options = data[self.TIPPECANOE_OPTIONS]
             vector_db_stored_data_id = data[self.VECTOR_DB_STORED_DATA_ID]
+            dataset_name = data[self.DATASET_NAME]
 
             bottom_level = data[self.BOTTOM_LEVEL]
             top_level = data[self.TOP_LEVEL]
@@ -137,7 +141,7 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                 # Get processing for tile creation
                 # TODO : for now we use processing name, how can we get processing otherwise ?
                 processing = processing_manager.get_processing(
-                    datastore, "Création d'une pyramide vecteur"
+                    datastore, "Calcul de pyramide vecteur"
                 )
                 # Execution parameters
                 exec_params = {
@@ -149,9 +153,11 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                     exec_params["tippecanoe_options"] = tippecanoe_options
 
                 bbox_used = False
-                if self.BBOX in data:
-                    exec_params[self.BBOX] = data[self.BBOX]
-                    bbox_used = True
+
+                # TODO : need to update BBOX parameter to define area as wkt in EPSG:4326
+                # if self.BBOX in data:
+                #    exec_params[self.BBOX] = data[self.BBOX]
+                #    bbox_used = True
 
                 if self.COMPOSITION in data:
                     exec_params[self.COMPOSITION] = data[self.COMPOSITION]
@@ -183,6 +189,7 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                     "vectordb_id": vector_db_stored_data._id,
                     "pyramid_id": stored_data_id,
                     "proc_pyr_creat_id": exec_id,
+                    "datasheet_name": dataset_name,
                 }
 
                 if bbox_used:
@@ -197,6 +204,7 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                 # Add tag to vector db
                 vector_db_tag = {
                     "pyramid_id": stored_data_id,
+                    "datasheet_name": dataset_name,
                 }
                 stored_data_manager.add_tags(
                     datastore_id=datastore,

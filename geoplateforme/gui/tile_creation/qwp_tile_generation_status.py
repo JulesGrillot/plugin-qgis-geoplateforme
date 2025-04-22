@@ -151,10 +151,14 @@ class TileGenerationStatusPageWizard(QWizardPage):
         vector_db_stored_id = (
             self.qwp_tile_generation_edition.cbx_stored_data.current_stored_data_id()
         )
+        dataset_name = (
+            self.qwp_tile_generation_edition.cbx_dataset.current_dataset_name()
+        )
 
         data = {
             TileCreationAlgorithm.DATASTORE: datastore_id,
             TileCreationAlgorithm.VECTOR_DB_STORED_DATA_ID: vector_db_stored_id,
+            TileCreationAlgorithm.DATASET_NAME: dataset_name,
             TileCreationAlgorithm.STORED_DATA_NAME: self.qwp_tile_generation_edition.lne_flux.text(),
             TileCreationAlgorithm.TIPPECANOE_OPTIONS: self.qwp_tile_generation_generalization.get_tippecanoe_value(),
             TileCreationAlgorithm.BOTTOM_LEVEL: str(
@@ -175,7 +179,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
             data[TileCreationAlgorithm.COMPOSITION].append(
                 {
                     TileCreationAlgorithm.TABLE: table,
-                    TileCreationAlgorithm.ATTRIBUTES: ",".join(attributes),
+                    TileCreationAlgorithm.ATTRIBUTES: attributes,
                     TileCreationAlgorithm.BOTTOM_LEVEL: str(
                         self.qwp_tile_generation_edition.get_bottom_level()
                     ),

@@ -122,6 +122,7 @@ class ProcessingRequestManager:
                 url=QUrl(f"{self.get_base_url(datastore_id)}/executions"),
                 config_id=self.plg_settings.qgis_auth_id,
                 data=data,
+                headers={b"Content-Type": bytes("application/json", "utf8")},
             )
         except ConnectionError as err:
             raise CreateProcessingException(

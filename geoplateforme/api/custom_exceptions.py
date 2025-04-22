@@ -26,6 +26,14 @@ class FileUploadException(Exception):
     pass
 
 
+class InvalidOAuthConfiguration(ValueError):
+    pass
+
+
+class InvalidOAuthPort(ValueError):
+    pass
+
+
 class InvalidToken(Exception):
     pass
 
@@ -99,10 +107,6 @@ class UploadClosingException(Exception):
 
 
 class UploadCreationException(Exception):
-    pass
-
-
-class InvalidOAuthPort(ValueError):
     pass
 
 

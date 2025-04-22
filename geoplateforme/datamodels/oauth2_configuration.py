@@ -11,6 +11,7 @@ from qgis.core import Qgis
 # plugin
 import geoplateforme.toolbelt.log_handler as log_hdlr
 from geoplateforme.__about__ import DIR_PLUGIN_ROOT
+from geoplateforme.api.custom_exceptions import InvalidOAuthConfiguration
 
 # -- GLOBALS --
 
@@ -113,8 +114,32 @@ class OAuth2Configuration:
         configuration map.
         :rtype: OAuth2Configuration
         """
+        #  load configuration in json
+        try:
+            # make config map compliant with JSON format
+            cfg_map = (
+                qgis_config_map.get("oauth2config")
+                .replace("False", "false")
+                .replace("True", "true")
+                .replace("'", '"')
+                .replace("None", "null")
+            )
+            cfg_json = json.loads(cfg_map)
+        except json.decoder.JSONDecodeError as err:
+            err_msg = (
+                "Configuration map ({}) could not be loaded as JSON. Error: {}".format(
+                    qgis_config_map, err
+                )
+            )
+            log_hdlr.PlgLogger.log(
+                message=err_msg,
+                log_level=Qgis.MessageLevel.Critical,
+                push=True,
+            )
+            raise InvalidOAuthConfiguration(err_msg)
+
         # check if the config map is compliant with the expected structure
-        if not cls.is_json_compliant(json.loads(qgis_config_map.get("oauth2config"))):
+        if not cls.is_json_compliant(cfg_json):
             log_hdlr.PlgLogger.log(
                 message="Configuration map does not comply with the expected "
                 "structure. Please check your configuration.",
@@ -129,7 +154,7 @@ class OAuth2Configuration:
             push=False,
         )
 
-        return cls(**json.loads(qgis_config_map.get("oauth2config")))
+        return cls(**json.loads(cfg_map))
 
     @classmethod
     def from_json(

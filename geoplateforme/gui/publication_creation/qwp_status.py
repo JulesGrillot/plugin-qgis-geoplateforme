@@ -63,26 +63,39 @@ class PublicationStatut(QWizardPage):
         configuration = self.qwp_publication_form.wdg_publication_form.get_config()
         datastore_id = self.qwp_publication_form.cbx_datastore.current_datastore_id()
         stored_data = self.qwp_publication_form.cbx_stored_data.current_stored_data_id()
+        dataset_name = self.qwp_publication_form.cbx_dataset.current_dataset_name()
 
         # Getting zoom levels parameters
         manager = StoredDataRequestManager()
         try:
             stored_data_levels = manager.get_stored_data(datastore_id, stored_data)
             zoom_levels = stored_data_levels.zoom_levels()
-            bottom = zoom_levels[-1]
-            top = zoom_levels[0]
-
         except ReadStoredDataException as exc:
             self.log(
                 f"Error while getting zoom levels from stored data: {exc}",
                 log_level=2,
                 push=False,
             )
+            return
+
+        try:
+            zoom_levels_int = [int(zoom_level) for zoom_level in zoom_levels]
+            zoom_levels_int = sorted(zoom_levels_int)
+            bottom = zoom_levels[0]
+            top = zoom_levels[-1]
+        except ValueError as exc:
+            self.log(
+                f"Invalid zoom levels value: {exc}",
+                log_level=2,
+                push=False,
+            )
+            return
 
         data = {
             UploadPublicationAlgorithm.ABSTRACT: configuration.abstract,
             UploadPublicationAlgorithm.BOTTOM_LEVEL: bottom,
             UploadPublicationAlgorithm.DATASTORE: datastore_id,
+            UploadPublicationAlgorithm.DATASET_NAME: dataset_name,
             UploadPublicationAlgorithm.KEYWORDS: "QGIS Plugin",  # TODO : define keywords
             UploadPublicationAlgorithm.LAYER_NAME: configuration.layer_name,
             UploadPublicationAlgorithm.METADATA: [],

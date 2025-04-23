@@ -32,7 +32,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Dataset</string>
+      <string>Pyramid vector</string>
      </property>
     </widget>
    </item>
@@ -65,6 +65,16 @@
      </property>
     </spacer>
    </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Dataset</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="DatasetComboBox" name="cbx_dataset"/>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -77,6 +87,11 @@
    <class>StoredDataComboBox</class>
    <extends>QComboBox</extends>
    <header>geoplateforme.gui.cbx_stored_data</header>
+  </customwidget>
+  <customwidget>
+   <class>DatasetComboBox</class>
+   <extends>QComboBox</extends>
+   <header>geoplateforme.gui.cbx_dataset</header>
   </customwidget>
   <customwidget>
    <class>PublicationForm</class>

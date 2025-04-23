@@ -204,7 +204,7 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
                 )
 
                 execution_list = manager.get_upload_checks_execution(
-                    datastore=datastore_id, upload=self.created_upload_id
+                    datastore_id=datastore_id, upload_id=self.created_upload_id
                 )
 
             except UnavailableUploadException as exc:
@@ -231,8 +231,8 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
                     self.qwp_upload_edition.cbx_datastore.current_datastore_id()
                 )
                 stored_data = stored_data_manager.get_stored_data(
-                    datastore=datastore_id,
-                    stored_data=self.created_vector_db_stored_data_id,
+                    datastore_id=datastore_id,
+                    stored_data_id=self.created_vector_db_stored_data_id,
                 )
 
                 if (
@@ -240,7 +240,8 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
                     and "proc_int_id" in stored_data.tags.keys()
                 ):
                     execution = processing_manager.get_execution(
-                        datastore=datastore_id, exec_id=stored_data.tags["proc_int_id"]
+                        datastore_id=datastore_id,
+                        exec_id=stored_data.tags["proc_int_id"],
                     )
             except (
                 UnavailableProcessingException,
@@ -268,8 +269,8 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
                     self.qwp_upload_edition.cbx_datastore.current_datastore_id()
                 )
                 stored_data = stored_data_manager.get_stored_data(
-                    datastore=datastore_id,
-                    stored_data=self.created_pyramid_stored_data_id,
+                    datastore_id=datastore_id,
+                    stored_data_id=self.created_pyramid_stored_data_id,
                 )
 
                 if (
@@ -277,7 +278,7 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
                     and "proc_pyr_creat_id" in stored_data.tags.keys()
                 ):
                     execution = processing_manager.get_execution(
-                        datastore=datastore_id,
+                        datastore_id=datastore_id,
                         exec_id=stored_data.tags["proc_pyr_creat_id"],
                     )
 

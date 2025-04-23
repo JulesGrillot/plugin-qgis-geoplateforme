@@ -195,8 +195,8 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
                 # Update stored data tags
                 manager = StoredDataRequestManager()
                 manager.add_tags(
-                    datastore=datastore,
-                    stored_data=stored_data_id,
+                    datastore_id=datastore,
+                    stored_data_id=stored_data_id,
                     tags={"tms_url": url_data, "published": "true"},
                 )
             except AddTagException as exc:

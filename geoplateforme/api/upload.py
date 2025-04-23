@@ -7,11 +7,7 @@ from enum import Enum
 from typing import List, Optional, Self
 
 # PyQGIS
-from qgis.PyQt.QtCore import (
-    QByteArray,
-    QCoreApplication,
-    QUrl,
-)
+from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QFileInfo, QUrl
 
 # plugin
 from geoplateforme.api.check import CheckExecution, CheckRequestManager
@@ -578,6 +574,7 @@ class UploadRequestManager:
                 url=QUrl(f"{self.get_base_url(datastore_id)}/{upload_id}/tags"),
                 config_id=self.plg_settings.qgis_auth_id,
                 data=data,
+                headers={b"Content-Type": bytes("application/json", "utf8")},
             )
         except ConnectionError as err:
             raise AddTagException(f"Error while adding tag to upload : {err}")
@@ -698,6 +695,7 @@ class UploadRequestManager:
                 url=QUrl(self.get_base_url(datastore_id)),
                 config_id=self.plg_settings.qgis_auth_id,
                 data=data,
+                headers={b"Content-Type": bytes("application/json", "utf8")},
             )
         except ConnectionError as err:
             raise UploadCreationException(f"Error while creating upload : {err}")
@@ -724,7 +722,9 @@ class UploadRequestManager:
 
         try:
             self.request_manager.post_file(
-                url=QUrl(self.get_base_url(datastore_id)),
+                url=QUrl(
+                    f"{self.get_base_url(datastore_id)}/{upload_id}/data?path={QFileInfo(filename).fileName()}"
+                ),
                 config_id=self.plg_settings.qgis_auth_id,
                 file_path=filename,
             )
@@ -752,6 +752,7 @@ class UploadRequestManager:
                 url=QUrl(f"{self.get_base_url(datastore_id)}/{upload_id}/close"),
                 config_id=self.plg_settings.qgis_auth_id,
                 data=data,
+                headers={b"Content-Type": bytes("application/json", "utf8")},
             )
         except ConnectionError as err:
             raise UploadClosingException(f"Error while closing upload : {err}")

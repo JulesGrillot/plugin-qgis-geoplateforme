@@ -168,7 +168,7 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                     "parameters": exec_params,
                 }
                 res = processing_manager.create_processing_execution(
-                    datastore=datastore, input_map=data_map
+                    datastore_id=datastore, input_map=data_map
                 )
                 stored_data_val = res["output"]["stored_data"]
                 exec_id = res["_id"]
@@ -193,7 +193,9 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                     tags["is_sample"] = "true"
 
                 stored_data_manager.add_tags(
-                    datastore=datastore, stored_data=stored_data_val["_id"], tags=tags
+                    datastore_id=datastore,
+                    stored_data_id=stored_data_val["_id"],
+                    tags=tags,
                 )
 
                 # Add tag to vector db
@@ -201,14 +203,14 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                     "pyramid_id": stored_data_id,
                 }
                 stored_data_manager.add_tags(
-                    datastore=datastore,
-                    stored_data=vector_db_stored_data._id,
+                    datastore_id=datastore,
+                    stored_data_id=vector_db_stored_data._id,
                     tags=vector_db_tag,
                 )
 
                 # Launch execution
                 processing_manager.launch_execution(
-                    datastore=datastore, exec_id=exec_id
+                    datastore_id=datastore, exec_id=exec_id
                 )
 
                 # Wait for tile creation
@@ -325,7 +327,7 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
         try:
             manager = StoredDataRequestManager()
             stored_data = manager.get_stored_data(
-                datastore=datastore, stored_data=pyramid_stored_data_id
+                datastore_id=datastore, stored_data_id=pyramid_stored_data_id
             )
             status = StoredDataStatus(stored_data.status)
             while (
@@ -333,7 +335,7 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                 and status != StoredDataStatus.UNSTABLE
             ):
                 stored_data = manager.get_stored_data(
-                    datastore=datastore, stored_data=pyramid_stored_data_id
+                    datastore_id=datastore, stored_data_id=pyramid_stored_data_id
                 )
                 status = StoredDataStatus(stored_data.status)
                 sleep(PlgOptionsManager.get_plg_settings().status_check_sleep)

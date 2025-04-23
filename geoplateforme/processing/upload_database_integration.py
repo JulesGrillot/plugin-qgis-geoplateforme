@@ -37,6 +37,7 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
     UPLOAD = "upload"
     STORED_DATA_NAME = "stored_data_name"
 
+    PROCESSING_EXEC_ID = "PROCESSING_EXEC_ID"
     CREATED_STORED_DATA_ID = "CREATED_STORED_DATA_ID"
 
     def tr(self, message: str) -> str:
@@ -116,7 +117,7 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
                     "parameters": {},
                 }
                 res = processing_manager.create_processing_execution(
-                    datastore=datastore, input_map=data_map
+                    datastore_id=datastore, input_map=data_map
                 )
                 stored_data_val = res["output"]["stored_data"]
                 exec_id = res["_id"]
@@ -129,14 +130,19 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
                     feedback.created_vector_db_id = stored_data_id
 
                 # Update stored data tags
-                tags = {"upload_id": upload, "proc_int_id": exec_id}
+                tags = {
+                    "upload_id": upload,
+                    "proc_int_id": exec_id,
+                }
                 stored_data_manager.add_tags(
-                    datastore=datastore, stored_data=stored_data_val["_id"], tags=tags
+                    datastore_id=datastore,
+                    stored_data_id=stored_data_val["_id"],
+                    tags=tags,
                 )
 
                 # Launch execution
                 processing_manager.launch_execution(
-                    datastore=datastore, exec_id=exec_id
+                    datastore_id=datastore, exec_id=exec_id
                 )
 
                 # Wait for database integration
@@ -159,7 +165,10 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
                     f"Can't add tags to stored data for database integration : {exc}"
                 )
 
-        return {self.CREATED_STORED_DATA_ID: stored_data_id}
+        return {
+            self.CREATED_STORED_DATA_ID: stored_data_id,
+            self.PROCESSING_EXEC_ID: exec_id,
+        }
 
     def _wait_database_integration(
         self, datastore: str, vector_db_stored_data_id: str
@@ -174,17 +183,17 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
         try:
             manager = StoredDataRequestManager()
             stored_data = manager.get_stored_data(
-                datastore=datastore, stored_data=vector_db_stored_data_id
+                datastore_id=datastore, stored_data_id=vector_db_stored_data_id
             )
-            status = StoredDataStatus(stored_data.status)
+            status = stored_data.status
             while (
                 status != StoredDataStatus.GENERATED
                 and status != StoredDataStatus.UNSTABLE
             ):
                 stored_data = manager.get_stored_data(
-                    datastore=datastore, stored_data=vector_db_stored_data_id
+                    datastore_id=datastore, stored_data_id=vector_db_stored_data_id
                 )
-                status = StoredDataStatus(stored_data.status)
+                status = stored_data.status
                 sleep(PlgOptionsManager.get_plg_settings().status_check_sleep)
 
             if status == StoredDataStatus.UNSTABLE:

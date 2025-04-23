@@ -5,10 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import List, Optional, Self
 
-from qgis.core import (
-    QgsCoordinateReferenceSystem,
-    QgsVectorLayer,
-)
+from qgis.core import QgsCoordinateReferenceSystem, QgsVectorLayer
 from qgis.PyQt.QtCore import QByteArray, QUrl
 
 # plugin
@@ -741,6 +738,7 @@ class StoredDataRequestManager:
                 url=QUrl(f"{self.get_base_url(datastore_id)}/{stored_data_id}/tags"),
                 config_id=self.plg_settings.qgis_auth_id,
                 data=data,
+                headers={b"Content-Type": bytes("application/json", "utf8")},
             )
         except ConnectionError as err:
             raise AddTagException(f"Error while adding tag to stored_data : {err}")

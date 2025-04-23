@@ -142,7 +142,7 @@ class ReportDialog(QDialog):
             try:
                 manager = StoredDataRequestManager()
                 vectordb_stored_data = manager.get_stored_data(
-                    datastore=stored_data.datastore_id, stored_data=vectordb_id
+                    datastore_id=stored_data.datastore_id, stored_data_id=vectordb_id
                 )
                 self._add_stored_data_execution_logs(vectordb_stored_data)
             except UnavailableStoredData as exc:

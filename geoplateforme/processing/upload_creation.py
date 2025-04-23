@@ -111,17 +111,17 @@ class UploadCreationAlgorithm(QgsProcessingAlgorithm):
 
                 # Create upload
                 upload = manager.create_upload(
-                    datastore=datastore, name=name, description=description, srs=srs
+                    datastore_id=datastore, name=name, description=description, srs=srs
                 )
 
                 # Add files
                 for filename in files:
                     manager.add_file(
-                        datastore=datastore, upload=upload._id, filename=filename
+                        datastore_id=datastore, upload_id=upload._id, filename=filename
                     )
 
                 # Close upload
-                manager.close_upload(datastore=datastore, upload=upload._id)
+                manager.close_upload(datastore_id=datastore, upload_id=upload._id)
 
                 # Get create upload id
                 upload_id = upload._id
@@ -152,10 +152,10 @@ class UploadCreationAlgorithm(QgsProcessingAlgorithm):
         """
         try:
             manager = UploadRequestManager()
-            upload = manager.get_upload(datastore=datastore, upload=upload_id)
+            upload = manager.get_upload(datastore_id=datastore, upload_id=upload_id)
             status = UploadStatus(upload.status)
             while status != UploadStatus.CLOSED and status != UploadStatus.UNSTABLE:
-                upload = manager.get_upload(datastore=datastore, upload=upload_id)
+                upload = manager.get_upload(datastore_id=datastore, upload_id=upload_id)
                 status = UploadStatus(upload.status)
                 sleep(PlgOptionsManager.get_plg_settings().status_check_sleep)
 

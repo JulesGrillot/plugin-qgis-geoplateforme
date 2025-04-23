@@ -4,18 +4,17 @@ import logging
 from dataclasses import dataclass
 
 # PyQGIS
-from qgis.core import QgsBlockingNetworkRequest
 from qgis.PyQt.QtCore import QByteArray, QUrl
-from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # project
 from geoplateforme.api.custom_exceptions import (
+    AddTagException,
     ConfigurationCreationException,
     OfferingCreationException,
     UnavailableConfigurationException,
 )
-from geoplateforme.api.utils import qgs_blocking_get_request
 from geoplateforme.toolbelt.log_handler import PlgLogger
+from geoplateforme.toolbelt.network_manager import NetworkRequestsManager
 from geoplateforme.toolbelt.preferences import PlgOptionsManager
 
 logger = logging.getLogger(__name__)
@@ -82,7 +81,7 @@ class ConfigurationRequestManager:
 
         """
         self.log = PlgLogger().log
-        self.ntwk_requester_blk = QgsBlockingNetworkRequest()
+        self.request_manager = NetworkRequestsManager()
         self.plg_settings = PlgOptionsManager.get_plg_settings()
 
     def get_base_url(self, datastore: str) -> str:
@@ -104,7 +103,7 @@ class ConfigurationRequestManager:
         top_level: int,
         bottom_level: int,
         configuration: Configuration,
-    ) -> Configuration:
+    ) -> str:
         """
         Create configuration on Geoplateforme entrepot
 
@@ -128,13 +127,6 @@ class ConfigurationRequestManager:
             }
         ]
 
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req_post = QNetworkRequest(QUrl(self.get_base_url(datastore)))
-        # headers
-        req_post.setHeader(
-            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
-        )
-
         # encode data
         data = QByteArray()
         data_map = {
@@ -146,19 +138,19 @@ class ConfigurationRequestManager:
             "attribution": configuration.attribution,
         }
         data.append(json.dumps(data_map))
-
-        # send request
-        resp = self.ntwk_requester_blk.post(req_post, data=data)
-
-        # check response
-        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
-            raise ConfigurationCreationException(
-                f"Error while creating configuration : "
-                f"{self.ntwk_requester_blk.errorMessage()}"
+        try:
+            # send request
+            reply = self.request_manager.post_url(
+                url=QUrl(self.get_base_url(datastore)),
+                config_id=self.plg_settings.qgis_auth_id,
+                data=data,
+                headers={b"Content-Type": bytes("application/json", "utf8")},
             )
-        # check response type
-        req_reply = self.ntwk_requester_blk.reply()
-        data = json.loads(req_reply.content().data())
+        except ConnectionError as err:
+            raise ConfigurationCreationException(
+                f"Error while creating configuration : {err}"
+            )
+        data = json.loads(reply.data())
         return data["_id"]
 
     def get_configurations_id(self, datastore: str, stored_data: str) -> list:
@@ -171,17 +163,17 @@ class ConfigurationRequestManager:
         self.log(
             f"{__name__}.get_configurations_id(datastore:{datastore}, stored_data: {stored_data})"
         )
-
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req = QNetworkRequest(
-            QUrl(f"{self.get_base_url(datastore)}?stored_data={stored_data}")
-        )
-
-        # headers
-        req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk, req, UnavailableConfigurationException
-        )
-        data = json.loads(req_reply.content().data().decode("utf-8"))
+        try:
+            # send request
+            reply = self.request_manager.get_url(
+                url=QUrl(f"{self.get_base_url(datastore)}?stored_data={stored_data}"),
+                config_id=self.plg_settings.qgis_auth_id,
+            )
+        except ConnectionError as err:
+            raise UnavailableConfigurationException(
+                f"Error while getting configuration : {err}"
+            )
+        data = json.loads(reply.data().decode("utf-8"))
         configuration_ids = [configuration["_id"] for configuration in data]
 
         return configuration_ids
@@ -197,14 +189,17 @@ class ConfigurationRequestManager:
             f"{__name__}.get_configuration(datastore:{datastore}, configuration: {configuration})"
         )
 
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req = QNetworkRequest(QUrl(f"{self.get_base_url(datastore)}/{configuration}"))
-
-        # headers
-        req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk, req, UnavailableConfigurationException
-        )
-        data = json.loads(req_reply.content().data().decode("utf-8"))
+        try:
+            # send request
+            reply = self.request_manager.get_url(
+                url=QUrl(f"{self.get_base_url(datastore)}/{configuration}"),
+                config_id=self.plg_settings.qgis_auth_id,
+            )
+        except ConnectionError as err:
+            raise UnavailableConfigurationException(
+                f"Error while getting configuration : {err}"
+            )
+        data = json.loads(reply.data().decode("utf-8"))
         return self._create_configuration_from_json(data)
 
     def _create_configuration_from_json(self, data: dict) -> Configuration:
@@ -240,22 +235,17 @@ class ConfigurationRequestManager:
             f"{__name__}.delete_configuration(datastore:{datastore}, configuration_ids: {configuration_ids})"
         )
 
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req_get = QNetworkRequest(
-            QUrl(f"{self.get_base_url(datastore)}/{configuration_ids}")
-        )
-        # headers
-        req_get.setHeader(
-            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
-        )
+        try:
+            # send request
+            self.request_manager.delete_url(
+                url=QUrl(f"{self.get_base_url(datastore)}/{configuration_ids}"),
+                config_id=self.plg_settings.qgis_auth_id,
+                headers={b"Content-Type": bytes("application/json", "utf8")},
+            )
 
-        # send request
-        resp = self.ntwk_requester_blk.deleteResource(req_get)
-
-        # check response
-        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
+        except ConnectionError as err:
             raise UnavailableConfigurationException(
-                f"Error while fetching processing : {self.ntwk_requester_blk.errorMessage()}"
+                f"Error while getting configuration : {err}"
             )
 
     def create_offering(
@@ -273,16 +263,6 @@ class ConfigurationRequestManager:
             f"{__name__}.create_offering(visibility:{visibility}, endpoint: {endpoint}, datastore: {datastore}, configuration_id: {configuration_id})"
         )
 
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req_post = QNetworkRequest(
-            QUrl(f"{self.get_base_url(datastore)}/{configuration_id}/offerings")
-        )
-
-        # headers
-        req_post.setHeader(
-            QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/json"
-        )
-
         # encode data
         data = QByteArray()
         data_map = {
@@ -292,17 +272,48 @@ class ConfigurationRequestManager:
 
         data.append(json.dumps(data_map))
 
-        # send request
-        resp = self.ntwk_requester_blk.post(req_post, data=data)
-
-        # check response
-        if resp != QgsBlockingNetworkRequest.ErrorCode.NoError:
-            raise OfferingCreationException(
-                f"Error while creating publication : "
-                f"{self.ntwk_requester_blk.errorMessage()}"
+        try:
+            # send request
+            reply = self.request_manager.post_url(
+                url=QUrl(
+                    f"{self.get_base_url(datastore)}/{configuration_id}/offerings"
+                ),
+                config_id=self.plg_settings.qgis_auth_id,
+                data=data,
+                headers={b"Content-Type": bytes("application/json", "utf8")},
             )
-        # check response type
-        req_reply = self.ntwk_requester_blk.reply()
 
-        data = json.loads(req_reply.content().data())
+        except ConnectionError as err:
+            raise OfferingCreationException(f"Error while creating publication : {err}")
+
+        data = json.loads(reply.data())
         return data["urls"]
+
+    def add_tags(self, datastore_id: str, configuration_id: str, tags: dict) -> None:
+        """Add tags to stored data
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param configuration_id: configuration id
+        :type configuration_id: str
+        :param tags: dictionary of tags
+        :type tags: dict
+
+        :raises AddTagException: when error occur during requesting the API
+        """
+        self.log(
+            f"{__name__}.add_tags(datastore_id:{datastore_id},configuration_id:{configuration_id}, tags:{tags})"
+        )
+
+        try:
+            # encode data
+            data = QByteArray()
+            data.append(json.dumps(tags))
+            self.request_manager.post_url(
+                url=QUrl(f"{self.get_base_url(datastore_id)}/{configuration_id}/tags"),
+                config_id=self.plg_settings.qgis_auth_id,
+                data=data,
+                headers={b"Content-Type": bytes("application/json", "utf8")},
+            )
+        except ConnectionError as err:
+            raise AddTagException(f"Error while adding tag to configuration : {err}")

@@ -97,9 +97,7 @@ class StoredDataComboBox(QComboBox):
         :return: selected stored data id
         :rtype: str
         """
-        index = self.currentIndex()
-        model = self.model()
-        return model.data(model.index(index, StoredDataListModel.ID_COL))
+        return self.current_stored_data()._id
 
     def current_stored_data(self) -> StoredData:
         """Get current selected stored data object

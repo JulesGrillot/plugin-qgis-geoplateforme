@@ -35,10 +35,7 @@ from qgis.PyQt.QtCore import (
     QIODevice,
     QUrl,
 )
-from qgis.PyQt.QtNetwork import (
-    QNetworkReply,
-    QNetworkRequest,
-)
+from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 
 # project
 from geoplateforme.__about__ import __title__, __version__
@@ -223,7 +220,8 @@ class NetworkRequestsManager:
             if return_req_reply:
                 return req_reply
             return req_reply.content()
-
+        except ConnectionError as err:
+            raise err
         except Exception as err:
             err_msg = self.tr(
                 "GET request on URL {} (with auth config {}) failed. Trace: {}".format(
@@ -309,7 +307,8 @@ class NetworkRequestsManager:
             if return_req_reply:
                 return req_reply
             return req_reply.content()
-
+        except ConnectionError as err:
+            raise err
         except Exception as err:
             err_msg = self.tr(
                 "DELETE request on URL {} (with auth config {}) failed. Trace: {}".format(
@@ -391,7 +390,8 @@ class NetworkRequestsManager:
                     )
 
             return req_reply.content()
-
+        except ConnectionError as err:
+            raise err
         except Exception as err:
             err_msg = self.tr(
                 "POST request on URL {} (with auth config {}) failed. Trace: {}".format(
@@ -474,6 +474,8 @@ class NetworkRequestsManager:
 
             return req_reply.content()
 
+        except ConnectionError as err:
+            raise err
         except Exception as err:
             err_msg = self.tr(
                 "PUT request on URL {} (with auth config {}) failed. Trace: {}".format(

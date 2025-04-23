@@ -5,6 +5,7 @@ import datetime
 import json
 import logging
 from dataclasses import dataclass
+from typing import Optional
 
 # PyQGIS
 from qgis.core import QgsBlockingNetworkRequest
@@ -27,7 +28,7 @@ class Community:
     name: str
     technical_name: str
     supervisor: str
-    datastore: str
+    datastore: Optional[str] = None
 
 
 @dataclass
@@ -65,12 +66,13 @@ class User:
         """
         result = []
         for community_member in self.communities_member:
-            result.append(
-                Datastore(
-                    id=community_member.community.datastore,
-                    name=community_member.community.name,
+            if community_member.community.datastore:
+                result.append(
+                    Datastore(
+                        id=community_member.community.datastore,
+                        name=community_member.community.name,
+                    )
                 )
-            )
         return result
 
     @classmethod

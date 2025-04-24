@@ -4,7 +4,6 @@ import logging
 from dataclasses import dataclass
 
 # PyQGIS
-from qgis.core import QgsBlockingNetworkRequest
 from qgis.PyQt.QtCore import QUrl
 
 # project
@@ -67,7 +66,6 @@ class DatastoreRequestManager:
         """
         self.log = PlgLogger().log
         self.request_manager = NetworkRequestsManager()
-        self.ntwk_requester_blk = QgsBlockingNetworkRequest()
         self.plg_settings = PlgOptionsManager.get_plg_settings()
 
     def get_base_url(self, datastore: str) -> str:

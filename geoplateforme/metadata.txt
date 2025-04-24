@@ -14,12 +14,12 @@ homepage=https://geoplateforme.github.io/plugin-qgis-geoplateforme/
 repository=https://github.com/Geoplateforme/plugin-qgis-geoplateforme/
 tracker=https://github.com/Geoplateforme/plugin-qgis-geoplateforme//issues/
 
-# experimental flag
+# QGIS context
 deprecated=False
 experimental=True
 qgisMinimumVersion=3.40.4
 qgisMaximumVersion=3.99
-qt6_compatible=True
+supportsQt6=True
 
 # versionnement
 version=0.3.0-DEV

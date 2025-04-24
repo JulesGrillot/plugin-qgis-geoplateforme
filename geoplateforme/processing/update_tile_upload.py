@@ -243,7 +243,6 @@ class UpdateTileUploadAlgorithm(QgsProcessingAlgorithm):
             TileCreationAlgorithm.DATASTORE: datastore,
             TileCreationAlgorithm.VECTOR_DB_STORED_DATA_ID: vector_db_stored_data_id,
             TileCreationAlgorithm.STORED_DATA_NAME: name,
-            TileCreationAlgorithm.TMS: exec_param["tms"],
             TileCreationAlgorithm.BOTTOM_LEVEL: exec_param["bottom_level"],
             TileCreationAlgorithm.TOP_LEVEL: exec_param["top_level"],
             TileCreationAlgorithm.COMPOSITION: exec_param["composition"],

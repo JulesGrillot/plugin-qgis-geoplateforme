@@ -1,9 +1,14 @@
-from typing import List
+from typing import List, Optional
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QComboBox
 
-from geoplateforme.api.stored_data import StoredData, StoredDataStatus, StoredDataStep
+from geoplateforme.api.stored_data import (
+    StoredData,
+    StoredDataStatus,
+    StoredDataStep,
+    StoredDataType,
+)
 from geoplateforme.gui.mdl_stored_data import StoredDataListModel
 from geoplateforme.gui.proxy_model_stored_data import StoredDataProxyModel
 
@@ -44,66 +49,61 @@ class StoredDataComboBox(QComboBox):
             ).row()
             self.setCurrentIndex(row)
 
-    def set_filter_type(self, filter_type: []) -> None:
-        """
-        Define filter of expected stored data type
+    def set_filter_type(self, filter_type: List[StoredDataType]) -> None:
+        """Define filter of expected stored data type
 
-        Args:
-            filter_type: expected stored data type
+        :param filter_type: expected stored data type
+        :type filter_type: List[StoredDataType]
         """
         self.proxy_model_stored_data.set_filter_type(filter_type)
 
-    def set_visible_steps(self, steps: [StoredDataStep]) -> None:
-        """
-        Define filter of visible steps for stored data
+    def set_visible_steps(self, steps: List[StoredDataStep]) -> None:
+        """Define filter of visible steps for stored data
 
-        Args:
-            steps: List[StoredDataStep] visible step list
+        :param steps: visible step list
+        :type steps: List[StoredDataStep]
         """
         self.proxy_model_stored_data.set_visible_steps(steps)
 
     def set_visible_status(self, status: List[StoredDataStatus]) -> None:
-        """
-        Define filter of visible status for stored data
+        """Define filter of visible status for stored data
 
-        Args:
-            status: List[StoredDataStatus] visible status list
+        :param status: visible status list
+        :type status: List[StoredDataStatus]
         """
         self.proxy_model_stored_data.set_visible_status(status)
 
-    def set_datastore(self, datastore: str) -> None:
-        """
-        Refresh StoredDataListModel with current datastore stored data
+    def set_datastore(self, datastore: str, dataset_name: Optional[str] = None) -> None:
+        """Refresh QStandardItemModel data with current datastore stored data
 
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param dataset_name: dataset name
+        :type dataset_name: str, optional
         """
-        self.mdl_stored_data.set_datastore(datastore)
+        self.mdl_stored_data.set_datastore(datastore, dataset_name)
 
     def current_stored_data_name(self) -> str:
-        """
-        Get current selected stored data name
+        """Get current selected stored data name
 
-        Returns: (str) selected stored data name
-
+        :return: selected stored data name
+        :rtype: str
         """
         return self.currentText()
 
     def current_stored_data_id(self) -> str:
-        """
-        Get current selected stored data id
+        """Get current selected stored data id
 
-        Returns: (str) selected stored data id
-
+        :return: selected stored data id
+        :rtype: str
         """
-        index = self.currentIndex()
-        model = self.model()
-        return model.data(model.index(index, StoredDataListModel.ID_COL))
+        return self.current_stored_data()._id
 
     def current_stored_data(self) -> StoredData:
-        """
-        Get current selected stored data object
+        """Get current selected stored data object
 
-        Returns: (StoredData) current selected stored data
-
+        :return: current selected stored data
+        :rtype: StoredData
         """
         index = self.currentIndex()
         model = self.model()

@@ -6,7 +6,11 @@ from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtWidgets import QMessageBox, QSlider, QWizardPage
 
 # Plugin
-from geoplateforme.api.stored_data import StoredDataStatus, StoredDataStep
+from geoplateforme.api.stored_data import (
+    StoredDataStatus,
+    StoredDataStep,
+    StoredDataType,
+)
 from geoplateforme.gui.lne_validators import alphanum_qval
 
 
@@ -50,12 +54,17 @@ class TileGenerationEditionPageWizard(QWizardPage):
         )
 
         # Only display stored data ready for pyramid generation
-        self.cbx_stored_data.set_filter_type(["VECTOR-DB"])
-        self.cbx_stored_data.set_visible_steps([StoredDataStep.TILE_GENERATION])
+        self.cbx_stored_data.set_filter_type([StoredDataType.VECTORDB])
+        self.cbx_stored_data.set_visible_steps(
+            [StoredDataStep.TILE_CREATED, StoredDataStep.TILE_GENERATION]
+        )
         self.cbx_stored_data.set_visible_status([StoredDataStatus.GENERATED])
 
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
         self._datastore_updated()
+
+        self.cbx_dataset.currentIndexChanged.connect(self._dataset_updated)
+        self._dataset_updated()
 
         self.cbx_stored_data.currentIndexChanged.connect(self._stored_data_updated)
         self._stored_data_updated()
@@ -154,7 +163,18 @@ class TileGenerationEditionPageWizard(QWizardPage):
         Update stored data combobox when datastore is updated
 
         """
-        self.cbx_stored_data.set_datastore(self.cbx_datastore.current_datastore_id())
+        self.cbx_dataset.set_datastore_id(self.cbx_datastore.current_datastore_id())
+
+    def _dataset_updated(self) -> None:
+        """
+        Update stored data combobox when dataset is updated
+
+        """
+        self.cbx_stored_data.set_datastore(
+            self.cbx_datastore.current_datastore_id(),
+            self.cbx_dataset.current_dataset_name(),
+        )
+        self._stored_data_updated()
 
     def _stored_data_updated(self) -> None:
         """

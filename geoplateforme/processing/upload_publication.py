@@ -15,9 +15,7 @@ from geoplateforme.api.configuration import Configuration, ConfigurationRequestM
 from geoplateforme.api.custom_exceptions import (
     AddTagException,
     ConfigurationCreationException,
-    DeleteStoredDataException,
     OfferingCreationException,
-    ReadStoredDataException,
     UnavailableEndpointException,
 )
 from geoplateforme.api.datastore import DatastoreRequestManager
@@ -31,6 +29,7 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
     INPUT_JSON = "INPUT_JSON"
 
     DATASTORE = "datastore"
+    DATASET_NAME = "dataset_name"
     STORED_DATA = "stored_data"
     NAME = "name"
     TITLE = "title"
@@ -83,6 +82,7 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
             f'    "{self.DATASTORE}": wanted  datastore  (str),\n'
             f'    "{self.METADATA}": wanted  metadata (str),\n'
             f'    "{self.NAME}": wanted datastore name (str),\n'
+            f'    "{self.DATASET_NAME}": dataset name (str),\n'
             f'    "{self.LAYER_NAME}":wanted  layer name (str),\n'
             f'    "{self.KEYWORDS}": wanted keywords (str),\n'
             f'    "{self.STORED_DATA}":wanted stored data name (str),\n'
@@ -117,6 +117,7 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
 
             datastore = data[self.DATASTORE]
             stored_data_id = data.get(self.STORED_DATA)
+            dataset_name = data[self.DATASET_NAME]
 
             layer_name = data.get(self.LAYER_NAME)
             abstract = data.get(self.ABSTRACT)
@@ -186,10 +187,21 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
             except OfferingCreationException as exc:
                 raise QgsProcessingException(f"exc publication url : {exc}")
 
+            try:
+                # Update configuration tags
+                manager_configuration = ConfigurationRequestManager()
+                manager_configuration.add_tags(
+                    datastore_id=datastore,
+                    configuration_id=configuration_id,
+                    tags={"datasheet_name": dataset_name},
+                )
+            except AddTagException as exc:
+                raise QgsProcessingException(f"exc tag update url : {exc}")
+
             # One url defined
             publication_url = publication_urls[0]
             # Remove tms| indication
-            url_data = publication_url[len("tms|") : len(publication_url)]
+            url_data = publication_url["url"]
 
             try:
                 # Update stored data tags
@@ -201,19 +213,6 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
                 )
             except AddTagException as exc:
                 raise QgsProcessingException(f"exc tag update url : {exc}")
-
-            try:
-                stored_data_manager = StoredDataRequestManager()
-                stored_data = stored_data_manager.get_stored_data(
-                    datastore, stored_data_id
-                )
-
-                # Delete vector db stored data
-                stored_data_manager.delete(datastore, stored_data.tags["vectordb_id"])
-            except (DeleteStoredDataException, ReadStoredDataException) as exc:
-                raise QgsProcessingException(
-                    f"Can't delete vector db stored data after tile publication : {exc}"
-                )
 
             return {
                 self.PUBLICATION_URL: url_data,

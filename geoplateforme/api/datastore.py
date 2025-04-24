@@ -4,17 +4,15 @@ import logging
 from dataclasses import dataclass
 
 # PyQGIS
-from qgis.core import QgsBlockingNetworkRequest
 from qgis.PyQt.QtCore import QUrl
-from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # project
 from geoplateforme.api.custom_exceptions import (
     UnavailableDatastoreException,
     UnavailableEndpointException,
 )
-from geoplateforme.api.utils import qgs_blocking_get_request
 from geoplateforme.toolbelt.log_handler import PlgLogger
+from geoplateforme.toolbelt.network_manager import NetworkRequestsManager
 from geoplateforme.toolbelt.preferences import PlgOptionsManager
 
 logger = logging.getLogger(__name__)
@@ -67,7 +65,7 @@ class DatastoreRequestManager:
 
         """
         self.log = PlgLogger().log
-        self.ntwk_requester_blk = QgsBlockingNetworkRequest()
+        self.request_manager = NetworkRequestsManager()
         self.plg_settings = PlgOptionsManager.get_plg_settings()
 
     def get_base_url(self, datastore: str) -> str:
@@ -93,17 +91,17 @@ class DatastoreRequestManager:
         """
         self.log(f"{__name__}.get_datastore(datastore:{datastore})")
 
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req = QNetworkRequest(QUrl(self.get_base_url(datastore)))
+        try:
+            reply = self.request_manager.get_url(
+                url=QUrl(self.get_base_url(datastore)),
+                config_id=self.plg_settings.qgis_auth_id,
+            )
+        except ConnectionError as err:
+            raise UnavailableDatastoreException(
+                f"Error while getting datastore : {err}"
+            )
 
-        req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk,
-            req,
-            UnavailableDatastoreException,
-            expected_type="application/json",
-        )
-
-        data = json.loads(req_reply.content().data())
+        data = json.loads(reply.data())
         result = Datastore(
             id=data["_id"],
             name=data["name"],
@@ -126,17 +124,17 @@ class DatastoreRequestManager:
             f"{__name__}.get_endpoint(datastore:{datastore},data_type:{data_type})"
         )
 
-        self.ntwk_requester_blk.setAuthCfg(self.plg_settings.qgis_auth_id)
-        req = QNetworkRequest(QUrl(self.get_base_url(datastore)))
+        try:
+            reply = self.request_manager.get_url(
+                url=QUrl(self.get_base_url(datastore)),
+                config_id=self.plg_settings.qgis_auth_id,
+            )
+        except ConnectionError as err:
+            raise UnavailableEndpointException(
+                f"Error while getting datastore endpoint : {err}"
+            )
 
-        req_reply = qgs_blocking_get_request(
-            self.ntwk_requester_blk,
-            req,
-            UnavailableEndpointException,
-            expected_type="application/json",
-        )
-
-        data = json.loads(req_reply.content().data())
+        data = json.loads(reply.data())
         for i in range(0, len(data["endpoints"])):
             if data["endpoints"][i]["endpoint"]["type"] == data_type:
                 data = data["endpoints"][i]["endpoint"]["_id"]

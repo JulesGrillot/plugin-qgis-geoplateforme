@@ -20,6 +20,7 @@ from geoplateforme.processing.upload_database_integration import (
     UploadDatabaseIntegrationAlgorithm,
 )
 from geoplateforme.processing.upload_from_files import GpfUploadFromFileAlgorithm
+from geoplateforme.processing.utils import tags_to_qgs_parameter_matrix_string
 
 
 class VectorDatabaseCreationProcessingFeedback(QgsProcessingFeedback):
@@ -115,7 +116,13 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
 
             # Create upload
             upload_id = self._create_upload(
-                datastore, files, name, srs, context, feedback
+                datastore,
+                files,
+                name,
+                srs,
+                dataset_name,
+                context,
+                feedback,
             )
 
             # Run database integration
@@ -131,7 +138,6 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
             upload_tags = {
                 "vectordb_id": vector_db_stored_data_id,
                 "proc_int_id": exec_id,
-                "datasheet_name": dataset_name,
             }
 
             self._add_upload_tag(
@@ -157,6 +163,7 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         files: [str],
         name: str,
         srs: QgsCoordinateReferenceSystem,
+        dataset_name: str,
         context: QgsProcessingContext,
         feedback: QgsProcessingFeedback,
     ) -> str:
@@ -170,6 +177,8 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         :type name: str
         :param srs: upload srs
         :type srs: QgsCoordinateReferenceSystem
+        :param dataset_name : dataset name
+        :type dataset_name : str
         :param context: context of processing
         :type context: QgsProcessingContext
         :param feedback: feedback for processing
@@ -186,6 +195,9 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
             GpfUploadFromFileAlgorithm.DESCRIPTION: name,
             GpfUploadFromFileAlgorithm.SRS: srs,
             GpfUploadFromFileAlgorithm.FILES: ";".join(files),
+            GpfUploadFromFileAlgorithm.TAGS: tags_to_qgs_parameter_matrix_string(
+                {"datasheet_name": dataset_name},
+            ),
         }
 
         results, successful = alg.run(params, context, feedback)

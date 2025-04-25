@@ -8,6 +8,7 @@ from qgis.core import (
     QgsProcessingFeedback,
     QgsProcessingParameterCrs,
     QgsProcessingParameterFile,
+    QgsProcessingParameterMatrix,
     QgsProcessingParameterString,
 )
 from qgis.PyQt.QtCore import QCoreApplication
@@ -20,6 +21,7 @@ from geoplateforme.api.custom_exceptions import (
     UploadCreationException,
 )
 from geoplateforme.api.upload import UploadRequestManager, UploadStatus
+from geoplateforme.processing.utils import tags_from_qgs_parameter_matrix_string
 from geoplateforme.toolbelt import PlgOptionsManager
 
 
@@ -40,6 +42,7 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
     DESCRIPTION = "description"
     FILES = "files"
     SRS = "srs"
+    TAGS = "tags"
 
     CREATED_UPLOAD_ID = "CREATED_UPLOAD_ID"
 
@@ -88,7 +91,7 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(
-            QgsProcessingParameterFile(
+            QgsProcessingParameterString(
                 name=self.DATASTORE,
                 description=self.tr("Identifiant de l'entrepôt"),
             )
@@ -119,6 +122,14 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
             QgsProcessingParameterCrs(self.SRS, self.tr("Système de coordonnées"))
         )
 
+        self.addParameter(
+            QgsProcessingParameterMatrix(
+                name=self.TAGS,
+                description=self.tr("Tags"),
+                headers=[self.tr("Tag"), self.tr("Valeur")],
+            )
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         name = self.parameterAsString(parameters, self.NAME, context)
         description = self.parameterAsString(parameters, self.DESCRIPTION, context)
@@ -128,6 +139,10 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
 
         srs_object = self.parameterAsCrs(parameters, self.SRS, context)
         srs = srs_object.authid()
+
+        tag_data = self.parameterAsMatrix(parameters, self.TAGS, context)
+        tags = tags_from_qgs_parameter_matrix_string(tag_data)
+
         try:
             manager = UploadRequestManager()
 
@@ -135,6 +150,12 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
             upload = manager.create_upload(
                 datastore_id=datastore, name=name, description=description, srs=srs
             )
+
+            # Add tags
+            if len(tags) != 0:
+                manager.add_tags(
+                    datastore_id=datastore, upload_id=upload._id, tags=tags
+                )
 
             # Add files
             for filename in files:

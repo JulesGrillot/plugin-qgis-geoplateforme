@@ -9,6 +9,7 @@ Perform network request.
 # ##################################
 
 # standard library
+import json
 import mimetypes
 import uuid
 from codecs import encode
@@ -143,6 +144,104 @@ class NetworkRequestsManager:
 
         return qreq
 
+    def get_error_description_from_reply(
+        self, req_reply: QgsNetworkReplyContent
+    ) -> str:
+        """Define error description from reply.
+        Check if `error` and `error_description` are available in request reply content
+
+        :param req_reply: request reply
+        :type req_reply: QgsNetworkReplyContent
+        :return: error description
+        :rtype: str
+        """
+
+        data = json.loads(req_reply.content().data().decode("utf-8"))
+
+        if "error" in data:
+            error = data["error"]
+        else:
+            error = req_reply.errorString()
+
+        error_description = ""
+        if "error_description" in data:
+            error_description = ",".join(data["error_description"])
+
+        return f"{error} : {error_description}"
+
+    def check_request_result(
+        self, req_status: QgsBlockingNetworkRequest.ErrorCode
+    ) -> QgsNetworkReplyContent:
+        """Check request result and content
+
+        :param req_status: request status
+        :type req_status: QgsBlockingNetworkRequest.ErrorCode
+        :raises ConnectionError: an error occured in request
+        :return: request reply content
+        :rtype: QgsNetworkReplyContent
+        """
+
+        req_reply = self.ntwk_requester.reply()
+
+        # check if request is fine
+        if req_status != QgsBlockingNetworkRequest.ErrorCode.NoError:
+            error = self.get_error_description_from_reply(req_reply)
+            self.log(
+                message=error,
+                log_level=Qgis.MessageLevel.Critical,
+                push=True,
+            )
+            raise ConnectionError(error)
+
+        # check if reply is fine
+        if req_reply.error() != QNetworkReply.NetworkError.NoError:
+            error = self.get_error_description_from_reply(req_reply)
+            self.log(
+                message=error,
+                log_level=Qgis.MessageLevel.Critical,
+                push=1,
+            )
+            raise ConnectionError(error)
+
+        return req_reply
+
+    def log_reply(
+        self,
+        method: str,
+        req_reply: QgsNetworkReplyContent,
+        url: QUrl,
+        debug_log_response: Optional[bool],
+    ) -> None:
+        """Log reply of request
+
+        :param method: request method (GET / POST / PUT / DELETE)
+        :type method: str
+        :param req_reply: request reply content
+        :type req_reply: QgsNetworkReplyContent
+        :param url: url used for request
+        :type url: QUrl
+        :param debug_log_response: option to do not log decoded content in debug mode, defaults to True
+        :type debug_log_response: bool, optional
+        """
+        if debug_log_response:
+            self.log(
+                message="{} response: {} ({})".format(
+                    method,
+                    req_reply.content().data().decode("utf-8"),
+                    convert_octets(req_reply.content().size()),
+                ),
+                log_level=Qgis.MessageLevel.NoLevel,
+                push=False,
+            )
+        else:
+            self.log(
+                message="{} response from {}. Received content size: {}".format(
+                    method, url.toString(), convert_octets(req_reply.content().size())
+                ),
+                log_level=Qgis.MessageLevel.NoLevel,
+                push=False,
+            )
+
     def get_url(
         self,
         url: QUrl,
@@ -179,44 +278,15 @@ class NetworkRequestsManager:
                 request=req,
                 forceRefresh=True,
             )
-
-            # check if request is fine
-            if req_status != QgsBlockingNetworkRequest.ErrorCode.NoError:
-                self.log(
-                    message=self.ntwk_requester.errorMessage(),
-                    log_level=Qgis.MessageLevel.Critical,
-                    push=True,
-                )
-                raise ConnectionError(self.ntwk_requester.errorMessage())
-
-            req_reply = self.ntwk_requester.reply()
-
-            if req_reply.error() != QNetworkReply.NetworkError.NoError:
-                self.log(
-                    message=req_reply.errorString(),
-                    log_level=Qgis.MessageLevel.Critical,
-                    push=1,
-                )
-                raise ConnectionError(req_reply.errorString())
+            req_reply = self.check_request_result(req_status)
 
             if PlgOptionsManager.get_plg_settings().debug_mode:
-                if debug_log_response:
-                    self.log(
-                        message="GET response: {} ({})".format(
-                            req_reply.content().data().decode("utf-8"),
-                            convert_octets(req_reply.content().size()),
-                        ),
-                        log_level=Qgis.MessageLevel.NoLevel,
-                        push=False,
-                    )
-                else:
-                    self.log(
-                        message="GET response from {}. Received content size: {}".format(
-                            url.toString(), convert_octets(req_reply.content().size())
-                        ),
-                        log_level=Qgis.MessageLevel.NoLevel,
-                        push=False,
-                    )
+                self.log_reply(
+                    method="GET",
+                    req_reply=req_reply,
+                    url=url,
+                    debug_log_response=debug_log_response,
+                )
             if return_req_reply:
                 return req_reply
             return req_reply.content()
@@ -265,44 +335,15 @@ class NetworkRequestsManager:
         # send request
         try:
             req_status = self.ntwk_requester.deleteResource(request=req)
-
-            # check if request is fine
-            if req_status != QgsBlockingNetworkRequest.ErrorCode.NoError:
-                self.log(
-                    message=self.ntwk_requester.errorMessage(),
-                    log_level=Qgis.MessageLevel.Critical,
-                    push=True,
-                )
-                raise ConnectionError(self.ntwk_requester.errorMessage())
-
-            req_reply = self.ntwk_requester.reply()
-
-            if req_reply.error() != QNetworkReply.NetworkError.NoError:
-                self.log(
-                    message=req_reply.errorString(),
-                    log_level=Qgis.MessageLevel.Critical,
-                    push=1,
-                )
-                raise ConnectionError(req_reply.errorString())
+            req_reply = self.check_request_result(req_status)
 
             if PlgOptionsManager.get_plg_settings().debug_mode:
-                if debug_log_response:
-                    self.log(
-                        message="DELETE response: {} ({})".format(
-                            req_reply.content().data().decode("utf-8"),
-                            convert_octets(req_reply.content().size()),
-                        ),
-                        log_level=Qgis.MessageLevel.NoLevel,
-                        push=False,
-                    )
-                else:
-                    self.log(
-                        message="DELETE response from {}. Received content size: {}".format(
-                            url.toString(), convert_octets(req_reply.content().size())
-                        ),
-                        log_level=Qgis.MessageLevel.NoLevel,
-                        push=False,
-                    )
+                self.log_reply(
+                    method="DELETE",
+                    req_reply=req_reply,
+                    url=url,
+                    debug_log_response=debug_log_response,
+                )
 
             if return_req_reply:
                 return req_reply
@@ -350,44 +391,15 @@ class NetworkRequestsManager:
         # send request
         try:
             req_status = self.ntwk_requester.post(request=req, data=data)
-
-            # check if request is fine
-            if req_status != QgsBlockingNetworkRequest.ErrorCode.NoError:
-                self.log(
-                    message=self.ntwk_requester.errorMessage(),
-                    log_level=Qgis.MessageLevel.Critical,
-                    push=True,
-                )
-                raise ConnectionError(self.ntwk_requester.errorMessage())
-
-            req_reply = self.ntwk_requester.reply()
-
-            if req_reply.error() != QNetworkReply.NetworkError.NoError:
-                self.log(
-                    message=req_reply.errorString(),
-                    log_level=Qgis.MessageLevel.Critical,
-                    push=True,
-                )
-                raise ConnectionError(req_reply.errorString())
+            req_reply = self.check_request_result(req_status)
 
             if PlgOptionsManager.get_plg_settings().debug_mode:
-                if debug_log_response:
-                    self.log(
-                        message="POST response: {} ({})".format(
-                            req_reply.content().data().decode("utf-8"),
-                            convert_octets(req_reply.content().size()),
-                        ),
-                        log_level=Qgis.MessageLevel.NoLevel,
-                        push=False,
-                    )
-                else:
-                    self.log(
-                        message="POST response from {}. Received content size: {}".format(
-                            url.toString(), convert_octets(req_reply.content().size())
-                        ),
-                        log_level=Qgis.MessageLevel.NoLevel,
-                        push=False,
-                    )
+                self.log_reply(
+                    method="POST",
+                    req_reply=req_reply,
+                    url=url,
+                    debug_log_response=debug_log_response,
+                )
 
             return req_reply.content()
         except ConnectionError as err:
@@ -433,44 +445,15 @@ class NetworkRequestsManager:
         # send request
         try:
             req_status = self.ntwk_requester.put(request=req, data=data)
-
-            # check if request is fine
-            if req_status != QgsBlockingNetworkRequest.ErrorCode.NoError:
-                self.log(
-                    message=self.ntwk_requester.errorMessage(),
-                    log_level=Qgis.MessageLevel.Critical,
-                    push=True,
-                )
-                raise ConnectionError(self.ntwk_requester.errorMessage())
-
-            req_reply = self.ntwk_requester.reply()
-
-            if req_reply.error() != QNetworkReply.NetworkError.NoError:
-                self.log(
-                    message=req_reply.errorString(),
-                    log_level=Qgis.MessageLevel.Critical,
-                    push=True,
-                )
-                raise ConnectionError(req_reply.errorString())
+            req_reply = self.check_request_result(req_status)
 
             if PlgOptionsManager.get_plg_settings().debug_mode:
-                if debug_log_response:
-                    self.log(
-                        message="PUT response: {} ({})".format(
-                            req_reply.content().data().decode("utf-8"),
-                            convert_octets(req_reply.content().size()),
-                        ),
-                        log_level=Qgis.MessageLevel.NoLevel,
-                        push=False,
-                    )
-                else:
-                    self.log(
-                        message="PUT response from {}. Received content size: {}".format(
-                            url.toString(), convert_octets(req_reply.content().size())
-                        ),
-                        log_level=Qgis.MessageLevel.NoLevel,
-                        push=False,
-                    )
+                self.log_reply(
+                    method="PUT",
+                    req_reply=req_reply,
+                    url=url,
+                    debug_log_response=debug_log_response,
+                )
 
             return req_reply.content()
 

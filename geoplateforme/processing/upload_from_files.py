@@ -1,9 +1,11 @@
 # standard
 from time import sleep
+from typing import Any, Dict, Optional
 
 # PyQGIS
 from qgis.core import (
     QgsProcessingAlgorithm,
+    QgsProcessingContext,
     QgsProcessingException,
     QgsProcessingFeedback,
     QgsProcessingParameterCrs,
@@ -15,13 +17,18 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 # plugin
 from geoplateforme.api.custom_exceptions import (
+    AddTagException,
     FileUploadException,
     UnavailableUploadException,
     UploadClosingException,
     UploadCreationException,
 )
 from geoplateforme.api.upload import UploadRequestManager, UploadStatus
-from geoplateforme.processing.utils import tags_from_qgs_parameter_matrix_string
+from geoplateforme.processing.utils import (
+    get_short_string,
+    get_user_manual_url,
+    tags_from_qgs_parameter_matrix_string,
+)
 from geoplateforme.toolbelt import PlgOptionsManager
 
 
@@ -35,14 +42,12 @@ class UploadCreationProcessingFeedback(QgsProcessingFeedback):
 
 
 class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
-    INPUT_JSON = "INPUT_JSON"
-
-    DATASTORE = "datastore"
-    NAME = "name"
-    DESCRIPTION = "description"
-    FILES = "files"
-    SRS = "srs"
-    TAGS = "tags"
+    DATASTORE = "DATASTORE"
+    NAME = "NAME"
+    DESCRIPTION = "DESCRIPTION"
+    FILES = "FILES"
+    SRS = "SRS"
+    TAGS = "TAGS"
 
     CREATED_UPLOAD_ID = "CREATED_UPLOAD_ID"
 
@@ -73,21 +78,10 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
         return ""
 
     def helpUrl(self):
-        return ""
+        return get_user_manual_url(self.name())
 
     def shortHelpString(self):
-        return self.tr(
-            "Create upload in geoplateforme platform.\n"
-            "Available parameters:\n"
-            "{\n"
-            f'    "{self.DATASTORE}": datastore id (str),\n'
-            f'    "{self.NAME}": wanted upload name (str),\n'
-            f'    "{self.DESCRIPTION}": upload description (str),\n'
-            f'    "{self.FILES}": upload full file path list [str],\n'
-            f'    "{self.SRS}": upload SRS (str) must be in IGNF or EPSG repository,\n'
-            "}\n"
-            f"Returns created upload id in {self.CREATED_UPLOAD_ID} results"
-        )
+        return get_short_string(self.name(), self.displayName())
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -114,7 +108,9 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterFile(
                 name=self.FILES,
-                description=self.tr("Fichier à importer"),
+                description=self.tr(
+                    "Fichiers à importer (séparés par ; pour fichiers multiples)"
+                ),
             )
         )
 
@@ -130,7 +126,27 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
             )
         )
 
-    def processAlgorithm(self, parameters, context, feedback):
+    def processAlgorithm(
+        self,
+        parameters: Dict[str, Any],
+        context: QgsProcessingContext,
+        feedback: Optional[QgsProcessingFeedback],
+    ) -> Dict[str, Any]:
+        """Runs the algorithm using the specified parameters.
+
+        :param parameters: algorithm parameters
+        :type parameters: Dict[str, Any]
+        :param context: processing context
+        :type context: QgsProcessingContext
+        :param feedback: processing feedback
+        :type feedback: Optional[QgsProcessingFeedback]
+        :raises QgsProcessingException: Error in upload creation
+        :raises QgsProcessingException: Error in tags add
+        :raises QgsProcessingException: Error in file upload
+        :raises QgsProcessingException: Error in upload closing
+        :return: algorithm results
+        :rtype: Dict[str, Any]
+        """
         name = self.parameterAsString(parameters, self.NAME, context)
         description = self.parameterAsString(parameters, self.DESCRIPTION, context)
         datastore = self.parameterAsString(parameters, self.DATASTORE, context)
@@ -178,6 +194,8 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
 
         except UploadCreationException as exc:
             raise QgsProcessingException(f"Upload creation failed : {exc}")
+        except AddTagException as exc:
+            raise QgsProcessingException(f"Tag add failed : {exc}")
         except FileUploadException as exc:
             raise QgsProcessingException(f"File upload failed : {exc}")
         except UploadClosingException as exc:
@@ -209,6 +227,10 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
                     )
                 )
 
+        except UnavailableUploadException as exc:
+            raise QgsProcessingException(
+                self.tr("Upload read failed : {0}").format(exc)
+            )
         except UnavailableUploadException as exc:
             raise QgsProcessingException(
                 self.tr("Upload read failed : {0}").format(exc)

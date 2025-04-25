@@ -101,7 +101,7 @@ class UploadCreationPageWizard(QWizardPage):
 
     def _create_vector_db(self) -> None:
         """
-        Run UploadCreationAlgorithm with UploadEditionPageWizard parameters
+        Run GpfUploadFromFileAlgorithm with UploadEditionPageWizard parameters
 
         """
         algo_str = (

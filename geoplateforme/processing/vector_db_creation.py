@@ -15,7 +15,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from geoplateforme.api.custom_exceptions import AddTagException
 from geoplateforme.api.stored_data import StoredDataRequestManager
 from geoplateforme.api.upload import UploadRequestManager
-from geoplateforme.processing.upload_creation import UploadCreationAlgorithm
+from geoplateforme.processing.upload_creation import GpfUploadFromFileAlgorithm
 from geoplateforme.processing.upload_database_integration import (
     UploadDatabaseIntegrationAlgorithm,
 )
@@ -175,23 +175,23 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         :return: id of created upload
         :rtype: str
         """
-        algo_str = f"geoplateforme:{UploadCreationAlgorithm().name()}"
+        algo_str = f"geoplateforme:{GpfUploadFromFileAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
         data = {
-            UploadCreationAlgorithm.DATASTORE: datastore,
-            UploadCreationAlgorithm.NAME: name,
-            UploadCreationAlgorithm.DESCRIPTION: name,
-            UploadCreationAlgorithm.SRS: srs,
-            UploadCreationAlgorithm.FILES: files,
+            GpfUploadFromFileAlgorithm.DATASTORE: datastore,
+            GpfUploadFromFileAlgorithm.NAME: name,
+            GpfUploadFromFileAlgorithm.DESCRIPTION: name,
+            GpfUploadFromFileAlgorithm.SRS: srs,
+            GpfUploadFromFileAlgorithm.FILES: files,
         }
         filename = tempfile.NamedTemporaryFile(suffix=".json").name
         with open(filename, "w") as file:
             json.dump(data, file)
-        params = {UploadCreationAlgorithm.INPUT_JSON: filename}
+        params = {GpfUploadFromFileAlgorithm.INPUT_JSON: filename}
 
         results, successful = alg.run(params, context, feedback)
         if successful:
-            created_upload_id = results[UploadCreationAlgorithm.CREATED_UPLOAD_ID]
+            created_upload_id = results[GpfUploadFromFileAlgorithm.CREATED_UPLOAD_ID]
         else:
             raise QgsProcessingException(self.tr("Upload creation failed"))
         return created_upload_id

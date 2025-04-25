@@ -31,7 +31,7 @@ class UploadCreationProcessingFeedback(QgsProcessingFeedback):
     created_upload_id: str = ""
 
 
-class UploadCreationAlgorithm(QgsProcessingAlgorithm):
+class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
     INPUT_JSON = "INPUT_JSON"
 
     DATASTORE = "datastore"
@@ -54,7 +54,7 @@ class UploadCreationAlgorithm(QgsProcessingAlgorithm):
         return QCoreApplication.translate(self.__class__.__name__, message)
 
     def createInstance(self):
-        return UploadCreationAlgorithm()
+        return GpfUploadFromFileAlgorithm()
 
     def name(self):
         return "upload_creation"

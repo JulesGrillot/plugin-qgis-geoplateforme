@@ -16,10 +16,10 @@ from qgis.PyQt.QtCore import QCoreApplication
 from geoplateforme.api.custom_exceptions import AddTagException
 from geoplateforme.api.stored_data import StoredDataRequestManager
 from geoplateforme.api.upload import UploadRequestManager
-from geoplateforme.processing.upload_creation import GpfUploadFromFileAlgorithm
 from geoplateforme.processing.upload_database_integration import (
     UploadDatabaseIntegrationAlgorithm,
 )
+from geoplateforme.processing.upload_from_files import GpfUploadFromFileAlgorithm
 
 
 class VectorDatabaseCreationProcessingFeedback(QgsProcessingFeedback):

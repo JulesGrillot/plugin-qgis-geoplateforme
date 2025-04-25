@@ -58,10 +58,10 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
         return GpfUploadFromFileAlgorithm()
 
     def name(self):
-        return "upload_creation"
+        return "upload_from_files"
 
     def displayName(self):
-        return self.tr("Create upload")
+        return self.tr("Création livraison depuis des fichiers")
 
     def group(self):
         return self.tr("")
@@ -75,7 +75,6 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
     def shortHelpString(self):
         return self.tr(
             "Create upload in geoplateforme platform.\n"
-            "Input parameters are defined in a .json file.\n"
             "Available parameters:\n"
             "{\n"
             f'    "{self.DATASTORE}": datastore id (str),\n'

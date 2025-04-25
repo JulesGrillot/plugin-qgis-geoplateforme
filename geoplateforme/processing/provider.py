@@ -16,10 +16,10 @@ from geoplateforme.processing.delete_data import DeleteDataAlgorithm
 from geoplateforme.processing.tile_creation import TileCreationAlgorithm
 from geoplateforme.processing.unpublish import UnpublishAlgorithm
 from geoplateforme.processing.update_tile_upload import UpdateTileUploadAlgorithm
-from geoplateforme.processing.upload_creation import GpfUploadFromFileAlgorithm
 from geoplateforme.processing.upload_database_integration import (
     UploadDatabaseIntegrationAlgorithm,
 )
+from geoplateforme.processing.upload_from_files import GpfUploadFromFileAlgorithm
 from geoplateforme.processing.upload_publication import UploadPublicationAlgorithm
 from geoplateforme.processing.vector_db_creation import VectorDatabaseCreationAlgorithm
 

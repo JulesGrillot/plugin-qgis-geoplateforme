@@ -107,7 +107,7 @@ class UpdateTileUploadRunPageWizard(QWizardPage):
 
     def update(self) -> None:
         """
-        Run GpfUploadFromFileAlgorithm with UploadEditionPageWizard parameters
+        Run UpdateTileUploadAlgorithm with UploadEditionPageWizard parameters
 
         """
         self.log("Launch UpdateTileUploadAlgorithm")

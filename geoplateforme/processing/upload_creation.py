@@ -1,5 +1,4 @@
 # standard
-import json
 from time import sleep
 
 # PyQGIS
@@ -7,7 +6,9 @@ from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingException,
     QgsProcessingFeedback,
+    QgsProcessingParameterCrs,
     QgsProcessingParameterFile,
+    QgsProcessingParameterString,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -89,56 +90,78 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(
             QgsProcessingParameterFile(
-                name=self.INPUT_JSON,
-                description=self.tr("Input .json file"),
+                name=self.DATASTORE,
+                description=self.tr("Identifiant de l'entrepôt"),
             )
         )
 
+        self.addParameter(
+            QgsProcessingParameterString(
+                name=self.NAME,
+                description=self.tr("Nom de la livraison"),
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterString(
+                name=self.DESCRIPTION,
+                description=self.tr("Description de la livraison"),
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterFile(
+                name=self.FILES,
+                description=self.tr("Fichier à importer"),
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterCrs(self.SRS, self.tr("Système de coordonnées"))
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
-        filename = self.parameterAsFile(parameters, self.INPUT_JSON, context)
+        name = self.parameterAsString(parameters, self.NAME, context)
+        description = self.parameterAsString(parameters, self.DESCRIPTION, context)
+        datastore = self.parameterAsString(parameters, self.DATASTORE, context)
+        file_str = self.parameterAsString(parameters, self.FILES, context)
+        files = file_str.split(";")
 
-        with open(filename, "r") as file:
-            data = json.load(file)
+        srs_object = self.parameterAsCrs(parameters, self.SRS, context)
+        srs = srs_object.authid()
+        try:
+            manager = UploadRequestManager()
 
-            name = data[self.NAME]
-            description = data[self.DESCRIPTION]
-            files = data[self.FILES]
-            srs = data[self.SRS]
-            datastore = data[self.DATASTORE]
+            # Create upload
+            upload = manager.create_upload(
+                datastore_id=datastore, name=name, description=description, srs=srs
+            )
 
-            try:
-                manager = UploadRequestManager()
-
-                # Create upload
-                upload = manager.create_upload(
-                    datastore_id=datastore, name=name, description=description, srs=srs
+            # Add files
+            for filename in files:
+                manager.add_file(
+                    datastore_id=datastore, upload_id=upload._id, filename=filename
                 )
 
-                # Add files
-                for filename in files:
-                    manager.add_file(
-                        datastore_id=datastore, upload_id=upload._id, filename=filename
-                    )
+            # Close upload
+            manager.close_upload(datastore_id=datastore, upload_id=upload._id)
 
-                # Close upload
-                manager.close_upload(datastore_id=datastore, upload_id=upload._id)
+            # Get create upload id
+            upload_id = upload._id
 
-                # Get create upload id
-                upload_id = upload._id
+            # Update feedback if upload attribute present
+            if hasattr(feedback, "created_upload_id"):
+                feedback.created_upload_id = upload_id
 
-                # Update feedback if upload attribute present
-                if hasattr(feedback, "created_upload_id"):
-                    feedback.created_upload_id = upload_id
+            # Wait for upload close after check
+            self._wait_upload_close(datastore, upload_id)
 
-                # Wait for upload close after check
-                self._wait_upload_close(datastore, upload_id)
-
-            except UploadCreationException as exc:
-                raise QgsProcessingException(f"Upload creation failed : {exc}")
-            except FileUploadException as exc:
-                raise QgsProcessingException(f"File upload failed : {exc}")
-            except UploadClosingException as exc:
-                raise QgsProcessingException(f"Upload closing failed : {exc}")
+        except UploadCreationException as exc:
+            raise QgsProcessingException(f"Upload creation failed : {exc}")
+        except FileUploadException as exc:
+            raise QgsProcessingException(f"File upload failed : {exc}")
+        except UploadClosingException as exc:
+            raise QgsProcessingException(f"Upload closing failed : {exc}")
 
         return {self.CREATED_UPLOAD_ID: upload_id}
 

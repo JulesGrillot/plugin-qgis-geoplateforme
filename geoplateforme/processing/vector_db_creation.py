@@ -4,6 +4,7 @@ from typing import Tuple
 
 from qgis.core import (
     QgsApplication,
+    QgsCoordinateReferenceSystem,
     QgsProcessingAlgorithm,
     QgsProcessingContext,
     QgsProcessingException,
@@ -106,9 +107,11 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
 
             name = data[self.NAME]
             files = data[self.FILES]
-            srs = data[self.SRS]
+            srs_str = data[self.SRS]
             datastore = data[self.DATASTORE]
             dataset_name = data[self.DATASET_NAME]
+
+            srs = QgsCoordinateReferenceSystem(srs_str)
 
             # Create upload
             upload_id = self._create_upload(
@@ -153,7 +156,7 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         datastore: str,
         files: [str],
         name: str,
-        srs: str,
+        srs: QgsCoordinateReferenceSystem,
         context: QgsProcessingContext,
         feedback: QgsProcessingFeedback,
     ) -> str:
@@ -166,7 +169,7 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         :param name: upload name
         :type name: str
         :param srs: upload srs
-        :type srs: str
+        :type srs: QgsCoordinateReferenceSystem
         :param context: context of processing
         :type context: QgsProcessingContext
         :param feedback: feedback for processing
@@ -177,17 +180,13 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         """
         algo_str = f"geoplateforme:{GpfUploadFromFileAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
-        data = {
+        params = {
             GpfUploadFromFileAlgorithm.DATASTORE: datastore,
             GpfUploadFromFileAlgorithm.NAME: name,
             GpfUploadFromFileAlgorithm.DESCRIPTION: name,
             GpfUploadFromFileAlgorithm.SRS: srs,
-            GpfUploadFromFileAlgorithm.FILES: files,
+            GpfUploadFromFileAlgorithm.FILES: ";".join(files),
         }
-        filename = tempfile.NamedTemporaryFile(suffix=".json").name
-        with open(filename, "w") as file:
-            json.dump(data, file)
-        params = {GpfUploadFromFileAlgorithm.INPUT_JSON: filename}
 
         results, successful = alg.run(params, context, feedback)
         if successful:

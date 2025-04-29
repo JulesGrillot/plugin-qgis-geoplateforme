@@ -1,5 +1,7 @@
+import glob
 import os
 from pathlib import Path
+from typing import List
 
 # project
 from geoplateforme.__about__ import __uri_homepage__
@@ -59,3 +61,15 @@ def get_short_string(processing_name: str, default_help_str: str) -> str:
         with open(help_md) as f:
             help_str = "".join(f.readlines())
     return help_str
+
+
+def get_shapefile_associated_files(path: str) -> List[str]:
+    """Get all file associated to a shapefile
+
+    :param path: path to shapefile
+    :type path: str
+    :return: list of files for shapefile use
+    :rtype: List[str]
+    """
+    base, _ = os.path.splitext(path)
+    return glob.glob(f"{base}.*")

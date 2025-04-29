@@ -3,7 +3,9 @@ import os
 
 # PyQGIS
 from qgis.PyQt import uic
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QWizardPage
+from qgis.utils import OverrideCursor
 
 # Plugin
 from geoplateforme.api.stored_data import StoredDataStep
@@ -31,10 +33,9 @@ class UpdateTileUploadEditionPageWizard(QWizardPage):
         self.cbx_stored_data.set_visible_steps([StoredDataStep.PUBLISHED])
 
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
-        self._datastore_updated()
-
         self.cbx_stored_data.currentIndexChanged.connect(self._stored_data_updated)
-        self._stored_data_updated()
+
+        self._datastore_updated()
 
         self.setCommitPage(True)
 
@@ -45,7 +46,11 @@ class UpdateTileUploadEditionPageWizard(QWizardPage):
         Args:
             datastore_id: (str) datastore id
         """
-        self.cbx_datastore.set_datastore_id(datastore_id)
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
+            self.cbx_datastore.currentIndexChanged.disconnect(self._datastore_updated)
+            self.cbx_datastore.set_datastore_id(datastore_id)
+            self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
+            self._datastore_updated()
 
     def set_stored_data_id(self, stored_data_id: str) -> None:
         """
@@ -54,14 +59,23 @@ class UpdateTileUploadEditionPageWizard(QWizardPage):
         Args:
             stored_data_id: (str) stored data id
         """
-        self.cbx_stored_data.set_stored_data_id(stored_data_id)
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
+            self.cbx_stored_data.set_stored_data_id(stored_data_id)
 
     def _datastore_updated(self) -> None:
         """
         Update stored data combobox when datastore is updated
 
         """
-        self.cbx_stored_data.set_datastore(self.cbx_datastore.current_datastore_id())
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
+            self.cbx_stored_data.currentIndexChanged.disconnect(
+                self._stored_data_updated
+            )
+            self.cbx_stored_data.set_datastore(
+                self.cbx_datastore.current_datastore_id()
+            )
+            self.cbx_stored_data.currentIndexChanged.connect(self._stored_data_updated)
+            self._stored_data_updated()
 
     def _stored_data_updated(self) -> None:
         """

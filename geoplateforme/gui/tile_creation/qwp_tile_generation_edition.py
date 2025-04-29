@@ -3,7 +3,9 @@ import os
 
 # PyQGIS
 from qgis.PyQt import QtCore, uic
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QSlider, QWizardPage
+from qgis.utils import OverrideCursor
 
 # Plugin
 from geoplateforme.api.stored_data import (
@@ -61,13 +63,8 @@ class TileGenerationEditionPageWizard(QWizardPage):
         self.cbx_stored_data.set_visible_status([StoredDataStatus.GENERATED])
 
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
-        self._datastore_updated()
-
         self.cbx_dataset.currentIndexChanged.connect(self._dataset_updated)
-        self._dataset_updated()
-
         self.cbx_stored_data.currentIndexChanged.connect(self._stored_data_updated)
-        self._stored_data_updated()
 
         # To avoid some characters
         self.lne_flux.setValidator(alphanum_qval)
@@ -163,18 +160,27 @@ class TileGenerationEditionPageWizard(QWizardPage):
         Update stored data combobox when datastore is updated
 
         """
-        self.cbx_dataset.set_datastore_id(self.cbx_datastore.current_datastore_id())
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
+            self.cbx_dataset.currentIndexChanged.disconnect(self._dataset_updated)
+            self.cbx_dataset.set_datastore_id(self.cbx_datastore.current_datastore_id())
+            self.cbx_dataset.currentIndexChanged.connect(self._dataset_updated)
+            self._dataset_updated()
 
     def _dataset_updated(self) -> None:
         """
         Update stored data combobox when dataset is updated
 
         """
-        self.cbx_stored_data.set_datastore(
-            self.cbx_datastore.current_datastore_id(),
-            self.cbx_dataset.current_dataset_name(),
-        )
-        self._stored_data_updated()
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
+            self.cbx_stored_data.currentIndexChanged.disconnect(
+                self._stored_data_updated
+            )
+            self.cbx_stored_data.set_datastore(
+                self.cbx_datastore.current_datastore_id(),
+                self.cbx_dataset.current_dataset_name(),
+            )
+            self.cbx_stored_data.currentIndexChanged.connect(self._stored_data_updated)
+            self._stored_data_updated()
 
     def _stored_data_updated(self) -> None:
         """

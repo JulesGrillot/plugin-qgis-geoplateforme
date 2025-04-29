@@ -16,6 +16,14 @@ Unreleased
 
 -->
 
+## 0.2.0-beta2 - 2025-04-29
+
+* fix(plugin): Qt6 flag is supportsQt6 not qt6_compatible by @Guts in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/22>
+* feature(tile creation): restore tile creation wizard by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/17>
+* feature(vector tile publish): restore publication wizard by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/20>
+* feat(network manager): get error from request reply by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/21>
+* feature(upload) : refactor upload creation by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/23>
+
 ## 0.2.0-beta1 - 2025-04-23
 
 * feature(auth): Add OAuth2 authentication by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/2>

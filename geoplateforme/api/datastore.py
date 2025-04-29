@@ -135,12 +135,15 @@ class DatastoreRequestManager:
             )
 
         data = json.loads(reply.data())
-        for i in range(0, len(data["endpoints"])):
-            if data["endpoints"][i]["endpoint"]["type"] == data_type:
-                data = data["endpoints"][i]["endpoint"]["_id"]
+        endpoints = data["endpoints"]
+        endpoint_id = ""
+        for endpoint in endpoints:
+            if endpoint["endpoint"]["type"] == data_type:
+                endpoint_id = endpoint["endpoint"]["_id"]
+                break
 
-        if len(data) == 0:
+        if not endpoint_id:
             raise UnavailableEndpointException(
                 f"Error while endpoint publication is empty : {data}"
             )
-        return data
+        return endpoint_id

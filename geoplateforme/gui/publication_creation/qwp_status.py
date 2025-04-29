@@ -81,8 +81,8 @@ class PublicationStatut(QWizardPage):
         try:
             zoom_levels_int = [int(zoom_level) for zoom_level in zoom_levels]
             zoom_levels_int = sorted(zoom_levels_int)
-            bottom = zoom_levels[0]
-            top = zoom_levels[-1]
+            bottom = zoom_levels[-1]
+            top = zoom_levels[0]
         except ValueError as exc:
             self.log(
                 f"Invalid zoom levels value: {exc}",

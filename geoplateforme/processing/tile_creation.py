@@ -13,7 +13,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 from geoplateforme.api.custom_exceptions import (
     AddTagException,
     CreateProcessingException,
-    DeleteUploadException,
     LaunchExecutionException,
     ReadStoredDataException,
     UnavailableProcessingException,
@@ -21,7 +20,6 @@ from geoplateforme.api.custom_exceptions import (
 )
 from geoplateforme.api.processing import ProcessingRequestManager
 from geoplateforme.api.stored_data import StoredDataRequestManager, StoredDataStatus
-from geoplateforme.api.upload import UploadRequestManager
 from geoplateforme.toolbelt import PlgOptionsManager
 
 
@@ -220,12 +218,6 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                 # Wait for tile creation
                 self._wait_tile_creation(datastore, stored_data_id)
 
-                # Delete upload
-                upload_manager = UploadRequestManager()
-                upload_manager.delete(
-                    datastore, vector_db_stored_data.tags["upload_id"]
-                )
-
             except UnavailableStoredData as exc:
                 raise QgsProcessingException(
                     f"Can't retrieve vector db datastore for tile creation : {exc}"
@@ -245,10 +237,6 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
             except AddTagException as exc:
                 raise QgsProcessingException(
                     f"Can't add tags to stored data for tile creation : {exc}"
-                )
-            except DeleteUploadException as exc:
-                raise QgsProcessingException(
-                    f"Can't delete upload after tile creation : {exc}"
                 )
 
         return {self.CREATED_STORED_DATA_ID: stored_data_id}

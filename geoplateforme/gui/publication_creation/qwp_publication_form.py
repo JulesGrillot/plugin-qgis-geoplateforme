@@ -3,7 +3,9 @@ import os
 
 # PyQGIS
 from qgis.PyQt import uic
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QWizardPage
+from qgis.utils import OverrideCursor
 
 from geoplateforme.api.stored_data import (
     StoredDataStatus,
@@ -34,10 +36,9 @@ class PublicationFormPageWizard(QWizardPage):
         self.cbx_stored_data.set_visible_status([StoredDataStatus.GENERATED])
 
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
-        self._datastore_updated()
-
         self.cbx_dataset.currentIndexChanged.connect(self._dataset_updated)
-        self._dataset_updated()
+
+        self._datastore_updated()
 
         self.setCommitPage(True)
 
@@ -74,14 +75,19 @@ class PublicationFormPageWizard(QWizardPage):
         Update dataset combobox when datastore is updated
 
         """
-        self.cbx_dataset.set_datastore_id(self.cbx_datastore.current_datastore_id())
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
+            self.cbx_dataset.currentIndexChanged.disconnect(self._dataset_updated)
+            self.cbx_dataset.set_datastore_id(self.cbx_datastore.current_datastore_id())
+            self.cbx_dataset.currentIndexChanged.connect(self._dataset_updated)
+            self._dataset_updated()
 
     def _dataset_updated(self) -> None:
         """
         Update stored data combobox when dataset is updated
 
         """
-        self.cbx_stored_data.set_datastore(
-            self.cbx_datastore.current_datastore_id(),
-            self.cbx_dataset.current_dataset_name(),
-        )
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
+            self.cbx_stored_data.set_datastore(
+                self.cbx_datastore.current_datastore_id(),
+                self.cbx_dataset.current_dataset_name(),
+            )

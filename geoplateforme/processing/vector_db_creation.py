@@ -4,6 +4,7 @@ from typing import Tuple
 
 from qgis.core import (
     QgsApplication,
+    QgsCoordinateReferenceSystem,
     QgsProcessingAlgorithm,
     QgsProcessingContext,
     QgsProcessingException,
@@ -15,10 +16,11 @@ from qgis.PyQt.QtCore import QCoreApplication
 from geoplateforme.api.custom_exceptions import AddTagException
 from geoplateforme.api.stored_data import StoredDataRequestManager
 from geoplateforme.api.upload import UploadRequestManager
-from geoplateforme.processing.upload_creation import UploadCreationAlgorithm
 from geoplateforme.processing.upload_database_integration import (
     UploadDatabaseIntegrationAlgorithm,
 )
+from geoplateforme.processing.upload_from_files import GpfUploadFromFileAlgorithm
+from geoplateforme.processing.utils import tags_to_qgs_parameter_matrix_string
 
 
 class VectorDatabaseCreationProcessingFeedback(QgsProcessingFeedback):
@@ -106,13 +108,21 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
 
             name = data[self.NAME]
             files = data[self.FILES]
-            srs = data[self.SRS]
+            srs_str = data[self.SRS]
             datastore = data[self.DATASTORE]
             dataset_name = data[self.DATASET_NAME]
 
+            srs = QgsCoordinateReferenceSystem(srs_str)
+
             # Create upload
             upload_id = self._create_upload(
-                datastore, files, name, srs, context, feedback
+                datastore,
+                files,
+                name,
+                srs,
+                dataset_name,
+                context,
+                feedback,
             )
 
             # Run database integration
@@ -128,7 +138,6 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
             upload_tags = {
                 "vectordb_id": vector_db_stored_data_id,
                 "proc_int_id": exec_id,
-                "datasheet_name": dataset_name,
             }
 
             self._add_upload_tag(
@@ -153,7 +162,8 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         datastore: str,
         files: [str],
         name: str,
-        srs: str,
+        srs: QgsCoordinateReferenceSystem,
+        dataset_name: str,
         context: QgsProcessingContext,
         feedback: QgsProcessingFeedback,
     ) -> str:
@@ -166,7 +176,9 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         :param name: upload name
         :type name: str
         :param srs: upload srs
-        :type srs: str
+        :type srs: QgsCoordinateReferenceSystem
+        :param dataset_name : dataset name
+        :type dataset_name : str
         :param context: context of processing
         :type context: QgsProcessingContext
         :param feedback: feedback for processing
@@ -175,23 +187,22 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         :return: id of created upload
         :rtype: str
         """
-        algo_str = f"geoplateforme:{UploadCreationAlgorithm().name()}"
+        algo_str = f"geoplateforme:{GpfUploadFromFileAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
-        data = {
-            UploadCreationAlgorithm.DATASTORE: datastore,
-            UploadCreationAlgorithm.NAME: name,
-            UploadCreationAlgorithm.DESCRIPTION: name,
-            UploadCreationAlgorithm.SRS: srs,
-            UploadCreationAlgorithm.FILES: files,
+        params = {
+            GpfUploadFromFileAlgorithm.DATASTORE: datastore,
+            GpfUploadFromFileAlgorithm.NAME: name,
+            GpfUploadFromFileAlgorithm.DESCRIPTION: name,
+            GpfUploadFromFileAlgorithm.SRS: srs,
+            GpfUploadFromFileAlgorithm.FILES: ";".join(files),
+            GpfUploadFromFileAlgorithm.TAGS: tags_to_qgs_parameter_matrix_string(
+                {"datasheet_name": dataset_name},
+            ),
         }
-        filename = tempfile.NamedTemporaryFile(suffix=".json").name
-        with open(filename, "w") as file:
-            json.dump(data, file)
-        params = {UploadCreationAlgorithm.INPUT_JSON: filename}
 
         results, successful = alg.run(params, context, feedback)
         if successful:
-            created_upload_id = results[UploadCreationAlgorithm.CREATED_UPLOAD_ID]
+            created_upload_id = results[GpfUploadFromFileAlgorithm.CREATED_UPLOAD_ID]
         else:
             raise QgsProcessingException(self.tr("Upload creation failed"))
         return created_upload_id

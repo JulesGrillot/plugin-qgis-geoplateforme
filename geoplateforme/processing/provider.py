@@ -16,10 +16,10 @@ from geoplateforme.processing.delete_data import DeleteDataAlgorithm
 from geoplateforme.processing.tile_creation import TileCreationAlgorithm
 from geoplateforme.processing.unpublish import UnpublishAlgorithm
 from geoplateforme.processing.update_tile_upload import UpdateTileUploadAlgorithm
-from geoplateforme.processing.upload_creation import UploadCreationAlgorithm
 from geoplateforme.processing.upload_database_integration import (
     UploadDatabaseIntegrationAlgorithm,
 )
+from geoplateforme.processing.upload_from_files import GpfUploadFromFileAlgorithm
 from geoplateforme.processing.upload_publication import UploadPublicationAlgorithm
 from geoplateforme.processing.vector_db_creation import VectorDatabaseCreationAlgorithm
 
@@ -36,7 +36,7 @@ class GeoplateformeProvider(QgsProcessingProvider):
     def loadAlgorithms(self):
         """Loads all algorithms belonging to this provider."""
         self.addAlgorithm(CheckLayerAlgorithm())
-        self.addAlgorithm(UploadCreationAlgorithm())
+        self.addAlgorithm(GpfUploadFromFileAlgorithm())
         self.addAlgorithm(UploadDatabaseIntegrationAlgorithm())
         self.addAlgorithm(VectorDatabaseCreationAlgorithm())
         self.addAlgorithm(TileCreationAlgorithm())

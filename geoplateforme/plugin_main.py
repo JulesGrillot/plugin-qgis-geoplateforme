@@ -26,7 +26,6 @@ from geoplateforme.gui.publication_creation.wzd_publication_creation import (
 )
 from geoplateforme.gui.storage.dlg_storage_report import StorageReportDialog
 from geoplateforme.gui.tile_creation.wzd_tile_creation import TileCreationWizard
-from geoplateforme.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
 from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.toolbelt import PlgLogger, PlgOptionsManager
 
@@ -71,7 +70,6 @@ class GeoplateformePlugin:
         self.action_authentication = None
         self.action_dashboard = None
         self.action_storage_report = None
-        self.action_import = None
         self.action_tile_create = None
         self.action_publication = None
 
@@ -126,14 +124,6 @@ class GeoplateformePlugin:
         )
         self.action_storage_report.triggered.connect(self.display_storage_report)
 
-        # Import
-        self.action_import = QAction(
-            QIcon(str(DIR_PLUGIN_ROOT / "resources/images/icons/Deposer.png")),
-            self.tr("Create a new upload"),
-            self.iface.mainWindow(),
-        )
-        self.action_import.triggered.connect(self.import_data)
-
         # Tile creation
         self.action_tile_create = QAction(
             QIcon(str(DIR_PLUGIN_ROOT / "resources/images/icons/Tuile@1x.png")),
@@ -180,7 +170,6 @@ class GeoplateformePlugin:
         self.iface.addPluginToWebMenu(__title__, self.action_authentication)
         self.iface.addPluginToWebMenu(__title__, self.action_dashboard)
         self.iface.addPluginToWebMenu(__title__, self.action_storage_report)
-        self.iface.addPluginToWebMenu(__title__, self.action_import)
         self.iface.addPluginToWebMenu(__title__, self.action_tile_create)
         self.iface.addPluginToWebMenu(__title__, self.action_publication)
         self.iface.addPluginToWebMenu(__title__, self.action_settings)
@@ -192,7 +181,6 @@ class GeoplateformePlugin:
         self.toolbar.addAction(self.action_authentication)
         self.toolbar.addAction(self.action_dashboard)
         self.toolbar.addAction(self.action_storage_report)
-        self.toolbar.addAction(self.action_import)
         self.toolbar.addAction(self.action_tile_create)
         self.toolbar.addAction(self.action_publication)
         self._update_actions_availability()
@@ -210,7 +198,6 @@ class GeoplateformePlugin:
         self.iface.removePluginWebMenu(__title__, self.action_authentication)
         self.iface.removePluginWebMenu(__title__, self.action_dashboard)
         self.iface.removePluginWebMenu(__title__, self.action_storage_report)
-        self.iface.removePluginWebMenu(__title__, self.action_import)
         self.iface.removePluginWebMenu(__title__, self.action_tile_create)
         self.iface.removePluginWebMenu(__title__, self.action_publication)
         self.iface.removePluginWebMenu(__title__, self.action_help)
@@ -261,25 +248,6 @@ class GeoplateformePlugin:
             self.publication_wizard.finished.connect(self._del_tile_publication_wizard)
         self.publication_wizard.show()
 
-    def import_data(self):
-        """
-        Open import data Wizard
-
-        """
-        if self.import_wizard is None:
-            self.import_wizard = UploadCreationWizard(self.iface.mainWindow())
-            self.import_wizard.finished.connect(self._del_import_wizard)
-        self.import_wizard.show()
-
-    def _del_import_wizard(self) -> None:
-        """
-        Delete import wizard
-
-        """
-        if self.import_wizard is not None:
-            self.import_wizard.deleteLater()
-            self.import_wizard = None
-
     def _del_tile_creation_wizard(self) -> None:
         """
         Delete tile creation wizard
@@ -316,7 +284,6 @@ class GeoplateformePlugin:
 
         self.action_dashboard.setEnabled(enabled)
         self.action_storage_report.setEnabled(False)
-        self.action_import.setEnabled(enabled)
         self.action_tile_create.setEnabled(enabled)
         self.action_publication.setEnabled(enabled)
 

@@ -29,18 +29,29 @@ class DatasetComboBox(QComboBox):
         """
         self.mdl_dataset.refresh(force)
 
-    def set_datastore_id(self, datastore_id: str) -> None:
+    def set_datastore_id(self, datastore_id: str, force_refresh: bool = False) -> None:
         """
         Define current datastore id
 
         Args:
             datastore_id: (str) datastore id
         """
-        if datastore_id and datastore_id != self.datastore_id:
+        if datastore_id and (datastore_id != self.datastore_id or force_refresh):
             self.datastore_id = datastore_id
             self.mdl_dataset.set_datastore_id(datastore_id)
             self.refresh(True)
             self.activated.emit(1)
+
+    def set_dataset_name(self, dataset_name: str) -> None:
+        """
+        Define current index from dataset name
+
+        Args:
+            dataset_name: (str) dataset name
+        """
+        row = self.mdl_dataset.get_dataset_row(dataset_name)
+        if row != -1:
+            self.setCurrentIndex(row)
 
     def current_dataset_name(self) -> str:
         """

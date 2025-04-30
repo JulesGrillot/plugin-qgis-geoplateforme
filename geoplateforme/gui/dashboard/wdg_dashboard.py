@@ -1,7 +1,7 @@
 import json
 import os
 import tempfile
-from typing import List
+from typing import List, Optional
 
 from qgis.core import (
     QgsApplication,
@@ -42,6 +42,7 @@ from geoplateforme.gui.tile_creation.wzd_tile_creation import TileCreationWizard
 from geoplateforme.gui.update_publication.wzd_update_publication import (
     UpdatePublicationWizard,
 )
+from geoplateforme.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
 from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.delete_data import DeleteDataAlgorithm
 from geoplateforme.processing.unpublish import UnpublishAlgorithm
@@ -119,16 +120,21 @@ class DashboardWidget(QWidget):
         self.detail_dialog = None
         self.remove_detail_zone()
 
+        self.import_wizard = None
+
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
         self.cbx_dataset.activated.connect(self._dataset_updated)
 
         self.btn_refresh.clicked.connect(self.refresh)
         self.btn_refresh.setIcon(QIcon(":/images/themes/default/mActionRefresh.svg"))
 
-        self.btn_create.clicked.connect(self._create)
+        self.btn_create.clicked.connect(self._create_dataset)
         self.btn_create.setIcon(QIcon(":/images/themes/default/mActionAdd.svg"))
 
-        self._datastore_updated()
+        self.btn_add_data.clicked.connect(self._add_data_to_dataset)
+        self.btn_add_data.setIcon(QIcon(":/images/themes/default/mActionAdd.svg"))
+
+        # self._datastore_updated()
 
     def _init_table_view(
         self,
@@ -156,18 +162,36 @@ class DashboardWidget(QWidget):
         tbv.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         tbv.pressed.connect(lambda index: self._item_clicked(index, proxy_mdl, tbv))
 
-    def refresh(self) -> None:
+    def refresh(
+        self, datastore_id: Optional[str] = None, dataset_name: Optional[str] = None
+    ) -> None:
         """
         Force refresh of stored data model
 
         """
         # Disable refresh button : must processEvents so user can't click while updating
         self.btn_refresh.setEnabled(False)
+        if not datastore_id:
+            datastore_id = self.cbx_datastore.current_datastore_id()
+        if not dataset_name:
+            dataset_name = self.cbx_dataset.current_dataset_name()
+
         QCoreApplication.processEvents()
+
+        # Diconnect signals
+        self.cbx_datastore.currentIndexChanged.disconnect(self._datastore_updated)
+        self.cbx_dataset.activated.disconnect(self._dataset_updated)
 
         # Update datastore content
         self.cbx_datastore.refresh()
-        self._datastore_updated()
+        self.cbx_datastore.set_datastore_id(datastore_id)
+        self._datastore_updated(force_refresh=True)
+        self.cbx_dataset.set_dataset_name(dataset_name)
+        self._dataset_updated()
+
+        # Connect signals
+        self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
+        self.cbx_dataset.activated.connect(self._dataset_updated)
 
         # Enable new refresh
         self.btn_refresh.setEnabled(True)
@@ -411,16 +435,44 @@ class DashboardWidget(QWidget):
         QGuiApplication.restoreOverrideCursor()
         publication_wizard.show()
 
-    def _create(self) -> None:
+    def _create_dataset(self) -> None:
         """
         Show upload creation wizard with current datastore
 
         """
-        QMessageBox.information(
-            self,
-            "Create new Dataset:",
-            "Creating a new Dataset will be avaliable soon !!",
-        )
+        if self.import_wizard is None:
+            self.import_wizard = UploadCreationWizard(
+                self, self.cbx_datastore.current_datastore_id()
+            )
+            self.import_wizard.finished.connect(self._del_import_wizard)
+        self.import_wizard.show()
+
+    def _add_data_to_dataset(self) -> None:
+        """
+        Show upload creation wizard with current datastore and dataset
+
+        """
+        if self.import_wizard is None:
+            self.import_wizard = UploadCreationWizard(
+                self,
+                self.cbx_datastore.current_datastore_id(),
+                self.cbx_dataset.current_dataset_name(),
+            )
+            self.import_wizard.finished.connect(self._del_import_wizard)
+        self.import_wizard.show()
+
+    def _del_import_wizard(self) -> None:
+        """
+        Delete import wizard
+
+        """
+        if self.import_wizard is not None:
+            self.refresh(
+                datastore_id=self.import_wizard.get_datastore_id(),
+                dataset_name=self.import_wizard.get_dataset_name(),
+            )
+            self.import_wizard.deleteLater()
+            self.import_wizard = None
 
     def _compare(self, stored_data: StoredData) -> None:
         """
@@ -503,12 +555,14 @@ class DashboardWidget(QWidget):
 
         return proxy_mdl
 
-    def _datastore_updated(self) -> None:
+    def _datastore_updated(self, index: int = 0, force_refresh: bool = False) -> None:
         """
         Update stored data combobox when datastore is updated
 
         """
-        self.cbx_dataset.set_datastore_id(self.cbx_datastore.current_datastore_id())
+        self.cbx_dataset.set_datastore_id(
+            self.cbx_datastore.current_datastore_id(), force_refresh
+        )
 
     def _dataset_updated(self) -> None:
         """

@@ -13,6 +13,9 @@ from qgis.core import (
     QgsProcessingParameterMatrix,
     QgsProcessingParameterMultipleLayers,
     QgsProcessingParameterString,
+    QgsProcessingParameterVectorDestination,
+    QgsVectorFileWriter,
+    QgsVectorLayer,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -34,6 +37,8 @@ class GpfUploadFromLayersAlgorithm(QgsProcessingAlgorithm):
     TAGS = "TAGS"
 
     CREATED_UPLOAD_ID = "CREATED_UPLOAD_ID"
+
+    SUPPORTED_SOURCE_TYPES = ["GPKG", "ESRI Shapefile", "GeoJSON"]
 
     def tr(self, message: str) -> str:
         """Get the translation for a string using Qt translation API.
@@ -105,6 +110,43 @@ class GpfUploadFromLayersAlgorithm(QgsProcessingAlgorithm):
             )
         )
 
+    def export_layer_as_temporary_gpkg(
+        self, layer: QgsVectorLayer, context: QgsProcessingContext
+    ) -> str:
+        """Export layer in a temporary GPKG
+
+        :param layer: layer to export
+        :type layer: QgsVectorLayer
+        :param context: processing context
+        :type context: QgsProcessingContext
+        :raises QgsProcessingException: error during layer export
+        :return: path to temporary GPKG
+        :rtype: str
+        """
+        temp_output = QgsProcessingParameterVectorDestination(
+            name=layer.name()
+        ).generateTemporaryDestination()
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = "GPKG"
+        options.fileEncoding = "UTF-8"
+        options.layerName = layer.name()
+        options.actionOnExistingFile = (
+            QgsVectorFileWriter.ActionOnExistingFile.CreateOrOverwriteFile
+        )
+
+        error, error_str, _, _ = QgsVectorFileWriter.writeAsVectorFormatV3(
+            layer, temp_output, context.transformContext(), options
+        )
+
+        if error != QgsVectorFileWriter.WriterError.NoError:
+            raise QgsProcessingException(
+                self.tr(
+                    "Erreur lors l'export de la couche {} dans une couche temporaire GPKG {} : {}"
+                ).format(layer.name(), temp_output, error_str)
+            )
+        return temp_output
+
     def processAlgorithm(
         self,
         parameters: Dict[str, Any],
@@ -129,7 +171,9 @@ class GpfUploadFromLayersAlgorithm(QgsProcessingAlgorithm):
         datastore = self.parameterAsString(parameters, self.DATASTORE, context)
         tags = self.parameterAsMatrix(parameters, self.TAGS, context)
 
-        layers = self.parameterAsLayerList(parameters, self.LAYERS, context)
+        layers: List[QgsVectorLayer] = self.parameterAsLayerList(
+            parameters, self.LAYERS, context
+        )
 
         # define CRS from input layers
         srs: Optional[QgsCoordinateReferenceSystem] = None
@@ -148,13 +192,23 @@ class GpfUploadFromLayersAlgorithm(QgsProcessingAlgorithm):
         # define files from input layers
         files: List[str] = []
         for layer in layers:
-            if layer.storageType() == "GPKG":
+            storage_type = layer.storageType()
+            if storage_type not in self.SUPPORTED_SOURCE_TYPES:
+                feedback.pushInfo(
+                    self.tr(
+                        "Les fichiers de type {} ne sont pas supportées (format supportés {}). Un export en GPKG est effectué."
+                    ).format(storage_type, self.SUPPORTED_SOURCE_TYPES)
+                )
+                files.append(self.export_layer_as_temporary_gpkg(layer, context))
+            elif storage_type == "GPKG":
                 source = layer.source()
                 path = source.split("|")[0]
                 files.append(path)
-            elif layer.storageType() == "ESRI Shapefile":
+            elif storage_type == "ESRI Shapefile":
                 source = layer.source()
                 files.extend(get_shapefile_associated_files(source))
+            elif storage_type == "GeoJSON":
+                files.append(layer.source())
 
         algo_str = f"geoplateforme:{GpfUploadFromFileAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)

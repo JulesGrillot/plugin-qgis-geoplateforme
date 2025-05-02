@@ -10,6 +10,7 @@ Création d'une livraison dans un entrepôt depuis une liste de couches vectorie
 | Nom de la livraison        | `NAME`      | Nom de la livraison. |
 | Description de la livraison| `DESCRIPTION`  | Description de la livraison. |
 | Couches à importer | `LAYERS`  | Couches vectorielles à importer. |
+| Fichiers additionnels à importer| `FILES`  | Fichiers additionnels à importer (séparés par ; pour fichiers multiples). |
 | Tags à ajouter | `TAGS`  | List de tags à importer. Format `"clé 1,valeur 1;clé 2,valeur 2;..;clé n,valeur n"` |
 
 - Sorties :

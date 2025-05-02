@@ -10,6 +10,7 @@ from qgis.core import (
     QgsProcessingContext,
     QgsProcessingException,
     QgsProcessingFeedback,
+    QgsProcessingParameterFile,
     QgsProcessingParameterMatrix,
     QgsProcessingParameterMultipleLayers,
     QgsProcessingParameterString,
@@ -34,6 +35,7 @@ class GpfUploadFromLayersAlgorithm(QgsProcessingAlgorithm):
     NAME = "NAME"
     DESCRIPTION = "DESCRIPTION"
     LAYERS = "LAYERS"
+    FILES = "FILES"
     TAGS = "TAGS"
 
     CREATED_UPLOAD_ID = "CREATED_UPLOAD_ID"
@@ -85,6 +87,15 @@ class GpfUploadFromLayersAlgorithm(QgsProcessingAlgorithm):
                 name=self.LAYERS,
                 description=self.tr("Couches vectorielles à livrer"),
                 layerType=Qgis.ProcessingSourceType.VectorAnyGeometry,
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterFile(
+                name=self.FILES,
+                description=self.tr(
+                    "Fichiers additionnels à importer (séparés par ; pour fichiers multiples)"
+                ),
             )
         )
 
@@ -190,7 +201,8 @@ class GpfUploadFromLayersAlgorithm(QgsProcessingAlgorithm):
                 )
 
         # define files from input layers
-        files: List[str] = []
+        file_str = self.parameterAsString(parameters, self.FILES, context)
+        files = file_str.split(";")
         for layer in layers:
             storage_type = layer.storageType()
             if storage_type not in self.SUPPORTED_SOURCE_TYPES:

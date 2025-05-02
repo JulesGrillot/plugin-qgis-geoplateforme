@@ -74,6 +74,18 @@ class GpfUploadFromLayersAlgorithm(QgsProcessingAlgorithm):
     def shortHelpString(self):
         return get_short_string(self.name(), self.displayName())
 
+    def layer_parameter(self) -> QgsProcessingParameterMultipleLayers:
+        """Parameter for layer definition
+
+        :return: parameter
+        :rtype: QgsProcessingParameterMultipleLayers
+        """
+        return QgsProcessingParameterMultipleLayers(
+            name=self.LAYERS,
+            description=self.tr("Couches vectorielles à livrer"),
+            layerType=Qgis.ProcessingSourceType.VectorAnyGeometry,
+        )
+
     def initAlgorithm(self, config=None):
         self.addParameter(
             QgsProcessingParameterString(
@@ -82,13 +94,7 @@ class GpfUploadFromLayersAlgorithm(QgsProcessingAlgorithm):
             )
         )
 
-        self.addParameter(
-            QgsProcessingParameterMultipleLayers(
-                name=self.LAYERS,
-                description=self.tr("Couches vectorielles à livrer"),
-                layerType=Qgis.ProcessingSourceType.VectorAnyGeometry,
-            )
-        )
+        self.addParameter(self.layer_parameter())
 
         self.addParameter(
             QgsProcessingParameterFile(
@@ -215,6 +221,7 @@ class GpfUploadFromLayersAlgorithm(QgsProcessingAlgorithm):
             elif storage_type == "GPKG":
                 source = layer.source()
                 path = source.split("|")[0]
+                # TODO : Add warning to indicate that all gpkg layers will be uploaded
                 files.append(path)
             elif storage_type == "ESRI Shapefile":
                 source = layer.source()

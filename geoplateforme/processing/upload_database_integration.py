@@ -1,11 +1,11 @@
-import json
 from time import sleep
 
 from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingException,
     QgsProcessingFeedback,
-    QgsProcessingParameterFile,
+    QgsProcessingParameterMatrix,
+    QgsProcessingParameterString,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -18,6 +18,11 @@ from geoplateforme.api.custom_exceptions import (
 )
 from geoplateforme.api.processing import ProcessingRequestManager
 from geoplateforme.api.stored_data import StoredDataRequestManager, StoredDataStatus
+from geoplateforme.processing.utils import (
+    get_short_string,
+    get_user_manual_url,
+    tags_from_qgs_parameter_matrix_string,
+)
 from geoplateforme.toolbelt import PlgOptionsManager
 
 
@@ -31,11 +36,10 @@ class UploadDatabaseIntegrationProcessingFeedback(QgsProcessingFeedback):
 
 
 class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
-    INPUT_JSON = "INPUT_JSON"
-
-    DATASTORE = "datastore"
-    UPLOAD = "upload"
-    STORED_DATA_NAME = "stored_data_name"
+    DATASTORE = "DATASTORE"
+    UPLOAD = "UPLOAD"
+    STORED_DATA_NAME = "STORED_DATA_NAME"
+    TAGS = "TAGS"
 
     PROCESSING_EXEC_ID = "PROCESSING_EXEC_ID"
     CREATED_STORED_DATA_ID = "CREATED_STORED_DATA_ID"
@@ -58,7 +62,7 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
         return "upload_database_integration"
 
     def displayName(self):
-        return self.tr("Integrate upload in database")
+        return self.tr("Intégration d'une livraison en base de données vectorielle")
 
     def group(self):
         return self.tr("")
@@ -67,103 +71,113 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
         return ""
 
     def helpUrl(self):
-        return ""
+        return get_user_manual_url(self.name())
 
     def shortHelpString(self):
-        return self.tr(
-            "Integration of geoplateforme platform upload in database.\n"
-            "Input parameters are defined in a .json file.\n"
-            "Available parameters:\n"
-            "{\n"
-            f'    "{self.STORED_DATA_NAME}": wanted stored data name (str),\n'
-            f'    "{self.DATASTORE}": datastore id (str),\n'
-            f'    "{self.UPLOAD}": upload id (str),\n'
-            "}\n"
-            f"Returns created stored data id in {self.CREATED_STORED_DATA_ID} results"
-        )
+        return get_short_string(self.name(), self.displayName())
 
     def initAlgorithm(self, config=None):
         self.addParameter(
-            QgsProcessingParameterFile(
-                name=self.INPUT_JSON,
-                description=self.tr("Input .json file"),
+            QgsProcessingParameterString(
+                name=self.DATASTORE,
+                description=self.tr("Identifiant de l'entrepôt"),
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterString(
+                name=self.UPLOAD,
+                description=self.tr("Identifiant de la livraison"),
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterString(
+                name=self.STORED_DATA_NAME,
+                description=self.tr("Nom de la base de données vectorielle"),
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterMatrix(
+                name=self.TAGS,
+                description=self.tr("Tags"),
+                headers=[self.tr("Tag"), self.tr("Valeur")],
             )
         )
 
     def processAlgorithm(self, parameters, context, feedback):
-        filename = self.parameterAsFile(parameters, self.INPUT_JSON, context)
+        stored_data_name = self.parameterAsString(
+            parameters, self.STORED_DATA_NAME, context
+        )
+        datastore = self.parameterAsString(parameters, self.DATASTORE, context)
+        upload = self.parameterAsString(parameters, self.UPLOAD, context)
 
-        with open(filename, "r") as file:
-            data = json.load(file)
+        tag_data = self.parameterAsMatrix(parameters, self.TAGS, context)
+        tags = tags_from_qgs_parameter_matrix_string(tag_data)
 
-            stored_data_name = data[self.STORED_DATA_NAME]
-            datastore = data[self.DATASTORE]
-            upload = data[self.UPLOAD]
-            try:
-                stored_data_manager = StoredDataRequestManager()
-                processing_manager = ProcessingRequestManager()
+        try:
+            stored_data_manager = StoredDataRequestManager()
+            processing_manager = ProcessingRequestManager()
 
-                # Get processing for database integration
-                # TODO : for now we use processing name, how can we get processing otherwise ?
-                processing = processing_manager.get_processing(
-                    datastore, "Intégration de données vecteur livrées en base"
-                )
+            # Get processing for database integration
+            # TODO : for now we use processing name, how can we get processing otherwise ?
+            processing = processing_manager.get_processing(
+                datastore, "Intégration de données vecteur livrées en base"
+            )
 
-                # Create execution
-                data_map = {
-                    "processing": processing._id,
-                    "inputs": {"upload": [upload]},
-                    "output": {"stored_data": {"name": stored_data_name}},
-                    "parameters": {},
-                }
-                res = processing_manager.create_processing_execution(
-                    datastore_id=datastore, input_map=data_map
-                )
-                stored_data_val = res["output"]["stored_data"]
-                exec_id = res["_id"]
+            # Create execution
+            data_map = {
+                "processing": processing._id,
+                "inputs": {"upload": [upload]},
+                "output": {"stored_data": {"name": stored_data_name}},
+                "parameters": {},
+            }
+            res = processing_manager.create_processing_execution(
+                datastore_id=datastore, input_map=data_map
+            )
+            stored_data_val = res["output"]["stored_data"]
+            exec_id = res["_id"]
 
-                # Get created stored_data id
-                stored_data_id = stored_data_val["_id"]
+            # Get created stored_data id
+            stored_data_id = stored_data_val["_id"]
 
-                # Update feedback if vector db id attribute present
-                if hasattr(feedback, "created_vector_db_id"):
-                    feedback.created_vector_db_id = stored_data_id
+            # Update feedback if vector db id attribute present
+            if hasattr(feedback, "created_vector_db_id"):
+                feedback.created_vector_db_id = stored_data_id
 
-                # Update stored data tags
-                tags = {
-                    "upload_id": upload,
-                    "proc_int_id": exec_id,
-                }
-                stored_data_manager.add_tags(
-                    datastore_id=datastore,
-                    stored_data_id=stored_data_val["_id"],
-                    tags=tags,
-                )
+            # Update stored data tags
+            tags["upload_id"] = upload
+            tags["proc_int_id"] = exec_id
 
-                # Launch execution
-                processing_manager.launch_execution(
-                    datastore_id=datastore, exec_id=exec_id
-                )
+            stored_data_manager.add_tags(
+                datastore_id=datastore,
+                stored_data_id=stored_data_val["_id"],
+                tags=tags,
+            )
 
-                # Wait for database integration
-                self._wait_database_integration(datastore, stored_data_id)
+            # Launch execution
+            processing_manager.launch_execution(datastore_id=datastore, exec_id=exec_id)
 
-            except UnavailableProcessingException as exc:
-                raise QgsProcessingException(
-                    f"Can't retrieve processing for database integration : {exc}"
-                )
-            except CreateProcessingException as exc:
-                raise QgsProcessingException(
-                    f"Can't create processing execution for database integration : {exc}"
-                )
-            except LaunchExecutionException as exc:
-                raise QgsProcessingException(
-                    f"Can't launch execution for database integration : {exc}"
-                )
-            except AddTagException as exc:
-                raise QgsProcessingException(
-                    f"Can't add tags to stored data for database integration : {exc}"
-                )
+            # Wait for database integration
+            self._wait_database_integration(datastore, stored_data_id)
+
+        except UnavailableProcessingException as exc:
+            raise QgsProcessingException(
+                f"Can't retrieve processing for database integration : {exc}"
+            )
+        except CreateProcessingException as exc:
+            raise QgsProcessingException(
+                f"Can't create processing execution for database integration : {exc}"
+            )
+        except LaunchExecutionException as exc:
+            raise QgsProcessingException(
+                f"Can't launch execution for database integration : {exc}"
+            )
+        except AddTagException as exc:
+            raise QgsProcessingException(
+                f"Can't add tags to stored data for database integration : {exc}"
+            )
 
         return {
             self.CREATED_STORED_DATA_ID: stored_data_id,

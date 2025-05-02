@@ -17,3 +17,10 @@ Pour afficher tous les traitements QGIS : `Traitements > Boîte à outils`
 
 ```{include} ../../geoplateforme/resources/help/upload_from_layers.md
 ```
+
+(vector_db_creation=)
+
+# Création d'une base de données vectorielles depuis une liste de couches vectorielles
+
+```{include} ../../geoplateforme/resources/help/vector_db_creation.md
+```

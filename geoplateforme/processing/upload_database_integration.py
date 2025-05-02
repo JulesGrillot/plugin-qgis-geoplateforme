@@ -18,6 +18,7 @@ from geoplateforme.api.custom_exceptions import (
 )
 from geoplateforme.api.processing import ProcessingRequestManager
 from geoplateforme.api.stored_data import StoredDataRequestManager, StoredDataStatus
+from geoplateforme.api.upload import UploadRequestManager
 from geoplateforme.processing.utils import (
     get_short_string,
     get_user_manual_url,
@@ -156,6 +157,18 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
                 tags=tags,
             )
 
+            # Update tags for upload
+            upload_tags = {
+                "vectordb_id": stored_data_id,
+                "proc_int_id": exec_id,
+            }
+
+            self._add_upload_tag(
+                datastore_id=datastore,
+                upload_id=upload,
+                tags=upload_tags,
+            )
+
             # Launch execution
             processing_manager.launch_execution(datastore_id=datastore, exec_id=exec_id)
 
@@ -183,6 +196,32 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
             self.CREATED_STORED_DATA_ID: stored_data_id,
             self.PROCESSING_EXEC_ID: exec_id,
         }
+
+    def _add_upload_tag(
+        self, datastore_id: str, upload_id: str, tags: dict[str, str]
+    ) -> None:
+        """Add tags to an upload
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param upload_id: upload id
+        :type upload_id: str
+        :param tags: tags
+        :type tags: dict[str, str]
+        :raises QgsProcessingException: propagate error in case of tag add exception
+        """
+        try:
+            # Update stored data tags
+            manager = UploadRequestManager()
+            manager.add_tags(
+                datastore_id=datastore_id,
+                upload_id=upload_id,
+                tags=tags,
+            )
+        except AddTagException as exc:
+            raise QgsProcessingException(
+                self.tr("Upload tag add failed : {0}").format(exc)
+            )
 
     def _wait_database_integration(
         self, datastore: str, vector_db_stored_data_id: str

@@ -208,7 +208,10 @@ class GpfUploadFromLayersAlgorithm(QgsProcessingAlgorithm):
 
         # define files from input layers
         file_str = self.parameterAsString(parameters, self.FILES, context)
-        files = file_str.split(";")
+        if file_str:
+            files = file_str.split(";")
+        else:
+            files = []
         for layer in layers:
             storage_type = layer.storageType()
             if storage_type not in self.SUPPORTED_SOURCE_TYPES:

@@ -1,7 +1,5 @@
 # standard
-import json
 import os
-import tempfile
 from functools import partial
 from typing import List
 
@@ -31,6 +29,7 @@ from geoplateforme.api.upload import UploadRequestManager
 from geoplateforme.gui.mdl_execution_list import ExecutionListModel
 from geoplateforme.gui.upload_creation.qwp_upload_edition import UploadEditionPageWizard
 from geoplateforme.processing import GeoplateformeProvider
+from geoplateforme.processing.utils import tags_to_qgs_parameter_matrix_string
 from geoplateforme.processing.vector_db_creation import (
     VectorDatabaseCreationAlgorithm,
     VectorDatabaseCreationProcessingFeedback,
@@ -109,17 +108,18 @@ class UploadCreationPageWizard(QWizardPage):
         )
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
-        data = {
+        params = {
             VectorDatabaseCreationAlgorithm.DATASTORE: self.qwp_upload_edition.cbx_datastore.current_datastore_id(),
             VectorDatabaseCreationAlgorithm.NAME: self.qwp_upload_edition.wdg_upload_creation.get_name(),
-            VectorDatabaseCreationAlgorithm.SRS: self.qwp_upload_edition.wdg_upload_creation.get_crs(),
+            # TODO : add option for reprojection VectorDatabaseCreationAlgorithm.SRS: self.qwp_upload_edition.wdg_upload_creation.get_crs(),
             VectorDatabaseCreationAlgorithm.FILES: self.qwp_upload_edition.wdg_upload_creation.get_filenames(),
-            VectorDatabaseCreationAlgorithm.DATASET_NAME: self.qwp_upload_edition.wdg_upload_creation.get_dataset_name(),
+            VectorDatabaseCreationAlgorithm.LAYERS: self.qwp_upload_edition.wdg_upload_creation.get_layers(),
+            VectorDatabaseCreationAlgorithm.TAGS: tags_to_qgs_parameter_matrix_string(
+                {
+                    "datasheet_name": self.qwp_upload_edition.wdg_upload_creation.get_name()
+                }
+            ),
         }
-        filename = tempfile.NamedTemporaryFile(suffix=".json").name
-        with open(filename, "w") as file:
-            json.dump(data, file)
-        params = {VectorDatabaseCreationAlgorithm.INPUT_JSON: filename}
         self.lbl_step_icon.setMovie(self.loading_movie)
         self.loading_movie.start()
 

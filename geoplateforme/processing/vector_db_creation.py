@@ -1,24 +1,30 @@
-import json
-from typing import Tuple
+from typing import List, Tuple
 
 from qgis.core import (
+    Qgis,
     QgsApplication,
-    QgsCoordinateReferenceSystem,
     QgsProcessingAlgorithm,
     QgsProcessingContext,
     QgsProcessingException,
     QgsProcessingFeedback,
     QgsProcessingParameterFile,
+    QgsProcessingParameterMatrix,
+    QgsProcessingParameterMultipleLayers,
+    QgsProcessingParameterString,
+    QgsVectorLayer,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
-from geoplateforme.api.custom_exceptions import AddTagException
-from geoplateforme.api.upload import UploadRequestManager
 from geoplateforme.processing.upload_database_integration import (
     UploadDatabaseIntegrationAlgorithm,
 )
-from geoplateforme.processing.upload_from_files import GpfUploadFromFileAlgorithm
-from geoplateforme.processing.utils import tags_to_qgs_parameter_matrix_string
+from geoplateforme.processing.upload_from_layers import GpfUploadFromLayersAlgorithm
+from geoplateforme.processing.utils import (
+    get_short_string,
+    get_user_manual_url,
+    tags_from_qgs_parameter_matrix_string,
+    tags_to_qgs_parameter_matrix_string,
+)
 
 
 class VectorDatabaseCreationProcessingFeedback(QgsProcessingFeedback):
@@ -33,14 +39,13 @@ class VectorDatabaseCreationProcessingFeedback(QgsProcessingFeedback):
 
 
 class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
-    INPUT_JSON = "INPUT_JSON"
+    DATASTORE = "DATASTORE"
+    NAME = "NAME"
+    LAYERS = "LAYERS"
+    FILES = "FILES"
+    TAGS = "TAGS"
 
-    DATASTORE = "datastore"
-    NAME = "name"
-    FILES = "files"
-    SRS = "srs"
-    DATASET_NAME = "dataset_name"
-
+    PROCESSING_EXEC_ID = "PROCESSING_EXEC_ID"
     CREATED_UPLOAD_ID = "CREATED_UPLOAD_ID"
     CREATED_STORED_DATA_ID = "CREATED_STORED_DATA_ID"
 
@@ -62,7 +67,9 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         return "vector_db_creation"
 
     def displayName(self):
-        return self.tr("Create vector database")
+        return self.tr(
+            "Création d'une base de données vectorielle depuis des couches vectorielles"
+        )
 
     def group(self):
         return self.tr("")
@@ -71,91 +78,93 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         return ""
 
     def helpUrl(self):
-        return ""
+        return get_user_manual_url(self.name())
 
     def shortHelpString(self):
-        return self.tr(
-            "Create vector db stored data in geoplateforme platform.\n"
-            "Input parameters are defined in a .json file.\n"
-            "Available parameters:\n"
-            "{\n"
-            f'    "{self.DATASTORE}": datastore id (str),\n'
-            f'    "{self.NAME}": wanted stored data name (str),\n'
-            f'    "{self.DATASET_NAME}": dataset name, used for tag definition (str),\n'
-            f'    "{self.FILES}": upload full file path list [str],\n'
-            f'    "{self.SRS}": upload SRS (str) must be in IGNF or EPSG repository,\n'
-            "}\n"
-            f"Returns :"
-            f"   - created upload id in {self.CREATED_UPLOAD_ID} results "
-            f"   - created stored data id in {self.CREATED_STORED_DATA_ID} results"
-        )
+        return get_short_string(self.name(), self.displayName())
 
     def initAlgorithm(self, config=None):
         self.addParameter(
+            QgsProcessingParameterString(
+                name=self.DATASTORE,
+                description=self.tr("Identifiant de l'entrepôt"),
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterMultipleLayers(
+                name=self.LAYERS,
+                description=self.tr("Couches vectorielles à livrer"),
+                layerType=Qgis.ProcessingSourceType.VectorAnyGeometry,
+            )
+        )
+
+        self.addParameter(
             QgsProcessingParameterFile(
-                name=self.INPUT_JSON,
-                description=self.tr("Input .json file"),
+                name=self.FILES,
+                description=self.tr(
+                    "Fichiers additionnels à importer (séparés par ; pour fichiers multiples)"
+                ),
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterString(
+                name=self.NAME,
+                description=self.tr("Nom de la livraison"),
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterMatrix(
+                name=self.TAGS,
+                description=self.tr("Tags"),
+                headers=[self.tr("Tag"), self.tr("Valeur")],
             )
         )
 
     def processAlgorithm(self, parameters, context, feedback):
-        filename = self.parameterAsFile(parameters, self.INPUT_JSON, context)
+        name = self.parameterAsString(parameters, self.NAME, context)
+        datastore = self.parameterAsString(parameters, self.DATASTORE, context)
 
-        with open(filename, "r") as file:
-            data = json.load(file)
+        layers = self.parameterAsLayerList(parameters, self.LAYERS, context)
+        files = self.parameterAsString(parameters, self.FILES, context)
+        tag_data = self.parameterAsMatrix(parameters, self.TAGS, context)
+        tags = tags_from_qgs_parameter_matrix_string(tag_data)
 
-            name = data[self.NAME]
-            files = data[self.FILES]
-            srs_str = data[self.SRS]
-            datastore = data[self.DATASTORE]
-            dataset_name = data[self.DATASET_NAME]
+        # Create upload
+        upload_id = self._create_upload(
+            datastore,
+            layers,
+            files,
+            name,
+            tags,
+            context,
+            feedback,
+        )
 
-            srs = QgsCoordinateReferenceSystem(srs_str)
-
-            # Create upload
-            upload_id = self._create_upload(
-                datastore,
-                files,
-                name,
-                srs,
-                dataset_name,
-                context,
-                feedback,
-            )
-
-            # Run database integration
-            vector_db_stored_data_id, exec_id = self._database_integration(
-                name,
-                datastore,
-                upload_id,
-                dataset_name,
-                context,
-                feedback,
-            )
-
-            upload_tags = {
-                "vectordb_id": vector_db_stored_data_id,
-                "proc_int_id": exec_id,
-            }
-
-            self._add_upload_tag(
-                datastore_id=datastore,
-                upload_id=upload_id,
-                tags=upload_tags,
-            )
+        # Run database integration
+        vector_db_stored_data_id, exec_id = self._database_integration(
+            name,
+            datastore,
+            upload_id,
+            tags,
+            context,
+            feedback,
+        )
 
         return {
             self.CREATED_UPLOAD_ID: upload_id,
             self.CREATED_STORED_DATA_ID: vector_db_stored_data_id,
+            self.PROCESSING_EXEC_ID: exec_id,
         }
 
     def _create_upload(
         self,
         datastore: str,
-        files: [str],
+        layers: List[QgsVectorLayer],
+        files: List[str],
         name: str,
-        srs: QgsCoordinateReferenceSystem,
-        dataset_name: str,
+        tags: dict[str, str],
         context: QgsProcessingContext,
         feedback: QgsProcessingFeedback,
     ) -> str:
@@ -167,10 +176,8 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         :type files: str]
         :param name: upload name
         :type name: str
-        :param srs: upload srs
-        :type srs: QgsCoordinateReferenceSystem
-        :param dataset_name : dataset name
-        :type dataset_name : str
+        :param tags: tags
+        :type tags: dict[str, str]
         :param context: context of processing
         :type context: QgsProcessingContext
         :param feedback: feedback for processing
@@ -179,58 +186,32 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         :return: id of created upload
         :rtype: str
         """
-        algo_str = f"geoplateforme:{GpfUploadFromFileAlgorithm().name()}"
+        algo_str = f"geoplateforme:{GpfUploadFromLayersAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
         params = {
-            GpfUploadFromFileAlgorithm.DATASTORE: datastore,
-            GpfUploadFromFileAlgorithm.NAME: name,
-            GpfUploadFromFileAlgorithm.DESCRIPTION: name,
-            GpfUploadFromFileAlgorithm.SRS: srs,
-            GpfUploadFromFileAlgorithm.FILES: ";".join(files),
-            GpfUploadFromFileAlgorithm.TAGS: tags_to_qgs_parameter_matrix_string(
-                {"datasheet_name": dataset_name},
+            GpfUploadFromLayersAlgorithm.DATASTORE: datastore,
+            GpfUploadFromLayersAlgorithm.NAME: name,
+            GpfUploadFromLayersAlgorithm.DESCRIPTION: name,
+            GpfUploadFromLayersAlgorithm.LAYERS: layers,
+            GpfUploadFromLayersAlgorithm.FILES: files,
+            GpfUploadFromLayersAlgorithm.TAGS: tags_to_qgs_parameter_matrix_string(
+                tags
             ),
         }
 
         results, successful = alg.run(params, context, feedback)
         if successful:
-            created_upload_id = results[GpfUploadFromFileAlgorithm.CREATED_UPLOAD_ID]
+            created_upload_id = results[GpfUploadFromLayersAlgorithm.CREATED_UPLOAD_ID]
         else:
             raise QgsProcessingException(self.tr("Upload creation failed"))
         return created_upload_id
-
-    def _add_upload_tag(
-        self, datastore_id: str, upload_id: str, tags: dict[str, str]
-    ) -> None:
-        """Add tags to an upload
-
-        :param datastore_id: datastore id
-        :type datastore_id: str
-        :param upload_id: upload id
-        :type upload_id: str
-        :param tags: tags
-        :type tags: dict[str, str]
-        :raises QgsProcessingException: propagate error in case of tag add exception
-        """
-        try:
-            # Update stored data tags
-            manager = UploadRequestManager()
-            manager.add_tags(
-                datastore_id=datastore_id,
-                upload_id=upload_id,
-                tags=tags,
-            )
-        except AddTagException as exc:
-            raise QgsProcessingException(
-                self.tr("Upload tag add failed : {0}").format(exc)
-            )
 
     def _database_integration(
         self,
         name: str,
         datastore: str,
         upload_id: str,
-        dataset_name: str,
+        tags: dict[str, str],
         context: QgsProcessingContext,
         feedback: QgsProcessingFeedback,
     ) -> Tuple[str, str]:
@@ -242,8 +223,8 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         :type datastore: str
         :param upload_id: upload id
         :type upload_id: str
-        :param dataset_name : dataset name
-        :type dataset_name : str
+        :param tags: tags
+        :type tags: dict[str, str]
         :param context: context of processing
         :type context: QgsProcessingContext
         :param feedback: feedback for processing
@@ -260,7 +241,7 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
             UploadDatabaseIntegrationAlgorithm.UPLOAD: upload_id,
             UploadDatabaseIntegrationAlgorithm.STORED_DATA_NAME: name,
             UploadDatabaseIntegrationAlgorithm.TAGS: tags_to_qgs_parameter_matrix_string(
-                {"datasheet_name": dataset_name}
+                tags
             ),
         }
         results, successful = alg.run(params, context, feedback)

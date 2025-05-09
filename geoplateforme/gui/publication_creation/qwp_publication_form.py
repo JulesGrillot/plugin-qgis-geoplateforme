@@ -7,11 +7,7 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QWizardPage
 from qgis.utils import OverrideCursor
 
-from geoplateforme.api.stored_data import (
-    StoredDataStatus,
-    StoredDataStep,
-    StoredDataType,
-)
+from geoplateforme.api.stored_data import StoredDataStatus, StoredDataType
 
 
 class PublicationFormPageWizard(QWizardPage):
@@ -32,7 +28,6 @@ class PublicationFormPageWizard(QWizardPage):
 
         # Only display pyramid generation ready for publication
         self.cbx_stored_data.set_filter_type([StoredDataType.PYRAMIDVECTOR])
-        self.cbx_stored_data.set_visible_steps([StoredDataStep.TILE_PUBLICATION])
         self.cbx_stored_data.set_visible_status([StoredDataStatus.GENERATED])
 
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)

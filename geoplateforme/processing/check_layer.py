@@ -142,9 +142,18 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
         """
         res = True
         feedback.pushInfo("Checking layers CRS :")
-        ref_crs = "" if len(layers) == 0 else layers[0].crs().authid()
-        feedback.pushInfo(f"Reference CRS is {ref_crs}")
+        ref_crs = None
+
         for layer in layers:
+            if layer.isSpatial():
+                layer_crs = layer.crs().authid()
+                if not ref_crs:
+                    ref_crs = layer.crs().authid()
+                    feedback.pushInfo(f"Reference CRS is {ref_crs}")
+            else:
+                feedback.pushInfo("Layer is not spatial, CRS is not checked.")
+                continue
+
             layer_crs = layer.crs().authid()
             if ref_crs != layer_crs:
                 res = False

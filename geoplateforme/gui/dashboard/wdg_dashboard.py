@@ -134,8 +134,6 @@ class DashboardWidget(QWidget):
         self.btn_add_data.clicked.connect(self._add_data_to_dataset)
         self.btn_add_data.setIcon(QIcon(":/images/themes/default/mActionAdd.svg"))
 
-        # self._datastore_updated()
-
     def _init_table_view(
         self,
         tbv: QTableView,

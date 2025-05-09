@@ -35,6 +35,7 @@ class DatasetComboBox(QComboBox):
 
         Args:
             datastore_id: (str) datastore id
+            force_refresh: force refresh of dataset store if datastore_id is not changed
         """
         if datastore_id and (datastore_id != self.datastore_id or force_refresh):
             self.datastore_id = datastore_id

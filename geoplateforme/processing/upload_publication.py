@@ -21,6 +21,7 @@ from geoplateforme.api.custom_exceptions import (
 from geoplateforme.api.datastore import DatastoreRequestManager
 from geoplateforme.api.stored_data import StoredDataRequestManager
 from geoplateforme.toolbelt import PlgLogger
+from geoplateforme.toolbelt.preferences import PlgOptionsManager
 
 data_type = "WMTS-TMS"
 
@@ -120,6 +121,20 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
             dataset_name = data[self.DATASET_NAME]
 
             layer_name = data.get(self.LAYER_NAME)
+
+            sandbox_datastore_ids = (
+                PlgOptionsManager.get_plg_settings().sandbox_datastore_ids
+            )
+            if datastore in sandbox_datastore_ids and not layer_name.startswith(
+                "SANDBOX"
+            ):
+                layer_name = f"SANDBOX_{layer_name}"
+                feedback.pushInfo(
+                    self.tr(
+                        "L'entrepot utilisé est un bac à sable et le prefix SANDBOX est obligatoire pour le nom de la couche. Nouveau nom du couche : {}"
+                    ).format(layer_name)
+                )
+
             abstract = data.get(self.ABSTRACT)
             bottom_level = data.get(self.BOTTOM_LEVEL)
             top_level = data.get(self.TOP_LEVEL)

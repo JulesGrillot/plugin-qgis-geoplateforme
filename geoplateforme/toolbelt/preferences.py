@@ -6,7 +6,7 @@ Plugin settings.
 
 # standard
 from dataclasses import asdict, dataclass, fields
-from typing import Optional
+from typing import List, Optional
 
 # PyQGIS
 from qgis.core import Qgis, QgsApplication, QgsAuthMethodConfig, QgsSettings
@@ -63,10 +63,24 @@ class PlgSettingsStructure:
     # status check sleep (in seconds)
     status_check_sleep: int = 1
 
+    # sandbox datastores
+    sandbox_datastore_ids_str: str = (
+        "122b878c-aad8-4507-87b2-465e664467d3,87e1beb6-ee07-4adc-8449-6a925dc28949"
+    )
+
     @property
     def base_url_api_entrepot(self) -> str:
         """Return the URL for API entrepot"""
         return f"{self.url_api_entrepot}"
+
+    @property
+    def sandbox_datastore_ids(self) -> List[str]:
+        """Return list of datastore id considered as sandbox.
+
+        :return: list of sandbox datastore id
+        :rtype: List[str]
+        """
+        return self.sandbox_datastore_ids_str.split(",")
 
     def create_auth_config(self) -> Optional[QgsAuthMethodConfig]:
         """Create QgsAuthMethodConfig for OAuth2 authentification.

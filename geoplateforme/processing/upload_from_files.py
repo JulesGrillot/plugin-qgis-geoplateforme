@@ -163,23 +163,27 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
             manager = UploadRequestManager()
 
             # Create upload
+            feedback.pushInfo(self.tr("Création de la livraison"))
             upload = manager.create_upload(
                 datastore_id=datastore, name=name, description=description, srs=srs
             )
 
             # Add tags
             if len(tags) != 0:
+                feedback.pushInfo(self.tr("Ajout des tags {}").format(tags))
                 manager.add_tags(
                     datastore_id=datastore, upload_id=upload._id, tags=tags
                 )
 
             # Add files
             for filename in files:
+                feedback.pushInfo(self.tr("Ajout fichier {}").format(filename))
                 manager.add_file(
                     datastore_id=datastore, upload_id=upload._id, filename=filename
                 )
 
             # Close upload
+            feedback.pushInfo(self.tr("Fermeture de la livraison"))
             manager.close_upload(datastore_id=datastore, upload_id=upload._id)
 
             # Get create upload id
@@ -190,6 +194,7 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
                 feedback.created_upload_id = upload_id
 
             # Wait for upload close after check
+            feedback.pushInfo(self.tr("Attente vérification contenu livraison"))
             self._wait_upload_close(datastore, upload_id)
 
         except UploadCreationException as exc:

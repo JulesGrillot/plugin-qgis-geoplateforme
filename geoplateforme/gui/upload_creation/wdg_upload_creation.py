@@ -41,6 +41,7 @@ class UploadCreationWidget(QWidget):
 
         # To avoid some characters
         self.lne_data.setValidator(alphanum_qval)
+        self.lne_dataset.setValidator(alphanum_qval)
 
         self.shortcut_close = QShortcut(QtGui.QKeySequence("Del"), self)
         self.shortcut_close.activated.connect(self.shortcut_del)
@@ -67,6 +68,15 @@ class UploadCreationWidget(QWidget):
         """
         return self.lne_data.text()
 
+    def get_dataset_name(self) -> str:
+        """
+        Get defined name
+
+        Returns: (str) defined name
+
+        """
+        return self.lne_dataset.text()
+
     def set_name(self, name: str) -> None:
         """
         Define name
@@ -75,6 +85,15 @@ class UploadCreationWidget(QWidget):
             name: (str)
         """
         self.lne_data.setText(name)
+
+    def set_dataset_name(self, name: str) -> None:
+        """
+        Define dataset_name
+
+        Args:
+            name: (str)
+        """
+        self.lne_dataset.setText(name)
 
     def get_crs(self) -> str:
         """
@@ -102,6 +121,14 @@ class UploadCreationWidget(QWidget):
 
         """
         valid = self._check_input_layers()
+
+        if valid and len(self.lne_dataset.text()) == 0:
+            valid = False
+            QMessageBox.warning(
+                self,
+                self.tr("No dataset name defined."),
+                self.tr("Please define dataset name"),
+            )
 
         if valid and len(self.lne_data.text()) == 0:
             valid = False

@@ -16,7 +16,6 @@ class UploadEditionPageWizard(QWizardPage):
         """
 
         super().__init__(parent)
-        self.setTitle(self.tr("Upload data"))
 
         uic.loadUi(
             os.path.join(os.path.dirname(__file__), "qwp_upload_edition.ui"), self

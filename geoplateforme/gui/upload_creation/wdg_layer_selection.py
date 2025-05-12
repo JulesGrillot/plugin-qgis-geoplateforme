@@ -35,8 +35,8 @@ class LayerSelectionWidget(QgsPanelWidget):
         )
 
         # Shortcut for layer/file remove
-        self.shortcut_close = QShortcut(QtGui.QKeySequence("Del"), self)
-        self.shortcut_close.activated.connect(self.shortcut_del)
+        self.shortcut_del = QShortcut(QtGui.QKeySequence("Del"), self)
+        self.shortcut_del.activated.connect(self._remove_selected_rows)
 
         # Get parameter for layers definition
         processing = GpfUploadFromLayersAlgorithm()
@@ -55,9 +55,9 @@ class LayerSelectionWidget(QgsPanelWidget):
 
         self.last_selection: Optional[List[str]] = None
 
-    def shortcut_del(self):
+    def _remove_selected_rows(self):
         """
-        Create shortcut which delete a layer or file
+        Remove selected rows
 
         """
         rows = [x.row() for x in self.trv_upload_files.selectedIndexes()]

@@ -63,9 +63,7 @@ class UploadFilesTreeModel(QStandardItemModel):
         """
         row = self.rowCount()
         if row > 0:
-            layer = self.data(
-                self.index(row - 1, self.NAME_COL), Qt.ItemDataRole.UserRole
-            )
+            layer = self.data(self.index(0, self.NAME_COL), Qt.ItemDataRole.UserRole)
             if isinstance(layer, QgsVectorLayer):
                 return layer.name()
             elif isinstance(layer, str):

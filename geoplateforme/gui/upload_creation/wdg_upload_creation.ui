@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>548</width>
-    <height>352</height>
+    <width>496</width>
+    <height>341</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,39 +26,27 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="6" column="0" colspan="2">
-    <widget class="QLabel" name="lbl_supported_files">
-     <property name="font">
-      <font>
-       <italic>true</italic>
-      </font>
-     </property>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label">
      <property name="text">
-      <string>Supported files are .gpkg, .zip or .csv</string>
+      <string>Name your data</string>
      </property>
     </widget>
    </item>
-   <item row="9" column="0">
-    <widget class="QLabel" name="lne_projection">
-     <property name="text">
-      <string>Select the SRS to use:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="lbl_files_put">
-     <property name="text">
-      <string>Pick a local dataset to import:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="1">
+   <item row="5" column="1">
     <widget class="QgsProjectionSelectionWidget" name="psw_projection"/>
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="lbl_data">
      <property name="text">
       <string>Name your dataset:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="lne_projection">
+     <property name="text">
+      <string>Select the SRS to use:</string>
      </property>
     </widget>
    </item>
@@ -75,48 +63,25 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0" rowspan="2" colspan="2">
-    <widget class="QTreeView" name="trv_upload_files"/>
-   </item>
-   <item row="1" column="1">
-    <widget class="QgsFileWidget" name="flw_files_put">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="inputMethodHints">
-      <set>Qt::ImhLatinOnly</set>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0" colspan="2">
-    <widget class="QLabel" name="lbl_files_summary">
-     <property name="text">
-      <string>List of datasets to import:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Name your data</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="1">
+   <item row="3" column="1">
     <widget class="QLineEdit" name="lne_data"/>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="LayerSelectionStackPanel" name="wdg_layer_selection" native="true"/>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsFileWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsfilewidget.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>LayerSelectionStackPanel</class>
+   <extends>QWidget</extends>
+   <header>geoplateforme.gui.upload_creation.wdg_layer_selection</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

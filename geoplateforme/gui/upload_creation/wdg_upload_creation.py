@@ -1,5 +1,6 @@
 # standard
 import os
+from typing import List
 
 # PyQGIS
 from qgis.core import (
@@ -7,25 +8,18 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsProcessingContext,
     QgsProcessingFeedback,
+    QgsVectorLayer,
 )
-from qgis.gui import QgsFileWidget
-from qgis.PyQt import QtCore, QtGui, uic
-from qgis.PyQt.QtWidgets import QAbstractItemView, QMessageBox, QShortcut, QWidget
+from qgis.PyQt import uic
+from qgis.PyQt.QtWidgets import QMessageBox, QWidget
 
 # Plugin
 from geoplateforme.gui.lne_validators import alphanum_qval
-from geoplateforme.gui.upload_creation.mdl_upload_files import UploadFilesTreeModel
 from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.check_layer import CheckLayerAlgorithm
 
 
 class UploadCreationWidget(QWidget):
-    SUPPORTED_SUFFIX = [
-        {"name": "GeoPackage", "suffix": "gpkg"},
-        {"name": "Archive", "suffix": "zip"},
-        {"name": "CSV", "suffix": "csv"},
-    ]
-
     def __init__(self, parent: QWidget = None):
         """
         Widget to display information for upload creation
@@ -43,21 +37,7 @@ class UploadCreationWidget(QWidget):
         self.lne_data.setValidator(alphanum_qval)
         self.lne_dataset.setValidator(alphanum_qval)
 
-        self.shortcut_close = QShortcut(QtGui.QKeySequence("Del"), self)
-        self.shortcut_close.activated.connect(self.shortcut_del)
-        filter_strings = [
-            f"{suffix['name']} (*.{suffix['suffix']})"
-            for suffix in self.SUPPORTED_SUFFIX
-        ]
-        self.flw_files_put.setFilter(";;".join(filter_strings))
-        self.flw_files_put.fileChanged.connect(self.add_file_path)
-        self.flw_files_put.setStorageMode(QgsFileWidget.StorageMode.GetMultipleFiles)
-
-        self.mdl_upload_files = UploadFilesTreeModel(self)
-        self.trv_upload_files.setModel(self.mdl_upload_files)
-        self.trv_upload_files.setEditTriggers(
-            QAbstractItemView.EditTrigger.NoEditTriggers
-        )
+        self.wdg_layer_selection.selection_updated.connect(self._selection_updated)
 
     def get_name(self) -> str:
         """
@@ -111,7 +91,15 @@ class UploadCreationWidget(QWidget):
         Returns: selected filenames
 
         """
-        return self.mdl_upload_files.get_filenames()
+        return self.wdg_layer_selection.get_filenames()
+
+    def get_layers(self) -> List[QgsVectorLayer]:
+        """Return selected QgsVectorLayer
+
+        :return: selected layer
+        :rtype: List[QgsVectorLayer]
+        """
+        return self.wdg_layer_selection.get_layers()
 
     def validateWidget(self) -> bool:
         """
@@ -181,48 +169,17 @@ class UploadCreationWidget(QWidget):
 
         return valid
 
-    def shortcut_del(self):
-        """
-        Create  shortcut which delete a filepath
+    def _selection_updated(self) -> None:
+        # Define name if empty
+        if not self.lne_data.text():
+            self.lne_data.setText(self.wdg_layer_selection.get_first_displayed_name())
 
-        """
-        # Only use row with invalid parent (row for filename)
-        rows = [
-            x.row()
-            for x in self.trv_upload_files.selectedIndexes()
-            if not x.parent().isValid()
-        ]
-        rows.sort(reverse=True)
-        for row in rows:
-            self.mdl_upload_files.removeRow(row)
-
-    def add_file_path(self):
-        """
-        Add the file path to the list Widget
-
-        """
-        savepath = self.flw_files_put.filePath()
-        for path in QgsFileWidget.splitFilePaths(savepath):
-            self._add_file_path_to_list(path)
-
-    def _add_file_path_to_list(self, savepath: str) -> None:
-        file_info = QtCore.QFileInfo(savepath)
-        if file_info.exists() and file_info.suffix() in [
-            suffix["suffix"] for suffix in self.SUPPORTED_SUFFIX
-        ]:
-            self.mdl_upload_files.add_file(savepath)
-            self.trv_upload_files.resizeColumnToContents(self.mdl_upload_files.NAME_COL)
-            self.trv_upload_files.expandAll()
-
-            # Define name if empty
-            if not self.lne_data.text():
-                self.lne_data.setText(self.mdl_upload_files.get_first_file_name())
-
-            # Define CRS if not defined
-            if (
-                not self.psw_projection.crs().isValid()
-                and self.mdl_upload_files.get_first_crs()
-            ):
-                self.psw_projection.setCrs(
-                    QgsCoordinateReferenceSystem(self.mdl_upload_files.get_first_crs())
-                )
+        # Define CRS if not defined
+        if (
+            not self.psw_projection.crs().isValid()
+            and self.wdg_layer_selection.get_first_crs()
+        ):
+            self.psw_projection.setCrs(
+                QgsCoordinateReferenceSystem(self.wdg_layer_selection.get_first_crs())
+            )
+            self.psw_projection.update()

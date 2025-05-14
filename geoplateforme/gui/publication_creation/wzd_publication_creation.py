@@ -1,5 +1,7 @@
 # standard
 
+from typing import Optional
+
 from qgis.PyQt.QtWidgets import QDialog, QWizard
 
 from geoplateforme.gui.publication_creation.qwp_publication_form import (
@@ -11,12 +13,21 @@ from geoplateforme.gui.publication_creation.qwp_status import PublicationStatut
 
 
 class PublicationFormCreation(QWizard):
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+        datastore_id: Optional[str] = None,
+        dataset_name: Optional[str] = None,
+        stored_data_id: Optional[str] = None,
+    ):
         """
         QWizard to for geoplateforme publication
 
         Args:
             parent: parent None
+            datastore_id: datastore id
+            dataset_name: dataset name
+            stored_data_id: store data id
         """
 
         super().__init__(parent)
@@ -31,6 +42,16 @@ class PublicationFormCreation(QWizard):
         self.setOption(QWizard.WizardOption.NoBackButtonOnLastPage, True)
         self.setOption(QWizard.WizardOption.NoCancelButtonOnLastPage, True)
 
+        if datastore_id:
+            self.set_datastore_id(datastore_id)
+            self.qwp_publication_form.cbx_datastore.setEnabled(False)
+        if dataset_name:
+            self.set_dataset_name(dataset_name)
+            self.qwp_publication_form.cbx_dataset.setEnabled(False)
+        if stored_data_id:
+            self.set_stored_data_id(stored_data_id)
+            self.qwp_publication_form.cbx_stored_data.setEnabled(False)
+
     def set_datastore_id(self, datastore_id: str) -> None:
         """
         Define current datastore from datastore id
@@ -39,6 +60,15 @@ class PublicationFormCreation(QWizard):
             datastore_id: (str) datastore id
         """
         self.qwp_publication_form.set_datastore_id(datastore_id)
+
+    def set_dataset_name(self, dataset_name: str) -> None:
+        """
+        Define current dataset name
+
+        Args:
+            dataset_name: (str) dataset name
+        """
+        self.qwp_publication_form.set_dataset_name(dataset_name)
 
     def set_stored_data_id(self, stored_data_id: str) -> None:
         """

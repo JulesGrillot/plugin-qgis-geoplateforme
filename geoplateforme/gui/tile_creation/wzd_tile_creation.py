@@ -1,6 +1,8 @@
 # standard
 
 # PyQGIS
+from typing import Optional
+
 from qgis.PyQt.QtWidgets import QWizard
 
 from geoplateforme.gui.tile_creation.qwp_tile_generation_edition import (
@@ -21,12 +23,21 @@ from geoplateforme.gui.tile_creation.qwp_tile_generation_status import (
 
 
 class TileCreationWizard(QWizard):
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+        datastore_id: Optional[str] = None,
+        dataset_name: Optional[str] = None,
+        stored_data_id: Optional[str] = None,
+    ):
         """
         QWizard to create tile vector in geoplateforme platform
 
         Args:
             parent: parent QObject
+            datastore_id: datastore id
+            dataset_name: dataset name
+            stored_data_id: store data id
         """
 
         super().__init__(parent)
@@ -62,6 +73,16 @@ class TileCreationWizard(QWizard):
         self.setOption(QWizard.WizardOption.NoBackButtonOnLastPage, True)
         self.setOption(QWizard.WizardOption.NoCancelButtonOnLastPage, True)
 
+        if datastore_id:
+            self.set_datastore_id(datastore_id)
+            self.qwp_tile_generation_edition.cbx_datastore.setEnabled(False)
+        if dataset_name:
+            self.set_dataset_name(dataset_name)
+            self.qwp_tile_generation_edition.cbx_dataset.setEnabled(False)
+        if stored_data_id:
+            self.set_stored_data_id(stored_data_id)
+            self.qwp_tile_generation_edition.cbx_stored_data.setEnabled(False)
+
     def set_datastore_id(self, datastore_id: str) -> None:
         """
         Define current datastore from datastore id
@@ -70,6 +91,15 @@ class TileCreationWizard(QWizard):
             datastore_id: (str) datastore id
         """
         self.qwp_tile_generation_edition.set_datastore_id(datastore_id)
+
+    def set_dataset_name(self, dataset_name: str) -> None:
+        """
+        Define current dataset name
+
+        Args:
+            dataset_name: (str) dataset name
+        """
+        self.qwp_tile_generation_edition.set_dataset_name(dataset_name)
 
     def set_stored_data_id(self, stored_data_id: str) -> None:
         """

@@ -92,6 +92,15 @@ class TileGenerationEditionPageWizard(QWizardPage):
         """
         self.cbx_datastore.set_datastore_id(datastore_id)
 
+    def set_dataset_name(self, dataset_name: str) -> None:
+        """
+        Define current dataset name
+
+        Args:
+            dataset_name: (str) dataset name
+        """
+        self.cbx_dataset.set_dataset_name(dataset_name)
+
     def set_stored_data_id(self, stored_data_id: str) -> None:
         """
         Define current stored data from stored data id

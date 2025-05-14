@@ -168,12 +168,14 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         context: QgsProcessingContext,
         feedback: QgsProcessingFeedback,
     ) -> str:
-        """Create upload for a list of files
+        """Create upload for a list of files and layers
 
         :param datastore: datastore id
         :type datastore: str
+        :param layers: QgsVectorLayer to be integrated
+        :type layers: List[QgsVectorLayer]
         :param files: full file path list
-        :type files: str]
+        :type files: List[str]
         :param name: upload name
         :type name: str
         :param tags: tags

@@ -493,7 +493,7 @@ class StoredData:
         if "srs" in val:
             res._srs = val["srs"]
         if "storage" in val:
-            res.s_torage = val["storage"]
+            res._storage = val["storage"]
         if "last_event" in val:
             res._last_event = val["last_event"]
         if "extent" in val:

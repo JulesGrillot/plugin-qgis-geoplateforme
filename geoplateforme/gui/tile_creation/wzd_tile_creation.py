@@ -43,7 +43,9 @@ class TileCreationWizard(QWizard):
         super().__init__(parent)
         self.setWindowTitle(self.tr("Tile creation"))
 
-        self.qwp_tile_generation_edition = TileGenerationEditionPageWizard(self)
+        self.qwp_tile_generation_edition = TileGenerationEditionPageWizard(
+            self, datastore_id, dataset_name, stored_data_id
+        )
         self.qwp_tile_generation_fields_selection = (
             TileGenerationFieldsSelectionPageWizard(
                 self.qwp_tile_generation_edition, self
@@ -72,16 +74,6 @@ class TileCreationWizard(QWizard):
         self.setOption(QWizard.WizardOption.NoBackButtonOnStartPage, True)
         self.setOption(QWizard.WizardOption.NoBackButtonOnLastPage, True)
         self.setOption(QWizard.WizardOption.NoCancelButtonOnLastPage, True)
-
-        if datastore_id:
-            self.set_datastore_id(datastore_id)
-            self.qwp_tile_generation_edition.cbx_datastore.setEnabled(False)
-        if dataset_name:
-            self.set_dataset_name(dataset_name)
-            self.qwp_tile_generation_edition.cbx_dataset.setEnabled(False)
-        if stored_data_id:
-            self.set_stored_data_id(stored_data_id)
-            self.qwp_tile_generation_edition.cbx_stored_data.setEnabled(False)
 
     def set_datastore_id(self, datastore_id: str) -> None:
         """

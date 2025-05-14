@@ -4,6 +4,7 @@
 from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingException,
+    QgsProcessingParameterMatrix,
     QgsProcessingParameterNumber,
     QgsProcessingParameterString,
 )
@@ -48,9 +49,10 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
     URL_TITLE = "URL_TITLE"
 
     # Parameter not yet implemented
-    PUBLICATION_URL = "publication_url"
     METADATA = "metadata"
     VISIBILITY = "visibility"
+
+    PUBLICATION_URL = "publication_url"
 
     def tr(self, message: str) -> str:
         """Get the translation for a string using Qt translation API.
@@ -67,7 +69,7 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
         return UploadPublicationAlgorithm()
 
     def name(self):
-        return "upload_configuration "
+        return "vector_tile_publish"
 
     def displayName(self):
         return self.tr("Publication tuiles vectorielles")
@@ -166,6 +168,14 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
                 name=self.URL_TITLE,
                 description=self.tr("Titre attribution"),
                 optional=True,
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterMatrix(
+                name=self.TAGS,
+                description=self.tr("Tags"),
+                headers=[self.tr("Tag"), self.tr("Valeur")],
             )
         )
 

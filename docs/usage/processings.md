@@ -31,3 +31,10 @@ Pour afficher tous les traitements QGIS : `Traitements > Boîte à outils`
 
 ```{include} ../../geoplateforme/resources/help/tile_creation.md
 ```
+
+(tile_vector_publish=)
+
+# Publication de tuiles vectorielles
+
+```{include} ../../geoplateforme/resources/help/vector_tile_publish.md
+```

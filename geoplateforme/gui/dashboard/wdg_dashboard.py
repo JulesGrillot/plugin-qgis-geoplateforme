@@ -33,6 +33,7 @@ from geoplateforme.api.stored_data import (
     StoredDataType,
 )
 from geoplateforme.gui.dashboard.dlg_stored_data_details import StoredDataDetailsDialog
+from geoplateforme.gui.mdl_configuration import ConfigurationListModel
 from geoplateforme.gui.mdl_stored_data import StoredDataListModel
 from geoplateforme.gui.mdl_upload import UploadListModel
 from geoplateforme.gui.proxy_model_stored_data import StoredDataProxyModel
@@ -77,6 +78,9 @@ class DashboardWidget(QWidget):
         # Create model for stored data display
         self.mdl_stored_data = StoredDataListModel(self)
 
+        # Create model for configuration display
+        self.mdl_configuration = ConfigurationListModel(self)
+
         # List of table view
         self.tbv_list = []
 
@@ -116,6 +120,11 @@ class DashboardWidget(QWidget):
             visible_status=[],
         )
         self.tbv_list.append(self.tbv_pyramid_raster)
+
+        # Initialize service table view
+        self.tbv_service.setModel(self.mdl_configuration)
+        self.tbv_service.verticalHeader().setVisible(False)
+        self.tbv_service.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
 
         # remove detail zone
         self.detail_dialog = None
@@ -607,6 +616,11 @@ class DashboardWidget(QWidget):
         )
 
         self.mdl_stored_data.set_datastore(
+            self.cbx_datastore.current_datastore_id(),
+            self.cbx_dataset.current_dataset_name(),
+        )
+
+        self.mdl_configuration.set_datastore(
             self.cbx_datastore.current_datastore_id(),
             self.cbx_dataset.current_dataset_name(),
         )

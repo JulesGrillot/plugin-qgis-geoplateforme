@@ -129,7 +129,7 @@
    <item row="4" column="0" colspan="3">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab_metadata">
       <attribute name="title">
@@ -161,7 +161,7 @@
              <x>0</x>
              <y>0</y>
              <width>452</width>
-             <height>708</height>
+             <height>716</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -278,7 +278,7 @@
              <x>0</x>
              <y>0</y>
              <width>498</width>
-             <height>708</height>
+             <height>716</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_8">
@@ -298,7 +298,7 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout_6">
        <item row="0" column="0">
-        <widget class="QTableView" name="tableView"/>
+        <widget class="QTableView" name="tbv_service"/>
        </item>
       </layout>
      </widget>

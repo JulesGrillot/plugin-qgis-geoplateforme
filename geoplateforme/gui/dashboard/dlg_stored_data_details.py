@@ -10,6 +10,7 @@ from qgis.PyQt.QtWidgets import (
     QDialog,
     QHeaderView,
     QToolBar,
+    QToolButton,
     QWidget,
 )
 
@@ -112,7 +113,10 @@ class StoredDataDetailsDialog(QDialog):
                 generate_tile_action.triggered.connect(
                     self._show_tile_generation_wizard
                 )
-                self.edit_toolbar.addAction(generate_tile_action)
+                button = QToolButton(self)
+                button.setDefaultAction(generate_tile_action)
+                button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+                self.edit_toolbar.addWidget(button)
             elif stored_data.type == StoredDataType.PYRAMIDVECTOR:
                 publish_tile_action = QAction(
                     QIcon(
@@ -127,8 +131,12 @@ class StoredDataDetailsDialog(QDialog):
                     self.tr("Publication tuile"),
                     self,
                 )
+                button = QToolButton(self)
+                button.setDefaultAction(publish_tile_action)
+                button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+
                 publish_tile_action.triggered.connect(self._show_tile_publish_wizard)
-                self.edit_toolbar.addAction(publish_tile_action)
+                self.edit_toolbar.addWidget(button)
 
     def _show_tile_generation_wizard(self) -> None:
         """Show tile generation wizard for current stored data"""

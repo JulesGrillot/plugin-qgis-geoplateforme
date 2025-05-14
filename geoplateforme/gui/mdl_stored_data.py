@@ -50,10 +50,10 @@ class StoredDataListModel(QStandardItemModel):
         """
         result = -1
         for row in range(0, self.rowCount()):
-            if (
-                self.data(self.index(row, self.ID_COL), Qt.ItemDataRole.DisplayRole)
-                == stored_data_id
-            ):
+            stored_data = self.data(
+                self.index(row, self.NAME_COL), Qt.ItemDataRole.UserRole
+            )
+            if stored_data._id == stored_data_id:
                 result = row
                 break
         return result

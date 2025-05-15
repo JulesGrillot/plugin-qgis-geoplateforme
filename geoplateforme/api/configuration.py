@@ -36,12 +36,20 @@ class ConfigurationField(Enum):
     LAST_EVENT = "last_event"
 
 
+class ConfigurationStatus(Enum):
+    UNPUBLISHED = "UNPUBLISHED"
+    PUBLISHED = "PUBLISHED"
+    SYNCHRONIZING = "SYNCHRONIZING"
+
+
 @dataclass
 class Configuration:
     _id: str
     datastore_id: str
+    is_detailed: bool = False
 
     # Optional
+    _status: Optional[ConfigurationStatus] = None
     type_data: Optional[str] = None
     metadata: Optional[str] = None
     name: Optional[str] = None
@@ -57,6 +65,17 @@ class Configuration:
             return self.type_infos["title"]
         else:
             return ""
+
+    @property
+    def status(self) -> ConfigurationStatus:
+        """Returns the status of the configuration.
+
+        :return: configuration status
+        :rtype: ConfigurationStatus
+        """
+        if not self._status and not self.is_detailed:
+            self.update_from_api()
+        return self._status
 
     @property
     def abstract(self) -> str:
@@ -122,11 +141,12 @@ class Configuration:
             _id=val["_id"],
             datastore_id=datastore_id,
         )
-
         if "name" in val:
             res.name = val["name"]
         if "type" in val:
             res.type_data = val["type"]
+        if "status" in val:
+            res._status = ConfigurationStatus(val["status"])
         if "metadata" in val:
             res.metadata = val["metadata"]
         if "layer_name" in val:
@@ -141,6 +161,31 @@ class Configuration:
             res._last_event = val["last_event"]
 
         return res
+
+    def update_from_api(self):
+        """Update the configuration by calling API details."""
+        manager = ConfigurationRequestManager()
+        data = manager.get_configuration_json(self.datastore_id, self._id)
+
+        if "name" in data:
+            self.name = data["name"]
+        if "type" in data:
+            self.type_data = data["type"]
+        if "status" in data:
+            self._status = ConfigurationStatus(data["status"])
+        if "metadata" in data:
+            self.metadata = data["metadata"]
+        if "layer_name" in data:
+            self.layer_name = data["layer_name"]
+        if "type_infos" in data:
+            self.type_infos = data["type_infos"]
+        if "attribution" in data:
+            self.attribution = data["attribution"]
+        if "tags" in data:
+            self._tags = data["tags"]
+        if "last_event" in data:
+            self._last_event = data["last_event"]
+        self.is_detailed = True
 
 
 class ConfigurationRequestManager:
@@ -260,19 +305,34 @@ class ConfigurationRequestManager:
             f"{__name__}.get_configuration(datastore:{datastore}, configuration: {configuration})"
         )
 
+        return Configuration.from_dict(
+            datastore, self.get_configuration_json(datastore, configuration)
+        )
+
+    def get_configuration_json(self, datastore_id: str, configuration: str) -> dict:
+        """Get dict values of configuration
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param configuration: configuration id
+        :type configuration: str
+
+        :raises ReadStoredDataException: when error occur during requesting the API
+
+        :return: dict values of stored data
+        :rtype: dict
+        """
         try:
             # send request
             reply = self.request_manager.get_url(
-                url=QUrl(f"{self.get_base_url(datastore)}/{configuration}"),
+                url=QUrl(f"{self.get_base_url(datastore_id)}/{configuration}"),
                 config_id=self.plg_settings.qgis_auth_id,
             )
+            return json.loads(reply.data().decode("utf-8"))
         except ConnectionError as err:
-            raise UnavailableConfigurationException(
+            raise ReadConfigurationException(
                 f"Error while getting configuration : {err}"
             )
-        data = json.loads(reply.data().decode("utf-8"))
-
-        return Configuration.from_dict(datastore, data)
 
     def get_configuration_list(
         self,

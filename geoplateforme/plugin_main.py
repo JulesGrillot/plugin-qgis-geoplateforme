@@ -21,11 +21,7 @@ from geoplateforme.__about__ import DIR_PLUGIN_ROOT, __title__, __uri_homepage__
 from geoplateforme.gui.dashboard.dlg_dashboard import DashboardDialog
 from geoplateforme.gui.dlg_authentication import AuthenticationDialog
 from geoplateforme.gui.dlg_settings import PlgOptionsFactory
-from geoplateforme.gui.publication_creation.wzd_publication_creation import (
-    PublicationFormCreation,
-)
 from geoplateforme.gui.storage.dlg_storage_report import StorageReportDialog
-from geoplateforme.gui.tile_creation.wzd_tile_creation import TileCreationWizard
 from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.toolbelt import PlgLogger, PlgOptionsManager
 
@@ -70,8 +66,6 @@ class GeoplateformePlugin:
         self.action_authentication = None
         self.action_dashboard = None
         self.action_storage_report = None
-        self.action_tile_create = None
-        self.action_publication = None
 
         self.btn_autentification = None
         self.btn_import = None
@@ -124,26 +118,6 @@ class GeoplateformePlugin:
         )
         self.action_storage_report.triggered.connect(self.display_storage_report)
 
-        # Tile creation
-        self.action_tile_create = QAction(
-            QIcon(str(DIR_PLUGIN_ROOT / "resources/images/icons/Tuile@1x.png")),
-            self.tr("Tile creation"),
-            self.iface.mainWindow(),
-        )
-        self.action_tile_create.triggered.connect(self.tile_creation)
-
-        # Publication
-        self.action_publication = QAction(
-            QIcon(
-                str(
-                    DIR_PLUGIN_ROOT / "resources" / "images" / "icons" / "Publie@2x.png"
-                )
-            ),
-            self.tr("Publication"),
-            self.iface.mainWindow(),
-        )
-        self.action_publication.triggered.connect(self.publication)
-
         # Help
         self.action_help = QAction(
             QIcon(":/images/themes/default/mActionHelpContents.svg"),
@@ -170,8 +144,6 @@ class GeoplateformePlugin:
         self.iface.addPluginToWebMenu(__title__, self.action_authentication)
         self.iface.addPluginToWebMenu(__title__, self.action_dashboard)
         self.iface.addPluginToWebMenu(__title__, self.action_storage_report)
-        self.iface.addPluginToWebMenu(__title__, self.action_tile_create)
-        self.iface.addPluginToWebMenu(__title__, self.action_publication)
         self.iface.addPluginToWebMenu(__title__, self.action_settings)
         self.iface.addPluginToWebMenu(__title__, self.action_help)
 
@@ -181,8 +153,6 @@ class GeoplateformePlugin:
         self.toolbar.addAction(self.action_authentication)
         self.toolbar.addAction(self.action_dashboard)
         self.toolbar.addAction(self.action_storage_report)
-        self.toolbar.addAction(self.action_tile_create)
-        self.toolbar.addAction(self.action_publication)
         self._update_actions_availability()
 
         # -- Processings
@@ -198,8 +168,6 @@ class GeoplateformePlugin:
         self.iface.removePluginWebMenu(__title__, self.action_authentication)
         self.iface.removePluginWebMenu(__title__, self.action_dashboard)
         self.iface.removePluginWebMenu(__title__, self.action_storage_report)
-        self.iface.removePluginWebMenu(__title__, self.action_tile_create)
-        self.iface.removePluginWebMenu(__title__, self.action_publication)
         self.iface.removePluginWebMenu(__title__, self.action_help)
         self.iface.removePluginWebMenu(__title__, self.action_settings)
 
@@ -227,26 +195,6 @@ class GeoplateformePlugin:
         :rtype: QString
         """
         return QCoreApplication.translate(self.__class__.__name__, message)
-
-    def tile_creation(self) -> None:
-        """
-        Open tile creation Wizard
-
-        """
-        if self.tile_creation_wizard is None:
-            self.tile_creation_wizard = TileCreationWizard(self.iface.mainWindow())
-            self.tile_creation_wizard.finished.connect(self._del_tile_creation_wizard)
-        self.tile_creation_wizard.show()
-
-    def publication(self):
-        """
-        Open tile creation Wizard
-
-        """
-        if self.publication_wizard is None:
-            self.publication_wizard = PublicationFormCreation(self.iface.mainWindow())
-            self.publication_wizard.finished.connect(self._del_tile_publication_wizard)
-        self.publication_wizard.show()
 
     def _del_tile_creation_wizard(self) -> None:
         """
@@ -284,8 +232,6 @@ class GeoplateformePlugin:
 
         self.action_dashboard.setEnabled(enabled)
         self.action_storage_report.setEnabled(False)
-        self.action_tile_create.setEnabled(enabled)
-        self.action_publication.setEnabled(enabled)
 
     def display_dashboard(self) -> None:
         """

@@ -24,3 +24,10 @@ Pour afficher tous les traitements QGIS : `Traitements > Boîte à outils`
 
 ```{include} ../../geoplateforme/resources/help/vector_db_creation.md
 ```
+
+(tile_vector_creation=)
+
+# Création de tuiles vectorielles depuis une base de données vectorielles
+
+```{include} ../../geoplateforme/resources/help/tile_creation.md
+```

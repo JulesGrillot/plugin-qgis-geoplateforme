@@ -5,7 +5,10 @@ from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingException,
     QgsProcessingFeedback,
-    QgsProcessingParameterFile,
+    QgsProcessingParameterExtent,
+    QgsProcessingParameterMatrix,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterString,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -20,6 +23,11 @@ from geoplateforme.api.custom_exceptions import (
 )
 from geoplateforme.api.processing import ProcessingRequestManager
 from geoplateforme.api.stored_data import StoredDataRequestManager, StoredDataStatus
+from geoplateforme.processing.utils import (
+    get_short_string,
+    get_user_manual_url,
+    tags_from_qgs_parameter_matrix_string,
+)
 from geoplateforme.toolbelt import PlgOptionsManager
 
 
@@ -35,19 +43,23 @@ class TileCreationProcessingFeedback(QgsProcessingFeedback):
 class TileCreationAlgorithm(QgsProcessingAlgorithm):
     INPUT_JSON = "INPUT_JSON"
 
-    DATASTORE = "datastore"
-    VECTOR_DB_STORED_DATA_ID = "vector_db_stored_data_id"
-    STORED_DATA_NAME = "stored_data_name"
-    TIPPECANOE_OPTIONS = "tippecanoe_options"
-    BOTTOM_LEVEL = "bottom_level"
-    TOP_LEVEL = "top_level"
-    COMPOSITION = "composition"
+    DATASTORE = "DATASTORE"
+    VECTOR_DB_STORED_DATA_ID = "VECTOR_DB_STORED_DATA_ID"
+    STORED_DATA_NAME = "STORED_DATA_NAME"
+    TIPPECANOE_OPTIONS = "TIPPECANOE_OPTIONS"
+    COMPOSITION = "COMPOSITION"
+    BOTTOM_LEVEL = "BOTTOM_LEVEL"
+    TOP_LEVEL = "TOP_LEVEL"
+    BBOX = "BBOX"
+    TAGS = "TAGS"
+
     TABLE = "table"
     ATTRIBUTES = "attributes"
-    BBOX = "bbox"
-
     DATASET_NAME = "dataset_name"
+    COMPOSITION_BOTTOM_LEVEL = "bottom_level"
+    COMPOSITION_TOP_LEVEL = "top_level"
 
+    PROCESSING_EXEC_ID = "PROCESSING_EXEC_ID"
     CREATED_STORED_DATA_ID = "CREATED_STORED_DATA_ID"
 
     def tr(self, message: str) -> str:
@@ -68,7 +80,7 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
         return "tile_creation"
 
     def displayName(self):
-        return self.tr("Ask for tile creation")
+        return self.tr("Génération de tuiles vectorielles")
 
     def group(self):
         return self.tr("")
@@ -77,214 +89,216 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
         return ""
 
     def helpUrl(self):
-        return ""
+        return get_user_manual_url(self.name())
 
     def shortHelpString(self):
-        return self.tr(
-            "Tile creation in geoplateforme platform.\n"
-            "Input parameters are defined in a .json file.\n"
-            "Available parameters:\n"
-            "{\n"
-            f'    "{self.STORED_DATA_NAME}": wanted stored data name (str),\n'
-            f'    "{self.DATASTORE}": datastore id (str),\n'
-            f'    "{self.DATASET_NAME}": dataset name (str),\n'
-            f'    "{self.VECTOR_DB_STORED_DATA_ID}": vector db stored data is used for tile creation (str),\n'
-            f'    "{self.TIPPECANOE_OPTIONS}": tippecanoe option for tile creation (str),\n'
-            f'    "{self.BOTTOM_LEVEL}": tile bottom level (str), value between 1 and 21,\n'
-            f'    "{self.TOP_LEVEL}": tile top level (str), value between 1 and 21,\n'
-            f'    "{self.COMPOSITION}": table composition ([]): define attributes and levels for each table,\n'
-            f'        ["{self.TABLE}": (str) table name,\n'
-            f'         "{self.ATTRIBUTES}": (str) attributes list as a string with "," separator,\n'
-            f'         "{self.TOP_LEVEL}": tile top level (str), value between 1 and 21,\n'
-            f'         "{self.TOP_LEVEL}": tile top level (str), value between 1 and 21,\n'
-            f"        ]"
-            f'    "{self.BBOX}": bounding box of sample generation ([x_min,y_min,x_max,y_max]): define bounding box, '
-            f"if used is_sample tag added to created stored data,\n"
-            "}\n"
-            f"Returns created stored data id in {self.CREATED_STORED_DATA_ID} results"
-        )
+        return get_short_string(self.name(), self.displayName())
 
     def initAlgorithm(self, config=None):
         self.addParameter(
-            QgsProcessingParameterFile(
-                name=self.INPUT_JSON,
-                description=self.tr("Input .json file"),
+            QgsProcessingParameterString(
+                name=self.DATASTORE,
+                description=self.tr("Identifiant de l'entrepôt"),
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterString(
+                name=self.VECTOR_DB_STORED_DATA_ID,
+                description=self.tr("Identifiant de la base de données vectorielles"),
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterString(
+                name=self.STORED_DATA_NAME,
+                description=self.tr("Nom des tuiles en sortie"),
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterString(
+                name=self.TIPPECANOE_OPTIONS,
+                description=self.tr("Options tippecanoe"),
+                optional=True,
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterString(
+                name=self.COMPOSITION,
+                description=self.tr("JSON pour la composition"),
+                optional=True,
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                name=self.BOTTOM_LEVEL,
+                description=self.tr("Niveau bas de la pyramide"),
+                minValue=1,
+                maxValue=21,
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                name=self.TOP_LEVEL,
+                description=self.tr("Niveau haut de la pyramide"),
+                minValue=1,
+                maxValue=21,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterExtent(
+                name=self.BBOX,
+                description=self.tr("Zone de moissonnage"),
+                optional=True,
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterMatrix(
+                name=self.TAGS,
+                description=self.tr("Tags"),
+                headers=[self.tr("Tag"), self.tr("Valeur")],
             )
         )
 
     def processAlgorithm(self, parameters, context, feedback):
-        filename = self.parameterAsFile(parameters, self.INPUT_JSON, context)
-        with open(filename, "r") as file:
-            data = json.load(file)
+        stored_data_name = self.parameterAsString(
+            parameters, self.STORED_DATA_NAME, context
+        )
 
-            # Check input data before use
-            self._check_json_data(data)
+        datastore = self.parameterAsString(parameters, self.DATASTORE, context)
+        vector_db_stored_data_id = self.parameterAsString(
+            parameters, self.VECTOR_DB_STORED_DATA_ID, context
+        )
 
-            stored_data_name = data[self.STORED_DATA_NAME]
-            datastore = data[self.DATASTORE]
-            tippecanoe_options = data[self.TIPPECANOE_OPTIONS]
-            vector_db_stored_data_id = data[self.VECTOR_DB_STORED_DATA_ID]
-            dataset_name = data[self.DATASET_NAME]
+        tag_data = self.parameterAsMatrix(parameters, self.TAGS, context)
+        tags = tags_from_qgs_parameter_matrix_string(tag_data)
 
-            bottom_level = data[self.BOTTOM_LEVEL]
-            top_level = data[self.TOP_LEVEL]
-            try:
-                stored_data_manager = StoredDataRequestManager()
-                processing_manager = ProcessingRequestManager()
+        tippecanoe_options = self.parameterAsString(
+            parameters, self.TIPPECANOE_OPTIONS, context
+        )
 
-                vector_db_stored_data = stored_data_manager.get_stored_data(
-                    datastore, vector_db_stored_data_id
-                )
+        composition_str = self.parameterAsString(parameters, self.COMPOSITION, context)
+        composition: dict[str, str] | None = None
+        if composition_str:
+            composition = json.loads(composition_str)
+            self._check_composition(composition)
 
-                # Get processing for tile creation
-                # TODO : for now we use processing name, how can we get processing otherwise ?
-                processing = processing_manager.get_processing(
-                    datastore, "Calcul de pyramide vecteur"
-                )
-                # Execution parameters
-                exec_params = {
-                    "bottom_level": str(bottom_level),
-                    "top_level": str(top_level),
-                }
+        bottom_level = self.parameterAsInt(parameters, self.BOTTOM_LEVEL, context)
+        top_level = self.parameterAsInt(parameters, self.TOP_LEVEL, context)
 
-                if tippecanoe_options:
-                    exec_params["tippecanoe_options"] = tippecanoe_options
+        try:
+            stored_data_manager = StoredDataRequestManager()
+            processing_manager = ProcessingRequestManager()
 
-                bbox_used = False
-
-                # TODO : need to update BBOX parameter to define area as wkt in EPSG:4326
-                # if self.BBOX in data:
-                #    exec_params[self.BBOX] = data[self.BBOX]
-                #    bbox_used = True
-
-                if self.COMPOSITION in data:
-                    exec_params[self.COMPOSITION] = data[self.COMPOSITION]
-
-                # Create execution
-                data_map = {
-                    "processing": processing._id,
-                    "inputs": {"stored_data": [vector_db_stored_data_id]},
-                    "output": {"stored_data": {"name": stored_data_name}},
-                    "parameters": exec_params,
-                }
-                res = processing_manager.create_processing_execution(
-                    datastore_id=datastore, input_map=data_map
-                )
-                stored_data_val = res["output"]["stored_data"]
-                exec_id = res["_id"]
-
-                # Get created stored_data id
-                stored_data_id = stored_data_val["_id"]
-
-                # Update feedback if attribute is present
-                if hasattr(feedback, "created_pyramid_id"):
-                    feedback.created_pyramid_id = stored_data_id
-
-                # Update stored data tags
-                tags = {
-                    "upload_id": vector_db_stored_data.tags["upload_id"],
-                    "proc_int_id": vector_db_stored_data.tags["proc_int_id"],
-                    "vectordb_id": vector_db_stored_data._id,
-                    "pyramid_id": stored_data_id,
-                    "proc_pyr_creat_id": exec_id,
-                    "datasheet_name": dataset_name,
-                }
-
-                if bbox_used:
-                    tags["is_sample"] = "true"
-
-                stored_data_manager.add_tags(
-                    datastore_id=datastore,
-                    stored_data_id=stored_data_val["_id"],
-                    tags=tags,
-                )
-
-                # Add tag to vector db
-                vector_db_tag = {
-                    "pyramid_id": stored_data_id,
-                    "datasheet_name": dataset_name,
-                }
-                stored_data_manager.add_tags(
-                    datastore_id=datastore,
-                    stored_data_id=vector_db_stored_data._id,
-                    tags=vector_db_tag,
-                )
-
-                # Launch execution
-                processing_manager.launch_execution(
-                    datastore_id=datastore, exec_id=exec_id
-                )
-
-                # Wait for tile creation
-                self._wait_tile_creation(datastore, stored_data_id)
-
-            except UnavailableStoredData as exc:
-                raise QgsProcessingException(
-                    f"Can't retrieve vector db datastore for tile creation : {exc}"
-                )
-            except UnavailableProcessingException as exc:
-                raise QgsProcessingException(
-                    f"Can't retrieve processing for tile creation : {exc}"
-                )
-            except CreateProcessingException as exc:
-                raise QgsProcessingException(
-                    f"Can't create processing execution for tile creation : {exc}"
-                )
-            except LaunchExecutionException as exc:
-                raise QgsProcessingException(
-                    f"Can't launch execution for tile creation : {exc}"
-                )
-            except AddTagException as exc:
-                raise QgsProcessingException(
-                    f"Can't add tags to stored data for tile creation : {exc}"
-                )
-
-        return {self.CREATED_STORED_DATA_ID: stored_data_id}
-
-    def _check_json_data(self, data) -> None:
-        """
-        Check json data, raises QgsProcessingException in case of errors
-
-        Args:
-            data: input json data
-        """
-        mandatory_keys = [
-            self.STORED_DATA_NAME,
-            self.DATASTORE,
-            self.TIPPECANOE_OPTIONS,
-            self.VECTOR_DB_STORED_DATA_ID,
-            self.BOTTOM_LEVEL,
-            self.TOP_LEVEL,
-        ]
-
-        missing_keys = [key for key in mandatory_keys if key not in data]
-
-        if missing_keys:
-            raise QgsProcessingException(
-                f"Missing {', '.join(missing_keys)} keys in input json."
+            vector_db_stored_data = stored_data_manager.get_stored_data(
+                datastore, vector_db_stored_data_id
             )
 
-        if self.BBOX in data:
-            self._check_bbox_data(data[self.BBOX])
-
-        if self.COMPOSITION in data:
-            self._check_composition(data[self.COMPOSITION])
-
-    def _check_bbox_data(self, data) -> None:
-        """
-        Check bbox data, raises QgsProcessingException in case of errors
-
-        Args:
-            data: input bbox data
-        """
-        if not isinstance(data, list):
-            raise QgsProcessingException(
-                f"Invalid {self.BBOX} key in input json.  Expected list, not {type(data)}"
+            # Get processing for tile creation
+            # TODO : for now we use processing name, how can we get processing otherwise ?
+            processing = processing_manager.get_processing(
+                datastore, "Calcul de pyramide vecteur"
             )
-        if len(data) != 4:
-            raise QgsProcessingException(
-                f"Invalid {self.BBOX} key in input json.  Expected 4 values [x_min,x_max,y_min,y_max]"
+            # Execution parameters
+            exec_params = {
+                "bottom_level": str(bottom_level),
+                "top_level": str(top_level),
+            }
+
+            if tippecanoe_options:
+                exec_params["tippecanoe_options"] = tippecanoe_options
+
+            bbox_used = False
+
+            # TODO : need to update BBOX parameter to define area as wkt in EPSG:4326
+            # if self.BBOX in data:
+            #    exec_params[self.BBOX] = data[self.BBOX]
+            #    bbox_used = True
+
+            if composition is not None:
+                exec_params["composition"] = composition
+
+            # Create execution
+            data_map = {
+                "processing": processing._id,
+                "inputs": {"stored_data": [vector_db_stored_data_id]},
+                "output": {"stored_data": {"name": stored_data_name}},
+                "parameters": exec_params,
+            }
+            res = processing_manager.create_processing_execution(
+                datastore_id=datastore, input_map=data_map
             )
+            stored_data_val = res["output"]["stored_data"]
+            exec_id = res["_id"]
+
+            # Get created stored_data id
+            stored_data_id = stored_data_val["_id"]
+
+            # Update feedback if attribute is present
+            if hasattr(feedback, "created_pyramid_id"):
+                feedback.created_pyramid_id = stored_data_id
+
+            # Update stored data tags
+            tags["upload_id"] = vector_db_stored_data.tags.get("upload_id", "")
+            tags["proc_int_id"] = vector_db_stored_data.tags.get("proc_int_id", "")
+            tags["vectordb_id"] = vector_db_stored_data._id
+            tags["pyramid_id"] = stored_data_id
+            tags["proc_pyr_creat_id"] = exec_id
+
+            if bbox_used:
+                tags["is_sample"] = "true"
+
+            stored_data_manager.add_tags(
+                datastore_id=datastore,
+                stored_data_id=stored_data_val["_id"],
+                tags=tags,
+            )
+
+            # Add tag to vector db
+            vector_db_tag = {
+                "pyramid_id": stored_data_id,
+            }
+            stored_data_manager.add_tags(
+                datastore_id=datastore,
+                stored_data_id=vector_db_stored_data._id,
+                tags=vector_db_tag,
+            )
+
+            # Launch execution
+            processing_manager.launch_execution(datastore_id=datastore, exec_id=exec_id)
+
+            # Wait for tile creation
+            self._wait_tile_creation(datastore, stored_data_id)
+
+        except UnavailableStoredData as exc:
+            raise QgsProcessingException(
+                f"Can't retrieve vector db datastore for tile creation : {exc}"
+            )
+        except UnavailableProcessingException as exc:
+            raise QgsProcessingException(
+                f"Can't retrieve processing for tile creation : {exc}"
+            )
+        except CreateProcessingException as exc:
+            raise QgsProcessingException(
+                f"Can't create processing execution for tile creation : {exc}"
+            )
+        except LaunchExecutionException as exc:
+            raise QgsProcessingException(
+                f"Can't launch execution for tile creation : {exc}"
+            )
+        except AddTagException as exc:
+            raise QgsProcessingException(
+                f"Can't add tags to stored data for tile creation : {exc}"
+            )
+
+        return {
+            self.CREATED_STORED_DATA_ID: stored_data_id,
+            self.PROCESSING_EXEC_ID: exec_id,
+        }
 
     def _check_composition(self, data) -> None:
         """

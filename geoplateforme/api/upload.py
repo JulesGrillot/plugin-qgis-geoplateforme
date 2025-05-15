@@ -7,6 +7,7 @@ from enum import Enum
 from typing import List, Optional, Self
 
 # PyQGIS
+from qgis.core import QgsCoordinateReferenceSystem, QgsVectorLayer
 from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QFileInfo, QUrl
 
 # plugin
@@ -276,6 +277,19 @@ class Upload:
         if self.last_event and "date" in self.last_event:
             result = self.last_event["date"]
         return result
+
+    def create_extent_layer(self) -> QgsVectorLayer:
+        """Create extent layer from geojson contains in extent key
+
+        :return: vector layer from stored data extent (invalid layer if extent not defined)
+        :rtype: QgsVectorLayer
+
+        """
+        if not self.is_detailed:
+            self.update_from_api()
+        layer = QgsVectorLayer(json.dumps(self.extent), f"{self.name}-extent", "ogr")
+        layer.setCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
+        return layer
 
     @classmethod
     def from_dict(cls, datastore_id: str, val: dict) -> Self:

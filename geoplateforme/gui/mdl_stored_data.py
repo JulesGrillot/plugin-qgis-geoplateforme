@@ -21,7 +21,6 @@ class StoredDataListModel(QStandardItemModel):
     NAME_COL = 0
     DATE_COL = 1
     STATUS_COL = 2
-    ID_COL = 3
 
     def __init__(self, parent: QObject = None):
         """QStandardItemModel for stored data list display
@@ -50,10 +49,10 @@ class StoredDataListModel(QStandardItemModel):
         """
         result = -1
         for row in range(0, self.rowCount()):
-            if (
-                self.data(self.index(row, self.ID_COL), Qt.ItemDataRole.DisplayRole)
-                == stored_data_id
-            ):
+            stored_data = self.data(
+                self.index(row, self.NAME_COL), Qt.ItemDataRole.UserRole
+            )
+            if stored_data._id == stored_data_id:
                 result = row
                 break
         return result
@@ -178,4 +177,3 @@ class StoredDataListModel(QStandardItemModel):
             as_datetime(stored_data.get_last_event_date()),
         )
         self.setData(self.index(row, self.STATUS_COL), stored_data.status.value)
-        self.setData(self.index(row, self.ID_COL), stored_data._id)

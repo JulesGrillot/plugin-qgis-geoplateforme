@@ -1,5 +1,6 @@
 # standard
 import os
+from typing import Optional
 
 # PyQGIS
 from qgis.PyQt import QtCore, uic
@@ -39,12 +40,21 @@ class TileGenerationEditionPageWizard(QWizardPage):
         18: 1400,
     }
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+        datastore_id: Optional[str] = None,
+        dataset_name: Optional[str] = None,
+        stored_data_id: Optional[str] = None,
+    ):
         """
         QWizardPage to define tile parameters
 
         Args:
             parent: parent QObject
+            datastore_id: datastore id
+            dataset_name: dataset name
+            stored_data_id: store data id
         """
 
         super().__init__(parent)
@@ -83,6 +93,21 @@ class TileGenerationEditionPageWizard(QWizardPage):
         self._levels_range_updated()
         self.srw_zoom.setEnabled(False)
 
+        if datastore_id:
+            self.set_datastore_id(datastore_id)
+            self.cbx_datastore.setEnabled(False)
+        self._datastore_updated()
+
+        if dataset_name:
+            self.set_dataset_name(dataset_name)
+            self.cbx_dataset.setEnabled(False)
+        self._dataset_updated()
+
+        if stored_data_id:
+            self.set_stored_data_id(stored_data_id)
+            self.cbx_stored_data.setEnabled(False)
+        self._stored_data_updated()
+
     def set_datastore_id(self, datastore_id: str) -> None:
         """
         Define current datastore from datastore id
@@ -91,6 +116,15 @@ class TileGenerationEditionPageWizard(QWizardPage):
             datastore_id: (str) datastore id
         """
         self.cbx_datastore.set_datastore_id(datastore_id)
+
+    def set_dataset_name(self, dataset_name: str) -> None:
+        """
+        Define current dataset name
+
+        Args:
+            dataset_name: (str) dataset name
+        """
+        self.cbx_dataset.set_dataset_name(dataset_name)
 
     def set_stored_data_id(self, stored_data_id: str) -> None:
         """
@@ -107,8 +141,6 @@ class TileGenerationEditionPageWizard(QWizardPage):
 
         """
         self.lne_flux.setText("")
-        self._datastore_updated()
-        self._stored_data_updated()
 
     def validatePage(self) -> bool:
         """

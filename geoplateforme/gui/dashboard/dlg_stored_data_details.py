@@ -1,11 +1,19 @@
 import os
 
 from qgis.core import QgsApplication, QgsProject
-from qgis.PyQt import uic
+from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtCore import QSize, Qt
 from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon, QPixmap
-from qgis.PyQt.QtWidgets import QAbstractItemView, QDialog, QHeaderView, QWidget
+from qgis.PyQt.QtWidgets import (
+    QAbstractItemView,
+    QAction,
+    QDialog,
+    QHeaderView,
+    QToolBar,
+    QWidget,
+)
 
+from geoplateforme.__about__ import DIR_PLUGIN_ROOT
 from geoplateforme.api.custom_exceptions import (
     UnavailableExecutionException,
     UnavailableStoredData,
@@ -16,12 +24,14 @@ from geoplateforme.api.stored_data import (
     StoredData,
     StoredDataRequestManager,
     StoredDataStatus,
+    StoredDataType,
 )
 from geoplateforme.api.upload import UploadRequestManager
 from geoplateforme.gui.mdl_table_relation import TableRelationTreeModel
 from geoplateforme.gui.report.mdl_stored_data_details import StoredDataDetailsModel
 from geoplateforme.gui.report.wdg_execution_log import ExecutionLogWidget
 from geoplateforme.gui.report.wdg_upload_log import UploadLogWidget
+from geoplateforme.gui.tile_creation.wzd_tile_creation import TileCreationWizard
 from geoplateforme.toolbelt import PlgLogger
 
 
@@ -67,6 +77,10 @@ class StoredDataDetailsDialog(QDialog):
         self.btn_add_extent_layer.pressed.connect(self._add_extent_layer)
         self.btn_load_report.pressed.connect(self._load_generation_report)
 
+        # Add toolbar for stored data actions
+        self.edit_toolbar = QToolBar(self)
+        self.layout().setMenuBar(self.edit_toolbar)
+
     def set_stored_data(self, stored_data: StoredData) -> None:
         """
         Define displayed stored data
@@ -76,6 +90,47 @@ class StoredDataDetailsDialog(QDialog):
         """
         self._stored_data = stored_data
         self._set_stored_data_details(stored_data)
+
+        # Remove all available action in toolbar
+        self.edit_toolbar.clear()
+
+        status = stored_data.status
+
+        # Only generated stored data have actions
+        if status == StoredDataStatus.GENERATED:
+            # Vector DB :
+            # - tile generation
+            if stored_data.type == StoredDataType.VECTORDB:
+                generate_tile_action = QAction(
+                    QIcon(str(DIR_PLUGIN_ROOT / "resources/images/icons/Tuile@1x.png")),
+                    self.tr("Génération tuile"),
+                    self,
+                )
+                generate_tile_action.triggered.connect(
+                    self._show_tile_generation_wizard
+                )
+                self.edit_toolbar.addAction(generate_tile_action)
+
+    def _show_tile_generation_wizard(self) -> None:
+        """Show tile generation wizard for current stored data"""
+        self._generate_tile_wizard(self._stored_data)
+
+    def _generate_tile_wizard(self, stored_data: StoredData) -> None:
+        """
+        Show tile generation wizard for a stored data
+
+        Args:
+            stored_data: (StoredData) stored data to generate tile
+        """
+        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
+        publication_wizard = TileCreationWizard(
+            self,
+            stored_data.datastore_id,
+            stored_data.tags["datasheet_name"],
+            stored_data._id,
+        )
+        QGuiApplication.restoreOverrideCursor()
+        publication_wizard.show()
 
     def _load_generation_report(self) -> None:
         """

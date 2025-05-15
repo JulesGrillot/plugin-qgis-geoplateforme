@@ -18,6 +18,10 @@ class DeleteStoredDataException(Exception):
     pass
 
 
+class DeleteMetadataException(Exception):
+    pass
+
+
 class DeleteTagException(Exception):
     pass
 
@@ -42,6 +46,10 @@ class LaunchExecutionException(Exception):
     pass
 
 
+class MetadataCreationException(Exception):
+    pass
+
+
 class OfferingCreationException(Exception):
     pass
 
@@ -51,6 +59,10 @@ class ReadStoredDataException(Exception):
 
 
 class ReadUploadException(Exception):
+    pass
+
+
+class ReadMetadataException(Exception):
     pass
 
 
@@ -74,6 +86,10 @@ class UnavailableExecutionException(Exception):
     pass
 
 
+class UnavailableMetadataFileException(Exception):
+    pass
+
+
 class UnavailableOfferingsException(Exception):
     pass
 
@@ -91,6 +107,10 @@ class UnavailableStoredDataException(Exception):
 
 
 class UnavailableUploadException(Exception):
+    pass
+
+
+class UnavailableMetadataException(Exception):
     pass
 
 

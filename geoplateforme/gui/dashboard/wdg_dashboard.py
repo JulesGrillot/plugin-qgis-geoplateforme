@@ -17,6 +17,7 @@ from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon
 from qgis.PyQt.QtWidgets import (
     QAbstractItemView,
     QAction,
+    QLabel,
     QMenu,
     QMessageBox,
     QTableView,
@@ -24,6 +25,7 @@ from qgis.PyQt.QtWidgets import (
 )
 
 from geoplateforme.__about__ import __title_clean__
+from geoplateforme.api.metadata import MetadataRequestManager
 from geoplateforme.api.stored_data import (
     StoredData,
     StoredDataStatus,
@@ -66,9 +68,8 @@ class DashboardWidget(QWidget):
         )
 
         # Add metadata widget
-        self.metadata = QgsMetadataWidget()
-        self.metadata.setMode(QgsMetadataWidget.Mode.ProjectMetadata)
-        self.metadata_layout.addWidget(self.metadata)
+        self.wdg_metadata = None
+        self._set_metadata_view()
 
         # Create model for upload display
         self.mdl_upload = UploadListModel(self)
@@ -159,6 +160,32 @@ class DashboardWidget(QWidget):
         tbv.verticalHeader().setVisible(False)
         tbv.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         tbv.pressed.connect(lambda index: self._item_clicked(index, proxy_mdl, tbv))
+
+    def _set_metadata_view(self) -> None:
+        """
+        Create metadata view when metadata is present
+        """
+        if self.wdg_metadata:
+            self.metadata_layout.removeWidget(self.wdg_metadata)
+            self.wdg_metadata = None
+
+        datastore_id = self.cbx_datastore.current_datastore_id()
+        dataset_name = self.cbx_dataset.current_dataset_name()
+
+        metadatas = []
+        manager = MetadataRequestManager()
+        if datastore_id and dataset_name:
+            tags = {"datasheet_name": dataset_name}
+            metadatas = manager._get_metadata_list(datastore_id=datastore_id, tags=tags)
+        if len(metadatas) != 1:
+            self.wdg_metadata = QLabel()
+            self.wdg_metadata.setText("No metadata available")
+        else:
+            metadata = metadatas[0].to_qgis_format()
+            self.wdg_metadata = QgsMetadataWidget()
+            self.wdg_metadata.setMetadata(metadata)
+            self.wdg_metadata.setMode(QgsMetadataWidget.Mode.LayerMetadata)
+        self.metadata_layout.addWidget(self.wdg_metadata)
 
     def refresh(
         self, datastore_id: Optional[str] = None, dataset_name: Optional[str] = None
@@ -571,6 +598,8 @@ class DashboardWidget(QWidget):
 
         # remove detail zone
         self.remove_detail_zone()
+
+        self._set_metadata_view()
 
         self.mdl_upload.set_datastore(
             self.cbx_datastore.current_datastore_id(),

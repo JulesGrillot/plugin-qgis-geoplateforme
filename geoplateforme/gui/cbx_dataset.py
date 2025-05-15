@@ -1,3 +1,4 @@
+from qgis.PyQt.QtCore import QSortFilterProxyModel, Qt
 from qgis.PyQt.QtWidgets import QComboBox
 
 from geoplateforme.gui.mdl_dataset import DatasetListModel
@@ -17,7 +18,14 @@ class DatasetComboBox(QComboBox):
 
         self.datastore_id = None
         self.mdl_dataset = DatasetListModel(self)
-        self.setModel(self.mdl_dataset)
+
+        self.proxy_model_dataset = QSortFilterProxyModel(self)
+        self.proxy_model_dataset.setSourceModel(self.mdl_dataset)
+        self.proxy_model_dataset.sort(
+            DatasetListModel.NAME_COL, Qt.SortOrder.AscendingOrder
+        )
+
+        self.setModel(self.proxy_model_dataset)
 
     def refresh(self, force: bool = False) -> None:
         """
@@ -52,6 +60,9 @@ class DatasetComboBox(QComboBox):
         """
         row = self.mdl_dataset.get_dataset_row(dataset_name)
         if row != -1:
+            row = self.proxy_model_dataset.mapFromSource(
+                self.mdl_dataset.index(row, self.mdl_dataset.NAME_COL)
+            ).row()
             self.setCurrentIndex(row)
 
     def current_dataset_name(self) -> str:

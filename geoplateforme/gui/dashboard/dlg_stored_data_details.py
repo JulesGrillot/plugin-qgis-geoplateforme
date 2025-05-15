@@ -10,6 +10,7 @@ from qgis.PyQt.QtWidgets import (
     QDialog,
     QHeaderView,
     QToolBar,
+    QToolButton,
     QWidget,
 )
 
@@ -28,6 +29,9 @@ from geoplateforme.api.stored_data import (
 )
 from geoplateforme.api.upload import UploadRequestManager
 from geoplateforme.gui.mdl_table_relation import TableRelationTreeModel
+from geoplateforme.gui.publication_creation.wzd_publication_creation import (
+    PublicationFormCreation,
+)
 from geoplateforme.gui.report.mdl_stored_data_details import StoredDataDetailsModel
 from geoplateforme.gui.report.wdg_execution_log import ExecutionLogWidget
 from geoplateforme.gui.report.wdg_upload_log import UploadLogWidget
@@ -109,7 +113,30 @@ class StoredDataDetailsDialog(QDialog):
                 generate_tile_action.triggered.connect(
                     self._show_tile_generation_wizard
                 )
-                self.edit_toolbar.addAction(generate_tile_action)
+                button = QToolButton(self)
+                button.setDefaultAction(generate_tile_action)
+                button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+                self.edit_toolbar.addWidget(button)
+            elif stored_data.type == StoredDataType.PYRAMIDVECTOR:
+                publish_tile_action = QAction(
+                    QIcon(
+                        str(
+                            DIR_PLUGIN_ROOT
+                            / "resources"
+                            / "images"
+                            / "icons"
+                            / "Publie@2x.png"
+                        )
+                    ),
+                    self.tr("Publication tuile"),
+                    self,
+                )
+                button = QToolButton(self)
+                button.setDefaultAction(publish_tile_action)
+                button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+
+                publish_tile_action.triggered.connect(self._show_tile_publish_wizard)
+                self.edit_toolbar.addWidget(button)
 
     def _show_tile_generation_wizard(self) -> None:
         """Show tile generation wizard for current stored data"""
@@ -124,6 +151,27 @@ class StoredDataDetailsDialog(QDialog):
         """
         QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
         publication_wizard = TileCreationWizard(
+            self,
+            stored_data.datastore_id,
+            stored_data.tags["datasheet_name"],
+            stored_data._id,
+        )
+        QGuiApplication.restoreOverrideCursor()
+        publication_wizard.show()
+
+    def _show_tile_publish_wizard(self) -> None:
+        """Show tile generation wizard for current stored data"""
+        self._tile_publish_wizard(self._stored_data)
+
+    def _tile_publish_wizard(self, stored_data: StoredData) -> None:
+        """
+        Show publish wizard for a stored data
+
+        Args:
+            stored_data: (StoredData) stored data to publish
+        """
+        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
+        publication_wizard = PublicationFormCreation(
             self,
             stored_data.datastore_id,
             stored_data.tags["datasheet_name"],

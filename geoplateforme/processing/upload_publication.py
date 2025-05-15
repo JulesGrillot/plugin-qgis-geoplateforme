@@ -1,10 +1,11 @@
 # standard
-import json
 
 # PyQGIS
 from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingException,
+    QgsProcessingParameterMatrix,
+    QgsProcessingParameterNumber,
     QgsProcessingParameterString,
 )
 from qgis.PyQt.QtCore import QCoreApplication
@@ -20,7 +21,11 @@ from geoplateforme.api.custom_exceptions import (
 )
 from geoplateforme.api.datastore import DatastoreRequestManager
 from geoplateforme.api.stored_data import StoredDataRequestManager
-from geoplateforme.toolbelt import PlgLogger
+from geoplateforme.processing.utils import (
+    get_short_string,
+    get_user_manual_url,
+    tags_from_qgs_parameter_matrix_string,
+)
 from geoplateforme.toolbelt.preferences import PlgOptionsManager
 
 data_type = "WMTS-TMS"
@@ -29,21 +34,25 @@ data_type = "WMTS-TMS"
 class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
     INPUT_JSON = "INPUT_JSON"
 
-    DATASTORE = "datastore"
-    DATASET_NAME = "dataset_name"
-    STORED_DATA = "stored_data"
-    NAME = "name"
-    TITLE = "title"
-    ABSTRACT = "abstract"
-    PUBLICATION_URL = "publication_url"
-    KEYWORDS = "keywords"
-    LAYER_NAME = "layer_name"
+    DATASTORE = "DATASTORE"
+    STORED_DATA = "STORED_DATA"
+    NAME = "NAME"
+    TITLE = "TITLE"
+    ABSTRACT = "ABSTRACT"
+    KEYWORDS = "KEYWORDS"
+    LAYER_NAME = "LAYER_NAME"
+    BOTTOM_LEVEL = "BOTTOM_LEVEL"
+    TOP_LEVEL = "TOP_LEVEL"
+    TAGS = "TAGS"
+
+    URL_ATTRIBUTION = "URL_ATTRIBUTION"
+    URL_TITLE = "URL_TITLE"
+
+    # Parameter not yet implemented
     METADATA = "metadata"
-    BOTTOM_LEVEL = "bottom_level"
-    TOP_LEVEL = "top_level"
-    URL_TITLE = "title"
-    URL_ATTRIBUTION = "url_attribution"
     VISIBILITY = "visibility"
+
+    PUBLICATION_URL = "publication_url"
 
     def tr(self, message: str) -> str:
         """Get the translation for a string using Qt translation API.
@@ -60,10 +69,10 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
         return UploadPublicationAlgorithm()
 
     def name(self):
-        return "upload_configuration "
+        return "vector_tile_publish"
 
     def displayName(self):
-        return self.tr("Create configuration")
+        return self.tr("Publication tuiles vectorielles")
 
     def group(self):
         return self.tr("")
@@ -72,163 +81,217 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
         return ""
 
     def helpUrl(self):
-        return ""
+        return get_user_manual_url(self.name())
 
     def shortHelpString(self):
-        return self.tr(
-            "Publication in geoplateforme platform.\n"
-            "Input parameters are defined in a .json file.\n"
-            "Available parameters:\n"
-            "{\n"
-            f'    "{self.DATASTORE}": wanted  datastore  (str),\n'
-            f'    "{self.METADATA}": wanted  metadata (str),\n'
-            f'    "{self.NAME}": wanted datastore name (str),\n'
-            f'    "{self.DATASET_NAME}": dataset name (str),\n'
-            f'    "{self.LAYER_NAME}":wanted  layer name (str),\n'
-            f'    "{self.KEYWORDS}": wanted keywords (str),\n'
-            f'    "{self.STORED_DATA}":wanted stored data name (str),\n'
-            f'    "{self.BOTTOM_LEVEL}": bottom level (int), value between 1 and 21,\n'
-            f'    "{self.TOP_LEVEL}": top level (int), value between 1 and 21,\n'
-            f'    "{self.TITLE}": title (str) ,\n'
-            f'    "{self.ABSTRACT}": little abstract (str) ,\n'
-            f'    "{self.URL_TITLE}": url title  (str),\n'
-            f'    "{self.URL_ATTRIBUTION}": url attribution (str) ,\n'
-            f'    "{self.VISIBILITY}": Publication visibility  (str) ,\n'
-            "}\n"
-            f"Returns created configuration id in {self.PUBLICATION_URL} results"
-        )
+        return get_short_string(self.name(), self.displayName())
 
     def initAlgorithm(self, config=None):
-        self.log = PlgLogger().log
+        self.addParameter(
+            QgsProcessingParameterString(
+                name=self.DATASTORE,
+                description=self.tr("Identifiant de l'entrepôt"),
+            )
+        )
 
         self.addParameter(
             QgsProcessingParameterString(
-                name=self.INPUT_JSON,
-                description=self.tr("Input .json file"),
+                name=self.STORED_DATA,
+                description=self.tr("Identifiant des tuiles vectorielles"),
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterString(
+                name=self.NAME,
+                description=self.tr("Nom de la publication"),
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterString(
+                name=self.LAYER_NAME,
+                description=self.tr("Nom technique de la publication"),
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterString(
+                name=self.TITLE,
+                description=self.tr("Titre de la publication"),
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterString(
+                name=self.ABSTRACT,
+                description=self.tr("Résumé de la publication"),
+                optional=True,
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterString(
+                name=self.KEYWORDS,
+                description=self.tr("Mot clé de la publication"),
+                optional=True,
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                name=self.BOTTOM_LEVEL,
+                description=self.tr("Niveau bas de la pyramide"),
+                minValue=1,
+                maxValue=21,
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                name=self.TOP_LEVEL,
+                description=self.tr("Niveau haut de la pyramide"),
+                minValue=1,
+                maxValue=21,
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterString(
+                name=self.URL_ATTRIBUTION,
+                description=self.tr("Url attribution"),
+                optional=True,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterString(
+                name=self.URL_TITLE,
+                description=self.tr("Titre attribution"),
+                optional=True,
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterMatrix(
+                name=self.TAGS,
+                description=self.tr("Tags"),
+                headers=[self.tr("Tag"), self.tr("Valeur")],
             )
         )
 
     def processAlgorithm(self, parameters, context, feedback):
-        filename = self.parameterAsFile(parameters, self.INPUT_JSON, context)
-        self.log(message=f"Input publication configuration: {filename}", log_level=4)
+        datastore = self.parameterAsString(parameters, self.DATASTORE, context)
+        stored_data_id = self.parameterAsString(parameters, self.STORED_DATA, context)
+        name = self.parameterAsString(parameters, self.NAME, context)
+        layer_name = self.parameterAsString(parameters, self.LAYER_NAME, context)
+        title = self.parameterAsString(parameters, self.TITLE, context)
 
-        # load processing configuration from the JSON (--> created through qwp_status.py)
-        with open(filename, "r") as file:
-            data = json.load(file)
+        url = self.parameterAsString(parameters, self.URL_ATTRIBUTION, context)
+        url_title = self.parameterAsString(parameters, self.URL_TITLE, context)
+        abstract = self.parameterAsString(parameters, self.ABSTRACT, context)
 
-            datastore = data[self.DATASTORE]
-            stored_data_id = data.get(self.STORED_DATA)
-            dataset_name = data[self.DATASET_NAME]
+        bottom_level = self.parameterAsInt(parameters, self.BOTTOM_LEVEL, context)
+        top_level = self.parameterAsInt(parameters, self.TOP_LEVEL, context)
 
-            layer_name = data.get(self.LAYER_NAME)
+        tag_data = self.parameterAsMatrix(parameters, self.TAGS, context)
+        tags = tags_from_qgs_parameter_matrix_string(tag_data)
 
-            sandbox_datastore_ids = (
-                PlgOptionsManager.get_plg_settings().sandbox_datastore_ids
+        sandbox_datastore_ids = (
+            PlgOptionsManager.get_plg_settings().sandbox_datastore_ids
+        )
+        if datastore in sandbox_datastore_ids and not layer_name.startswith("SANDBOX"):
+            layer_name = f"SANDBOX_{layer_name}"
+            feedback.pushInfo(
+                self.tr(
+                    "L'entrepot utilisé est un bac à sable et le prefix SANDBOX est obligatoire pour le nom de la couche. Nouveau nom du couche : {}"
+                ).format(layer_name)
             )
-            if datastore in sandbox_datastore_ids and not layer_name.startswith(
-                "SANDBOX"
-            ):
-                layer_name = f"SANDBOX_{layer_name}"
-                feedback.pushInfo(
-                    self.tr(
-                        "L'entrepot utilisé est un bac à sable et le prefix SANDBOX est obligatoire pour le nom de la couche. Nouveau nom du couche : {}"
-                    ).format(layer_name)
-                )
 
-            abstract = data.get(self.ABSTRACT)
-            bottom_level = data.get(self.BOTTOM_LEVEL)
-            top_level = data.get(self.TOP_LEVEL)
-            metadata = data.get(self.METADATA)
-            name = data.get(self.NAME)
-            publication_visibility = data.get(self.VISIBILITY, "PUBLIC")
-            title = data.get(self.TITLE)
-            url = data.get(self.URL_ATTRIBUTION)
-            url_title = data.get(self.URL_TITLE)
+        # TODO : add metadata and visibility
+        metadata = []
+        publication_visibility = "PUBLIC"
 
-            # create (post) configuration from input data
-            try:
-                manager_configuration = ConfigurationRequestManager()
+        # create (post) configuration from input data
+        try:
+            manager_configuration = ConfigurationRequestManager()
 
-                configuration = Configuration(
-                    type_data="WMTS-TMS",
-                    metadata=metadata,
-                    name=name,
-                    layer_name=layer_name,
-                    type_infos={},
-                    attribution={},
-                )
-                configuration.title = title
-                configuration.abstract = abstract
-                configuration.url_title = url_title
-                configuration.url = url
+            configuration = Configuration(
+                type_data="WMTS-TMS",
+                metadata=metadata,
+                name=name,
+                layer_name=layer_name,
+                type_infos={},
+                attribution={},
+            )
+            configuration.title = title
+            configuration.abstract = abstract
+            configuration.url_title = url_title
+            configuration.url = url
 
-                # response = configuration
-                res = manager_configuration.create_configuration(
-                    datastore=datastore,
-                    stored_data=stored_data_id,
-                    top_level=top_level,
-                    bottom_level=bottom_level,
-                    configuration=configuration,
-                )
+            # response = configuration
+            res = manager_configuration.create_configuration(
+                datastore=datastore,
+                stored_data=stored_data_id,
+                top_level=top_level,
+                bottom_level=bottom_level,
+                configuration=configuration,
+            )
+            configuration_id = res
 
-                self.log(message=f"res configuration: {res}", log_level=4)
+        except ConfigurationCreationException as exc:
+            raise QgsProcessingException(f"exc configuration id : {exc}")
 
-                configuration_id = res
+        # get the endpoint for the publication
+        try:
+            manager_endpoint = DatastoreRequestManager()
+            res = manager_endpoint.get_endpoint(
+                datastore=datastore, data_type=data_type
+            )
 
-            except ConfigurationCreationException as exc:
-                raise QgsProcessingException(f"exc configuration id : {exc}")
+            publication_endpoint = res
+        except UnavailableEndpointException as exc:
+            raise QgsProcessingException(f"exc endpoint : {exc}")
 
-            # get the endpoint for the publication
-            try:
-                manager_endpoint = DatastoreRequestManager()
-                res = manager_endpoint.get_endpoint(
-                    datastore=datastore, data_type=data_type
-                )
+        # create publication (offering)
+        try:
+            manager_offering = ConfigurationRequestManager()
+            res = manager_offering.create_offering(
+                visibility=publication_visibility,
+                endpoint=publication_endpoint,
+                datastore=datastore,
+                configuration_id=configuration_id,
+            )
+            publication_urls = res
+        except OfferingCreationException as exc:
+            raise QgsProcessingException(f"exc publication url : {exc}")
 
-                publication_endpoint = res
-            except UnavailableEndpointException as exc:
-                raise QgsProcessingException(f"exc endpoint : {exc}")
+        try:
+            # Update configuration tags
+            manager_configuration = ConfigurationRequestManager()
+            manager_configuration.add_tags(
+                datastore_id=datastore,
+                configuration_id=configuration_id,
+                tags=tags,
+            )
+        except AddTagException as exc:
+            raise QgsProcessingException(f"exc tag update url : {exc}")
 
-            # create publication (offering)
-            try:
-                manager_offering = ConfigurationRequestManager()
-                res = manager_offering.create_offering(
-                    visibility=publication_visibility,
-                    endpoint=publication_endpoint,
-                    datastore=datastore,
-                    configuration_id=configuration_id,
-                )
-                publication_urls = res
-            except OfferingCreationException as exc:
-                raise QgsProcessingException(f"exc publication url : {exc}")
+        # One url defined
+        publication_url = publication_urls[0]
+        # Remove tms| indication
+        url_data = publication_url["url"]
 
-            try:
-                # Update configuration tags
-                manager_configuration = ConfigurationRequestManager()
-                manager_configuration.add_tags(
-                    datastore_id=datastore,
-                    configuration_id=configuration_id,
-                    tags={"datasheet_name": dataset_name},
-                )
-            except AddTagException as exc:
-                raise QgsProcessingException(f"exc tag update url : {exc}")
+        try:
+            # Update stored data tags
+            manager = StoredDataRequestManager()
+            manager.add_tags(
+                datastore_id=datastore,
+                stored_data_id=stored_data_id,
+                tags={"tms_url": url_data, "published": "true"},
+            )
+        except AddTagException as exc:
+            raise QgsProcessingException(f"exc tag update url : {exc}")
 
-            # One url defined
-            publication_url = publication_urls[0]
-            # Remove tms| indication
-            url_data = publication_url["url"]
-
-            try:
-                # Update stored data tags
-                manager = StoredDataRequestManager()
-                manager.add_tags(
-                    datastore_id=datastore,
-                    stored_data_id=stored_data_id,
-                    tags={"tms_url": url_data, "published": "true"},
-                )
-            except AddTagException as exc:
-                raise QgsProcessingException(f"exc tag update url : {exc}")
-
-            return {
-                self.PUBLICATION_URL: url_data,
-            }
+        return {
+            self.PUBLICATION_URL: url_data,
+        }

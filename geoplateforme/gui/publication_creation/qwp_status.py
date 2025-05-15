@@ -1,7 +1,5 @@
 # standard
-import json
 import os
-import tempfile
 
 # PyQGIS
 from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
@@ -11,7 +9,6 @@ from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtWidgets import QWizardPage
 
 # Plugin
-from geoplateforme.__about__ import __title_clean__
 from geoplateforme.api.custom_exceptions import ReadStoredDataException
 from geoplateforme.api.stored_data import StoredDataRequestManager
 from geoplateforme.gui.publication_creation.qwp_publication_form import (
@@ -19,6 +16,7 @@ from geoplateforme.gui.publication_creation.qwp_publication_form import (
 )
 from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.upload_publication import UploadPublicationAlgorithm
+from geoplateforme.processing.utils import tags_to_qgs_parameter_matrix_string
 from geoplateforme.toolbelt import PlgLogger, PlgOptionsManager
 
 
@@ -91,11 +89,10 @@ class PublicationStatut(QWizardPage):
             )
             return
 
-        data = {
+        params = {
             UploadPublicationAlgorithm.ABSTRACT: configuration.abstract,
             UploadPublicationAlgorithm.BOTTOM_LEVEL: bottom,
             UploadPublicationAlgorithm.DATASTORE: datastore_id,
-            UploadPublicationAlgorithm.DATASET_NAME: dataset_name,
             UploadPublicationAlgorithm.KEYWORDS: "QGIS Plugin",  # TODO : define keywords
             UploadPublicationAlgorithm.LAYER_NAME: configuration.layer_name,
             UploadPublicationAlgorithm.METADATA: [],
@@ -105,18 +102,15 @@ class PublicationStatut(QWizardPage):
             UploadPublicationAlgorithm.TOP_LEVEL: top,
             UploadPublicationAlgorithm.URL_TITLE: configuration.url_title,
             UploadPublicationAlgorithm.URL_ATTRIBUTION: configuration.url,
+            UploadPublicationAlgorithm.TAGS: tags_to_qgs_parameter_matrix_string(
+                {"datasheet_name": dataset_name}
+            ),
         }
-        filename = tempfile.NamedTemporaryFile(
-            prefix=f"qgis_{__title_clean__}_", suffix=".json"
-        ).name
-        with open(filename, "w") as file:
-            json.dump(data, file)
 
         algo_str = (
             f"{GeoplateformeProvider().id()}:{UploadPublicationAlgorithm().name()}"
         )
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
-        params = {UploadPublicationAlgorithm.INPUT_JSON: filename}
         context = QgsProcessingContext()
         create_url_feedback = QgsProcessingFeedback()
 

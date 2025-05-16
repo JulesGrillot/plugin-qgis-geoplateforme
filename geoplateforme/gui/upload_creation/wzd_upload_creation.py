@@ -69,6 +69,16 @@ class UploadCreationWizard(QWizard):
         """
         return self.qwp_upload_edition.wdg_upload_creation.lne_dataset.text()
 
+    def reject(self) -> None:
+        """Override reject to check last page and wait for database integration laucnh"""
+        # If upload creation page, check that page is valid
+        current_page = self.currentPage()
+        if current_page == self.qwp_upload_creation:
+            if current_page.validatePage():
+                super().reject()
+        else:
+            super().reject()
+
     def closeEvent(self, event: QCloseEvent) -> None:
         """
         Override closeEvent to check that current page is valid before close

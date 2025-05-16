@@ -25,7 +25,6 @@ from geoplateforme.api.custom_exceptions import (
 )
 from geoplateforme.api.processing import ProcessingRequestManager
 from geoplateforme.api.stored_data import StoredDataRequestManager, StoredDataStatus
-from geoplateforme.api.upload import UploadRequestManager
 from geoplateforme.gui.mdl_execution_list import ExecutionListModel
 from geoplateforme.gui.tile_creation.qwp_tile_generation_edition import (
     TileGenerationEditionPageWizard,
@@ -235,7 +234,6 @@ class TileGenerationStatusPageWizard(QWizardPage):
         if self.create_tile_feedback.created_pyramid_id:
             self.created_stored_data_id = self.create_tile_feedback.created_pyramid_id
             try:
-                upload_manager = UploadRequestManager()
                 processing_manager = ProcessingRequestManager()
                 stored_data_manager = StoredDataRequestManager()
                 datastore_id = self.qwp_tile_generation_edition.cbx_datastore.current_datastore_id()
@@ -244,15 +242,6 @@ class TileGenerationStatusPageWizard(QWizardPage):
                     datastore_id=datastore_id,
                     stored_data_id=self.created_stored_data_id,
                 )
-
-                if stored_data.tags and "upload_id" in stored_data.tags.keys():
-                    check_execution_list = upload_manager.get_upload_checks_execution(
-                        datastore_id=datastore_id,
-                        upload_id=stored_data.tags["upload_id"],
-                    )
-                    self.mdl_execution_list.set_check_execution_list(
-                        check_execution_list
-                    )
 
                 # Stop timer if stored_data generated
                 status = stored_data.status

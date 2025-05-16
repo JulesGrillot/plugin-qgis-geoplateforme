@@ -54,12 +54,15 @@ class PublicationForm(QWidget):
 
     def get_config(self) -> Configuration:
         configuration = Configuration(
-            type_data="",
-            metadata=[],
-            name=self.lne_name.text(),
-            layer_name=self.lne_name.text(),
-            type_infos={},
-            attribution={},
+            _id="",
+            datastore_id="",
+            _type="",
+            _metadata=[],
+            _name=self.lne_name.text(),
+            _layer_name=self.lne_name.text(),
+            _type_infos={},
+            _attribution={},
+            is_detailed=True,
         )
 
         configuration.title = self.lne_title.text()

@@ -216,12 +216,15 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
             manager_configuration = ConfigurationRequestManager()
 
             configuration = Configuration(
-                type_data="WMTS-TMS",
-                metadata=metadata,
-                name=name,
-                layer_name=layer_name,
-                type_infos={},
-                attribution={},
+                _id="",
+                datastore_id=datastore,
+                _type="WMTS-TMS",
+                _metadata=metadata,
+                _name=name,
+                _layer_name=layer_name,
+                _type_infos={},
+                _attribution={},
+                is_detailed=True,
             )
             configuration.title = title
             configuration.abstract = abstract
@@ -287,7 +290,7 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
             manager.add_tags(
                 datastore_id=datastore,
                 stored_data_id=stored_data_id,
-                tags={"tms_url": url_data, "published": "true"},
+                tags={"published": "true"},
             )
         except AddTagException as exc:
             raise QgsProcessingException(f"exc tag update url : {exc}")

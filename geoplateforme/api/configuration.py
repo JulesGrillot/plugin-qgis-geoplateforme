@@ -1,7 +1,11 @@
 # standard
 import json
 import logging
+import math
+import re
 from dataclasses import dataclass
+from enum import Enum
+from typing import List, Optional, Self
 
 # PyQGIS
 from qgis.PyQt.QtCore import QByteArray, QUrl
@@ -11,6 +15,7 @@ from geoplateforme.api.custom_exceptions import (
     AddTagException,
     ConfigurationCreationException,
     OfferingCreationException,
+    ReadConfigurationException,
     UnavailableConfigurationException,
 )
 from geoplateforme.toolbelt.log_handler import PlgLogger
@@ -20,61 +25,328 @@ from geoplateforme.toolbelt.preferences import PlgOptionsManager
 logger = logging.getLogger(__name__)
 
 
+class ConfigurationField(Enum):
+    NAME = "name"
+    LAYER_NAME = "layer_name"
+    TYPE = "type"
+    STATUS = "status"
+    ATTRIBUTIONS = "attributions"
+    METADATAS = "metadatas"
+    TAGS = "tags"
+    LAST_EVENT = "last_event"
+
+
+class ConfigurationType(Enum):
+    WMS_VECTOR = "WMS-VECTOR"
+    WFS = "WFS"
+    WMTS_TMS = "WMTS-TMS"
+    WMS_RASTER = "WMS-RASTER"
+    DOWNLOAD = "DOWNLOAD"
+    ITINERARY_ISOCURVE = "ITINERARY-ISOCURVE"
+    ALTIMETRY = "ALTIMETRY"
+    SEARCH = "SEARCH"
+    VECTOR_TMS = "VECTOR-TMS"
+
+
+class ConfigurationStatus(Enum):
+    UNPUBLISHED = "UNPUBLISHED"
+    PUBLISHED = "PUBLISHED"
+    SYNCHRONIZING = "SYNCHRONIZING"
+
+
 @dataclass
 class Configuration:
-    type_data: str
-    metadata: str
-    name: str
-    layer_name: str
-    type_infos: dict
-    attribution: dict
+    _id: str
+    datastore_id: str
+    is_detailed: bool = False
+
+    # Optional
+    _name: Optional[str] = None
+    _layer_name: Optional[str] = None
+    _type: Optional[ConfigurationType] = None
+    _status: Optional[ConfigurationStatus] = None
+    _tags: Optional[dict] = None
+    _attribution: Optional[dict] = None
+    _last_event: Optional[dict] = None
+    _extra: Optional[dict] = None
+    _metadata: Optional[list[dict]] = None
+    _type_infos: Optional[dict] = None
 
     @property
-    def title(self) -> str:
-        if "title" in self.type_infos:
-            return self.type_infos["title"]
-        else:
-            return ""
+    def name(self) -> str:
+        """Returns the name of the configuration.
+
+        :return: configuration name
+        :rtype: str
+        """
+        if not self._name and not self.is_detailed:
+            self.update_from_api()
+        return self._name
 
     @property
-    def abstract(self) -> str:
-        if "abstract" in self.type_infos:
-            return self.type_infos["abstract"]
-        else:
-            return ""
+    def layer_name(self) -> str:
+        """Returns the name of the configuration.
+
+        :return: configuration name
+        :rtype: str
+        """
+        if not self._layer_name and not self.is_detailed:
+            self.update_from_api()
+        return self._layer_name
+
+    @property
+    def type(self) -> ConfigurationType:
+        """Returns the type of the configuration.
+
+        :return: configuration type
+        :rtype: ConfigurationType
+        """
+        if not self._type and not self.is_detailed:
+            self.update_from_api()
+        return self._type
+
+    @property
+    def status(self) -> ConfigurationStatus:
+        """Returns the status of the configuration.
+
+        :return: configuration status
+        :rtype: ConfigurationStatus
+        """
+        if not self._status and not self.is_detailed:
+            self.update_from_api()
+        return self._status
+
+    @property
+    def tags(self) -> dict:
+        """Returns the tags of the configuration.
+
+        :return: configuration tags
+        :rtype: dict
+        """
+        if not self._tags and not self.is_detailed:
+            self.update_from_api()
+        return self._tags
+
+    @property
+    def attribution(self) -> dict:
+        """Returns the attribution of the configuration.
+
+        :return: configuration attribution
+        :rtype: dict
+        """
+        if not self._attribution and not self.is_detailed:
+            self.update_from_api()
+        return self._attribution
 
     @property
     def url_title(self) -> str:
-        if "title" in self.attribution:
-            return self.attribution["title"]
+        """Return the url defined in attribution
+
+        :return: attribution title
+        :rtype: str
+        """
+        if self._attribution and "title" in self._attribution:
+            return self._attribution["title"]
         else:
             return ""
 
+    @url_title.setter
+    def url_title(self, val: str) -> None:
+        """Set the title defined in attribution
+
+        :param val: title
+        :type val: str
+        """
+        self._attribution["title"] = val
+
     @property
     def url(self) -> str:
-        if "url" in self.attribution:
-            return self.attribution["url"]
+        """Return the url defined in attribution
+
+        :return: attribution url
+        :rtype: str
+        """
+        if self._attribution and "url" in self._attribution:
+            return self._attribution["url"]
+        else:
+            return ""
+
+    @url.setter
+    def url(self, val: str) -> None:
+        """Set the url defined in attribution
+
+        :param val: url
+        :type val: str
+        """
+        self._attribution["url"] = val
+
+    @property
+    def last_event(self) -> dict:
+        """Returns the last_event of configuration.
+
+        :return: configuration last_event
+        :rtype: dict
+        """
+        if not self._last_event and not self.is_detailed:
+            self.update_from_api()
+        return self._last_event
+
+    def get_last_event_date(self) -> str:
+        """Returns the configuration last_event date.
+
+        :return: configuration last_event date
+        :rtype: str
+        """
+        result = ""
+        if self._last_event and "date" in self._last_event:
+            result = self._last_event["date"]
+        return result
+
+    @property
+    def extra(self) -> dict:
+        """Returns the extra of configuraiton.
+
+        :return: configuration extra
+        :rtype: dict
+        """
+        if not self._last_event and not self.is_detailed:
+            self.update_from_api()
+        return self._last_event
+
+    @property
+    def metadata(self) -> list[dict]:
+        """Returns the metadata of the configuration.
+
+        :return: configuration metadata
+        :rtype: dict
+        """
+        if not self._metadata and not self.is_detailed:
+            self.update_from_api()
+        return self._metadata
+
+    @property
+    def type_infos(self) -> dict:
+        """Returns the type_infos of the configuration.
+
+        :return: configuration type_infos
+        :rtype: dict
+        """
+        if not self._type_infos and not self.is_detailed:
+            self.update_from_api()
+        return self._type_infos
+
+    @property
+    def title(self) -> str:
+        """Get the title for type_infos
+
+        :return: title for type_infos
+        :rtype: str
+        """
+        if self._type_infos and "title" in self._type_infos:
+            return self._type_infos["title"]
         else:
             return ""
 
     @title.setter
     def title(self, val: str) -> None:
-        self.type_infos["title"] = val
+        """Set the title in type_infos
+
+        :param val: title
+        :type val: str
+        """
+        self._type_infos["title"] = val
+
+    @property
+    def abstract(self) -> str:
+        """Get the abstract from type_infos
+
+        :return: abstract from type_infos
+        :rtype: str
+        """
+        if self._type_infos and "abstract" in self._type_infos:
+            return self._type_infos["abstract"]
+        else:
+            return ""
 
     @abstract.setter
     def abstract(self, val: str) -> None:
-        self.type_infos["abstract"] = val
+        """Set the abstract for type_indos
 
-    @url_title.setter
-    def url_title(self, val: str) -> None:
-        self.attribution["title"] = val
+        :param val: abstract
+        :type val: str
+        """
+        self._type_infos["abstract"] = val
 
-    @url.setter
-    def url(self, val: str) -> None:
-        self.attribution["url"] = val
+    @classmethod
+    def from_dict(cls, datastore_id: str, val: dict) -> Self:
+        """Load object from a dict.
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param val: dict value to load
+        :type val: dict
+
+        :return: object with attributes filled from dict.
+        :rtype: Configuration
+        """
+        res = cls(
+            _id=val["_id"],
+            datastore_id=datastore_id,
+        )
+        if "name" in val:
+            res._name = val["name"]
+        if "layer_name" in val:
+            res._layer_name = val["layer_name"]
+        if "type" in val:
+            res._type = val["type"]
+        if "status" in val:
+            res._status = ConfigurationStatus(val["status"])
+        if "tags" in val:
+            res._tags = val["tags"]
+        if "attribution" in val:
+            res._attribution = val["attribution"]
+        if "last_event" in val:
+            res._last_event = val["last_event"]
+        if "extra" in val:
+            res._extra = val["extra"]
+        if "metadata" in val:
+            res._metadata = val["metadata"]
+        if "type_infos" in val:
+            res._type_infos = val["type_infos"]
+
+        return res
+
+    def update_from_api(self):
+        """Update the configuration by calling API details."""
+        manager = ConfigurationRequestManager()
+        data = manager.get_configuration_json(self.datastore_id, self._id)
+
+        if "name" in data:
+            self._name = data["name"]
+        if "layer_name" in data:
+            self._layer_name = data["layer_name"]
+        if "type" in data:
+            self._type = ConfigurationType(data["type"])
+        if "status" in data:
+            self._status = ConfigurationStatus(data["status"])
+        if "tags" in data:
+            self._tags = data["tags"]
+        if "attribution" in data:
+            self._attribution = data["attribution"]
+        if "last_event" in data:
+            self._last_event = data["last_event"]
+        if "extra" in data:
+            self._extra = data["extra"]
+        if "metadata" in data:
+            self._metadata = data["metadata"]
+        if "type_infos" in data:
+            self._type_infos = data["type_infos"]
+        self.is_detailed = True
 
 
 class ConfigurationRequestManager:
+    MAX_LIMIT = 50
+
     def __init__(self):
         """
         Helper for configuration request
@@ -130,7 +402,7 @@ class ConfigurationRequestManager:
         # encode data
         data = QByteArray()
         data_map = {
-            "type": configuration.type_data,
+            "type": configuration.type,
             "metadata": configuration.metadata,
             "name": configuration.name,
             "layer_name": configuration.layer_name,
@@ -189,40 +461,165 @@ class ConfigurationRequestManager:
             f"{__name__}.get_configuration(datastore:{datastore}, configuration: {configuration})"
         )
 
+        return Configuration.from_dict(
+            datastore, self.get_configuration_json(datastore, configuration)
+        )
+
+    def get_configuration_json(self, datastore_id: str, configuration: str) -> dict:
+        """Get dict values of configuration
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param configuration: configuration id
+        :type configuration: str
+
+        :raises ReadStoredDataException: when error occur during requesting the API
+
+        :return: dict values of stored data
+        :rtype: dict
+        """
         try:
             # send request
             reply = self.request_manager.get_url(
-                url=QUrl(f"{self.get_base_url(datastore)}/{configuration}"),
+                url=QUrl(f"{self.get_base_url(datastore_id)}/{configuration}"),
+                config_id=self.plg_settings.qgis_auth_id,
+            )
+            return json.loads(reply.data().decode("utf-8"))
+        except ConnectionError as err:
+            raise ReadConfigurationException(
+                f"Error while getting configuration : {err}"
+            )
+
+    def get_configuration_list(
+        self,
+        datastore_id: str,
+        with_fields: Optional[List[ConfigurationField]] = None,
+        tags: Optional[dict] = None,
+    ) -> List[Configuration]:
+        """Get list of configuration
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param with_fields: list of field to be add to the response
+        :type with_fields: List[ConfigurationField], optional
+        :param tags: list of tags to filter data
+        :type tags: dict, optional
+
+        :raises ReadConfigurationException: when error occur during requesting the API
+
+        :return: list of available configuration
+        :rtype: List[Configuration]
+        """
+        self.log(f"{__name__}.get_configuration_list(datastore:{datastore_id})")
+
+        nb_value = self._get_nb_available_configuration(datastore_id, tags)
+        nb_request = math.ceil(nb_value / self.MAX_LIMIT)
+        result = []
+        for page in range(0, nb_request):
+            result += self._get_configuration_list(
+                datastore_id, page + 1, self.MAX_LIMIT, with_fields, tags
+            )
+        return result
+
+    def _get_configuration_list(
+        self,
+        datastore_id: str,
+        page: int = 1,
+        limit: int = MAX_LIMIT,
+        with_fields: Optional[List[ConfigurationField]] = None,
+        tags: Optional[dict] = None,
+    ) -> List[Configuration]:
+        """Get list of configuration
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param page: page number (start at 1)
+        :type page: int
+        :param limit: nb response per pages
+        :type limit: int
+        :param with_fields: list of field to be add to the response
+        :type with_fields: List[ConfigurationField], optional
+        :param tags: list of tags to filter data
+        :type tags: dict, optional
+
+        :raises ReadConfigurationException: when error occur during requesting the API
+
+        :return: list of available configuration
+        :rtype: List[Configuration]
+        """
+
+        # request additionnal fields
+        add_fields = ""
+        if with_fields:
+            for field in with_fields:
+                add_fields += f"&fields={field.value}"
+        # Add filter on tags
+        tags_url = ""
+        if tags:
+            for key, value in dict.items(tags):
+                tags_url += f"&tags[{key}]={value}"
+
+        try:
+            reply = self.request_manager.get_url(
+                url=QUrl(
+                    f"{self.get_base_url(datastore_id)}?page={page}&limit={limit}{add_fields}{tags_url}"
+                ),
                 config_id=self.plg_settings.qgis_auth_id,
             )
         except ConnectionError as err:
-            raise UnavailableConfigurationException(
-                f"Error while getting configuration : {err}"
+            raise ReadConfigurationException(
+                f"Error while fetching configuration : {err}"
             )
-        data = json.loads(reply.data().decode("utf-8"))
-        return self._create_configuration_from_json(data)
 
-    def _create_configuration_from_json(self, data: dict) -> Configuration:
+        data = json.loads(reply.data())
+        return [
+            Configuration.from_dict(datastore_id, stored_data) for stored_data in data
+        ]
+
+    def _get_nb_available_configuration(
+        self, datastore_id: str, tags: Optional[dict] = None
+    ) -> int:
+        """Get number of available configuration
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param tags: list of tags to filter data
+        :type tags: dict, optional
+
+        :raises ReadConfigurationException: when error occur during requesting the API
+
+        :return: number of available configuration
+        :rtype: int
         """
-        Get config by id
+        # For now read with maximum limit possible
+        tags_url = ""
+        if tags:
+            for key, value in dict.items(tags):
+                tags_url += f"&tags[{key}]={value}"
+        try:
+            req_reply = self.request_manager.get_url(
+                url=QUrl(f"{self.get_base_url(datastore_id)}?limit=1{tags_url}"),
+                config_id=self.plg_settings.qgis_auth_id,
+                return_req_reply=True,
+            )
+        except ConnectionError as err:
+            raise ReadConfigurationException(
+                f"Error while fetching configuration : {err}"
+            )
 
-        Args:
-            datastore: (str) datastore id
-            stored_data: (str) stored dat id
-
-        Returns: stored data, raise ReadStoredDataException otherwise
-        """
-
-        result = Configuration(
-            type_data=data["type"],
-            metadata=data["metadata"],
-            name=data["name"],
-            layer_name=data["layer_name"],
-            type_infos=data["type_infos"],
-            attribution=data["attribution"],
+        # check response
+        content_range = req_reply.rawHeader(b"Content-Range").data().decode("utf-8")
+        match = re.match(
+            r"(?P<min>\d+)\s?-\s?(?P<max>\d+)?\s?\/?\s?(?P<nb_val>\d+|\*)?",
+            content_range,
         )
-
-        return result
+        if match:
+            nb_val = int(match.group("nb_val"))
+        else:
+            raise ReadConfigurationException(
+                f"Invalid Content-Range {content_range} not min-max/nb_val as expected"
+            )
+        return nb_val
 
     def delete_configuration(self, datastore: str, configuration_ids: str):
         """

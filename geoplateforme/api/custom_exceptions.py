@@ -62,6 +62,10 @@ class ReadUploadException(Exception):
     pass
 
 
+class ReadConfigurationException(Exception):
+    pass
+
+
 class ReadMetadataException(Exception):
     pass
 

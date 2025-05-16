@@ -177,8 +177,8 @@ class UploadCreationPageWizard(QWizardPage):
         """
         self.mdl_execution_list.clear_executions()
 
-        # Don't ask again for upload check execution list if upload is defined
-        if not self.created_upload_id:
+        # Don't ask again for upload check execution list if stored data is defined
+        if not self.created_stored_data_id:
             self.upload_check_execution_list = self._check_upload_creation()
         self.mdl_execution_list.set_check_execution_list(
             self.upload_check_execution_list

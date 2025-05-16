@@ -64,20 +64,24 @@ class ProcessingRequestManager:
         """
         return f"{self.plg_settings.base_url_api_entrepot}/datastores/{datastore_id}/processings"
 
-    def get_processing(self, datastore_id: str, name: str) -> Processing:
+    def get_processing(
+        self, datastore_id: str, possible_names: list[str]
+    ) -> Processing:
         """Get processing from name.
 
         :param datastore_id: datastore id
         :type datastore_id: str
-        :param name: wanted processing name
-        :type name: str
+        :param possible_names: possible names for processing
+        :type name: list[str]
 
         :raises UnavailableProcessingException: when error occur during requesting the API
 
         :return: processing
         :rtype: Processing
         """
-        self.log(f"{__name__}.get_processing(datastore:{datastore_id},name:{name})")
+        self.log(
+            f"{__name__}.get_processing(datastore:{datastore_id},possible_names:{possible_names})"
+        )
 
         try:
             reply = self.request_manager.get_url(
@@ -91,10 +95,12 @@ class ProcessingRequestManager:
 
         processing_list = json.loads(reply.data())
         for processing in processing_list:
-            if processing["name"].startswith(name):
+            if processing["name"] in possible_names:
                 return Processing(name=processing["name"], _id=processing["_id"])
 
-        raise UnavailableProcessingException("Processing not available in server")
+        raise UnavailableProcessingException(
+            f"Processing(s) {possible_names} not available(s) in server"
+        )
 
     def create_processing_execution(self, datastore_id: str, input_map: dict) -> dict:
         """Create a processing execution from an input map

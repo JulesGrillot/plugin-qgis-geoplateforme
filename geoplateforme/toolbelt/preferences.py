@@ -68,6 +68,11 @@ class PlgSettingsStructure:
         "122b878c-aad8-4507-87b2-465e664467d3,87e1beb6-ee07-4adc-8449-6a925dc28949"
     )
 
+    # processing names
+    vector_db_generation_processing_names_str: str = "Intégration de données vecteur livrées en base,Intégration de données vecteur livrées en base (Bac à sable)"
+
+    vector_tile_generation_processing_names_str: str = "Calcul de pyramide vecteur,Calcul de pyramide vecteur (Bac à sable),Calcul ou mise à jour de pyramide vecteur"
+
     @property
     def base_url_api_entrepot(self) -> str:
         """Return the URL for API entrepot"""
@@ -81,6 +86,24 @@ class PlgSettingsStructure:
         :rtype: List[str]
         """
         return self.sandbox_datastore_ids_str.split(",")
+
+    @property
+    def vector_db_generation_processing_names(self) -> List[str]:
+        """Return list name possible for vector db generation processing.
+
+        :return: list of name for processing
+        :rtype: List[str]
+        """
+        return self.vector_db_generation_processing_names_str.split(",")
+
+    @property
+    def vector_tile_generation_processing_names(self) -> List[str]:
+        """Return list name possible for vector tile generation processing.
+
+        :return: list of name for processing
+        :rtype: List[str]
+        """
+        return self.vector_tile_generation_processing_names_str.split(",")
 
     def create_auth_config(self) -> Optional[QgsAuthMethodConfig]:
         """Create QgsAuthMethodConfig for OAuth2 authentification.

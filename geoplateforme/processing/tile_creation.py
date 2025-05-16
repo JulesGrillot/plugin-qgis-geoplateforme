@@ -272,7 +272,7 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
             processing_manager.launch_execution(datastore_id=datastore, exec_id=exec_id)
 
             # Wait for tile creation
-            self._wait_tile_creation(datastore, stored_data_id)
+            self._wait_tile_creation(datastore, stored_data_id, feedback)
 
         except UnavailableStoredData as exc:
             raise QgsProcessingException(
@@ -321,13 +321,19 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                     f"Missing {', '.join(missing_keys)} keys for {self.COMPOSITION} item in input json."
                 )
 
-    def _wait_tile_creation(self, datastore: str, pyramid_stored_data_id: str) -> None:
+    def _wait_tile_creation(
+        self,
+        datastore: str,
+        pyramid_stored_data_id: str,
+        feedback: QgsProcessingFeedback,
+    ) -> None:
         """
         Wait until tile creation is done (GENERATED status) or throw exception if status is UNSTABLE
 
         Args:
             datastore: (str) datastore id
             pyramid_stored_data_id: (str) pyramid stored data id
+            feedback: (QgsProcessingFeedback) : feedback to cancel wait
         """
         try:
             manager = StoredDataRequestManager()
@@ -344,6 +350,9 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
                 )
                 status = StoredDataStatus(stored_data.status)
                 sleep(PlgOptionsManager.get_plg_settings().status_check_sleep)
+
+                if feedback.isCanceled():
+                    return
 
             if status == StoredDataStatus.UNSTABLE:
                 raise QgsProcessingException(

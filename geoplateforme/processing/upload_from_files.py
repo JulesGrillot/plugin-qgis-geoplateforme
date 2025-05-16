@@ -195,7 +195,7 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
 
             # Wait for upload close after check
             feedback.pushInfo(self.tr("Attente vérification contenu livraison"))
-            self._wait_upload_close(datastore, upload_id)
+            self._wait_upload_close(datastore, upload_id, feedback)
 
         except UploadCreationException as exc:
             raise QgsProcessingException(f"Upload creation failed : {exc}")
@@ -208,13 +208,19 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
 
         return {self.CREATED_UPLOAD_ID: upload_id}
 
-    def _wait_upload_close(self, datastore: str, upload_id: str) -> None:
+    def _wait_upload_close(
+        self,
+        datastore: str,
+        upload_id: str,
+        feedback: QgsProcessingFeedback,
+    ) -> None:
         """
         Wait until upload is CLOSED or throw exception if status is UNSTABLE
 
         Args:
             datastore : (str) datastore id
             upload_id:  (str) upload id
+            feedback: (QgsProcessingFeedback) : feedback to cancel wait
         """
         try:
             manager = UploadRequestManager()
@@ -224,6 +230,9 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
                 upload = manager.get_upload(datastore_id=datastore, upload_id=upload_id)
                 status = UploadStatus(upload.status)
                 sleep(PlgOptionsManager.get_plg_settings().status_check_sleep)
+
+                if feedback.isCanceled():
+                    return
 
             if status == UploadStatus.UNSTABLE:
                 raise QgsProcessingException(

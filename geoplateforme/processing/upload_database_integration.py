@@ -122,9 +122,9 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
             processing_manager = ProcessingRequestManager()
 
             # Get processing for database integration
-            # TODO : for now we use processing name, how can we get processing otherwise ?
             processing = processing_manager.get_processing(
-                datastore, "Intégration de données vecteur livrées en base"
+                datastore,
+                PlgOptionsManager.get_plg_settings().vector_db_generation_processing_names,
             )
 
             # Create execution

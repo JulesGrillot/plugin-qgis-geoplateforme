@@ -199,9 +199,9 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
             )
 
             # Get processing for tile creation
-            # TODO : for now we use processing name, how can we get processing otherwise ?
             processing = processing_manager.get_processing(
-                datastore, "Calcul de pyramide vecteur"
+                datastore,
+                PlgOptionsManager.get_plg_settings().vector_tile_generation_processing_names,
             )
             # Execution parameters
             exec_params = {

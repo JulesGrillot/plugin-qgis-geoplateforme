@@ -33,6 +33,7 @@ from geoplateforme.api.stored_data import (
     StoredDataType,
 )
 from geoplateforme.gui.dashboard.dlg_stored_data_details import StoredDataDetailsDialog
+from geoplateforme.gui.dashboard.wdg_upload_details import UploadDetailsWidget
 from geoplateforme.gui.mdl_configuration import ConfigurationListModel
 from geoplateforme.gui.mdl_stored_data import StoredDataListModel
 from geoplateforme.gui.mdl_upload import UploadListModel
@@ -255,6 +256,11 @@ class DashboardWidget(QWidget):
             if isinstance(model, StoredDataProxyModel):
                 self.detail_dialog = StoredDataDetailsDialog(self)
                 self.detail_dialog.set_stored_data(item)
+                self.detail_widget_layout.addWidget(self.detail_dialog)
+                self.detail_zone.show()
+            elif isinstance(model, UploadListModel):
+                self.detail_dialog = UploadDetailsWidget(self)
+                self.detail_dialog.set_upload(item)
                 self.detail_widget_layout.addWidget(self.detail_dialog)
                 self.detail_zone.show()
 
@@ -637,5 +643,8 @@ class DashboardWidget(QWidget):
 
         self.tbv_pyramid_raster.resizeRowsToContents()
         # self.tbv_pyramid_raster.resizeColumnsToContents()
+
+        # For now only do a simple resize of columns
+        self.tbv_service.resizeColumnsToContents()
 
         QGuiApplication.restoreOverrideCursor()

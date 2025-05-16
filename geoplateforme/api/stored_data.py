@@ -434,7 +434,7 @@ class StoredData:
                 # But it seems that the tag is not added
                 # an issue was created : https://github.com/IGNF/geoplateforme-site/issues/94
                 # If pyramid is not in TILE_SAMPLE or TILE_UPDATE steps it means that it's published if tms_url available
-                elif "published" in self.tags or "tms_url" in self.tags:
+                elif "published" in self.tags:
                     result = StoredDataStep.PUBLISHED
         return result
 

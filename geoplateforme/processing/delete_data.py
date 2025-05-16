@@ -91,6 +91,7 @@ class DeleteDataAlgorithm(QgsProcessingAlgorithm):
             except UnavailableStoredData as exc:
                 raise QgsProcessingException(f"exc publication url : {exc}")
 
+            # TODO : tag tms_url can't be used in stored data because of a 99 char limits
             if "tms_url" in result.tags:
                 try:
                     configuration_id_manager = ConfigurationRequestManager()

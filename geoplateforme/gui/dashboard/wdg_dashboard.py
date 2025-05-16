@@ -424,6 +424,7 @@ class DashboardWidget(QWidget):
         Args:
             stored_data: (StoredData) stored data to be viewed
         """
+        # TODO : tag tms_url can't be used in stored data because of a 99 char limits
         if stored_data.tags and "tms_url" in stored_data.tags:
             tms_url = stored_data.tags["tms_url"]
             zoom_levels = stored_data.zoom_levels()

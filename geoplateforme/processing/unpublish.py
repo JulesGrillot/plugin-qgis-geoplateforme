@@ -94,9 +94,7 @@ class UnpublishAlgorithm(QgsProcessingAlgorithm):
                 )
             # Remove publish tags
             stored_data_manager = StoredDataRequestManager()
-            stored_data_manager.delete_tags(
-                datastore, stored_data, ["tms_url", "published"]
-            )
+            stored_data_manager.delete_tags(datastore, stored_data, ["published"])
 
         except (
             UnavailableOfferingsException,

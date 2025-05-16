@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Optional
 
 # PyQGIS
-from qgis.core import QgsApplication, QgsSettings
+from qgis.core import Qgis, QgsApplication, QgsSettings
 from qgis.gui import QgisInterface
 from qgis.PyQt.QtCore import QCoreApplication, QLocale, QTranslator, QUrl
 from qgis.PyQt.QtGui import QDesktopServices, QIcon
@@ -175,11 +175,11 @@ class GeoplateformePlugin:
         # Get plugin instance
         for plugin in GPF_PLUGIN_LIST:
             if plugin not in plugins:
-                PlgLogger.log(
+                self.log(
                     "Plugin {} not available. Can't add actions for plugin.".format(
                         plugin
                     ),
-                    log_level=0,
+                    log_level=Qgis.MessageLevel.Info,
                     push=False,
                 )
             else:
@@ -188,20 +188,38 @@ class GeoplateformePlugin:
                     plugin_instance, "create_gpf_plugins_actions", None
                 )
                 if not callable(actions_list_fct):
-                    PlgLogger.log(
+                    self.log(
                         "Method create_gpf_plugins_actions not available for plugin {}. Can't add actions for plugin.".format(
                             plugin
                         ),
-                        log_level=0,
+                        log_level=Qgis.MessageLevel.Info,
                         push=False,
                     )
                 else:
-                    actions_list = plugin_instance.create_gpf_plugins_actions(
-                        self.iface.mainWindow()
-                    )
-                    for action in actions_list:
-                        self.external_plugin_actions.append(action)
-                        self.iface.addPluginToWebMenu(__title__, action)
+                    try:
+                        actions_list = plugin_instance.create_gpf_plugins_actions(
+                            self.iface.mainWindow()
+                        )
+                        for action in actions_list:
+                            if isinstance(action, QAction):
+                                self.external_plugin_actions.append(action)
+                                self.iface.addPluginToWebMenu(__title__, action)
+                            else:
+                                self.log(
+                                    "Only QAction should be returned by `create_gpf_plugins_actions` for plugin : {}.".format(
+                                        plugin
+                                    ),
+                                    log_level=Qgis.MessageLevel.Info,
+                                    push=False,
+                                )
+                    except Exception as exc:
+                        self.log(
+                            "Exception raised by external plugin {} when calling `create_gpf_plugins_actions` : {}.".format(
+                                plugin, exc
+                            ),
+                            log_level=Qgis.MessageLevel.Info,
+                            push=False,
+                        )
 
     def unload(self):
         """Cleans up when plugin is disabled/uninstalled."""

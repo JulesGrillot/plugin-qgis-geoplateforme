@@ -24,3 +24,5 @@ supportsQt6=True
 # versionnement
 version=0.4.0-DEV
 changelog=
+
+plugin_dependencies=French Locator Filter,GPF - Isochrone Isodistance Itinéraire

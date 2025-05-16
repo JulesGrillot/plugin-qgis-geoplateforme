@@ -10,14 +10,16 @@ from pathlib import Path
 from typing import Optional
 
 # PyQGIS
-from qgis.core import QgsApplication, QgsSettings
+from qgis.core import Qgis, QgsApplication, QgsSettings
 from qgis.gui import QgisInterface
 from qgis.PyQt.QtCore import QCoreApplication, QLocale, QTranslator, QUrl
 from qgis.PyQt.QtGui import QDesktopServices, QIcon
 from qgis.PyQt.QtWidgets import QAction, QToolBar
+from qgis.utils import plugins
 
 # project
 from geoplateforme.__about__ import DIR_PLUGIN_ROOT, __title__, __uri_homepage__
+from geoplateforme.constants import GPF_PLUGIN_LIST
 from geoplateforme.gui.dashboard.dlg_dashboard import DashboardDialog
 from geoplateforme.gui.dlg_authentication import AuthenticationDialog
 from geoplateforme.gui.dlg_settings import PlgOptionsFactory
@@ -75,6 +77,8 @@ class GeoplateformePlugin:
         self.import_wizard = None
         self.tile_creation_wizard = None
         self.publication_wizard = None
+
+        self.external_plugin_actions = []
 
         self.dlg_auth: Optional[AuthenticationDialog] = None
 
@@ -158,9 +162,64 @@ class GeoplateformePlugin:
         # -- Processings
         self.initProcessing()
 
+        # Add actions from GPF plugins
+        self.add_gpf_plugins_actions()
+
     def initProcessing(self):
         self.provider = GeoplateformeProvider()
         QgsApplication.processingRegistry().addProvider(self.provider)
+
+    def add_gpf_plugins_actions(self) -> None:
+        """Add action for gpf plugin"""
+
+        # Get plugin instance
+        for plugin in GPF_PLUGIN_LIST:
+            if plugin not in plugins:
+                self.log(
+                    "Plugin {} not available. Can't add actions for plugin.".format(
+                        plugin
+                    ),
+                    log_level=Qgis.MessageLevel.Info,
+                    push=False,
+                )
+            else:
+                plugin_instance = plugins[plugin]
+                actions_list_fct = getattr(
+                    plugin_instance, "create_gpf_plugins_actions", None
+                )
+                if not callable(actions_list_fct):
+                    self.log(
+                        "Method create_gpf_plugins_actions not available for plugin {}. Can't add actions for plugin.".format(
+                            plugin
+                        ),
+                        log_level=Qgis.MessageLevel.Info,
+                        push=False,
+                    )
+                else:
+                    try:
+                        actions_list = plugin_instance.create_gpf_plugins_actions(
+                            self.iface.mainWindow()
+                        )
+                        for action in actions_list:
+                            if isinstance(action, QAction):
+                                self.external_plugin_actions.append(action)
+                                self.iface.addPluginToWebMenu(__title__, action)
+                            else:
+                                self.log(
+                                    "Only QAction should be returned by `create_gpf_plugins_actions` for plugin : {}.".format(
+                                        plugin
+                                    ),
+                                    log_level=Qgis.MessageLevel.Info,
+                                    push=False,
+                                )
+                    except Exception as exc:
+                        self.log(
+                            "Exception raised by external plugin {} when calling `create_gpf_plugins_actions` : {}.".format(
+                                plugin, exc
+                            ),
+                            log_level=Qgis.MessageLevel.Info,
+                            push=False,
+                        )
 
     def unload(self):
         """Cleans up when plugin is disabled/uninstalled."""
@@ -170,6 +229,9 @@ class GeoplateformePlugin:
         self.iface.removePluginWebMenu(__title__, self.action_storage_report)
         self.iface.removePluginWebMenu(__title__, self.action_help)
         self.iface.removePluginWebMenu(__title__, self.action_settings)
+
+        for action in self.external_plugin_actions:
+            self.iface.removePluginWebMenu(__title__, action)
 
         # remove toolbar :
         self.toolbar.deleteLater()

@@ -173,7 +173,7 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
             processing_manager.launch_execution(datastore_id=datastore, exec_id=exec_id)
 
             # Wait for database integration
-            self._wait_database_integration(datastore, stored_data_id)
+            self._wait_database_integration(datastore, stored_data_id, feedback)
 
         except UnavailableProcessingException as exc:
             raise QgsProcessingException(
@@ -224,7 +224,10 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
             )
 
     def _wait_database_integration(
-        self, datastore: str, vector_db_stored_data_id: str
+        self,
+        datastore: str,
+        vector_db_stored_data_id: str,
+        feedback: QgsProcessingFeedback,
     ) -> None:
         """
         Wait until database integration is done (GENERATED status) or throw exception if status is UNSTABLE
@@ -232,6 +235,7 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
         Args:
             datastore: (str) datastore id
             vector_db_stored_data_id: (str) vector db stored data id
+            feedback: (QgsProcessingFeedback) : feedback to cancel wait
         """
         try:
             manager = StoredDataRequestManager()
@@ -248,6 +252,9 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
                 )
                 status = stored_data.status
                 sleep(PlgOptionsManager.get_plg_settings().status_check_sleep)
+
+                if feedback.isCanceled():
+                    return
 
             if status == StoredDataStatus.UNSTABLE:
                 raise QgsProcessingException(

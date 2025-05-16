@@ -1,7 +1,7 @@
 # standard
 import os
 from functools import partial
-from typing import List
+from typing import List, Optional
 
 # PyQGIS
 from qgis.core import (
@@ -64,6 +64,7 @@ class UploadCreationPageWizard(QWizardPage):
         # Processing results
         self.processing_failed = False
         self.created_upload_id = ""
+        self.upload_check_execution_list: List[CheckExecution] = []
         self.created_stored_data_id = ""
 
         # Timer for upload check after upload creation
@@ -93,6 +94,7 @@ class UploadCreationPageWizard(QWizardPage):
         # Processing results
         self.processing_failed = False
         self.created_upload_id = ""
+        self.upload_check_execution_list = []
         self.created_stored_data_id = ""
 
         self.mdl_execution_list.clear_executions()
@@ -132,7 +134,7 @@ class UploadCreationPageWizard(QWizardPage):
 
         # Run timer for upload check
         self.upload_check_timer.start(
-            int(PlgOptionsManager.get_plg_settings().status_check_sleep / 1000.0)
+            int(PlgOptionsManager.get_plg_settings().status_check_sleep * 1000.0)
         )
 
     def _vector_db_creation_finished(self, context, successful, results):
@@ -174,7 +176,13 @@ class UploadCreationPageWizard(QWizardPage):
 
         """
         self.mdl_execution_list.clear_executions()
-        self.mdl_execution_list.set_check_execution_list(self._check_upload_creation())
+
+        # Don't ask again for upload check execution list if stored data is defined
+        if not self.created_stored_data_id:
+            self.upload_check_execution_list = self._check_upload_creation()
+        self.mdl_execution_list.set_check_execution_list(
+            self.upload_check_execution_list
+        )
 
         execution = self._check_stored_data_creation()
         if execution:
@@ -204,7 +212,7 @@ class UploadCreationPageWizard(QWizardPage):
                 self._report_processing_error(self.tr("Upload check status"), str(exc))
         return execution_list
 
-    def _check_stored_data_creation(self) -> Execution:
+    def _check_stored_data_creation(self) -> Optional[Execution]:
         """
         Check if stored data creation is done and return processing execution
         If stored data is generated, stop check timer

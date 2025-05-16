@@ -61,7 +61,7 @@ class PlgSettingsStructure:
     qgis_auth_id: Optional[str] = None
 
     # status check sleep (in seconds)
-    status_check_sleep: int = 1
+    status_check_sleep: int = 30
 
     # sandbox datastores
     sandbox_datastore_ids_str: str = (

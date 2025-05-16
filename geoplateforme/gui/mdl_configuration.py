@@ -92,7 +92,7 @@ class ConfigurationListModel(QStandardItemModel):
 
         self.setData(self.index(row, self.NAME_COL), config.layer_name)
         self.setData(self.index(row, self.NAME_COL), config, Qt.ItemDataRole.UserRole)
-        self.setData(self.index(row, self.TYPE_COL), config.type_data)
+        self.setData(self.index(row, self.TYPE_COL), config.type)
 
         self.setData(
             self.index(row, self.DATE_COL),

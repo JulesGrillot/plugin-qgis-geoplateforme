@@ -30,10 +30,22 @@ class ConfigurationField(Enum):
     LAYER_NAME = "layer_name"
     TYPE = "type"
     STATUS = "status"
-    ATTRIBUTION = "attributions"
+    ATTRIBUTIONS = "attributions"
     METADATAS = "metadatas"
     TAGS = "tags"
     LAST_EVENT = "last_event"
+
+
+class ConfigurationType(Enum):
+    WMS_VECTOR = "WMS-VECTOR"
+    WFS = "WFS"
+    WMTS_TMS = "WMTS-TMS"
+    WMS_RASTER = "WMS-RASTER"
+    DOWNLOAD = "DOWNLOAD"
+    ITINERARY_ISOCURVE = "ITINERARY-ISOCURVE"
+    ALTIMETRY = "ALTIMETRY"
+    SEARCH = "SEARCH"
+    VECTOR_TMS = "VECTOR-TMS"
 
 
 class ConfigurationStatus(Enum):
@@ -49,22 +61,49 @@ class Configuration:
     is_detailed: bool = False
 
     # Optional
+    _name: Optional[str] = None
+    _layer_name: Optional[str] = None
+    _type: Optional[ConfigurationType] = None
     _status: Optional[ConfigurationStatus] = None
-    type_data: Optional[str] = None
-    metadata: Optional[str] = None
-    name: Optional[str] = None
-    layer_name: Optional[str] = None
-    type_infos: Optional[dict] = None
-    attribution: Optional[dict] = None
     _tags: Optional[dict] = None
+    _attribution: Optional[dict] = None
     _last_event: Optional[dict] = None
+    _extra: Optional[dict] = None
+    _metadata: Optional[list[dict]] = None
+    _type_infos: Optional[dict] = None
 
     @property
-    def title(self) -> str:
-        if self.type_infos and "title" in self.type_infos:
-            return self.type_infos["title"]
-        else:
-            return ""
+    def name(self) -> str:
+        """Returns the name of the configuration.
+
+        :return: configuration name
+        :rtype: str
+        """
+        if not self._name and not self.is_detailed:
+            self.update_from_api()
+        return self._name
+
+    @property
+    def layer_name(self) -> str:
+        """Returns the name of the configuration.
+
+        :return: configuration name
+        :rtype: str
+        """
+        if not self._layer_name and not self.is_detailed:
+            self.update_from_api()
+        return self._layer_name
+
+    @property
+    def type(self) -> ConfigurationType:
+        """Returns the type of the configuration.
+
+        :return: configuration type
+        :rtype: ConfigurationType
+        """
+        if not self._type and not self.is_detailed:
+            self.update_from_api()
+        return self._type
 
     @property
     def status(self) -> ConfigurationStatus:
@@ -78,41 +117,79 @@ class Configuration:
         return self._status
 
     @property
-    def abstract(self) -> str:
-        if self.type_infos and "abstract" in self.type_infos:
-            return self.type_infos["abstract"]
-        else:
-            return ""
+    def tags(self) -> dict:
+        """Returns the tags of the configuration.
+
+        :return: configuration tags
+        :rtype: dict
+        """
+        if not self._tags and not self.is_detailed:
+            self.update_from_api()
+        return self._tags
+
+    @property
+    def attribution(self) -> dict:
+        """Returns the attribution of the configuration.
+
+        :return: configuration attribution
+        :rtype: dict
+        """
+        if not self._attribution and not self.is_detailed:
+            self.update_from_api()
+        return self._attribution
 
     @property
     def url_title(self) -> str:
-        if self.type_infos and "title" in self.attribution:
-            return self.attribution["title"]
+        """Return the url defined in attribution
+
+        :return: attribution title
+        :rtype: str
+        """
+        if self._attribution and "title" in self._attribution:
+            return self._attribution["title"]
         else:
             return ""
-
-    @property
-    def url(self) -> str:
-        if self.attribution and "url" in self.attribution:
-            return self.attribution["url"]
-        else:
-            return ""
-
-    @title.setter
-    def title(self, val: str) -> None:
-        self.type_infos["title"] = val
-
-    @abstract.setter
-    def abstract(self, val: str) -> None:
-        self.type_infos["abstract"] = val
 
     @url_title.setter
     def url_title(self, val: str) -> None:
-        self.attribution["title"] = val
+        """Set the title defined in attribution
+
+        :param val: title
+        :type val: str
+        """
+        self._attribution["title"] = val
+
+    @property
+    def url(self) -> str:
+        """Return the url defined in attribution
+
+        :return: attribution url
+        :rtype: str
+        """
+        if self._attribution and "url" in self._attribution:
+            return self._attribution["url"]
+        else:
+            return ""
 
     @url.setter
     def url(self, val: str) -> None:
-        self.attribution["url"] = val
+        """Set the url defined in attribution
+
+        :param val: url
+        :type val: str
+        """
+        self._attribution["url"] = val
+
+    @property
+    def last_event(self) -> dict:
+        """Returns the last_event of configuration.
+
+        :return: configuration last_event
+        :rtype: dict
+        """
+        if not self._last_event and not self.is_detailed:
+            self.update_from_api()
+        return self._last_event
 
     def get_last_event_date(self) -> str:
         """Returns the configuration last_event date.
@@ -124,6 +201,81 @@ class Configuration:
         if self._last_event and "date" in self._last_event:
             result = self._last_event["date"]
         return result
+
+    @property
+    def extra(self) -> dict:
+        """Returns the extra of configuraiton.
+
+        :return: configuration extra
+        :rtype: dict
+        """
+        if not self._last_event and not self.is_detailed:
+            self.update_from_api()
+        return self._last_event
+
+    @property
+    def metadata(self) -> list[dict]:
+        """Returns the metadata of the configuration.
+
+        :return: configuration metadata
+        :rtype: dict
+        """
+        if not self._metadata and not self.is_detailed:
+            self.update_from_api()
+        return self._metadata
+
+    @property
+    def type_infos(self) -> dict:
+        """Returns the type_infos of the configuration.
+
+        :return: configuration type_infos
+        :rtype: dict
+        """
+        if not self._type_infos and not self.is_detailed:
+            self.update_from_api()
+        return self._type_infos
+
+    @property
+    def title(self) -> str:
+        """Get the title for type_infos
+
+        :return: title for type_infos
+        :rtype: str
+        """
+        if self._type_infos and "title" in self._type_infos:
+            return self._type_infos["title"]
+        else:
+            return ""
+
+    @title.setter
+    def title(self, val: str) -> None:
+        """Set the title in type_infos
+
+        :param val: title
+        :type val: str
+        """
+        self._type_infos["title"] = val
+
+    @property
+    def abstract(self) -> str:
+        """Get the abstract from type_infos
+
+        :return: abstract from type_infos
+        :rtype: str
+        """
+        if self._type_infos and "abstract" in self._type_infos:
+            return self._type_infos["abstract"]
+        else:
+            return ""
+
+    @abstract.setter
+    def abstract(self, val: str) -> None:
+        """Set the abstract for type_indos
+
+        :param val: abstract
+        :type val: str
+        """
+        self._type_infos["abstract"] = val
 
     @classmethod
     def from_dict(cls, datastore_id: str, val: dict) -> Self:
@@ -142,23 +294,25 @@ class Configuration:
             datastore_id=datastore_id,
         )
         if "name" in val:
-            res.name = val["name"]
+            res._name = val["name"]
+        if "layer_name" in val:
+            res._layer_name = val["layer_name"]
         if "type" in val:
-            res.type_data = val["type"]
+            res._type = val["type"]
         if "status" in val:
             res._status = ConfigurationStatus(val["status"])
-        if "metadata" in val:
-            res.metadata = val["metadata"]
-        if "layer_name" in val:
-            res.layer_name = val["layer_name"]
-        if "type_infos" in val:
-            res.type_infos = val["type_infos"]
-        if "attribution" in val:
-            res.attribution = val["attribution"]
         if "tags" in val:
             res._tags = val["tags"]
+        if "attribution" in val:
+            res._attribution = val["attribution"]
         if "last_event" in val:
             res._last_event = val["last_event"]
+        if "extra" in val:
+            res._extra = val["extra"]
+        if "metadata" in val:
+            res._metadata = val["metadata"]
+        if "type_infos" in val:
+            res._type_infos = val["type_infos"]
 
         return res
 
@@ -168,23 +322,25 @@ class Configuration:
         data = manager.get_configuration_json(self.datastore_id, self._id)
 
         if "name" in data:
-            self.name = data["name"]
+            self._name = data["name"]
+        if "layer_name" in data:
+            self._layer_name = data["layer_name"]
         if "type" in data:
-            self.type_data = data["type"]
+            self._type = ConfigurationType(data["type"])
         if "status" in data:
             self._status = ConfigurationStatus(data["status"])
-        if "metadata" in data:
-            self.metadata = data["metadata"]
-        if "layer_name" in data:
-            self.layer_name = data["layer_name"]
-        if "type_infos" in data:
-            self.type_infos = data["type_infos"]
-        if "attribution" in data:
-            self.attribution = data["attribution"]
         if "tags" in data:
             self._tags = data["tags"]
+        if "attribution" in data:
+            self._attribution = data["attribution"]
         if "last_event" in data:
             self._last_event = data["last_event"]
+        if "extra" in data:
+            self._extra = data["extra"]
+        if "metadata" in data:
+            self._metadata = data["metadata"]
+        if "type_infos" in data:
+            self._type_infos = data["type_infos"]
         self.is_detailed = True
 
 
@@ -246,7 +402,7 @@ class ConfigurationRequestManager:
         # encode data
         data = QByteArray()
         data_map = {
-            "type": configuration.type_data,
+            "type": configuration.type,
             "metadata": configuration.metadata,
             "name": configuration.name,
             "layer_name": configuration.layer_name,

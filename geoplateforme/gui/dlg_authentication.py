@@ -55,19 +55,6 @@ class AuthenticationDialog(QDialog):
 
         # widgets connect
         self.btn_log_in.clicked.connect(self.connect)
-        self.btn_log_in_fc.clicked.connect(self.connect_not_available)
-        self.btn_log_in_pc.clicked.connect(self.connect_not_available)
-
-    def connect_not_available(self) -> None:
-        """CDisplay message for not available connect endpoint."""
-        self.log(
-            message=self.tr("This connect end point is currently not available "),
-            log_level=Qgis.MessageLevel.Critical,
-            push=True,
-            duration=30,
-            parent_location=self,
-        )
-        return
 
     def connect(self) -> None:
         """Check connection parameter and define current geotuileur authentication config

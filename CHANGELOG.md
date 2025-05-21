@@ -16,13 +16,38 @@ Unreleased
 
 -->
 
+## 0.4.0 - 2025-05-21
+
+* Feat/remove check of crs for non spatial layers by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/34>
+* feat(upload): add processing for creation from QGIS layer by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/31>
+* feature(dashboard): add button to create a new dataset or add data to existing dataset by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/32>
+* feat(tile publish): add prefix SANDBOX for list of datastore defined in settings by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/33>
+* 4- feat(upload to vector): refactor to replace .json by processing parameter by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/35>
+* 5- feat(upload from layer): add additionnal files option by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/36>
+* feat(layer selection): new ui for layer and file selection by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/37>
+* feat(vector db creation): use layers for vector db creation by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/38>
+* feat(tile generation): add action for tile generation in vector db stored data details by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/39>
+* feat(tile publish): add action for tile publication in pyramid vector stored data details by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/40>
+* feat(tile generation): refactor to remove JSON file use by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/41>
+* feat(tile publish): refactor to remove JSON file use by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/42>
+* feat(ui): remove action for tile generation and publication from toolbar by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/43>
+* add metadata class and fill by parsing xml by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/48>
+* feat(dataset): sort by name in combobox by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/47>
+* feat(service): display available service in table by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/44>
+* feat(upload): add widget to display upload details by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/45>
+* feat(external plugins): add dependencies and load actions in Geoplateforme plugin by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/46>
+* feat(ui): minor changes in UI and processing by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/49>
+* feat(processing): add available processings name in settings (not visible to user) by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/50>
+* feat(upload): check if db integration has started before wizard close by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/51>
+* feat(auth): add user dialog if log in by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/52>
+
 ## 0.3.0-beta1 - 2025-04-29
 
 * first version deployed on plugins.qgis.org
 * feat(tile creation): no upload remove after creation by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/26>
 * fix(datastore selection): disable signal connection during update by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/25>
 * fix(tile publish): invalid levels used by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/28>
-* fix(endpoint): invalid search of endpoint by @jmkerloch in https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/30
+* fix(endpoint): invalid search of endpoint by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/30>
 * update(ui): use logo proposed by @IGNF-Xavier by @Guts in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/27>
 
 ## 0.2.0-beta2 - 2025-04-29

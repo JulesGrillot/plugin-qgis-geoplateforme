@@ -32,8 +32,6 @@ data_type = "WMTS-TMS"
 
 
 class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
-    INPUT_JSON = "INPUT_JSON"
-
     DATASTORE = "DATASTORE"
     STORED_DATA = "STORED_DATA"
     NAME = "NAME"
@@ -222,7 +220,15 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
                 _metadata=metadata,
                 _name=name,
                 _layer_name=layer_name,
-                _type_infos={},
+                _type_infos={
+                    "used_data": [
+                        {
+                            "stored_data": stored_data_id,
+                            "top_level": str(top_level),
+                            "bottom_level": str(bottom_level),
+                        }
+                    ]
+                },
                 _attribution={},
                 is_detailed=True,
             )
@@ -234,9 +240,6 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
             # response = configuration
             res = manager_configuration.create_configuration(
                 datastore=datastore,
-                stored_data=stored_data_id,
-                top_level=top_level,
-                bottom_level=bottom_level,
                 configuration=configuration,
             )
             configuration_id = res

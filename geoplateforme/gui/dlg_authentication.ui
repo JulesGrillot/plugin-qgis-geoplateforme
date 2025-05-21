@@ -89,20 +89,6 @@
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="btn_log_in_fc">
-     <property name="text">
-      <string>Authenticate the plugin using your FranceConnect account</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QPushButton" name="btn_log_in_pc">
-     <property name="text">
-      <string>Authenticate the plugin using your ProConnect account</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="Line" name="line">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>

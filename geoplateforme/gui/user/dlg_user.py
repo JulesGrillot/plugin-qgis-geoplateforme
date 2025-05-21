@@ -52,6 +52,7 @@ class UserDialog(QDialog):
                 self.tr("Unavailable user"),
                 self.tr(f"Unable to identify the logged in user: {exc}"),
             )
+            raise exc
 
     def _disconnect(self) -> None:
         """

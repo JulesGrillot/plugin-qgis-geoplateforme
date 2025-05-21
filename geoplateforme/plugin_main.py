@@ -19,11 +19,13 @@ from qgis.utils import plugins
 
 # project
 from geoplateforme.__about__ import DIR_PLUGIN_ROOT, __title__, __uri_homepage__
+from geoplateforme.api.custom_exceptions import UnavailableUserException
 from geoplateforme.constants import GPF_PLUGIN_LIST
 from geoplateforme.gui.dashboard.dlg_dashboard import DashboardDialog
 from geoplateforme.gui.dlg_authentication import AuthenticationDialog
 from geoplateforme.gui.dlg_settings import PlgOptionsFactory
 from geoplateforme.gui.storage.dlg_storage_report import StorageReportDialog
+from geoplateforme.gui.user.dlg_user import UserDialog
 from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.toolbelt import PlgLogger, PlgOptionsManager
 
@@ -278,11 +280,22 @@ class GeoplateformePlugin:
 
     def authentication(self) -> None:
         """Display authentication dialog to initiate log-in pairing on GitLab."""
-        if self.dlg_auth is None:
-            self.dlg_auth = AuthenticationDialog()
+        connection_valid = False
+        if self.plg_settings.get_plg_settings().qgis_auth_id:
+            try:
+                dlg_user = UserDialog(self.iface.mainWindow())
+                dlg_user.exec()
+                connection_valid = True
+            except UnavailableUserException:
+                self.plg_settings.disconnect()
 
-        self.dlg_auth.finished.connect(self._update_actions_availability)
-        self.dlg_auth.show()
+        if not connection_valid:
+            if self.dlg_auth is None:
+                self.dlg_auth = AuthenticationDialog()
+                self.dlg_auth.finished.connect(self._update_actions_availability)
+            self.dlg_auth.show()
+        else:
+            self._update_actions_availability()
 
     def _update_actions_availability(self) -> None:
         """

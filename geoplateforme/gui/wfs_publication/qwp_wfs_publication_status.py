@@ -90,21 +90,23 @@ class PublicationStatut(QWizardPage):
 
         relations = []
 
-        # Define composition for each table. For now using zoom levels from tile vector
+        # Define relation for each selected table.
         for table_relation in selected_table_relations:
-            relations.append(
-                {
-                    WfsPublicationAlgorithm.RELATIONS_NATIVE_NAME: table_relation.native_name,
-                    WfsPublicationAlgorithm.RELATIONS_TITLE: table_relation.title,
-                    WfsPublicationAlgorithm.RELATIONS_ABSTRACT: table_relation.native_name,
-                    WfsPublicationAlgorithm.RELATIONS_PUBLIC_NAME: table_relation.public_name
-                    if table_relation.public_name
-                    else "",
-                    WfsPublicationAlgorithm.RELATIONS_KEYWORDS: table_relation.keywords
-                    if table_relation.keywords
-                    else [],
-                }
-            )
+            relation = {
+                WfsPublicationAlgorithm.RELATIONS_NATIVE_NAME: table_relation.native_name,
+                WfsPublicationAlgorithm.RELATIONS_TITLE: table_relation.title,
+                WfsPublicationAlgorithm.RELATIONS_ABSTRACT: table_relation.native_name,
+            }
+            if table_relation.public_name:
+                relation[WfsPublicationAlgorithm.RELATIONS_PUBLIC_NAME] = (
+                    table_relation.public_name
+                )
+            if table_relation.keywords:
+                relation[WfsPublicationAlgorithm.RELATIONS_KEYWORDS] = (
+                    table_relation.keywords
+                )
+
+            relations.append(relation)
         params[WfsPublicationAlgorithm.RELATIONS] = json.dumps(relations)
 
         algo_str = f"{GeoplateformeProvider().id()}:{WfsPublicationAlgorithm().name()}"

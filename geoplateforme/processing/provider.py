@@ -23,6 +23,7 @@ from geoplateforme.processing.upload_from_files import GpfUploadFromFileAlgorith
 from geoplateforme.processing.upload_from_layers import GpfUploadFromLayersAlgorithm
 from geoplateforme.processing.upload_publication import UploadPublicationAlgorithm
 from geoplateforme.processing.vector_db_creation import VectorDatabaseCreationAlgorithm
+from geoplateforme.processing.wfs_publication import WfsPublicationAlgorithm
 
 # ############################################################################
 # ########## Classes ###############
@@ -46,6 +47,7 @@ class GeoplateformeProvider(QgsProcessingProvider):
         self.addAlgorithm(UpdateTileUploadAlgorithm())
         self.addAlgorithm(DeleteDataAlgorithm())
         self.addAlgorithm(GpfUploadFromLayersAlgorithm())
+        self.addAlgorithm(WfsPublicationAlgorithm())
 
     def id(self) -> str:
         """Unique provider id, used for identifying it. This string should be unique, \

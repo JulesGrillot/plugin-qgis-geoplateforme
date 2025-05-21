@@ -96,7 +96,7 @@
   <customwidget>
    <class>PublicationForm</class>
    <extends>QWidget</extends>
-   <header location="global">geoplateforme.gui.publication_creation.wdg_publication_form.h</header>
+   <header location="global">geoplateforme.gui.wdg_publication_form.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

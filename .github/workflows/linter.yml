@@ -12,6 +12,7 @@ on:
       - main
     paths:
       - "**.py"
+      - geoplateforme/metadata.txt
 
 env:
   PROJECT_FOLDER: "geoplateforme"

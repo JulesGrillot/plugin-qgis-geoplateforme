@@ -1,6 +1,7 @@
 import json
 import logging
 import math
+import os
 import re
 from dataclasses import dataclass
 from datetime import datetime
@@ -139,231 +140,239 @@ class Metadata:
         meta_xml = manager.get_metadata_file(
             datastore_id=self.datastore_id, metadata_id=self._id
         )
-        root = ElementTree.fromstring(meta_xml)
-        if root is not None:
-            identifier_field = root.find("./{*}fileIdentifier/{*}CharacterString")
-            if identifier_field is not None:
-                qgis_metadata.setIdentifier(identifier_field.text)
+        try:
+            root = ElementTree.fromstring(meta_xml)
+            if root is not None:
+                identifier_field = root.find("./{*}fileIdentifier/{*}CharacterString")
+                if identifier_field is not None:
+                    qgis_metadata.setIdentifier(identifier_field.text)
 
-            language_field = root.find("./{*}language/{*}LanguageCode")
-            if language_field is not None:
-                qgis_metadata.setLanguage(language_field.attrib["codeListValue"])
+                language_field = root.find("./{*}language/{*}LanguageCode")
+                if language_field is not None:
+                    qgis_metadata.setLanguage(language_field.attrib["codeListValue"])
 
-            character_set_field = root.find("./{*}characterSet/{*}MD_CharacterSetCode")
-            if character_set_field is not None:
-                qgis_metadata.setEncoding(character_set_field.text)
-
-            type_field = root.find("./{*}hierarchyLevel/{*}MD_ScopeCode")
-            if type_field is not None:
-                qgis_metadata.setType(type_field.text)
-
-            ident_el = root.find("./{*}identificationInfo/{*}MD_DataIdentification")
-            if ident_el is not None:
-                title_field = ident_el.find(
-                    "./{*}citation/{*}CI_Citation/{*}title/{*}CharacterString"
+                character_set_field = root.find(
+                    "./{*}characterSet/{*}MD_CharacterSetCode"
                 )
-                if title_field is not None:
-                    qgis_metadata.setTitle(title_field.text)
+                if character_set_field is not None:
+                    qgis_metadata.setEncoding(character_set_field.text)
 
-                creation_date_field = ident_el.find(
-                    "./{*}citation/{*}CI_Citation/{*}date/{*}CI_Date/{*}date/{*}Date"
-                )
-                if creation_date_field is not None:
-                    qgis_metadata.setDateTime(
-                        Qgis.MetadataDateType.Created,
-                        datetime.fromisoformat(creation_date_field.text),
+                type_field = root.find("./{*}hierarchyLevel/{*}MD_ScopeCode")
+                if type_field is not None:
+                    qgis_metadata.setType(type_field.text)
+
+                ident_el = root.find("./{*}identificationInfo/{*}MD_DataIdentification")
+                if ident_el is not None:
+                    title_field = ident_el.find(
+                        "./{*}citation/{*}CI_Citation/{*}title/{*}CharacterString"
                     )
+                    if title_field is not None:
+                        qgis_metadata.setTitle(title_field.text)
 
-                abstract_field = ident_el.find("./{*}abstract/{*}CharacterString")
-                if abstract_field is not None:
-                    qgis_metadata.setAbstract(abstract_field.text)
-
-                contact_org = QgsAbstractMetadataBase.Contact()
-                add_org_contact = False
-                org_name_field = ident_el.find(
-                    "./{*}pointOfContact/{*}CI_ResponsibleParty/{*}organisationName/{*}CharacterString"
-                )
-                if org_name_field is not None:
-                    contact_org.name = org_name_field.text
-                    contact_org.organization = org_name_field.text
-                    add_org_contact = True
-
-                org_email_field = ident_el.find(
-                    "./{*}pointOfContact/{*}CI_ResponsibleParty/{*}contactInfo/{*}CI_Contact/{*}address/{*}CI_Address/{*}electronicMailAddress/{*}CharacterString"
-                )
-                if org_email_field is not None:
-                    contact_org.email = org_email_field.text
-                    add_org_contact = True
-
-                if add_org_contact:
-                    qgis_metadata.addContact(contact_org)
-
-                all_keywords_field = ident_el.findall(
-                    "./{*}descriptiveKeywords/{*}MD_Keywords"
-                )
-                for keywords_group in all_keywords_field:
-                    keywords_field = keywords_group.findall(
-                        "./{*}keyword/{*}CharacterString"
+                    creation_date_field = ident_el.find(
+                        "./{*}citation/{*}CI_Citation/{*}date/{*}CI_Date/{*}date/{*}Date"
                     )
-                    if len(keywords_field) > 0:
-                        keywords = [kw.text for kw in keywords_field]
-                        vocabulary = "Free"
-                        vocabulary_field = keywords_group.find(
-                            "./{*}thesaurusName/{*}CI_Citation/{*}title/{*}CharacterString"
-                        )
-                        if vocabulary_field is not None:
-                            vocabulary = vocabulary_field.text
-                        qgis_metadata.addKeywords(
-                            vocabulary=vocabulary, keywords=keywords
+                    if creation_date_field is not None:
+                        qgis_metadata.setDateTime(
+                            Qgis.MetadataDateType.Created,
+                            datetime.fromisoformat(creation_date_field.text),
                         )
 
-                topics_field = ident_el.findall(
-                    "./{*}topicCategory/{*}MD_TopicCategoryCode"
-                )
-                if len(topics_field) > 0:
-                    qgis_metadata.setCategories(
-                        [topics.text for topics in topics_field]
-                    )
+                    abstract_field = ident_el.find("./{*}abstract/{*}CharacterString")
+                    if abstract_field is not None:
+                        qgis_metadata.setAbstract(abstract_field.text)
 
-                thumbnail_field = ident_el.find(
-                    "./{*}graphicOverview/{*}MD_BrowseGraphic"
-                )
-                if thumbnail_field is not None:
-                    link_thumbnail = QgsAbstractMetadataBase.Link()
-                    link_thumbnail.name = "thumbnail"
-                    link_thumbnail.type = "file"
-                    thumbnail_url = thumbnail_field.find(
-                        "./{*}fileName/{*}CharacterString"
+                    contact_org = QgsAbstractMetadataBase.Contact()
+                    add_org_contact = False
+                    org_name_field = ident_el.find(
+                        "./{*}pointOfContact/{*}CI_ResponsibleParty/{*}organisationName/{*}CharacterString"
                     )
-                    if thumbnail_url is not None:
-                        link_thumbnail.url = thumbnail_url.text
-                    thumbnail_description = thumbnail_field.find(
-                        "./{*}fileDescription/{*}CharacterString"
-                    )
-                    if thumbnail_description is not None:
-                        link_thumbnail.description = thumbnail_description.text
-                    thumbnail_type = thumbnail_field.find(
-                        "./{*}fileType/{*}CharacterString"
-                    )
-                    if thumbnail_type is not None:
-                        link_thumbnail.format = thumbnail_type.text
-                    qgis_metadata.addLink(link_thumbnail)
+                    if org_name_field is not None:
+                        contact_org.name = org_name_field.text
+                        contact_org.organization = org_name_field.text
+                        add_org_contact = True
 
-                frequency_field = ident_el.find(
-                    "./{*}resourceMaintenance/{*}MD_MaintenanceInformation/{*}maintenanceAndUpdateFrequency/{*}MD_MaintenanceFrequencyCode"
-                )
-                if frequency_field is not None:
-                    qgis_metadata.setAbstract(
-                        qgis_metadata.abstract()
-                        + f"\n\nUpdate frequency : {frequency_field.attrib['codeListValue']}"
+                    org_email_field = ident_el.find(
+                        "./{*}pointOfContact/{*}CI_ResponsibleParty/{*}contactInfo/{*}CI_Contact/{*}address/{*}CI_Address/{*}electronicMailAddress/{*}CharacterString"
                     )
+                    if org_email_field is not None:
+                        contact_org.email = org_email_field.text
+                        add_org_contact = True
 
-                resolution_field = ident_el.find(
-                    "./{*}spatialResolution/{*}MD_Resolution/{*}equivalentScale/{*}MD_RepresentativeFraction/{*}denominator/{*}Integer"
-                )
-                if resolution_field is not None:
-                    qgis_metadata.setAbstract(
-                        qgis_metadata.abstract()
-                        + f"\nData resolution : 1/{resolution_field.text}"
-                    )
+                    if add_org_contact:
+                        qgis_metadata.addContact(contact_org)
 
-                bbox_field = ident_el.find(
-                    "./{*}extent/{*}EX_Extent/{*}geographicElement/{*}EX_GeographicBoundingBox"
-                )
-                if bbox_field is not None:
-                    extent = QgsLayerMetadata.Extent()
-                    spatial_extent = QgsLayerMetadata.SpatialExtent()
-                    spatial_extent.bounds.setZMaximum(0)
-                    spatial_extent.bounds.setZMinimum(0)
-                    westBoundLongitude = bbox_field.find(
-                        "./{*}westBoundLongitude/{*}Decimal"
+                    all_keywords_field = ident_el.findall(
+                        "./{*}descriptiveKeywords/{*}MD_Keywords"
                     )
-                    if westBoundLongitude is not None:
-                        spatial_extent.bounds.setXMinimum(
-                            float(westBoundLongitude.text)
+                    for keywords_group in all_keywords_field:
+                        keywords_field = keywords_group.findall(
+                            "./{*}keyword/{*}CharacterString"
                         )
-                    eastBoundLongitude = bbox_field.find(
-                        "./{*}eastBoundLongitude/{*}Decimal"
+                        if len(keywords_field) > 0:
+                            keywords = [kw.text for kw in keywords_field]
+                            vocabulary = "Free"
+                            vocabulary_field = keywords_group.find(
+                                "./{*}thesaurusName/{*}CI_Citation/{*}title/{*}CharacterString"
+                            )
+                            if vocabulary_field is not None:
+                                vocabulary = vocabulary_field.text
+                            qgis_metadata.addKeywords(
+                                vocabulary=vocabulary, keywords=keywords
+                            )
+
+                    topics_field = ident_el.findall(
+                        "./{*}topicCategory/{*}MD_TopicCategoryCode"
                     )
-                    if eastBoundLongitude is not None:
-                        spatial_extent.bounds.setXMaximum(
-                            float(eastBoundLongitude.text)
+                    if len(topics_field) > 0:
+                        qgis_metadata.setCategories(
+                            [topics.text for topics in topics_field]
                         )
-                    southBoundLatitude = bbox_field.find(
-                        "./{*}southBoundLatitude/{*}Decimal"
+
+                    thumbnail_field = ident_el.find(
+                        "./{*}graphicOverview/{*}MD_BrowseGraphic"
                     )
-                    if southBoundLatitude is not None:
-                        spatial_extent.bounds.setYMinimum(
-                            float(southBoundLatitude.text)
+                    if thumbnail_field is not None:
+                        link_thumbnail = QgsAbstractMetadataBase.Link()
+                        link_thumbnail.name = "thumbnail"
+                        link_thumbnail.type = "file"
+                        thumbnail_url = thumbnail_field.find(
+                            "./{*}fileName/{*}CharacterString"
                         )
-                    northBoundLatitude = bbox_field.find(
-                        "./{*}northBoundLatitude/{*}Decimal"
+                        if thumbnail_url is not None:
+                            link_thumbnail.url = thumbnail_url.text
+                        thumbnail_description = thumbnail_field.find(
+                            "./{*}fileDescription/{*}CharacterString"
+                        )
+                        if thumbnail_description is not None:
+                            link_thumbnail.description = thumbnail_description.text
+                        thumbnail_type = thumbnail_field.find(
+                            "./{*}fileType/{*}CharacterString"
+                        )
+                        if thumbnail_type is not None:
+                            link_thumbnail.format = thumbnail_type.text
+                        qgis_metadata.addLink(link_thumbnail)
+
+                    frequency_field = ident_el.find(
+                        "./{*}resourceMaintenance/{*}MD_MaintenanceInformation/{*}maintenanceAndUpdateFrequency/{*}MD_MaintenanceFrequencyCode"
                     )
-                    if northBoundLatitude is not None:
-                        spatial_extent.bounds.setYMaximum(
-                            float(northBoundLatitude.text)
+                    if frequency_field is not None:
+                        qgis_metadata.setAbstract(
+                            qgis_metadata.abstract()
+                            + f"\n\nUpdate frequency : {frequency_field.attrib['codeListValue']}"
                         )
-                    extent.setSpatialExtents([spatial_extent])
-                    qgis_metadata.setExtent(extent)
 
-                contact_email_field = root.find(
-                    "./{*}contact/{*}CI_ResponsibleParty/{*}contactInfo/{*}CI_Contact/{*}address/{*}CI_Address/{*}electronicMailAddress/{*}CharacterString"
-                )
-                if contact_email_field is not None:
-                    contact = QgsAbstractMetadataBase.Contact()
-                    contact.email = contact_email_field.text
-                    qgis_metadata.addContact(contact)
-
-                update_date_field = root.find("./{*}dateStamp/{*}DateTime")
-                if update_date_field is not None and update_date_field.text is not None:
-                    qgis_metadata.setDateTime(
-                        Qgis.MetadataDateType.Revised,
-                        datetime.fromisoformat(update_date_field.text),
+                    resolution_field = ident_el.find(
+                        "./{*}spatialResolution/{*}MD_Resolution/{*}equivalentScale/{*}MD_RepresentativeFraction/{*}denominator/{*}Integer"
                     )
+                    if resolution_field is not None:
+                        qgis_metadata.setAbstract(
+                            qgis_metadata.abstract()
+                            + f"\nData resolution : 1/{resolution_field.text}"
+                        )
 
-                genealogy_field = root.find(
-                    "./{*}dataQualityInfo/{*}DQ_DataQuality/{*}lineage/{*}LI_Lineage/{*}statement/{*}CharacterString"
-                )
-                if genealogy_field is not None:
-                    qgis_metadata.setHistory([genealogy_field.text])
+                    bbox_field = ident_el.find(
+                        "./{*}extent/{*}EX_Extent/{*}geographicElement/{*}EX_GeographicBoundingBox"
+                    )
+                    if bbox_field is not None:
+                        extent = QgsLayerMetadata.Extent()
+                        spatial_extent = QgsLayerMetadata.SpatialExtent()
+                        spatial_extent.bounds.setZMaximum(0)
+                        spatial_extent.bounds.setZMinimum(0)
+                        westBoundLongitude = bbox_field.find(
+                            "./{*}westBoundLongitude/{*}Decimal"
+                        )
+                        if westBoundLongitude is not None:
+                            spatial_extent.bounds.setXMinimum(
+                                float(westBoundLongitude.text)
+                            )
+                        eastBoundLongitude = bbox_field.find(
+                            "./{*}eastBoundLongitude/{*}Decimal"
+                        )
+                        if eastBoundLongitude is not None:
+                            spatial_extent.bounds.setXMaximum(
+                                float(eastBoundLongitude.text)
+                            )
+                        southBoundLatitude = bbox_field.find(
+                            "./{*}southBoundLatitude/{*}Decimal"
+                        )
+                        if southBoundLatitude is not None:
+                            spatial_extent.bounds.setYMinimum(
+                                float(southBoundLatitude.text)
+                            )
+                        northBoundLatitude = bbox_field.find(
+                            "./{*}northBoundLatitude/{*}Decimal"
+                        )
+                        if northBoundLatitude is not None:
+                            spatial_extent.bounds.setYMaximum(
+                                float(northBoundLatitude.text)
+                            )
+                        extent.setSpatialExtents([spatial_extent])
+                        qgis_metadata.setExtent(extent)
 
-                distribution_field = root.find(
-                    "./{*}distributionInfo/{*}MD_Distribution/{*}transferOptions/{*}MD_DigitalTransferOptions"
-                )
-                if distribution_field is not None:
-                    links_field = distribution_field.findall("./{*}onLine")
-                    for link_field in links_field:
-                        link = QgsAbstractMetadataBase.Link()
-                        if link_field.attrib["type"] == "offering":
-                            link.type = "Web Service"
-                        if link_field.attrib["type"] == "style":
-                            link.type = "Style"
-                        if link_field.attrib["type"] == "getcapabilities":
-                            link.type = "GetCapabilities"
-                        if link_field.attrib["type"] == "document":
-                            link.type = "Document"
+                    contact_email_field = root.find(
+                        "./{*}contact/{*}CI_ResponsibleParty/{*}contactInfo/{*}CI_Contact/{*}address/{*}CI_Address/{*}electronicMailAddress/{*}CharacterString"
+                    )
+                    if contact_email_field is not None:
+                        contact = QgsAbstractMetadataBase.Contact()
+                        contact.email = contact_email_field.text
+                        qgis_metadata.addContact(contact)
 
-                        link_name = link_field.find(
-                            "./{*}CI_OnlineResource/{*}name/{*}CharacterString"
+                    update_date_field = root.find("./{*}dateStamp/{*}DateTime")
+                    if (
+                        update_date_field is not None
+                        and update_date_field.text is not None
+                    ):
+                        qgis_metadata.setDateTime(
+                            Qgis.MetadataDateType.Revised,
+                            datetime.fromisoformat(update_date_field.text),
                         )
-                        if link_name is not None:
-                            link.name = link_name.text
-                        link_url = link_field.find(
-                            "./{*}CI_OnlineResource/{*}linkage/{*}URL"
-                        )
-                        if link_url is not None:
-                            link.url = link_url.text
-                        link_type = link_field.find(
-                            "./{*}CI_OnlineResource/{*}protocol/{*}CharacterString"
-                        )
-                        if link_type is not None:
-                            link.format = link_type.text
-                        link_description = link_field.find(
-                            "./{*}CI_OnlineResource/{*}description/{*}CharacterString"
-                        )
-                        if link_description is not None:
-                            link.description = link_description.text
-                        qgis_metadata.addLink(link)
+
+                    genealogy_field = root.find(
+                        "./{*}dataQualityInfo/{*}DQ_DataQuality/{*}lineage/{*}LI_Lineage/{*}statement/{*}CharacterString"
+                    )
+                    if genealogy_field is not None:
+                        qgis_metadata.setHistory([genealogy_field.text])
+
+                    distribution_field = root.find(
+                        "./{*}distributionInfo/{*}MD_Distribution/{*}transferOptions/{*}MD_DigitalTransferOptions"
+                    )
+                    if distribution_field is not None:
+                        links_field = distribution_field.findall("./{*}onLine")
+                        for link_field in links_field:
+                            link = QgsAbstractMetadataBase.Link()
+                            if link_field.attrib["type"] == "offering":
+                                link.type = "Web Service"
+                            if link_field.attrib["type"] == "style":
+                                link.type = "Style"
+                            if link_field.attrib["type"] == "getcapabilities":
+                                link.type = "GetCapabilities"
+                            if link_field.attrib["type"] == "document":
+                                link.type = "Document"
+
+                            link_name = link_field.find(
+                                "./{*}CI_OnlineResource/{*}name/{*}CharacterString"
+                            )
+                            if link_name is not None:
+                                link.name = link_name.text
+                            link_url = link_field.find(
+                                "./{*}CI_OnlineResource/{*}linkage/{*}URL"
+                            )
+                            if link_url is not None:
+                                link.url = link_url.text
+                            link_type = link_field.find(
+                                "./{*}CI_OnlineResource/{*}protocol/{*}CharacterString"
+                            )
+                            if link_type is not None:
+                                link.format = link_type.text
+                            link_description = link_field.find(
+                                "./{*}CI_OnlineResource/{*}description/{*}CharacterString"
+                            )
+                            if link_description is not None:
+                                link.description = link_description.text
+                            qgis_metadata.addLink(link)
+        except Exception as err:
+            raise ReadMetadataException(err)
 
         return qgis_metadata
 
@@ -766,15 +775,22 @@ class MetadataRequestManager:
         )
 
         try:
-            with NamedTemporaryFile() as tmp_file:
-                self.request_manager.download_file_to(
-                    remote_url=QUrl(
-                        f"{self.get_base_url(datastore_id)}/{metadata_id}/file"
-                    ),
-                    auth_cfg=self.plg_settings.qgis_auth_id,
-                    local_path=tmp_file.name,
-                )
+            # Define temporary file name
+            temp_file_name = NamedTemporaryFile(suffix=".xml").name
+            # Can't directly use with to download file
+            # because a lock is added to temp file on windows
+            self.request_manager.download_file_to(
+                remote_url=QUrl(
+                    f"{self.get_base_url(datastore_id)}/{metadata_id}/file"
+                ),
+                auth_cfg=self.plg_settings.qgis_auth_id,
+                local_path=temp_file_name,
+            )
+            # Load data
+            with open(temp_file_name) as tmp_file:
                 data = tmp_file.read()
+            # Delete temporary file
+            os.remove(temp_file_name)
         except ConnectionError as err:
             raise UnavailableMetadataFileException(
                 f"Error while fetching metadata file : {err}"

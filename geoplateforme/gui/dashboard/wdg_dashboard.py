@@ -25,6 +25,10 @@ from qgis.PyQt.QtWidgets import (
 )
 
 from geoplateforme.__about__ import __title_clean__
+from geoplateforme.api.custom_exceptions import (
+    ReadMetadataException,
+    UnavailableMetadataFileException,
+)
 from geoplateforme.api.metadata import MetadataRequestManager
 from geoplateforme.api.stored_data import (
     StoredData,
@@ -187,14 +191,28 @@ class DashboardWidget(QWidget):
         if datastore_id and dataset_name:
             tags = {"datasheet_name": dataset_name}
             metadatas = manager._get_metadata_list(datastore_id=datastore_id, tags=tags)
-        if len(metadatas) != 1:
+        metadata = None
+        if len(metadatas) == 1:
+            try:
+                metadata = metadatas[0].to_qgis_format()
+                self.wdg_metadata = QgsMetadataWidget()
+                self.wdg_metadata.setMetadata(metadata)
+                self.wdg_metadata.setMode(QgsMetadataWidget.Mode.LayerMetadata)
+            except UnavailableMetadataFileException as exc:
+                self.log(
+                    f"Error while getting Metadata informations: {exc}",
+                    log_level=2,
+                    push=False,
+                )
+            except ReadMetadataException as exc:
+                self.log(
+                    f"Error while reading Metadata informations: {exc}",
+                    log_level=2,
+                    push=False,
+                )
+        if metadata is None:
             self.wdg_metadata = QLabel()
             self.wdg_metadata.setText("No metadata available")
-        else:
-            metadata = metadatas[0].to_qgis_format()
-            self.wdg_metadata = QgsMetadataWidget()
-            self.wdg_metadata.setMetadata(metadata)
-            self.wdg_metadata.setMode(QgsMetadataWidget.Mode.LayerMetadata)
         self.metadata_layout.addWidget(self.wdg_metadata)
 
     def refresh(

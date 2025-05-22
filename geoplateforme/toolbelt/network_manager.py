@@ -505,13 +505,27 @@ class NetworkRequestsManager:
             authcfg=auth_cfg,
         )
         file_downloader.downloadExited.connect(loop.quit)
+
+        error_messages: list[str] = []
+
+        def connection_error(errorMessages: list[str]):
+            # Need to call function to object error_messages
+            # If we do an affectation, python will consider error_messages
+            # as a new local variable
+            error_messages.extend(errorMessages)
+
+        file_downloader.downloadError.connect(connection_error)
+
         file_downloader.startDownload()
         loop.exec()
 
-        self.log(
-            message=f"Download of {remote_url} to {local_path} succeedeed",
-            log_level=Qgis.MessageLevel.Success,
-        )
+        if error_messages:
+            raise ConnectionError(error_messages)
+        else:
+            self.log(
+                message=f"Download of {remote_url} to {local_path} succeedeed",
+                log_level=Qgis.MessageLevel.Success,
+            )
         return local_path
 
     def post_file(

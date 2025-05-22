@@ -29,7 +29,7 @@ from geoplateforme.constants import GPF_PLUGIN_LIST
 from geoplateforme.gui.dashboard.dlg_dashboard import DashboardDialog
 from geoplateforme.gui.dlg_authentication import AuthenticationDialog
 from geoplateforme.gui.dlg_settings import PlgOptionsFactory
-from geoplateforme.gui.provider import ProviderGPF
+from geoplateforme.gui.provider.provider_gpf import ProviderGPF
 from geoplateforme.gui.storage.dlg_storage_report import StorageReportDialog
 from geoplateforme.gui.user.dlg_user import UserDialog
 from geoplateforme.processing import GeoplateformeProvider

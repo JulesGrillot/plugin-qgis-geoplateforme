@@ -4,7 +4,7 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon
 
 from geoplateforme.__about__ import DIR_PLUGIN_ROOT
-from geoplateforme.gui.provider import ProviderDialog
+from geoplateforme.gui.provider.provider_dialog import ProviderDialog
 
 
 class ProviderGPF(QgsSourceSelectProvider):

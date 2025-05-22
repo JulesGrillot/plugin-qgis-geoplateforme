@@ -1,6 +1,7 @@
 import json
 import logging
 import math
+import os
 import re
 from dataclasses import dataclass
 from datetime import datetime
@@ -766,15 +767,22 @@ class MetadataRequestManager:
         )
 
         try:
-            with NamedTemporaryFile() as tmp_file:
-                self.request_manager.download_file_to(
-                    remote_url=QUrl(
-                        f"{self.get_base_url(datastore_id)}/{metadata_id}/file"
-                    ),
-                    auth_cfg=self.plg_settings.qgis_auth_id,
-                    local_path=tmp_file.name,
-                )
+            # Define temporary file name
+            temp_file_name = NamedTemporaryFile(suffix=".xml").name
+            # Can't directly use with to download file
+            # because a lock is added to temp file on windows
+            self.request_manager.download_file_to(
+                remote_url=QUrl(
+                    f"{self.get_base_url(datastore_id)}/{metadata_id}/file"
+                ),
+                auth_cfg=self.plg_settings.qgis_auth_id,
+                local_path=temp_file_name,
+            )
+            # Load data
+            with open(temp_file_name) as tmp_file:
                 data = tmp_file.read()
+            # Delete temporary file
+            os.remove(temp_file_name)
         except ConnectionError as err:
             raise UnavailableMetadataFileException(
                 f"Error while fetching metadata file : {err}"

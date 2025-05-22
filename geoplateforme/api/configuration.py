@@ -25,6 +25,15 @@ from geoplateforme.toolbelt.preferences import PlgOptionsManager
 logger = logging.getLogger(__name__)
 
 
+@dataclass
+class WfsRelation:
+    native_name: str
+    title: str
+    abstract: str
+    public_name: Optional[str] = None
+    keywords: Optional[List[str]] = None
+
+
 class ConfigurationField(Enum):
     NAME = "name"
     LAYER_NAME = "layer_name"

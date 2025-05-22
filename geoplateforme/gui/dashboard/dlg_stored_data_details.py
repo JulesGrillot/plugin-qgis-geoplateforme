@@ -36,6 +36,9 @@ from geoplateforme.gui.report.mdl_stored_data_details import StoredDataDetailsMo
 from geoplateforme.gui.report.wdg_execution_log import ExecutionLogWidget
 from geoplateforme.gui.report.wdg_upload_log import UploadLogWidget
 from geoplateforme.gui.tile_creation.wzd_tile_creation import TileCreationWizard
+from geoplateforme.gui.wfs_publication.wzd_publication_creation import (
+    WFSPublicationWizard,
+)
 from geoplateforme.toolbelt import PlgLogger
 
 
@@ -104,6 +107,7 @@ class StoredDataDetailsDialog(QDialog):
         if status == StoredDataStatus.GENERATED:
             # Vector DB :
             # - tile generation
+            # - WFS publication
             if stored_data.type == StoredDataType.VECTORDB:
                 generate_tile_action = QAction(
                     QIcon(str(DIR_PLUGIN_ROOT / "resources/images/icons/Tuile@1x.png")),
@@ -117,6 +121,27 @@ class StoredDataDetailsDialog(QDialog):
                 button.setDefaultAction(generate_tile_action)
                 button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
                 self.edit_toolbar.addWidget(button)
+
+                publish_tile_action = QAction(
+                    QIcon(
+                        str(
+                            DIR_PLUGIN_ROOT
+                            / "resources"
+                            / "images"
+                            / "icons"
+                            / "Publie@2x.png"
+                        )
+                    ),
+                    self.tr("Publication WFS"),
+                    self,
+                )
+                button = QToolButton(self)
+                button.setDefaultAction(publish_tile_action)
+                button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+
+                publish_tile_action.triggered.connect(self._show_wfs_publish_wizard)
+                self.edit_toolbar.addWidget(button)
+
             elif stored_data.type == StoredDataType.PYRAMIDVECTOR:
                 publish_tile_action = QAction(
                     QIcon(
@@ -172,6 +197,26 @@ class StoredDataDetailsDialog(QDialog):
         """
         QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
         publication_wizard = PublicationFormCreation(
+            self,
+            stored_data.datastore_id,
+            stored_data.tags["datasheet_name"],
+            stored_data._id,
+        )
+        QGuiApplication.restoreOverrideCursor()
+        publication_wizard.show()
+
+    def _show_wfs_publish_wizard(self) -> None:
+        """Show WFS publication wizard for current stored data"""
+        self._wfs_publish_wizard(self._stored_data)
+
+    def _wfs_publish_wizard(self, stored_data: StoredData) -> None:
+        """Show WFS publication wizard for a stored data
+
+        :param stored_data: stored data
+        :type stored_data: StoredData
+        """
+        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
+        publication_wizard = WFSPublicationWizard(
             self,
             stored_data.datastore_id,
             stored_data.tags["datasheet_name"],

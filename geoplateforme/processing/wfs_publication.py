@@ -48,10 +48,11 @@ class WfsPublicationAlgorithm(QgsProcessingAlgorithm):
     URL_ATTRIBUTION = "URL_ATTRIBUTION"
     URL_TITLE = "URL_TITLE"
 
-    NATIVE_NAME = "native_name"
-    PUBLIC_NAME = "public_name"
-    TITLE_RELATIONS = "title"
-    ABSTRACT_RELATIONS = "abstract"
+    RELATIONS_NATIVE_NAME = "native_name"
+    RELATIONS_PUBLIC_NAME = "public_name"
+    RELATIONS_TITLE = "title"
+    RELATIONS_ABSTRACT = "abstract"
+    RELATIONS_KEYWORDS = "keywords"
 
     # Parameter not yet implemented
     METADATA = "metadata"
@@ -312,9 +313,9 @@ class WfsPublicationAlgorithm(QgsProcessingAlgorithm):
             )
 
         mandatory_keys = [
-            self.NATIVE_NAME,
-            self.TITLE_RELATIONS,
-            self.ABSTRACT_RELATIONS,
+            self.RELATIONS_NATIVE_NAME,
+            self.RELATIONS_TITLE,
+            self.RELATIONS_ABSTRACT,
         ]
         for compo in data:
             missing_keys = [key for key in mandatory_keys if key not in compo]

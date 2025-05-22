@@ -505,13 +505,28 @@ class NetworkRequestsManager:
             authcfg=auth_cfg,
         )
         file_downloader.downloadExited.connect(loop.quit)
+
+        self.dowload_error = False
+        self.error_messages = ""
+
+        def connection_error(errorMessages: list[str]):
+            self.dowload_error = True
+            self.error_messages = ", ".join(errorMessages)
+
+        file_downloader.downloadError.connect(
+            lambda errorMessages: connection_error(errorMessages)
+        )
+
         file_downloader.startDownload()
         loop.exec()
 
-        self.log(
-            message=f"Download of {remote_url} to {local_path} succeedeed",
-            log_level=Qgis.MessageLevel.Success,
-        )
+        if self.dowload_error:
+            raise ConnectionError(self.error_messages)
+        else:
+            self.log(
+                message=f"Download of {remote_url} to {local_path} succeedeed",
+                log_level=Qgis.MessageLevel.Success,
+            )
         return local_path
 
     def post_file(

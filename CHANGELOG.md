@@ -16,6 +16,17 @@ Unreleased
 
 -->
 
+## 0.5.0 - 2025-05-22
+
+### Features and enhancements 🎉
+
+* Feat/init wfs publication by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/54>
+* Feat/wfs publication wizard by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/55>
+
+### Bugs fixes 🐛
+
+* fix(metadata): use temporary file name only but not with context by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/58>
+
 ## 0.4.0 - 2025-05-21
 
 * Feat/remove check of crs for non spatial layers by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/34>

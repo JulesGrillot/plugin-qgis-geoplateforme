@@ -371,9 +371,6 @@ class ConfigurationRequestManager:
     def create_configuration(
         self,
         datastore: str,
-        stored_data: str,
-        top_level: int,
-        bottom_level: int,
         configuration: Configuration,
     ) -> str:
         """
@@ -387,17 +384,8 @@ class ConfigurationRequestManager:
 
         """
         self.log(
-            f"{__name__}.create_configuration(datastore:{datastore}, stored_data: {stored_data}, "
-            f"top_level: {top_level}, bottom_level: {bottom_level}, configuration: {configuration})"
+            f"{__name__}.create_configuration(datastore:{datastore},configuration: {configuration})"
         )
-
-        configuration.type_infos["used_data"] = [
-            {
-                "stored_data": stored_data,
-                "top_level": str(top_level),
-                "bottom_level": str(bottom_level),
-            }
-        ]
 
         # encode data
         data = QByteArray()

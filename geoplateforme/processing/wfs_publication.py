@@ -1,11 +1,11 @@
 # standard
+import json
 
 # PyQGIS
 from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingException,
     QgsProcessingParameterMatrix,
-    QgsProcessingParameterNumber,
     QgsProcessingParameterString,
 )
 from qgis.PyQt.QtCore import QCoreApplication
@@ -28,23 +28,30 @@ from geoplateforme.processing.utils import (
 )
 from geoplateforme.toolbelt.preferences import PlgOptionsManager
 
-data_type = "WMTS-TMS"
+data_type = "WFS"
 
 
-class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
+class WfsPublicationAlgorithm(QgsProcessingAlgorithm):
     DATASTORE = "DATASTORE"
     STORED_DATA = "STORED_DATA"
     NAME = "NAME"
+    LAYER_NAME = "LAYER_NAME"  # Equivalent nom technique
+
+    RELATIONS = "RELATIONS"
+
     TITLE = "TITLE"
     ABSTRACT = "ABSTRACT"
     KEYWORDS = "KEYWORDS"
-    LAYER_NAME = "LAYER_NAME"
-    BOTTOM_LEVEL = "BOTTOM_LEVEL"
-    TOP_LEVEL = "TOP_LEVEL"
+
     TAGS = "TAGS"
 
     URL_ATTRIBUTION = "URL_ATTRIBUTION"
     URL_TITLE = "URL_TITLE"
+
+    NATIVE_NAME = "native_name"
+    PUBLIC_NAME = "public_name"
+    TITLE_RELATIONS = "title"
+    ABSTRACT_RELATIONS = "abstract"
 
     # Parameter not yet implemented
     METADATA = "metadata"
@@ -64,13 +71,13 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
         return QCoreApplication.translate(self.__class__.__name__, message)
 
     def createInstance(self):
-        return UploadPublicationAlgorithm()
+        return WfsPublicationAlgorithm()
 
     def name(self):
-        return "vector_tile_publish"
+        return "wfs_publish"
 
     def displayName(self):
-        return self.tr("Publication tuiles vectorielles")
+        return self.tr("Publication service WFS")
 
     def group(self):
         return self.tr("")
@@ -95,7 +102,7 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterString(
                 name=self.STORED_DATA,
-                description=self.tr("Identifiant des tuiles vectorielles"),
+                description=self.tr("Identifiant de la base de données vectorielle"),
             )
         )
 
@@ -110,6 +117,14 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
             QgsProcessingParameterString(
                 name=self.LAYER_NAME,
                 description=self.tr("Nom technique de la publication"),
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterString(
+                name=self.RELATIONS,
+                description=self.tr("JSON pour les relations"),
+                optional=True,
             )
         )
 
@@ -137,35 +152,15 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
         )
 
         self.addParameter(
-            QgsProcessingParameterNumber(
-                name=self.BOTTOM_LEVEL,
-                description=self.tr("Niveau bas de la pyramide"),
-                minValue=1,
-                maxValue=21,
-            )
-        )
-
-        self.addParameter(
-            QgsProcessingParameterNumber(
-                name=self.TOP_LEVEL,
-                description=self.tr("Niveau haut de la pyramide"),
-                minValue=1,
-                maxValue=21,
-            )
-        )
-
-        self.addParameter(
             QgsProcessingParameterString(
                 name=self.URL_ATTRIBUTION,
                 description=self.tr("Url attribution"),
-                optional=True,
             )
         )
         self.addParameter(
             QgsProcessingParameterString(
                 name=self.URL_TITLE,
                 description=self.tr("Titre attribution"),
-                optional=True,
             )
         )
 
@@ -188,8 +183,11 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
         url_title = self.parameterAsString(parameters, self.URL_TITLE, context)
         abstract = self.parameterAsString(parameters, self.ABSTRACT, context)
 
-        bottom_level = self.parameterAsInt(parameters, self.BOTTOM_LEVEL, context)
-        top_level = self.parameterAsInt(parameters, self.TOP_LEVEL, context)
+        relations_str = self.parameterAsString(parameters, self.RELATIONS, context)
+        relations: dict[str, str] | None = None
+        if relations_str:
+            relations = json.loads(relations_str)
+            self._check_relation(relations)
 
         tag_data = self.parameterAsMatrix(parameters, self.TAGS, context)
         tags = tags_from_qgs_parameter_matrix_string(tag_data)
@@ -216,7 +214,7 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
             configuration = Configuration(
                 _id="",
                 datastore_id=datastore,
-                _type="WMTS-TMS",
+                _type="WFS",
                 _metadata=metadata,
                 _name=name,
                 _layer_name=layer_name,
@@ -224,8 +222,7 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
                     "used_data": [
                         {
                             "stored_data": stored_data_id,
-                            "top_level": str(top_level),
-                            "bottom_level": str(bottom_level),
+                            "relations": relations,
                         }
                     ]
                 },
@@ -301,3 +298,28 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
         return {
             self.PUBLICATION_URL: url_data,
         }
+
+    def _check_relation(self, data) -> None:
+        """
+        Check relation data, raises QgsProcessingException in case of errors
+
+        Args:
+            data: input composition data
+        """
+        if not isinstance(data, list):
+            raise QgsProcessingException(
+                f"Invalid {self.RELATIONS} key in input json.  Expected list, not {type(data)}"
+            )
+
+        mandatory_keys = [
+            self.NATIVE_NAME,
+            self.TITLE_RELATIONS,
+            self.ABSTRACT_RELATIONS,
+        ]
+        for compo in data:
+            missing_keys = [key for key in mandatory_keys if key not in compo]
+
+            if missing_keys:
+                raise QgsProcessingException(
+                    f"Missing {', '.join(missing_keys)} keys for {self.RELATIONS} item in input json."
+                )

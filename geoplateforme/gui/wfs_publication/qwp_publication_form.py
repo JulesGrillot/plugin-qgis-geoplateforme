@@ -20,7 +20,7 @@ class PublicationFormPageWizard(QWizardPage):
         """
 
         super().__init__(parent)
-        self.setTitle(self.tr("Describe and publish your WFS service"))
+        self.setTitle(self.tr("Créer et publier un service WFS"))
 
         uic.loadUi(
             os.path.join(os.path.dirname(__file__), "qwp_publication_form.ui"), self

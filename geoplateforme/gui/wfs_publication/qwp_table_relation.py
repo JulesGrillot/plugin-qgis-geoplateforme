@@ -33,7 +33,7 @@ class TableRelationPageWizard(QWizardPage):
         """
 
         super().__init__(parent)
-        self.setTitle(self.tr("Describe and publish your tiles"))
+        self.setTitle(self.tr("Créer et publier un service WFS"))
 
         uic.loadUi(
             os.path.join(os.path.dirname(__file__), "qwp_table_relation.ui"), self
@@ -99,14 +99,37 @@ class TableRelationPageWizard(QWizardPage):
         Returns: True
 
         """
-        table_relation = self.get_selected_table_relations()
-        if len(table_relation) == 0:
+        table_relations = self.get_selected_table_relations()
+        if len(table_relations) == 0:
             QMessageBox.warning(
                 self,
                 self.tr("Aucune table sélectionnée"),
                 self.tr("Veuillez choisir au moins une table."),
             )
             return False
+
+        errors: list[str] = []
+        for table_relation in table_relations:
+            if not table_relation.title:
+                errors.append(
+                    self.tr("Titre manquant pour la table {}").format(
+                        table_relation.native_name
+                    )
+                )
+            if not table_relation.abstract:
+                errors.append(
+                    self.tr("Description manquante pour la table {}").format(
+                        table_relation.native_name
+                    )
+                )
+        if errors:
+            QMessageBox.warning(
+                self,
+                self.tr("Champs manquants"),
+                "\n".join(errors),
+            )
+            return False
+
         return True
 
     def _datastore_updated(self) -> None:

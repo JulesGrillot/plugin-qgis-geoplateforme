@@ -17,6 +17,15 @@
    <locale language="English" country="UnitedStates"/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="7" column="0" colspan="2">
+    <layout class="QVBoxLayout" name="lyt_table_relation"/>
+   </item>
+   <item row="2" column="1">
+    <widget class="DatasetComboBox" name="cbx_dataset"/>
+   </item>
+   <item row="1" column="1">
+    <widget class="DatastoreComboBox" name="cbx_datastore"/>
+   </item>
    <item row="5" column="0">
     <widget class="QLabel" name="lbl_stored_data">
      <property name="sizePolicy">
@@ -37,9 +46,6 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="0" colspan="2">
-    <layout class="QVBoxLayout" name="lyt_table_relation"/>
-   </item>
    <item row="1" column="0">
     <widget class="QLabel" name="lbl_datastore">
      <property name="sizePolicy">
@@ -53,13 +59,10 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="DatasetComboBox" name="cbx_dataset"/>
-   </item>
    <item row="5" column="1">
     <widget class="StoredDataComboBox" name="cbx_stored_data"/>
    </item>
-   <item row="7" column="0" colspan="2">
+   <item row="8" column="0" colspan="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -72,8 +75,18 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="1">
-    <widget class="DatastoreComboBox" name="cbx_datastore"/>
+   <item row="6" column="0" colspan="2">
+    <widget class="QLabel" name="label_2">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Sélectionnez les tables nécessaires au service</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

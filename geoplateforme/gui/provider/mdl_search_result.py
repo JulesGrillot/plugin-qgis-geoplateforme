@@ -1,7 +1,8 @@
 import json
+from typing import Optional
 
 # PyQGIS
-from qgis.PyQt.QtCore import QByteArray, QObject, Qt, QUrl
+from qgis.PyQt.QtCore import QByteArray, QModelIndex, QObject, Qt, QUrl
 from qgis.PyQt.QtGui import QStandardItemModel
 
 # plugin
@@ -33,26 +34,27 @@ class SearchResultModel(QStandardItemModel):
             ]
         )
 
-    def get_result_row(self, result_id: str) -> int:
-        """Get result row from result id, returns -1 if result not available
+    def clear(self):
+        """Remove all results"""
+        self.removeRows(0, self.rowCount())
 
-        :param resultid: result id
-        :type result_id: str
+    def get_result(self, index: QModelIndex) -> Optional[dict]:
+        """Get result from index, returns -1 if result not available
 
-        :return: result id row, -1 if result not available
+        :param index: index
+        :type index: int
+
+        :return: result at index, None if result not available
         :rtype: int
         """
-        result = -1
-        for row in range(0, self.rowCount()):
-            if (
-                self.data(self.index(row, self.TITLE_COL), Qt.ItemDataRole.UserRole).id
-                == result_id
-            ):
-                result = row
-                break
+        result = None
+        if index.isValid():
+            result = self.data(
+                self.index(index.row(), self.TITLE_COL), Qt.ItemDataRole.UserRole
+            )
         return result
 
-    def set_search_text(self, text: str) -> None:
+    def simple_search_text(self, text: str) -> None:
         """Refresh QStandardItemModel data with result on text search
 
         :param text: seach text
@@ -63,10 +65,36 @@ class SearchResultModel(QStandardItemModel):
         # plg_settings = PlgOptionsManager.get_plg_settings()
 
         try:
+            reply = request_manager.get_url(
+                url=QUrl(
+                    f"https://data.geopf.fr/recherche/api/indexes/geoplateforme/suggest?size=50&text={text}"
+                ),
+            )
+        except ConnectionError as err:
+            self.log(
+                f"Error while searching layers: {err}",
+                log_level=2,
+                push=False,
+            )
+
+        search_results = json.loads(reply.data())
+        for result in search_results:
+            if result["source"]["type"] in self.authorized_type:
+                self.insert_result(result["source"])
+
+    def advanced_search_text(self, search_dict: str) -> None:
+        """Refresh QStandardItemModel data with result on text search
+
+        :param search_dict: search dict
+        :type search_dict: dict
+        """
+        self.removeRows(0, self.rowCount())
+        request_manager = NetworkRequestsManager()
+        # plg_settings = PlgOptionsManager.get_plg_settings()
+
+        try:
             data = QByteArray()
-            data_map = {
-                "title": text,
-            }
+            data_map = search_dict
             data.append(json.dumps(data_map))
             reply = request_manager.post_url(
                 url=QUrl(

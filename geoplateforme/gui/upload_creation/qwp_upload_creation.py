@@ -114,7 +114,9 @@ class UploadCreationPageWizard(QWizardPage):
             VectorDatabaseCreationAlgorithm.DATASTORE: self.qwp_upload_edition.cbx_datastore.current_datastore_id(),
             VectorDatabaseCreationAlgorithm.NAME: self.qwp_upload_edition.wdg_upload_creation.get_name(),
             # TODO : add option for reprojection VectorDatabaseCreationAlgorithm.SRS: self.qwp_upload_edition.wdg_upload_creation.get_crs(),
-            VectorDatabaseCreationAlgorithm.FILES: self.qwp_upload_edition.wdg_upload_creation.get_filenames(),
+            VectorDatabaseCreationAlgorithm.FILES: ";".join(
+                self.qwp_upload_edition.wdg_upload_creation.get_filenames()
+            ),
             VectorDatabaseCreationAlgorithm.LAYERS: self.qwp_upload_edition.wdg_upload_creation.get_layers(),
             VectorDatabaseCreationAlgorithm.TAGS: tags_to_qgs_parameter_matrix_string(
                 {

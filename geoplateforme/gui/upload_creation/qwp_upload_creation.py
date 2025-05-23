@@ -118,7 +118,7 @@ class UploadCreationPageWizard(QWizardPage):
             VectorDatabaseCreationAlgorithm.LAYERS: self.qwp_upload_edition.wdg_upload_creation.get_layers(),
             VectorDatabaseCreationAlgorithm.TAGS: tags_to_qgs_parameter_matrix_string(
                 {
-                    "datasheet_name": self.qwp_upload_edition.wdg_upload_creation.get_name()
+                    "datasheet_name": self.qwp_upload_edition.wdg_upload_creation.get_dataset_name()
                 }
             ),
         }

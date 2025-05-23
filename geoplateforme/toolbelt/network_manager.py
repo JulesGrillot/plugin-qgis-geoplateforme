@@ -189,7 +189,7 @@ class NetworkRequestsManager:
             self.log(
                 message=error,
                 log_level=Qgis.MessageLevel.Critical,
-                push=True,
+                push=False,
             )
             raise ConnectionError(error)
 
@@ -199,7 +199,7 @@ class NetworkRequestsManager:
             self.log(
                 message=error,
                 log_level=Qgis.MessageLevel.Critical,
-                push=1,
+                push=False,
             )
             raise ConnectionError(error)
 
@@ -299,7 +299,7 @@ class NetworkRequestsManager:
                 )
             )
 
-            self.log(message=err_msg, log_level=Qgis.MessageLevel.Critical, push=True)
+            self.log(message=err_msg, log_level=Qgis.MessageLevel.Critical, push=False)
             return QByteArray()
 
     def delete_url(
@@ -410,7 +410,7 @@ class NetworkRequestsManager:
                     url, config_id, err
                 )
             )
-            self.log(message=err_msg, log_level=Qgis.MessageLevel.Critical, push=True)
+            self.log(message=err_msg, log_level=Qgis.MessageLevel.Critical, push=False)
 
     def put_url(
         self,
@@ -465,7 +465,7 @@ class NetworkRequestsManager:
                     url, config_id, err
                 )
             )
-            self.log(message=err_msg, log_level=Qgis.MessageLevel.Critical, push=True)
+            self.log(message=err_msg, log_level=Qgis.MessageLevel.Critical, push=False)
 
     def download_file_to(
         self,

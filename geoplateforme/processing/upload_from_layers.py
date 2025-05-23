@@ -10,6 +10,7 @@ from qgis.core import (
     QgsProcessingContext,
     QgsProcessingException,
     QgsProcessingFeedback,
+    QgsProcessingParameterCrs,
     QgsProcessingParameterFile,
     QgsProcessingParameterMatrix,
     QgsProcessingParameterMultipleLayers,
@@ -36,6 +37,7 @@ class GpfUploadFromLayersAlgorithm(QgsProcessingAlgorithm):
     DESCRIPTION = "DESCRIPTION"
     LAYERS = "LAYERS"
     FILES = "FILES"
+    SRS = "SRS"
     TAGS = "TAGS"
 
     CREATED_UPLOAD_ID = "CREATED_UPLOAD_ID"
@@ -120,6 +122,10 @@ class GpfUploadFromLayersAlgorithm(QgsProcessingAlgorithm):
         )
 
         self.addParameter(
+            QgsProcessingParameterCrs(self.SRS, self.tr("Système de coordonnées"))
+        )
+
+        self.addParameter(
             QgsProcessingParameterMatrix(
                 name=self.TAGS,
                 description=self.tr("Tags"),
@@ -193,25 +199,27 @@ class GpfUploadFromLayersAlgorithm(QgsProcessingAlgorithm):
         )
 
         # define CRS from input layers
-        srs: Optional[QgsCoordinateReferenceSystem] = None
+        srs: QgsCoordinateReferenceSystem = self.parameterAsCrs(
+            parameters, self.SRS, context
+        )
 
+        # Check CRS for all input layers
         for layer in layers:
             layer_crs = layer.dataProvider().crs()
-            if not srs:
-                srs = layer_crs
-            elif layer_crs != srs:
+            if layer_crs != srs:
                 raise QgsProcessingException(
                     self.tr(
                         "Toutes les couches doivent avoir le même système de coordonnées pour la livraison."
                     )
                 )
 
-        # define files from input layers
+        # define files from input files
+        files = []
         file_str = self.parameterAsString(parameters, self.FILES, context)
         if file_str:
             files = file_str.split(";")
-        else:
-            files = []
+
+        # define files from input layers
         for layer in layers:
             storage_type = layer.storageType()
             if storage_type not in self.SUPPORTED_SOURCE_TYPES:

@@ -123,6 +123,7 @@ class UploadCreationPageWizard(QWizardPage):
                     "datasheet_name": self.qwp_upload_edition.wdg_upload_creation.get_dataset_name()
                 }
             ),
+            VectorDatabaseCreationAlgorithm.SRS: self.qwp_upload_edition.wdg_upload_creation.get_crs(),
         }
         self.lbl_step_icon.setMovie(self.loading_movie)
         self.loading_movie.start()

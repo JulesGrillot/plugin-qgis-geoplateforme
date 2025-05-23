@@ -3,10 +3,12 @@ from typing import List, Tuple
 from qgis.core import (
     Qgis,
     QgsApplication,
+    QgsCoordinateReferenceSystem,
     QgsProcessingAlgorithm,
     QgsProcessingContext,
     QgsProcessingException,
     QgsProcessingFeedback,
+    QgsProcessingParameterCrs,
     QgsProcessingParameterFile,
     QgsProcessingParameterMatrix,
     QgsProcessingParameterMultipleLayers,
@@ -43,6 +45,7 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
     NAME = "NAME"
     LAYERS = "LAYERS"
     FILES = "FILES"
+    SRS = "SRS"
     TAGS = "TAGS"
 
     PROCESSING_EXEC_ID = "PROCESSING_EXEC_ID"
@@ -115,6 +118,10 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         )
 
         self.addParameter(
+            QgsProcessingParameterCrs(self.SRS, self.tr("Système de coordonnées"))
+        )
+
+        self.addParameter(
             QgsProcessingParameterMatrix(
                 name=self.TAGS,
                 description=self.tr("Tags"),
@@ -130,6 +137,9 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         files = self.parameterAsString(parameters, self.FILES, context)
         tag_data = self.parameterAsMatrix(parameters, self.TAGS, context)
         tags = tags_from_qgs_parameter_matrix_string(tag_data)
+        srs: QgsCoordinateReferenceSystem = self.parameterAsCrs(
+            parameters, self.SRS, context
+        )
 
         # Create upload
         upload_id = self._create_upload(
@@ -137,6 +147,7 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
             layers,
             files,
             name,
+            srs,
             tags,
             context,
             feedback,
@@ -164,6 +175,7 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         layers: List[QgsVectorLayer],
         files: List[str],
         name: str,
+        srs: QgsCoordinateReferenceSystem,
         tags: dict[str, str],
         context: QgsProcessingContext,
         feedback: QgsProcessingFeedback,
@@ -178,6 +190,8 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
         :type files: List[str]
         :param name: upload name
         :type name: str
+        :param srs: srs
+        :type srs: dict[str, str]
         :param tags: tags
         :type tags: dict[str, str]
         :param context: context of processing
@@ -196,6 +210,7 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
             GpfUploadFromLayersAlgorithm.DESCRIPTION: name,
             GpfUploadFromLayersAlgorithm.LAYERS: layers,
             GpfUploadFromLayersAlgorithm.FILES: files,
+            GpfUploadFromLayersAlgorithm.SRS: srs,
             GpfUploadFromLayersAlgorithm.TAGS: tags_to_qgs_parameter_matrix_string(
                 tags
             ),

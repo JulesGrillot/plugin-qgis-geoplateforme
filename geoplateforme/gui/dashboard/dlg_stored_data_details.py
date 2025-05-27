@@ -39,6 +39,9 @@ from geoplateforme.gui.tile_creation.wzd_tile_creation import TileCreationWizard
 from geoplateforme.gui.wfs_publication.wzd_publication_creation import (
     WFSPublicationWizard,
 )
+from geoplateforme.gui.wms_vector_publication.wzd_publication_creation import (
+    WMSVectorPublicationWizard,
+)
 from geoplateforme.toolbelt import PlgLogger
 
 
@@ -148,6 +151,28 @@ class StoredDataDetailsDialog(QDialog):
                 publish_tile_action.triggered.connect(self._show_wfs_publish_wizard)
                 self.edit_toolbar.addWidget(button)
 
+                wms_vector_publish_action = QAction(
+                    QIcon(
+                        str(
+                            DIR_PLUGIN_ROOT
+                            / "resources"
+                            / "images"
+                            / "icons"
+                            / "Publie@2x.png"
+                        )
+                    ),
+                    self.tr("Publication WMS-Vecteur"),
+                    self,
+                )
+                button = QToolButton(self)
+                button.setDefaultAction(wms_vector_publish_action)
+                button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+
+                wms_vector_publish_action.triggered.connect(
+                    self._show_wms_vector_publish_wizard
+                )
+                self.edit_toolbar.addWidget(button)
+
             elif stored_data.type == StoredDataType.PYRAMIDVECTOR:
                 publish_tile_action = QAction(
                     QIcon(
@@ -168,6 +193,27 @@ class StoredDataDetailsDialog(QDialog):
 
                 publish_tile_action.triggered.connect(self._show_tile_publish_wizard)
                 self.edit_toolbar.addWidget(button)
+
+    def _show_wms_vector_publish_wizard(self) -> None:
+        """Show wms vector publication wizard for current stored data"""
+        self._wms_vector_publish_wizard(self._stored_data)
+
+    def _wms_vector_publish_wizard(self, stored_data: StoredData) -> None:
+        """
+        Show wms vector publication wizard for a stored data
+
+        Args:
+            stored_data: (StoredData) stored data to generate tile
+        """
+        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
+        publication_wizard = WMSVectorPublicationWizard(
+            self,
+            stored_data.datastore_id,
+            stored_data.tags["datasheet_name"],
+            stored_data._id,
+        )
+        QGuiApplication.restoreOverrideCursor()
+        publication_wizard.show()
 
     def _show_tile_generation_wizard(self) -> None:
         """Show tile generation wizard for current stored data"""

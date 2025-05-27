@@ -2,7 +2,7 @@ import os
 
 from qgis.core import QgsApplication, QgsProject
 from qgis.PyQt import QtCore, uic
-from qgis.PyQt.QtCore import QSize, Qt
+from qgis.PyQt.QtCore import QSize, Qt, pyqtSignal
 from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon, QPixmap
 from qgis.PyQt.QtWidgets import (
     QAbstractItemView,
@@ -23,6 +23,8 @@ from geoplateforme.toolbelt import PlgLogger
 
 
 class UploadDetailsWidget(QWidget):
+    select_stored_data = pyqtSignal(str)
+
     def __init__(self, parent: QWidget = None):
         """
         QWidget to display report for an upload
@@ -52,6 +54,8 @@ class UploadDetailsWidget(QWidget):
         # Add toolbar for stored data actions
         self.edit_toolbar = QToolBar(self)
         self.layout().setMenuBar(self.edit_toolbar)
+
+        self.vector_db_wizard = None
 
     def set_upload(self, upload: Upload) -> None:
         """
@@ -94,7 +98,7 @@ class UploadDetailsWidget(QWidget):
             upload: (Upload) upload to generate vector db
         """
         QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
-        vector_db_wizard = UploadDatabaseIntegrationWizard(
+        self.vector_db_wizard = UploadDatabaseIntegrationWizard(
             datastore_id=upload.datastore_id,
             dataset_name=upload.tags["datasheet_name"],
             upload_id=upload._id,
@@ -102,7 +106,20 @@ class UploadDetailsWidget(QWidget):
             parent=self,
         )
         QGuiApplication.restoreOverrideCursor()
-        vector_db_wizard.show()
+        self.vector_db_wizard.finished.connect(self._del_vector_db_wizard)
+        self.vector_db_wizard.show()
+
+    def _del_vector_db_wizard(self) -> None:
+        """
+        Delete vector db wizard
+
+        """
+        if self.vector_db_wizard is not None:
+            created_stored_data_id = self.vector_db_wizard.get_created_stored_data_id()
+            if created_stored_data_id:
+                self.select_stored_data.emit(created_stored_data_id)
+            self.vector_db_wizard.deleteLater()
+            self.vector_db_wizard = None
 
     def _load_generation_report(self) -> None:
         """

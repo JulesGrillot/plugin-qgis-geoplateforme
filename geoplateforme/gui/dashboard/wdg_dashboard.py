@@ -12,7 +12,12 @@ from qgis.core import (
 )
 from qgis.gui import QgsMetadataWidget
 from qgis.PyQt import QtCore, uic
-from qgis.PyQt.QtCore import QAbstractItemModel, QCoreApplication, QModelIndex
+from qgis.PyQt.QtCore import (
+    QAbstractItemModel,
+    QCoreApplication,
+    QItemSelectionModel,
+    QModelIndex,
+)
 from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon
 from qgis.PyQt.QtWidgets import (
     QAbstractItemView,
@@ -249,6 +254,62 @@ class DashboardWidget(QWidget):
         # Enable new refresh
         self.btn_refresh.setEnabled(True)
 
+    def select_upload(self, upload_id: str, refresh: bool = True) -> None:
+        """Select upload in table view
+
+        :param upload_id: upload id
+        :type upload_id: str
+        :param refresh: force refresh before selection, defaults to True
+        :type refresh: bool, optional
+        """
+        if refresh:
+            self.refresh()
+        row = self.mdl_upload.get_upload_row(upload_id=upload_id)
+        if row != -1:
+            self.mdl_upload.index(row, self.mdl_upload.NAME_COL)
+
+            # Get proxy model index for selection
+            index = self.mdl_upload.index(row, self.mdl_project.NAME_COL)
+
+            # Update selection model, upload will be display with signal
+            self.tbv_upload.selectionModel().select(
+                index,
+                QItemSelectionModel.SelectionFlag.Select
+                | QItemSelectionModel.SelectionFlag.Rows,
+            )
+
+    def select_stored_data(self, stored_data_id: str, refresh: bool = True) -> None:
+        """Select stored data in table view
+
+        :param stored_data_id: stored data id
+        :type stored_data_id: str
+        :param refresh: force refresh before selection, defaults to True
+        :type refresh: bool, optional
+        """
+        if refresh:
+            self.refresh()
+        row = self.mdl_stored_data.get_stored_data_row(stored_data_id=stored_data_id)
+
+        if row != -1:
+            # Check all stored data table view
+            for tbv in [
+                self.tbv_vector_db,
+                self.tbv_pyramid_vector,
+                self.tbv_pyramid_raster,
+            ]:
+                # Get proxy model index for selection
+                index = tbv.model().mapFromSource(
+                    self.mdl_stored_data.index(row, self.mdl_stored_data.NAME_COL)
+                )
+                if index.isValid():
+                    tbv.selectionModel().select(
+                        index,
+                        QItemSelectionModel.SelectionFlag.Select
+                        | QItemSelectionModel.SelectionFlag.Rows,
+                    )
+                    self._item_clicked(index, tbv.model(), tbv)
+                    break
+
     def _item_clicked(
         self, index: QModelIndex, model: QAbstractItemModel, tbv: QTableView
     ) -> None:
@@ -280,6 +341,7 @@ class DashboardWidget(QWidget):
                 self.detail_dialog = UploadDetailsWidget(self)
                 self.detail_dialog.set_upload(item)
                 self.detail_widget_layout.addWidget(self.detail_dialog)
+                self.detail_dialog.select_stored_data.connect(self.select_stored_data)
                 self.detail_zone.show()
 
     def remove_detail_zone(self):

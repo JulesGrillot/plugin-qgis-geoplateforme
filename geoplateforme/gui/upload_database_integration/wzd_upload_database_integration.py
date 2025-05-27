@@ -53,6 +53,14 @@ class UploadDatabaseIntegrationWizard(QWizard):
         self.setOption(QWizard.WizardOption.NoBackButtonOnLastPage, True)
         self.setOption(QWizard.WizardOption.NoCancelButtonOnLastPage, True)
 
+    def get_created_stored_data_id(self) -> str:
+        """Return created stored data id
+
+        :return: created stored data id
+        :rtype: str
+        """
+        return self.qwp_upload_database_integration.created_stored_data_id
+
     def reject(self) -> None:
         """Override reject to check last page and wait for database integration laucnh"""
         # If upload creation page, check that page is valid

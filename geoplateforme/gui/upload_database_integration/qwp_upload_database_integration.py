@@ -46,11 +46,7 @@ class UploadDatabaseIntegrationPageWizard(QWizardPage):
         """
 
         super().__init__(parent)
-        self.setTitle(
-            self.tr(
-                "Génération de la base de données vectorielle en cours.\nVous pouvez fermer la fenêtre pendant la génération."
-            )
-        )
+        self.setTitle(self.tr("Génération de la base de données vectorielle en cours."))
         self.log = PlgLogger().log
         self.qwp_vector_db_edition = qwp_vector_db_edition
 

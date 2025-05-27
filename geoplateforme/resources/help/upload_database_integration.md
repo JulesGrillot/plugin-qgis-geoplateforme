@@ -10,7 +10,7 @@ Création d'une base de données vectorielles depuis un identifiant de livraison
 | Identifiant de la livraison        | `UPLOAD`      | Identifiant de la livraison. |
 | Nom base de données | `STORED_DATA_NAME`  | Nom de la base de données en sortie. |
 | Tags à ajouter | `TAGS`  | List de tags à importer. Format `"clé 1,valeur 1;clé 2,valeur 2;..;clé n,valeur n"` |
-| Attendre la fin de l'intégration ? | `WAIT_FOR_INTEGRATION` | Option pour attendre la fin de l'intégration avant de sortir du traitement, permet de vérifier si la base de données vectorielles a été correctement générée.|
+| Attendre la fin de l'intégration ? | `WAIT_FOR_INTEGRATION` | Option pour attendre la fin de l'intégration avant de sortir du traitement, permet de vérifier si la base de données vectorielles a été correctement générée. (Désactivée par défaut)|
 
 - Sorties :
 

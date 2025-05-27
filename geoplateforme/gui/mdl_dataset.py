@@ -1,8 +1,12 @@
 from qgis.PyQt.QtCore import QObject
 from qgis.PyQt.QtGui import QStandardItemModel
 
-from geoplateforme.api.custom_exceptions import UnavailableUserException
+from geoplateforme.api.custom_exceptions import (
+    ReadStoredDataException,
+    ReadUploadException,
+)
 from geoplateforme.api.stored_data import StoredDataField, StoredDataRequestManager
+from geoplateforme.api.upload import UploadField, UploadRequestManager
 from geoplateforme.toolbelt import PlgLogger
 
 
@@ -72,7 +76,25 @@ class DatasetListModel(QStandardItemModel):
                                 row = self.rowCount() - 1
                                 self.setData(self.index(row, self.NAME_COL), value)
 
-            except UnavailableUserException as exc:
+                    manager = UploadRequestManager()
+                    uploads = manager.get_upload_list(
+                        datastore_id=self.datastore_id,
+                        with_fields=[UploadField.TAGS],
+                    )
+
+                    for upload in uploads:
+                        # Here we call upload._tags because we already request TAGS
+                        # (call upload.tags will generate unecessary requests on untag upload data)
+                        for key, value in dict.items(upload._tags):
+                            if (
+                                key == "datasheet_name"
+                                and self.get_dataset_row(value) == -1
+                            ):
+                                self.insertRow(self.rowCount())
+                                row = self.rowCount() - 1
+                                self.setData(self.index(row, self.NAME_COL), value)
+
+            except (ReadStoredDataException, ReadUploadException) as exc:
                 self.log(
                     f"Error while getting user dataset: {exc}",
                     log_level=2,

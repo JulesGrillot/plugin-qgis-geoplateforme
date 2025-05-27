@@ -1,14 +1,24 @@
 import os
 
 from qgis.core import QgsApplication, QgsProject
-from qgis.PyQt import uic
+from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtCore import QSize, Qt
 from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon, QPixmap
-from qgis.PyQt.QtWidgets import QAbstractItemView, QWidget
+from qgis.PyQt.QtWidgets import (
+    QAbstractItemView,
+    QAction,
+    QToolBar,
+    QToolButton,
+    QWidget,
+)
 
+from geoplateforme.__about__ import DIR_PLUGIN_ROOT
 from geoplateforme.api.upload import Upload, UploadStatus
 from geoplateforme.gui.report.mdl_upload_details import UploadDetailsTreeModel
 from geoplateforme.gui.report.wdg_upload_log import UploadLogWidget
+from geoplateforme.gui.upload_database_integration.wzd_upload_database_integration import (
+    UploadDatabaseIntegrationWizard,
+)
 from geoplateforme.toolbelt import PlgLogger
 
 
@@ -39,6 +49,10 @@ class UploadDetailsWidget(QWidget):
         self.btn_add_extent_layer.pressed.connect(self._add_extent_layer)
         self.btn_load_report.pressed.connect(self._load_generation_report)
 
+        # Add toolbar for stored data actions
+        self.edit_toolbar = QToolBar(self)
+        self.layout().setMenuBar(self.edit_toolbar)
+
     def set_upload(self, upload: Upload) -> None:
         """
         Define displayed upload
@@ -48,6 +62,47 @@ class UploadDetailsWidget(QWidget):
         """
         self._upload = upload
         self._set_upload_details(upload)
+
+        # Remove all available action in toolbar
+        self.edit_toolbar.clear()
+
+        status = upload.status
+
+        if status == UploadStatus.CLOSED:
+            generate_vector_db_action = QAction(
+                QIcon(str(DIR_PLUGIN_ROOT / "resources/images/dashboard/db.png")),
+                self.tr("Génération base de données vectorielle"),
+                self,
+            )
+            generate_vector_db_action.triggered.connect(
+                self._show_generate_vector_db_wizard
+            )
+            button = QToolButton(self)
+            button.setDefaultAction(generate_vector_db_action)
+            button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+            self.edit_toolbar.addWidget(button)
+
+    def _show_generate_vector_db_wizard(self) -> None:
+        """Show generate vector db wizard for current upload"""
+        self._generate_vector_db_wizard(self._upload)
+
+    def _generate_vector_db_wizard(self, upload: Upload) -> None:
+        """
+        Show vector db generation wizard for an upload
+
+        Args:
+            upload: (Upload) upload to generate vector db
+        """
+        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
+        vector_db_wizard = UploadDatabaseIntegrationWizard(
+            datastore_id=upload.datastore_id,
+            dataset_name=upload.tags["datasheet_name"],
+            upload_id=upload._id,
+            upload_name=upload.name,
+            parent=self,
+        )
+        QGuiApplication.restoreOverrideCursor()
+        vector_db_wizard.show()
 
     def _load_generation_report(self) -> None:
         """

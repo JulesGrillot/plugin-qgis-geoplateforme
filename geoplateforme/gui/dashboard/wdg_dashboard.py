@@ -42,6 +42,7 @@ from geoplateforme.api.stored_data import (
     StoredDataType,
 )
 from geoplateforme.gui.dashboard.dlg_stored_data_details import StoredDataDetailsDialog
+from geoplateforme.gui.dashboard.wdg_service_details import ServiceDetailsWidget
 from geoplateforme.gui.dashboard.wdg_upload_details import UploadDetailsWidget
 from geoplateforme.gui.mdl_offering import OfferingListModel
 from geoplateforme.gui.mdl_stored_data import StoredDataListModel
@@ -136,9 +137,14 @@ class DashboardWidget(QWidget):
         self.tbv_service.verticalHeader().setVisible(False)
         self.tbv_service.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
 
+        self.tbv_service.pressed.connect(self._service_clicked)
+
         # remove detail zone
         self.detail_dialog = None
         self.remove_detail_zone()
+
+        self.service_detail_dialog = None
+        self.remove_service_detail_zone()
 
         self.import_wizard = None
 
@@ -254,6 +260,24 @@ class DashboardWidget(QWidget):
         # Enable new refresh
         self.btn_refresh.setEnabled(True)
 
+    def _service_clicked(self, index: QModelIndex) -> None:
+        """Display service details when clicked
+
+        :param index: clicked index
+        :type index: QModelIndex
+        """
+        # Hide detail zone
+        self.remove_service_detail_zone()
+        offering = self.mdl_offering.data(
+            self.mdl_offering.index(index.row(), 0),
+            QtCore.Qt.UserRole,
+        )
+        if offering:
+            self.service_detail_dialog = ServiceDetailsWidget(self)
+            self.service_detail_dialog.set_offering(offering)
+            self.service_detail_widget_layout.addWidget(self.service_detail_dialog)
+            self.service_detail_zone.show()
+
     def select_upload(self, upload_id: str, refresh: bool = True) -> None:
         """Select upload in table view
 
@@ -345,13 +369,20 @@ class DashboardWidget(QWidget):
                 self.detail_dialog.select_stored_data.connect(self.select_stored_data)
                 self.detail_zone.show()
 
-    def remove_detail_zone(self):
+    def remove_detail_zone(self) -> None:
         """Hide detail zone and remove attached widgets"""
         # Hide detail zone
         self.detail_zone.hide()
         if self.detail_dialog:
             self.detail_widget_layout.removeWidget(self.detail_dialog)
             self.detail_dialog = None
+
+    def remove_service_detail_zone(self) -> None:
+        """Hide detail zone for service and remove attached widgets"""
+        self.service_detail_zone.hide()
+        if self.service_detail_dialog:
+            self.service_detail_widget_layout.removeWidget(self.service_detail_dialog)
+            self.service_detail_dialog = None
 
     def _stored_data_main_action(self, stored_data: StoredData):
         """
@@ -695,6 +726,7 @@ class DashboardWidget(QWidget):
 
         # remove detail zone
         self.remove_detail_zone()
+        self.remove_service_detail_zone()
 
         self._set_metadata_view()
 

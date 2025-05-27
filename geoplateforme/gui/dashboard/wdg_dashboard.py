@@ -336,6 +336,7 @@ class DashboardWidget(QWidget):
                 self.detail_dialog = StoredDataDetailsDialog(self)
                 self.detail_dialog.set_stored_data(item)
                 self.detail_widget_layout.addWidget(self.detail_dialog)
+                self.detail_dialog.select_stored_data.connect(self.select_stored_data)
                 self.detail_zone.show()
             elif isinstance(model, UploadListModel):
                 self.detail_dialog = UploadDetailsWidget(self)

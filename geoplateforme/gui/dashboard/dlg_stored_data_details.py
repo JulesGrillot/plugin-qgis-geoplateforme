@@ -2,7 +2,7 @@ import os
 
 from qgis.core import QgsApplication, QgsProject
 from qgis.PyQt import QtCore, uic
-from qgis.PyQt.QtCore import QSize, Qt
+from qgis.PyQt.QtCore import QSize, Qt, pyqtSignal
 from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon, QPixmap
 from qgis.PyQt.QtWidgets import (
     QAbstractItemView,
@@ -43,6 +43,8 @@ from geoplateforme.toolbelt import PlgLogger
 
 
 class StoredDataDetailsDialog(QDialog):
+    select_stored_data = pyqtSignal(str)
+
     def __init__(self, parent: QWidget = None):
         """
         QDialog to display report for a stored data
@@ -88,6 +90,8 @@ class StoredDataDetailsDialog(QDialog):
         self.edit_toolbar = QToolBar(self)
         self.layout().setMenuBar(self.edit_toolbar)
 
+        self.tile_generation_wizard = None
+
     def set_stored_data(self, stored_data: StoredData) -> None:
         """
         Define displayed stored data
@@ -109,6 +113,7 @@ class StoredDataDetailsDialog(QDialog):
             # - tile generation
             # - WFS publication
             if stored_data.type == StoredDataType.VECTORDB:
+                # Tile generation
                 generate_tile_action = QAction(
                     QIcon(str(DIR_PLUGIN_ROOT / "resources/images/icons/Tuile@1x.png")),
                     self.tr("Génération tuile"),
@@ -122,6 +127,7 @@ class StoredDataDetailsDialog(QDialog):
                 button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
                 self.edit_toolbar.addWidget(button)
 
+                # WFS publication
                 publish_tile_action = QAction(
                     QIcon(
                         str(
@@ -175,14 +181,29 @@ class StoredDataDetailsDialog(QDialog):
             stored_data: (StoredData) stored data to generate tile
         """
         QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
-        publication_wizard = TileCreationWizard(
+        self.tile_generation_wizard = TileCreationWizard(
             self,
             stored_data.datastore_id,
             stored_data.tags["datasheet_name"],
             stored_data._id,
         )
         QGuiApplication.restoreOverrideCursor()
-        publication_wizard.show()
+        self.tile_generation_wizard.finished.connect(self._del_tile_generation_wizard)
+        self.tile_generation_wizard.show()
+
+    def _del_tile_generation_wizard(self) -> None:
+        """
+        Delete tile generation wizard
+
+        """
+        if self.tile_generation_wizard is not None:
+            created_stored_data_id = (
+                self.tile_generation_wizard.get_created_stored_data_id()
+            )
+            if created_stored_data_id:
+                self.select_stored_data.emit(created_stored_data_id)
+            self.tile_generation_wizard.deleteLater()
+            self.tile_generation_wizard = None
 
     def _show_tile_publish_wizard(self) -> None:
         """Show tile generation wizard for current stored data"""

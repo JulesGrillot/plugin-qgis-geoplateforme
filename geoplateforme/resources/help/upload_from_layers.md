@@ -13,6 +13,7 @@ Création d'une livraison dans un entrepôt depuis une liste de couches vectorie
 | Fichiers additionnels à importer| `FILES`  | Fichiers additionnels à importer (séparés par ; pour fichiers multiples). |
 | Système de coordonnées| `SRS`  | Système de coordonnées attendus des couches et fichier à importer. |
 | Tags à ajouter | `TAGS`  | List de tags à importer. Format `"clé 1,valeur 1;clé 2,valeur 2;..;clé n,valeur n"` |
+| Attendre la fermeture de la livraison ? | `WAIT_FOR_CLOSE` | Option pour attendre la fermeture de la livraison avant de sortir du traitement, permet d'attendre que toutes les vérifications soient passées. (Désactivée par défaut) |
 
 - Sorties :
 
@@ -21,7 +22,5 @@ Création d'une livraison dans un entrepôt depuis une liste de couches vectorie
 | Identifiant de la livraison créé | `CREATED_UPLOAD_ID`        | Identifiant de la livraison créé  |
 
 La livraison n'est pas effectuée si les systèmes de coordonnées sont différents entre les couches.
-
-Le traitement attends la finalisation de la livraison dans la géoplateforme avant de s'arreter.
 
 Nom du traitement : `geoplateforme:upload_from_files`

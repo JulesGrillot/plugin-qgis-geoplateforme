@@ -10,6 +10,7 @@ from qgis.core import (
     QgsProcessingContext,
     QgsProcessingException,
     QgsProcessingFeedback,
+    QgsProcessingParameterBoolean,
     QgsProcessingParameterCrs,
     QgsProcessingParameterFile,
     QgsProcessingParameterMatrix,
@@ -39,6 +40,7 @@ class GpfUploadFromLayersAlgorithm(QgsProcessingAlgorithm):
     FILES = "FILES"
     SRS = "SRS"
     TAGS = "TAGS"
+    WAIT_FOR_CLOSE = "WAIT_FOR_CLOSE"
 
     CREATED_UPLOAD_ID = "CREATED_UPLOAD_ID"
 
@@ -133,6 +135,14 @@ class GpfUploadFromLayersAlgorithm(QgsProcessingAlgorithm):
             )
         )
 
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.WAIT_FOR_CLOSE,
+                self.tr("Attendre la fermeture de la livraison ?"),
+                defaultValue=False,
+            )
+        )
+
     def export_layer_as_temporary_gpkg(
         self, layer: QgsVectorLayer, context: QgsProcessingContext
     ) -> str:
@@ -193,6 +203,7 @@ class GpfUploadFromLayersAlgorithm(QgsProcessingAlgorithm):
         description = self.parameterAsString(parameters, self.DESCRIPTION, context)
         datastore = self.parameterAsString(parameters, self.DATASTORE, context)
         tags = self.parameterAsMatrix(parameters, self.TAGS, context)
+        wait_for_close = self.parameterAsBool(parameters, self.WAIT_FOR_CLOSE, context)
 
         layers: List[QgsVectorLayer] = self.parameterAsLayerList(
             parameters, self.LAYERS, context
@@ -252,6 +263,7 @@ class GpfUploadFromLayersAlgorithm(QgsProcessingAlgorithm):
             GpfUploadFromFileAlgorithm.SRS: srs,
             GpfUploadFromFileAlgorithm.FILES: ";".join(files),
             GpfUploadFromFileAlgorithm.TAGS: tags,
+            GpfUploadFromFileAlgorithm.WAIT_FOR_CLOSE: wait_for_close,
         }
 
         results, successful = alg.run(params, context, feedback)

@@ -15,6 +15,7 @@ Création de tuiles vectorielles depuis une base de données vectorielles.
 | Niveau haut pour la pyramide | `TOP_LEVEL`      | Niveau haut pour la pyramide, valeur entre 1 et 21 |
 | Zone de moissonnage | `BBOX`      | Zone de moissonnage (optionnel) |
 | Tags à ajouter | `TAGS`  | List de tags à importer. Format `"clé 1,valeur 1;clé 2,valeur 2;..;clé n,valeur n"` |
+| Attendre la fin de la génération  ? | `WAIT_FOR_GENERATION` | Option pour attendre la fin de la génération avant de sortir du traitement, permet de vérifier si les tuiles vectorielles ont été correctement générées. (Désactivée par défaut) |
 
 - Sorties :
 
@@ -22,7 +23,5 @@ Création de tuiles vectorielles depuis une base de données vectorielles.
 |------------------------------------|-------------------------------------|--------------------------------|
 | Identifiant de la base de données créés | `CREATED_STORED_DATA_ID`        | Identifiant de la base de données créés  |
 | Identifiant de l'exécution du traitement | `PROCESSING_EXEC_ID`        | Identifiant de l'exécution du traitement  |
-
-Le traitement attends la finalisation des tuiles vectorielles dans la géoplateforme avant de s'arreter.
 
 Nom du traitement : `geoplateforme:tile_creation`

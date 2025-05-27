@@ -5,6 +5,7 @@ from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingException,
     QgsProcessingFeedback,
+    QgsProcessingParameterBoolean,
     QgsProcessingParameterExtent,
     QgsProcessingParameterMatrix,
     QgsProcessingParameterNumber,
@@ -52,6 +53,7 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
     TOP_LEVEL = "TOP_LEVEL"
     BBOX = "BBOX"
     TAGS = "TAGS"
+    WAIT_FOR_GENERATION = "WAIT_FOR_GENERATION"
 
     TABLE = "table"
     ATTRIBUTES = "attributes"
@@ -164,6 +166,14 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
             )
         )
 
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.WAIT_FOR_GENERATION,
+                self.tr("Attendre la fin de la génération ?"),
+                defaultValue=False,
+            )
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         stored_data_name = self.parameterAsString(
             parameters, self.STORED_DATA_NAME, context
@@ -176,6 +186,10 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
 
         tag_data = self.parameterAsMatrix(parameters, self.TAGS, context)
         tags = tags_from_qgs_parameter_matrix_string(tag_data)
+
+        wait_for_generation = self.parameterAsBool(
+            parameters, self.WAIT_FOR_GENERATION, context
+        )
 
         tippecanoe_options = self.parameterAsString(
             parameters, self.TIPPECANOE_OPTIONS, context
@@ -271,8 +285,9 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
             # Launch execution
             processing_manager.launch_execution(datastore_id=datastore, exec_id=exec_id)
 
-            # Wait for tile creation
-            self._wait_tile_creation(datastore, stored_data_id, feedback)
+            if wait_for_generation:
+                # Wait for tile creation
+                self._wait_tile_creation(datastore, stored_data_id, feedback)
 
         except UnavailableStoredData as exc:
             raise QgsProcessingException(

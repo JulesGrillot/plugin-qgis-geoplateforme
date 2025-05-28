@@ -4,11 +4,12 @@ import math
 import re
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
 from typing import List, Optional, Self
 
 # PyQGIS
 from qgis.core import QgsCoordinateReferenceSystem, QgsVectorLayer
-from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QFileInfo, QUrl
+from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QUrl
 
 # plugin
 from geoplateforme.api.check import CheckExecution, CheckRequestManager
@@ -718,7 +719,7 @@ class UploadRequestManager:
         data = json.loads(reply.data())
         return Upload.from_dict(datastore_id, data)
 
-    def add_file(self, datastore_id: str, upload_id: str, filename: str) -> None:
+    def add_file(self, datastore_id: str, upload_id: str, filename: Path) -> None:
         """Add file to upload by using QNetworkAccessManager and QHttpMultiPart
 
         :param datastore_id: datastore id
@@ -726,7 +727,7 @@ class UploadRequestManager:
         :param upload_id: upload id
         :type upload_id: str
         :param filename: file to import
-        :type filename: str
+        :type filename: Path
 
         :raises FileUploadException: when error occur during requesting the API
         """
@@ -737,7 +738,7 @@ class UploadRequestManager:
         try:
             self.request_manager.post_file(
                 url=QUrl(
-                    f"{self.get_base_url(datastore_id)}/{upload_id}/data?path={QFileInfo(filename).fileName()}"
+                    f"{self.get_base_url(datastore_id)}/{upload_id}/data?path={filename.name}"
                 ),
                 config_id=self.plg_settings.qgis_auth_id,
                 file_path=filename,

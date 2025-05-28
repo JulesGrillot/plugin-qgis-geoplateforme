@@ -25,15 +25,15 @@ from geoplateforme.api.custom_exceptions import (
 )
 from geoplateforme.api.processing import Execution, ProcessingRequestManager
 from geoplateforme.api.stored_data import StoredDataRequestManager, StoredDataStatus
-from geoplateforme.api.upload import UploadRequestManager
+from geoplateforme.api.upload import UploadRequestManager, UploadStatus
 from geoplateforme.gui.mdl_execution_list import ExecutionListModel
 from geoplateforme.gui.upload_creation.qwp_upload_edition import UploadEditionPageWizard
 from geoplateforme.processing import GeoplateformeProvider
-from geoplateforme.processing.utils import tags_to_qgs_parameter_matrix_string
-from geoplateforme.processing.vector_db_creation import (
-    VectorDatabaseCreationAlgorithm,
-    VectorDatabaseCreationProcessingFeedback,
+from geoplateforme.processing.upload_database_integration import (
+    UploadDatabaseIntegrationAlgorithm,
 )
+from geoplateforme.processing.upload_from_layers import GpfUploadFromLayersAlgorithm
+from geoplateforme.processing.utils import tags_to_qgs_parameter_matrix_string
 from geoplateforme.toolbelt import PlgLogger, PlgOptionsManager
 
 
@@ -47,7 +47,7 @@ class UploadCreationPageWizard(QWizardPage):
         """
 
         super().__init__(parent)
-        self.setTitle(self.tr("Checking and integration of your data in progress"))
+        self.setTitle(self.tr("Livraison des données en cours."))
         self.log = PlgLogger().log
         self.qwp_upload_edition = qwp_upload_edition
 
@@ -58,8 +58,7 @@ class UploadCreationPageWizard(QWizardPage):
         self.tbw_errors.setVisible(False)
 
         # Task ID and feedback for upload creation
-        self.create_vector_db_task_id = None
-        self.create_vector_db_feedback = VectorDatabaseCreationProcessingFeedback()
+        self.feedback = QgsProcessingFeedback()
 
         # Processing results
         self.processing_failed = False
@@ -89,7 +88,6 @@ class UploadCreationPageWizard(QWizardPage):
 
         """
         self.tbw_errors.setVisible(False)
-        self.create_vector_db_task_id = None
 
         # Processing results
         self.processing_failed = False
@@ -98,41 +96,42 @@ class UploadCreationPageWizard(QWizardPage):
         self.created_stored_data_id = ""
 
         self.mdl_execution_list.clear_executions()
-        self._create_vector_db()
+        self._create_upload()
 
-    def _create_vector_db(self) -> None:
+    def _create_upload(self) -> None:
         """
-        Run VectorDatabaseCreationAlgorithm with UploadCreatePageWizard parameters
+        Run GpfUploadFromLayersAlgorithm with UploadCreatePageWizard parameters
 
         """
         algo_str = (
-            f"{GeoplateformeProvider().id()}:{VectorDatabaseCreationAlgorithm().name()}"
+            f"{GeoplateformeProvider().id()}:{GpfUploadFromLayersAlgorithm().name()}"
         )
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
         params = {
-            VectorDatabaseCreationAlgorithm.DATASTORE: self.qwp_upload_edition.cbx_datastore.current_datastore_id(),
-            VectorDatabaseCreationAlgorithm.NAME: self.qwp_upload_edition.wdg_upload_creation.get_name(),
-            # TODO : add option for reprojection VectorDatabaseCreationAlgorithm.SRS: self.qwp_upload_edition.wdg_upload_creation.get_crs(),
-            VectorDatabaseCreationAlgorithm.FILES: ";".join(
+            GpfUploadFromLayersAlgorithm.DATASTORE: self.qwp_upload_edition.cbx_datastore.current_datastore_id(),
+            GpfUploadFromLayersAlgorithm.NAME: self.qwp_upload_edition.wdg_upload_creation.get_name(),
+            GpfUploadFromLayersAlgorithm.DESCRIPTION: self.qwp_upload_edition.wdg_upload_creation.get_name(),
+            GpfUploadFromLayersAlgorithm.FILES: ";".join(
                 self.qwp_upload_edition.wdg_upload_creation.get_filenames()
             ),
-            VectorDatabaseCreationAlgorithm.LAYERS: self.qwp_upload_edition.wdg_upload_creation.get_layers(),
-            VectorDatabaseCreationAlgorithm.TAGS: tags_to_qgs_parameter_matrix_string(
+            GpfUploadFromLayersAlgorithm.LAYERS: self.qwp_upload_edition.wdg_upload_creation.get_layers(),
+            GpfUploadFromLayersAlgorithm.TAGS: tags_to_qgs_parameter_matrix_string(
                 {
                     "datasheet_name": self.qwp_upload_edition.wdg_upload_creation.get_dataset_name()
                 }
             ),
-            VectorDatabaseCreationAlgorithm.SRS: self.qwp_upload_edition.wdg_upload_creation.get_crs(),
+            GpfUploadFromLayersAlgorithm.SRS: self.qwp_upload_edition.wdg_upload_creation.get_crs(),
+            GpfUploadFromLayersAlgorithm.WAIT_FOR_CLOSE: False,
         }
         self.lbl_step_icon.setMovie(self.loading_movie)
         self.loading_movie.start()
 
-        self.create_vector_db_task_id = self._run_alg(
+        self._run_alg(
             alg,
             params,
-            self.create_vector_db_feedback,
-            self._vector_db_creation_finished,
+            self.feedback,
+            self._upload_creation_finished,
         )
 
         # Run timer for upload check
@@ -140,9 +139,9 @@ class UploadCreationPageWizard(QWizardPage):
             int(PlgOptionsManager.get_plg_settings().status_check_sleep * 1000.0)
         )
 
-    def _vector_db_creation_finished(self, context, successful, results):
+    def _upload_creation_finished(self, context, successful, results):
         """
-        Callback executed when VectorDatabaseCreationAlgorithm is finished
+        Callback executed when GpfUploadFromLayersAlgorithm is finished
 
         Args:
             context:  algorithm context
@@ -151,26 +150,71 @@ class UploadCreationPageWizard(QWizardPage):
         """
         if successful:
             self.created_upload_id = results[
-                VectorDatabaseCreationAlgorithm.CREATED_UPLOAD_ID
+                GpfUploadFromLayersAlgorithm.CREATED_UPLOAD_ID
             ]
-            self.created_stored_data_id = results[
-                VectorDatabaseCreationAlgorithm.CREATED_STORED_DATA_ID
-            ]
-
-            self.loading_movie.stop()
-            self.setTitle(self.tr("Your data has been stored on the remote storage."))
-            pixmap = QPixmap(
-                str(DIR_PLUGIN_ROOT / "resources" / "images" / "icons" / "Done.svg")
+            self.setTitle(self.tr("Vérification de la livraison en cours."))
+            self.check_upload_status()
+            # Emit completeChanged to update finish button
+            self.completeChanged.emit()
+        else:
+            self._report_processing_error(
+                self.tr("Erreur lors de la création de la livraison"),
+                self.feedback.textLog(),
             )
-            self.lbl_step_icon.setMovie(QMovie())
-            self.lbl_step_icon.setPixmap(pixmap)
 
+    def _create_vector_db(self) -> None:
+        """
+        Run UploadDatabaseIntegrationAlgorithm with UploadCreatePageWizard parameters
+
+        """
+        algo_str = f"{GeoplateformeProvider().id()}:{UploadDatabaseIntegrationAlgorithm().name()}"
+        alg = QgsApplication.processingRegistry().algorithmById(algo_str)
+        params = {
+            UploadDatabaseIntegrationAlgorithm.STORED_DATA_NAME: self.qwp_upload_edition.wdg_upload_creation.get_name(),
+            UploadDatabaseIntegrationAlgorithm.DATASTORE: self.qwp_upload_edition.cbx_datastore.current_datastore_id(),
+            UploadDatabaseIntegrationAlgorithm.UPLOAD: self.created_upload_id,
+            UploadDatabaseIntegrationAlgorithm.TAGS: tags_to_qgs_parameter_matrix_string(
+                {
+                    "datasheet_name": self.qwp_upload_edition.wdg_upload_creation.get_dataset_name()
+                }
+            ),
+            UploadDatabaseIntegrationAlgorithm.WAIT_FOR_INTEGRATION: False,
+        }
+        self.lbl_step_icon.setMovie(self.loading_movie)
+        self.loading_movie.start()
+
+        self._run_alg(
+            alg,
+            params,
+            self.feedback,
+            self._vector_db_creation_finished,
+        )
+
+    def _vector_db_creation_finished(self, context, successful, results):
+        """
+        Callback executed when UploadDatabaseIntegrationAlgorithm is finished
+
+        Args:
+            context:  algorithm context
+            successful: algorithm success
+            results: algorithm results
+        """
+        if successful:
+            self.created_stored_data_id = results[
+                UploadDatabaseIntegrationAlgorithm.CREATED_STORED_DATA_ID
+            ]
+            self.setTitle(
+                self.tr(
+                    "Génération de la base de données vectorielle en cours.\nVous pouvez fermer la fenêtre pendant la génération."
+                )
+            )
+            self.check_upload_status()
             # Emit completeChanged to update finish button
             self.completeChanged.emit()
         else:
             self._report_processing_error(
                 self.tr("Vector database creation"),
-                self.create_vector_db_feedback.textLog(),
+                self.feedback.textLog(),
             )
 
     def check_upload_status(self):
@@ -200,8 +244,7 @@ class UploadCreationPageWizard(QWizardPage):
 
         """
         execution_list = []
-        if self.create_vector_db_feedback.created_upload_id:
-            self.created_upload_id = self.create_vector_db_feedback.created_upload_id
+        if self.created_upload_id:
             try:
                 manager = UploadRequestManager()
                 datastore_id = (
@@ -211,8 +254,27 @@ class UploadCreationPageWizard(QWizardPage):
                     datastore_id=datastore_id, upload_id=self.created_upload_id
                 )
 
+                upload = manager.get_upload(
+                    datastore_id=self.qwp_upload_edition.cbx_datastore.current_datastore_id(),
+                    upload_id=self.created_upload_id,
+                )
+                status = UploadStatus(upload.status)
+
+                if status == UploadStatus.CLOSED:
+                    self.setTitle(
+                        "Vérifications terminées.\nLancement de la génération de la base vectorielle."
+                    )
+                    self._create_vector_db()
+                elif status == UploadStatus.UNSTABLE:
+                    self._report_processing_error(
+                        self.tr("Vérification statut livraison"),
+                        self.tr("Erreur lors de la vérification de la livraison"),
+                    )
+
             except UnavailableUploadException as exc:
-                self._report_processing_error(self.tr("Upload check status"), str(exc))
+                self._report_processing_error(
+                    self.tr("Vérification statut livraison"), str(exc)
+                )
         return execution_list
 
     def _check_stored_data_creation(self) -> Optional[Execution]:
@@ -224,10 +286,7 @@ class UploadCreationPageWizard(QWizardPage):
 
         """
         execution = None
-        if self.create_vector_db_feedback.created_vector_db_id:
-            self.created_stored_data_id = (
-                self.create_vector_db_feedback.created_vector_db_id
-            )
+        if self.created_stored_data_id:
             try:
                 stored_data_manager = StoredDataRequestManager()
                 processing_manager = ProcessingRequestManager()
@@ -250,6 +309,22 @@ class UploadCreationPageWizard(QWizardPage):
                 # Stop timer if stored_data generated
                 status = stored_data.status
                 if status == StoredDataStatus.GENERATED:
+                    self.setTitle(
+                        self.tr(
+                            "La base de données vectorielle a été générée dans l'entrepôt."
+                        )
+                    )
+                    pixmap = QPixmap(
+                        str(
+                            DIR_PLUGIN_ROOT
+                            / "resources"
+                            / "images"
+                            / "icons"
+                            / "Done.svg"
+                        )
+                    )
+                    self.lbl_step_icon.setMovie(QMovie())
+                    self.lbl_step_icon.setPixmap(pixmap)
                     self.upload_check_timer.stop()
 
             except (
@@ -270,25 +345,32 @@ class UploadCreationPageWizard(QWizardPage):
         """
         result = True
 
+        # Check if upload is closed
         if not self.created_upload_id and not self.processing_failed:
             result = False
             QMessageBox.warning(
                 self,
-                self.tr("Upload not finished."),
+                self.tr("Livraison non terminée"),
                 self.tr(
-                    "Upload not finished. You must wait for data upload before closing this dialog."
+                    "La livraison des données est toujours en cours. Veuillez attendre que les données soient disponibles sur l'entrepôt."
                 ),
             )
-        elif not self.created_stored_data_id and not self.processing_failed:
+
+        # Check if database integration is launched
+        if result and not self.created_stored_data_id and not self.processing_failed:
             result = False
-            QMessageBox.warning(
+            reply = QMessageBox.question(
                 self,
-                self.tr("Database integration not finished."),
+                self.tr("Vérification non terminée"),
                 self.tr(
-                    "Database integration not finished. You must wait for database integration before closing this "
-                    "dialog."
+                    "Les données sont en cours de vérification. Vous devrez lancer ultérieurement l'intégration en base de données.\n Voulez vous fermer la fenêtre ? "
                 ),
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No,
             )
+            if reply == QMessageBox.StandardButton.Yes:
+                result = True
+
         if result:
             self.upload_check_timer.stop()
 

@@ -4,6 +4,7 @@ from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingException,
     QgsProcessingFeedback,
+    QgsProcessingParameterBoolean,
     QgsProcessingParameterMatrix,
     QgsProcessingParameterString,
 )
@@ -41,6 +42,7 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
     UPLOAD = "UPLOAD"
     STORED_DATA_NAME = "STORED_DATA_NAME"
     TAGS = "TAGS"
+    WAIT_FOR_INTEGRATION = "WAIT_FOR_INTEGRATION"
 
     PROCESSING_EXEC_ID = "PROCESSING_EXEC_ID"
     CREATED_STORED_DATA_ID = "CREATED_STORED_DATA_ID"
@@ -107,6 +109,14 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
             )
         )
 
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.WAIT_FOR_INTEGRATION,
+                self.tr("Attendre la fin de l'intégration ?"),
+                defaultValue=False,
+            )
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         stored_data_name = self.parameterAsString(
             parameters, self.STORED_DATA_NAME, context
@@ -116,6 +126,10 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
 
         tag_data = self.parameterAsMatrix(parameters, self.TAGS, context)
         tags = tags_from_qgs_parameter_matrix_string(tag_data)
+
+        wait_for_integration = self.parameterAsBool(
+            parameters, self.WAIT_FOR_INTEGRATION, context
+        )
 
         try:
             stored_data_manager = StoredDataRequestManager()
@@ -172,8 +186,9 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
             # Launch execution
             processing_manager.launch_execution(datastore_id=datastore, exec_id=exec_id)
 
-            # Wait for database integration
-            self._wait_database_integration(datastore, stored_data_id, feedback)
+            if wait_for_integration:
+                # Wait for database integration
+                self._wait_database_integration(datastore, stored_data_id, feedback)
 
         except UnavailableProcessingException as exc:
             raise QgsProcessingException(

@@ -8,6 +8,7 @@ from qgis.core import (
     QgsProcessingContext,
     QgsProcessingException,
     QgsProcessingFeedback,
+    QgsProcessingParameterBoolean,
     QgsProcessingParameterCrs,
     QgsProcessingParameterFile,
     QgsProcessingParameterMatrix,
@@ -48,6 +49,7 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
     FILES = "FILES"
     SRS = "SRS"
     TAGS = "TAGS"
+    WAIT_FOR_CLOSE = "WAIT_FOR_CLOSE"
 
     CREATED_UPLOAD_ID = "CREATED_UPLOAD_ID"
 
@@ -126,6 +128,14 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
             )
         )
 
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.WAIT_FOR_CLOSE,
+                self.tr("Attendre la fermeture de la livraison ?"),
+                defaultValue=False,
+            )
+        )
+
     def processAlgorithm(
         self,
         parameters: Dict[str, Any],
@@ -158,6 +168,8 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
 
         tag_data = self.parameterAsMatrix(parameters, self.TAGS, context)
         tags = tags_from_qgs_parameter_matrix_string(tag_data)
+
+        wait_for_close = self.parameterAsBool(parameters, self.WAIT_FOR_CLOSE, context)
 
         try:
             manager = UploadRequestManager()
@@ -193,9 +205,10 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
             if hasattr(feedback, "created_upload_id"):
                 feedback.created_upload_id = upload_id
 
-            # Wait for upload close after check
-            feedback.pushInfo(self.tr("Attente vérification contenu livraison"))
-            self._wait_upload_close(datastore, upload_id, feedback)
+            if wait_for_close:
+                # Wait for upload close after check
+                feedback.pushInfo(self.tr("Attente vérification contenu livraison"))
+                self._wait_upload_close(datastore, upload_id, feedback)
 
         except UploadCreationException as exc:
             raise QgsProcessingException(f"Upload creation failed : {exc}")

@@ -214,6 +214,7 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
             GpfUploadFromLayersAlgorithm.TAGS: tags_to_qgs_parameter_matrix_string(
                 tags
             ),
+            GpfUploadFromLayersAlgorithm.WAIT_FOR_CLOSE: True,
         }
 
         results, successful = alg.run(params, context, feedback)
@@ -260,6 +261,7 @@ class VectorDatabaseCreationAlgorithm(QgsProcessingAlgorithm):
             UploadDatabaseIntegrationAlgorithm.TAGS: tags_to_qgs_parameter_matrix_string(
                 tags
             ),
+            UploadDatabaseIntegrationAlgorithm.WAIT_FOR_INTEGRATION: True,
         }
         results, successful = alg.run(params, context, feedback)
         if successful:

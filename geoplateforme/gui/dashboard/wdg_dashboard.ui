@@ -129,7 +129,7 @@
    <item row="4" column="0" colspan="3">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab_metadata">
       <attribute name="title">
@@ -296,9 +296,53 @@
       <attribute name="title">
        <string>Services</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_6">
+      <layout class="QGridLayout" name="gridLayout_9">
        <item row="0" column="0">
-        <widget class="QTableView" name="tbv_service"/>
+        <widget class="QSplitter" name="service_splitter">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <widget class="QScrollArea" name="scrl_area_service_table">
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrl_area_service_table_content">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>517</width>
+             <height>716</height>
+            </rect>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_6">
+            <item row="0" column="0">
+             <widget class="QTableView" name="tbv_service"/>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+         <widget class="QScrollArea" name="service_detail_zone">
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="service_detail_widget">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>433</width>
+             <height>716</height>
+            </rect>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_7">
+            <item row="0" column="0">
+             <layout class="QVBoxLayout" name="service_detail_widget_layout"/>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </widget>
        </item>
       </layout>
      </widget>

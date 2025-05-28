@@ -1,4 +1,5 @@
 # standard
+from pathlib import Path
 from time import sleep
 from typing import Any, Dict, Optional
 
@@ -198,7 +199,9 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
             for filename in files:
                 feedback.pushInfo(self.tr("Ajout fichier {}").format(filename))
                 manager.add_file(
-                    datastore_id=datastore, upload_id=upload._id, filename=filename
+                    datastore_id=datastore,
+                    upload_id=upload._id,
+                    filename=Path(filename),
                 )
 
             # Close upload

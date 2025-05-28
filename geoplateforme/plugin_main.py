@@ -162,7 +162,9 @@ class GeoplateformePlugin:
         self.action_report_issue.triggered.connect(
             partial(
                 QDesktopServices.openUrl,
-                QUrl(f"{__uri_tracker__}new?template=10_bug_report.yml"),
+                QUrl(
+                    f"{__uri_tracker__}new?template=10_bug_report.yml&assignees=IGNF-Xavier"
+                ),
             )
         )
 

@@ -147,11 +147,11 @@ class GeoplateformePlugin:
         )
 
         # -- Menu
-        self.iface.addPluginToWebMenu(__title__, self.action_authentication)
-        self.iface.addPluginToWebMenu(__title__, self.action_dashboard)
-        self.iface.addPluginToWebMenu(__title__, self.action_storage_report)
-        self.iface.addPluginToWebMenu(__title__, self.action_settings)
-        self.iface.addPluginToWebMenu(__title__, self.action_help)
+        self.iface.addPluginToMenu(__title__, self.action_authentication)
+        self.iface.addPluginToMenu(__title__, self.action_dashboard)
+        self.iface.addPluginToMenu(__title__, self.action_storage_report)
+        self.iface.addPluginToMenu(__title__, self.action_settings)
+        self.iface.addPluginToMenu(__title__, self.action_help)
 
         # -- Toolbar
         self.toolbar = QToolBar("GeoplateformeToolbar")
@@ -205,7 +205,7 @@ class GeoplateformePlugin:
                         for action in actions_list:
                             if isinstance(action, QAction):
                                 self.external_plugin_actions.append(action)
-                                self.iface.addPluginToWebMenu(__title__, action)
+                                self.iface.addPluginToMenu(__title__, action)
                             else:
                                 self.log(
                                     "Only QAction should be returned by `create_gpf_plugins_actions` for plugin : {}.".format(
@@ -226,14 +226,14 @@ class GeoplateformePlugin:
     def unload(self):
         """Cleans up when plugin is disabled/uninstalled."""
         # -- Clean up menu
-        self.iface.removePluginWebMenu(__title__, self.action_authentication)
-        self.iface.removePluginWebMenu(__title__, self.action_dashboard)
-        self.iface.removePluginWebMenu(__title__, self.action_storage_report)
-        self.iface.removePluginWebMenu(__title__, self.action_help)
-        self.iface.removePluginWebMenu(__title__, self.action_settings)
+        self.iface.removePluginMenu(__title__, self.action_authentication)
+        self.iface.removePluginMenu(__title__, self.action_dashboard)
+        self.iface.removePluginMenu(__title__, self.action_storage_report)
+        self.iface.removePluginMenu(__title__, self.action_help)
+        self.iface.removePluginMenu(__title__, self.action_settings)
 
         for action in self.external_plugin_actions:
-            self.iface.removePluginWebMenu(__title__, action)
+            self.iface.removePluginMenu(__title__, action)
 
         # remove toolbar :
         self.toolbar.deleteLater()

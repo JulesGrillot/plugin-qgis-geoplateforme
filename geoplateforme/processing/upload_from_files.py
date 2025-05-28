@@ -187,6 +187,13 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
                     datastore_id=datastore, upload_id=upload._id, tags=tags
                 )
 
+            progress_tag = {
+                "integration_progress": '{"send_files_api":"in_progress","wait_checks":"waiting","integration_processing":"waiting"}',
+                "integration_current_step": "0",
+            }
+            feedback.pushInfo(self.tr("Ajout des tags {}").format(progress_tag))
+            manager.add_tags(datastore_id=datastore, upload_id=upload._id, tags=tags)
+
             # Add files
             for filename in files:
                 feedback.pushInfo(self.tr("Ajout fichier {}").format(filename))
@@ -197,6 +204,13 @@ class GpfUploadFromFileAlgorithm(QgsProcessingAlgorithm):
             # Close upload
             feedback.pushInfo(self.tr("Fermeture de la livraison"))
             manager.close_upload(datastore_id=datastore, upload_id=upload._id)
+
+            progress_tag = {
+                "integration_progress": '{"send_files_api":"successful","wait_checks":"in_progress","integration_processing":"waiting"}',
+                "integration_current_step": "1",
+            }
+            feedback.pushInfo(self.tr("Ajout des tags {}").format(progress_tag))
+            manager.add_tags(datastore_id=datastore, upload_id=upload._id, tags=tags)
 
             # Get create upload id
             upload_id = upload._id

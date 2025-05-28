@@ -175,6 +175,8 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
             upload_tags = {
                 "vectordb_id": stored_data_id,
                 "proc_int_id": exec_id,
+                "integration_progress": '{"send_files_api":"successful","wait_checks":"successful","integration_processing":"in_progress"}',
+                "integration_current_step": "2",
             }
 
             self._add_upload_tag(

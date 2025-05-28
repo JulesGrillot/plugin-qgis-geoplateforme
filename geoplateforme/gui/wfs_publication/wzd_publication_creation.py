@@ -2,7 +2,7 @@
 from typing import Optional
 
 # PyQGIS
-from qgis.PyQt.QtWidgets import QDialog, QWizard
+from qgis.PyQt.QtWidgets import QWizard
 
 from geoplateforme.gui.wfs_publication.qwp_publication_form import (
     PublicationFormPageWizard,
@@ -84,7 +84,10 @@ class WFSPublicationWizard(QWizard):
         """
         self.qwp_table_relation.set_stored_data_id(stored_data_id)
 
-    def accept(self) -> None:
-        super().accept()
-        if self.result() == QDialog.DialogCode.Accepted:
-            self.restart()
+    def get_offering_id(self) -> str:
+        """Get offering id of created service
+
+        :return: offering id
+        :rtype: str
+        """
+        return self.qwp_publication_status.offering_id

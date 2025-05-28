@@ -3,10 +3,7 @@ from typing import Optional
 from qgis.PyQt.QtCore import QObject, Qt
 from qgis.PyQt.QtGui import QStandardItemModel
 
-from geoplateforme.api.configuration import (
-    Configuration,
-    ConfigurationRequestManager,
-)
+from geoplateforme.api.configuration import Configuration, ConfigurationRequestManager
 from geoplateforme.api.custom_exceptions import (
     ReadConfigurationException,
     ReadOfferingException,
@@ -125,3 +122,21 @@ class OfferingListModel(QStandardItemModel):
         self.setData(self.index(row, self.STATUS_COL), offering.status.value)
         self.setData(self.index(row, self.OPEN_COL), offering.open)
         self.setData(self.index(row, self.AVAILABLE_COL), offering.available)
+
+    def get_offering_row(self, offering_id: str) -> int:
+        """Get offering row for an id; returns -1 if offering is not available
+
+        :param offering_id: offering id
+        :type offering_id: str
+        :return: offering id row, -1 if offering not available
+        :rtype: int
+        """
+        result = -1
+        for row in range(0, self.rowCount()):
+            offering = self.data(
+                self.index(row, self.NAME_COL), Qt.ItemDataRole.UserRole
+            )
+            if offering._id == offering_id:
+                result = row
+                break
+        return result

@@ -9,13 +9,14 @@ from typing import List, Optional, Self
 
 # PyQGIS
 from qgis.core import QgsBlockingNetworkRequest
-from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtCore import QByteArray, QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 from geoplateforme.api.configuration import ConfigurationType
 
 # project
 from geoplateforme.api.custom_exceptions import (
+    OfferingCreationException,
     ReadOfferingException,
     UnavailableOfferingsException,
 )
@@ -250,6 +251,17 @@ class OfferingsRequestManager:
         """
         return f"{self.plg_settings.base_url_api_entrepot}/datastores/{datastore}/offerings"
 
+    def get_config_base_url(self, datastore: str) -> str:
+        """
+        Get base url for configurations
+
+        Args:
+            datastore: (str)
+
+        Returns: url for configurations
+        """
+        return f"{self.plg_settings.base_url_api_entrepot}/datastores/{datastore}/configurations"
+
     def get_offerings_id(self, datastore: str, stored_data: str) -> list:
         """
         Get offerings id for a specific stored data on Geoplateforme entrepot
@@ -307,6 +319,47 @@ class OfferingsRequestManager:
             raise UnavailableOfferingsException(
                 f"Error while fetching processing : {self.ntwk_requester_blk.errorMessage()}"
             )
+
+    def create_offering(
+        self, visibility: str, endpoint: str, datastore: str, configuration_id: str
+    ) -> Offering:
+        """
+        Create offering on Geoplateforme entrepot
+
+        Args:
+            configuration_id: (str) datastore_id :(str)
+            visibility :(str) endpoint : (str)
+
+        """
+        self.log(
+            f"{__name__}.create_offering(visibility:{visibility}, endpoint: {endpoint}, datastore: {datastore}, configuration_id: {configuration_id})"
+        )
+
+        # encode data
+        data = QByteArray()
+        data_map = {
+            "visibility": visibility,
+            "endpoint": endpoint,
+        }
+
+        data.append(json.dumps(data_map))
+
+        try:
+            # send request
+            reply = self.request_manager.post_url(
+                url=QUrl(
+                    f"{self.get_config_base_url(datastore)}/{configuration_id}/offerings"
+                ),
+                config_id=self.plg_settings.qgis_auth_id,
+                data=data,
+                headers={b"Content-Type": bytes("application/json", "utf8")},
+            )
+
+        except ConnectionError as err:
+            raise OfferingCreationException(f"Error while creating publication : {err}")
+
+        data = json.loads(reply.data())
+        return Offering.from_dict(datastore_id=datastore, val=data)
 
     def get_offering_list(
         self,

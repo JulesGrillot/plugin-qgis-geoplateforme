@@ -23,6 +23,6 @@ Publication de tuiles vectorielles.
 
 | Sortie                             | Paramètre                           | Description                    |
 |------------------------------------|-------------------------------------|--------------------------------|
-| Url de la publication | `PUBLICATION_URL`        | Url de la publication  |
+| Identifiant de la publication | `OFFERING_ID`        | Identifiant de la publication  |
 
 Nom du traitement : `geoplateforme:vector_tile_publish`

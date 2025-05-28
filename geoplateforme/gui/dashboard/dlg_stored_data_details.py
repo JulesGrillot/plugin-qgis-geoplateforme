@@ -47,6 +47,7 @@ from geoplateforme.toolbelt import PlgLogger
 
 class StoredDataDetailsDialog(QDialog):
     select_stored_data = pyqtSignal(str)
+    select_offering = pyqtSignal(str)
 
     def __init__(self, parent: QWidget = None):
         """
@@ -94,6 +95,9 @@ class StoredDataDetailsDialog(QDialog):
         self.layout().setMenuBar(self.edit_toolbar)
 
         self.tile_generation_wizard = None
+        self.wms_vector_publish_wizard = None
+        self.wfs_publish_wizard = None
+        self.tms_publish_wizard = None
 
     def set_stored_data(self, stored_data: StoredData) -> None:
         """
@@ -206,14 +210,29 @@ class StoredDataDetailsDialog(QDialog):
             stored_data: (StoredData) stored data to generate tile
         """
         QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
-        publication_wizard = WMSVectorPublicationWizard(
+        self.wms_vector_publish_wizard = WMSVectorPublicationWizard(
             self,
             stored_data.datastore_id,
             stored_data.tags["datasheet_name"],
             stored_data._id,
         )
         QGuiApplication.restoreOverrideCursor()
-        publication_wizard.show()
+        self.wms_vector_publish_wizard.finished.connect(
+            self._del_wms_vector_publish_wizard
+        )
+        self.wms_vector_publish_wizard.show()
+
+    def _del_wms_vector_publish_wizard(self) -> None:
+        """
+        Delete wms vector publish wizard
+
+        """
+        if self.wms_vector_publish_wizard is not None:
+            offering_id = self.wms_vector_publish_wizard.get_offering_id()
+            if offering_id:
+                self.select_offering.emit(offering_id)
+            self.wms_vector_publish_wizard.deleteLater()
+            self.wms_vector_publish_wizard = None
 
     def _show_tile_generation_wizard(self) -> None:
         """Show tile generation wizard for current stored data"""
@@ -263,14 +282,27 @@ class StoredDataDetailsDialog(QDialog):
             stored_data: (StoredData) stored data to publish
         """
         QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
-        publication_wizard = PublicationFormCreation(
+        self.tms_publish_wizard = PublicationFormCreation(
             self,
             stored_data.datastore_id,
             stored_data.tags["datasheet_name"],
             stored_data._id,
         )
         QGuiApplication.restoreOverrideCursor()
-        publication_wizard.show()
+        self.tms_publish_wizard.finished.connect(self._del_tms_publish_wizard)
+        self.tms_publish_wizard.show()
+
+    def _del_tms_publish_wizard(self) -> None:
+        """
+        Delete tm publish wizard
+
+        """
+        if self.tms_publish_wizard is not None:
+            offering_id = self.tms_publish_wizard.get_offering_id()
+            if offering_id:
+                self.select_offering.emit(offering_id)
+            self.tms_publish_wizard.deleteLater()
+            self.tms_publish_wizard = None
 
     def _show_wfs_publish_wizard(self) -> None:
         """Show WFS publication wizard for current stored data"""
@@ -283,14 +315,27 @@ class StoredDataDetailsDialog(QDialog):
         :type stored_data: StoredData
         """
         QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
-        publication_wizard = WFSPublicationWizard(
+        self.wfs_publish_wizard = WFSPublicationWizard(
             self,
             stored_data.datastore_id,
             stored_data.tags["datasheet_name"],
             stored_data._id,
         )
         QGuiApplication.restoreOverrideCursor()
-        publication_wizard.show()
+        self.wfs_publish_wizard.finished.connect(self._del_wfs_publish_wizard)
+        self.wfs_publish_wizard.show()
+
+    def _del_wfs_publish_wizard(self) -> None:
+        """
+        Delete wfs publish wizard
+
+        """
+        if self.wfs_publish_wizard is not None:
+            offering_id = self.wfs_publish_wizard.get_offering_id()
+            if offering_id:
+                self.select_offering.emit(offering_id)
+            self.wfs_publish_wizard.deleteLater()
+            self.wfs_publish_wizard = None
 
     def _load_generation_report(self) -> None:
         """

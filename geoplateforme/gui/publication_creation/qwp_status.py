@@ -4,8 +4,6 @@ import os
 # PyQGIS
 from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QUrl
-from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtWidgets import QWizardPage
 
 # Plugin
@@ -17,7 +15,6 @@ from geoplateforme.gui.publication_creation.qwp_publication_form import (
 from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.upload_publication import UploadPublicationAlgorithm
 from geoplateforme.processing.utils import tags_to_qgs_parameter_matrix_string
-from geoplateforme.toolbelt import PlgLogger, PlgOptionsManager
 
 
 class PublicationStatut(QWizardPage):
@@ -34,17 +31,11 @@ class PublicationStatut(QWizardPage):
         """
 
         super().__init__(parent)
-        self.setTitle(self.tr("Publication URL"))
-        self.url_data = ""
-        self.url_publication = ""
+        self.setTitle(self.tr("Publication WMTS-TMS"))
         self.qwp_publication_form = qwp_publication_form
         uic.loadUi(os.path.join(os.path.dirname(__file__), "qwp_status.ui"), self)
-
-        self.log = PlgLogger().log
-        self.btn_data.clicked.connect(lambda: self._openUrl(self.url_data))
-        self.btn_publication.clicked.connect(
-            lambda: self._openUrl(self.url_publication)
-        )
+        self.offering_id = ""
+        self.tbw_errors.setVisible(False)
 
     def initializePage(self) -> None:
         """
@@ -82,11 +73,11 @@ class PublicationStatut(QWizardPage):
             bottom = zoom_levels_int[-1]
             top = zoom_levels_int[0]
         except ValueError as exc:
-            self.log(
-                f"Invalid zoom levels value: {exc}",
-                log_level=2,
-                push=False,
+            self.lbl_result.setText(
+                self.tr("Erreur lors de la publication du service WMTS-TMS")
             )
+            self.tbw_errors.setVisible(True)
+            self.tbw_errors.setText(f"Invalid zoom levels value: {exc}")
             return
 
         params = {
@@ -112,32 +103,15 @@ class PublicationStatut(QWizardPage):
         )
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
         context = QgsProcessingContext()
-        create_url_feedback = QgsProcessingFeedback()
+        feedback = QgsProcessingFeedback()
 
-        result, success = alg.run(
-            parameters=params, context=context, feedback=create_url_feedback
-        )
+        result, success = alg.run(parameters=params, context=context, feedback=feedback)
         if success:
-            self.url_data = result["publication_url"]
-            plg_settings = PlgOptionsManager.get_plg_settings()
-            url_geoplateforme = plg_settings.url_geoplateforme
-            self.url_publication = (
-                f"{url_geoplateforme}viewer?tiles_url={self.url_data}"
-            )
-
+            self.lbl_result.setText(self.tr("Service WMTS-TMS publié avec succès"))
+            self.offering_id = result[UploadPublicationAlgorithm.OFFERING_ID]
         else:
-            self.btn_publication.setEnabled(False)
-            self.btn_data.setEnabled(False)
-
-            self.log(
-                "URL publication failed \nCheck your storage capacity and the flux name \n \n "
-                + create_url_feedback.textLog(),
-                log_level=1,
-                push=True,
-                button=True,
-                duration=60,
+            self.lbl_result.setText(
+                self.tr("Erreur lors de la publication du service WMTS-TMS")
             )
-
-    @staticmethod
-    def _openUrl(url_edit) -> None:
-        QDesktopServices.openUrl(QUrl(url_edit))
+            self.tbw_errors.setVisible(True)
+            self.tbw_errors.setText(feedback.textLog())

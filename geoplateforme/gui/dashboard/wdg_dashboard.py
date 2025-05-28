@@ -298,7 +298,7 @@ class DashboardWidget(QWidget):
             # Get proxy model index for selection
             index = self.mdl_upload.index(row, self.mdl_upload.NAME_COL)
 
-            # Update selection model, upload will be display with signal
+            # Update selection model
             self.tbv_upload.selectionModel().select(
                 index,
                 QItemSelectionModel.SelectionFlag.Select
@@ -317,6 +317,8 @@ class DashboardWidget(QWidget):
         if refresh:
             self.refresh()
         row = self.mdl_stored_data.get_stored_data_row(stored_data_id=stored_data_id)
+
+        self.tabWidget.setCurrentWidget(self.tab_dataset)
 
         if row != -1:
             # Check all stored data table view
@@ -337,6 +339,35 @@ class DashboardWidget(QWidget):
                     )
                     self._item_clicked(index, tbv.model(), tbv)
                     break
+
+    def select_offering(self, offerring_id: str, refresh: bool = True) -> None:
+        """Select offering in table view
+
+        :param offerring_id: offering id
+        :type offerring_id: str
+        :param refresh: force refresh before selection, defaults to True
+        :type refresh: bool, optional
+        """
+        if refresh:
+            self.refresh()
+
+        self.tabWidget.setCurrentWidget(self.tab_service)
+
+        row = self.mdl_offering.get_offering_row(offering_id=offerring_id)
+
+        if row != -1:
+            self.mdl_offering.index(row, self.mdl_offering.NAME_COL)
+
+            # Get proxy model index for selection
+            index = self.mdl_offering.index(row, self.mdl_offering.NAME_COL)
+
+            # Update selection model
+            self.tbv_service.selectionModel().select(
+                index,
+                QItemSelectionModel.SelectionFlag.Select
+                | QItemSelectionModel.SelectionFlag.Rows,
+            )
+            self._service_clicked(index)
 
     def _item_clicked(
         self, index: QModelIndex, model: QAbstractItemModel, tbv: QTableView
@@ -365,6 +396,7 @@ class DashboardWidget(QWidget):
                 self.detail_dialog.set_stored_data(item)
                 self.detail_widget_layout.addWidget(self.detail_dialog)
                 self.detail_dialog.select_stored_data.connect(self.select_stored_data)
+                self.detail_dialog.select_offering.connect(self.select_offering)
                 self.detail_zone.show()
             elif isinstance(model, UploadListModel):
                 self.detail_dialog = UploadDetailsWidget(self)

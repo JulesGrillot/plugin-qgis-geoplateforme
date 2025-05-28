@@ -10,7 +10,11 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
-from geoplateforme.api.configuration import Configuration, ConfigurationRequestManager
+from geoplateforme.api.configuration import (
+    Configuration,
+    ConfigurationRequestManager,
+    ConfigurationType,
+)
 
 # Plugin
 from geoplateforme.api.custom_exceptions import (
@@ -27,8 +31,6 @@ from geoplateforme.processing.utils import (
     tags_from_qgs_parameter_matrix_string,
 )
 from geoplateforme.toolbelt.preferences import PlgOptionsManager
-
-data_type = "WMTS-TMS"
 
 
 class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
@@ -216,7 +218,7 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
             configuration = Configuration(
                 _id="",
                 datastore_id=datastore,
-                _type="WMTS-TMS",
+                _type=ConfigurationType.WMTS_TMS,
                 _metadata=metadata,
                 _name=name,
                 _layer_name=layer_name,
@@ -251,7 +253,7 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
         try:
             manager_endpoint = DatastoreRequestManager()
             res = manager_endpoint.get_endpoint(
-                datastore=datastore, data_type=data_type
+                datastore=datastore, data_type=ConfigurationType.WMTS_TMS.value
             )
 
             publication_endpoint = res

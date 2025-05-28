@@ -56,7 +56,6 @@ class PublicationForm(QWidget):
         configuration = Configuration(
             _id="",
             datastore_id="",
-            _type="",
             _metadata=[],
             _name=self.lne_name.text(),
             _layer_name=self.lne_name.text(),

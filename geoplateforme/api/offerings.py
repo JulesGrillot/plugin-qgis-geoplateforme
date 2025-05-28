@@ -337,10 +337,7 @@ class OfferingsRequestManager:
 
         # encode data
         data = QByteArray()
-        data_map = {
-            "visibility": visibility,
-            "endpoint": endpoint,
-        }
+        data_map = {"visibility": visibility, "endpoint": endpoint, "open": True}
 
         data.append(json.dumps(data_map))
 

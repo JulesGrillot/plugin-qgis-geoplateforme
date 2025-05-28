@@ -39,10 +39,7 @@ from geoplateforme.gui.tile_creation.qwp_tile_generation_sample import (
     TileGenerationSamplePageWizard,
 )
 from geoplateforme.processing import GeoplateformeProvider
-from geoplateforme.processing.tile_creation import (
-    TileCreationAlgorithm,
-    TileCreationProcessingFeedback,
-)
+from geoplateforme.processing.tile_creation import TileCreationAlgorithm
 from geoplateforme.processing.utils import tags_to_qgs_parameter_matrix_string
 from geoplateforme.toolbelt import PlgOptionsManager
 
@@ -64,7 +61,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
         """
 
         super().__init__(parent)
-        self.setTitle(self.tr("Generating in progress"))
+        self.setTitle(self.tr("Génération des tuiles vectorielle en cours."))
         self.qwp_tile_generation_edition = qwp_tile_generation_edition
         self.qwp_tile_generation_fields_selection = qwp_tile_generation_fields_selection
         self.qwp_tile_generation_generalization = qwp_tile_generation_generalization
@@ -77,8 +74,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
         self.tbw_errors.setVisible(False)
 
         # Task and feedback for tile creation
-        self.create_tile_task_id = None
-        self.create_tile_feedback = TileCreationProcessingFeedback()
+        self.create_tile_feedback = QgsProcessingFeedback()
 
         # Processing results
         self.created_stored_data_id = ""
@@ -197,7 +193,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
         self.lbl_step_icon.setMovie(self.loading_movie)
         self.loading_movie.start()
 
-        self.create_tile_task_id = self._run_alg(
+        self._run_alg(
             alg, params, self.create_tile_feedback, self._create_tile_finished
         )
 
@@ -219,9 +215,18 @@ class TileGenerationStatusPageWizard(QWizardPage):
             self.created_stored_data_id = results[
                 TileCreationAlgorithm.CREATED_STORED_DATA_ID
             ]
+
+            self.setTitle(
+                self.tr(
+                    "Génération des tuiles vectorielle en cours.\nVous pouvez fermer la fenêtre pendant la génération."
+                )
+            )
+            # Emit completeChanged to update finish button
+            self.completeChanged.emit()
         else:
             self._report_processing_error(
-                self.tr("Tile creation"), self.create_tile_feedback.textLog()
+                self.tr("Génération des tuiles vectorielle"),
+                self.create_tile_feedback.textLog(),
             )
 
     def _check_create_tile_status(self):
@@ -231,8 +236,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
         """
         self.mdl_execution_list.clear_executions()
 
-        if self.create_tile_feedback.created_pyramid_id:
-            self.created_stored_data_id = self.create_tile_feedback.created_pyramid_id
+        if self.created_stored_data_id:
             try:
                 processing_manager = ProcessingRequestManager()
                 stored_data_manager = StoredDataRequestManager()

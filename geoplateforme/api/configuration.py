@@ -26,6 +26,13 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
+class WmsVectorTableStyle:
+    native_name: str
+    stl_file: Optional[str] = None
+    ftl_file: Optional[str] = None
+
+
+@dataclass
 class WfsRelation:
     native_name: str
     title: str
@@ -399,7 +406,7 @@ class ConfigurationRequestManager:
         # encode data
         data = QByteArray()
         data_map = {
-            "type": configuration.type,
+            "type": configuration.type.value,
             "metadata": configuration.metadata,
             "name": configuration.name,
             "layer_name": configuration.layer_name,

@@ -95,3 +95,19 @@ class UploadCreationWizard(QWizard):
                 event.ignore()
         else:
             super().closeEvent(event)
+
+    def get_created_upload_id(self) -> str:
+        """Return created stored data id
+
+        :return: created stored data id
+        :rtype: str
+        """
+        return self.qwp_upload_creation.created_upload_id
+
+    def get_created_stored_data_id(self) -> str:
+        """Return created stored data id
+
+        :return: created stored data id
+        :rtype: str
+        """
+        return self.qwp_upload_creation.created_stored_data_id

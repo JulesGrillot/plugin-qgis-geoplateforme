@@ -288,12 +288,15 @@ class DashboardWidget(QWidget):
         """
         if refresh:
             self.refresh()
+
+        self.tabWidget.setCurrentWidget(self.tab_dataset)
+
         row = self.mdl_upload.get_upload_row(upload_id=upload_id)
         if row != -1:
             self.mdl_upload.index(row, self.mdl_upload.NAME_COL)
 
             # Get proxy model index for selection
-            index = self.mdl_upload.index(row, self.mdl_project.NAME_COL)
+            index = self.mdl_upload.index(row, self.mdl_upload.NAME_COL)
 
             # Update selection model, upload will be display with signal
             self.tbv_upload.selectionModel().select(
@@ -301,6 +304,7 @@ class DashboardWidget(QWidget):
                 QItemSelectionModel.SelectionFlag.Select
                 | QItemSelectionModel.SelectionFlag.Rows,
             )
+            self._item_clicked(index, self.tbv_upload.model(), self.tbv_upload)
 
     def select_stored_data(self, stored_data_id: str, refresh: bool = True) -> None:
         """Select stored data in table view
@@ -624,6 +628,12 @@ class DashboardWidget(QWidget):
                 datastore_id=self.import_wizard.get_datastore_id(),
                 dataset_name=self.import_wizard.get_dataset_name(),
             )
+            created_upload_id = self.import_wizard.get_created_upload_id()
+            created_stored_data_id = self.import_wizard.get_created_stored_data_id()
+            if created_stored_data_id:
+                self.select_stored_data(created_stored_data_id, False)
+            elif created_upload_id:
+                self.select_upload(created_upload_id, False)
             self.import_wizard.deleteLater()
             self.import_wizard = None
 

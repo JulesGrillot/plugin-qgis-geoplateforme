@@ -51,7 +51,7 @@ class UploadListModel(QStandardItemModel):
         result = -1
         for row in range(0, self.rowCount()):
             if (
-                self.data(self.index(row, self.NAME_COL), Qt.ItemDataRole.UserRole).id
+                self.data(self.index(row, self.NAME_COL), Qt.ItemDataRole.UserRole)._id
                 == upload_id
             ):
                 result = row

@@ -16,6 +16,36 @@ Unreleased
 
 -->
 
+## 0.6.0 - 2025-05-28
+
+### Bugs fixes 🐛
+
+* fix(network manager): don't push log in message bar to avoid crashes in Windows by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/71>
+* fix(upload): set datasetname in tags by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/72>
+* Fix/no crs if no layer from qgis by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/74>
+* fix(upload): always use temporary file for gpkg layers to avoid upload of other layers by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/75>
+* fix(dataset): show dataset with only upload by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/78>
+* fix(upload): add_file need a Path and not a str by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/89>
+* fix(tms): need to use ConfigurationType instead of str by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/91>
+* fix(offering): always publish as open by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/93>
+
+### Features and enhancements 🎉
+
+* Feat/init style file creation by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/61>
+* Feat/minimal sld downgrade by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/62>
+* feat(upload): refactor wizard to check for upload close before database integration by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/77>
+* feat(vector db): add generation wizard by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/79>
+* feat(tms): select stored data after generation launch by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/80>
+* feat(tile): wait option in tile generation processing by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/81>
+* feat(upload): add tag for upload integration steps by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/82>
+* feat(ui): move to plugin menu and add report button by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/88>
+* feat(wms vector): init processing for publication by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/83>
+* feat(wms vector): init publication wizard by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/84>
+* feat(service): display offering instead of configuration by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/85>
+* feat(service): add details zone by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/86>
+* feat(upload): select upload or stored data after creation by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/90>
+* feat(publication): select offering after publication by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/92>
+
 ## 0.5.0 - 2025-05-22
 
 ### Features and enhancements 🎉

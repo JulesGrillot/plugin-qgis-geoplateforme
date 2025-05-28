@@ -110,13 +110,14 @@ class DatastoreRequestManager:
         )
         return result
 
-    def get_endpoint(self, datastore: str, data_type: str) -> str:
+    def get_endpoint(self, datastore: str, data_type: str, open: bool = True) -> str:
         """
         Get the endpoint for publication
 
         Args:
             datastore: (str)
             data_type: (str)
+            open: (bool) : use open endpoint
 
         Returns: first available endpoint id for data_type, raise UnavailableEndpointException otherwise
         """
@@ -138,7 +139,10 @@ class DatastoreRequestManager:
         endpoints = data["endpoints"]
         endpoint_id = ""
         for endpoint in endpoints:
-            if endpoint["endpoint"]["type"] == data_type:
+            if (
+                endpoint["endpoint"]["type"] == data_type
+                and endpoint["endpoint"]["open"] == open
+            ):
                 endpoint_id = endpoint["endpoint"]["_id"]
                 break
 

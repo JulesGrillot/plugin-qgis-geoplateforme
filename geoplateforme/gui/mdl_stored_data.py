@@ -73,7 +73,7 @@ class StoredDataListModel(QStandardItemModel):
         """
         result = super().data(index, role)
         if role == QtCore.Qt.DecorationRole:
-            if index.column() == self.NAME_COL:
+            if index.column() == self.NAME_COL or index.column() == self.STATUS_COL:
                 stored_data = self.data(
                     self.index(index.row(), self.NAME_COL), Qt.ItemDataRole.UserRole
                 )

@@ -101,3 +101,11 @@ class TileCreationWizard(QWizard):
             stored_data_id: (str) stored data id
         """
         self.qwp_tile_generation_edition.set_stored_data_id(stored_data_id)
+
+    def get_created_stored_data_id(self) -> str:
+        """Return created stored data id
+
+        :return: created stored data id
+        :rtype: str
+        """
+        return self.qwp_tile_generation_status.created_stored_data_id

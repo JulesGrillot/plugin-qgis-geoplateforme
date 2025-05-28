@@ -18,7 +18,12 @@ from qgis.PyQt.QtWidgets import QAction, QToolBar
 from qgis.utils import plugins
 
 # project
-from geoplateforme.__about__ import DIR_PLUGIN_ROOT, __title__, __uri_homepage__
+from geoplateforme.__about__ import (
+    DIR_PLUGIN_ROOT,
+    __title__,
+    __uri_homepage__,
+    __uri_tracker__,
+)
 from geoplateforme.api.custom_exceptions import UnavailableUserException
 from geoplateforme.constants import GPF_PLUGIN_LIST
 from geoplateforme.gui.dashboard.dlg_dashboard import DashboardDialog
@@ -61,6 +66,7 @@ class GeoplateformePlugin:
         self.options_factory = None
         self.action_help = None
         self.action_settings = None
+        self.action_report_issue = None
 
         self.toolbar = None
         self.dlg_dashboard = None
@@ -146,12 +152,27 @@ class GeoplateformePlugin:
             )
         )
 
+        # Issue report
+        self.action_report_issue = QAction(
+            QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.svg"),
+            self.tr("Report issue"),
+            self.iface.mainWindow(),
+        )
+
+        self.action_report_issue.triggered.connect(
+            partial(
+                QDesktopServices.openUrl,
+                QUrl(f"{__uri_tracker__}new?template=10_bug_report.yml"),
+            )
+        )
+
         # -- Menu
         self.iface.addPluginToMenu(__title__, self.action_authentication)
         self.iface.addPluginToMenu(__title__, self.action_dashboard)
         self.iface.addPluginToMenu(__title__, self.action_storage_report)
         self.iface.addPluginToMenu(__title__, self.action_settings)
         self.iface.addPluginToMenu(__title__, self.action_help)
+        self.iface.addPluginToMenu(__title__, self.action_report_issue)
 
         # -- Toolbar
         self.toolbar = QToolBar("GeoplateformeToolbar")
@@ -230,6 +251,7 @@ class GeoplateformePlugin:
         self.iface.removePluginMenu(__title__, self.action_dashboard)
         self.iface.removePluginMenu(__title__, self.action_storage_report)
         self.iface.removePluginMenu(__title__, self.action_help)
+        self.iface.removePluginMenu(__title__, self.action_report_issue)
         self.iface.removePluginMenu(__title__, self.action_settings)
 
         for action in self.external_plugin_actions:

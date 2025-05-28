@@ -74,7 +74,7 @@ class ConfigOptionsPage(FORM_CLASS, QgsOptionsPageWidget):
         self.btn_report.pressed.connect(
             partial(
                 QDesktopServices.openUrl,
-                QUrl(f"{__uri_tracker__}new?issuable_template=bug_report"),
+                QUrl(f"{__uri_tracker__}new?template=10_bug_report.yml"),
             )
         )
 

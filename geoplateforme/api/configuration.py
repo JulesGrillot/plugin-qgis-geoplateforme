@@ -14,7 +14,6 @@ from qgis.PyQt.QtCore import QByteArray, QUrl
 from geoplateforme.api.custom_exceptions import (
     AddTagException,
     ConfigurationCreationException,
-    OfferingCreationException,
     ReadConfigurationException,
     UnavailableConfigurationException,
 )
@@ -648,47 +647,6 @@ class ConfigurationRequestManager:
             raise UnavailableConfigurationException(
                 f"Error while getting configuration : {err}"
             )
-
-    def create_offering(
-        self, visibility: str, endpoint: str, datastore: str, configuration_id: str
-    ):
-        """
-        Create offering on Geoplateforme entrepot
-
-        Args:
-            configuration_id: (str) datastore_id :(str)
-            visibility :(str) endpoint : (str)
-
-        """
-        self.log(
-            f"{__name__}.create_offering(visibility:{visibility}, endpoint: {endpoint}, datastore: {datastore}, configuration_id: {configuration_id})"
-        )
-
-        # encode data
-        data = QByteArray()
-        data_map = {
-            "visibility": visibility,
-            "endpoint": endpoint,
-        }
-
-        data.append(json.dumps(data_map))
-
-        try:
-            # send request
-            reply = self.request_manager.post_url(
-                url=QUrl(
-                    f"{self.get_base_url(datastore)}/{configuration_id}/offerings"
-                ),
-                config_id=self.plg_settings.qgis_auth_id,
-                data=data,
-                headers={b"Content-Type": bytes("application/json", "utf8")},
-            )
-
-        except ConnectionError as err:
-            raise OfferingCreationException(f"Error while creating publication : {err}")
-
-        data = json.loads(reply.data())
-        return data["urls"]
 
     def add_tags(self, datastore_id: str, configuration_id: str, tags: dict) -> None:
         """Add tags to stored data

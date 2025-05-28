@@ -1,6 +1,6 @@
 # standard
 
-from qgis.PyQt.QtWidgets import QDialog, QWizard
+from qgis.PyQt.QtWidgets import QWizard
 
 # Plugin
 from geoplateforme.gui.update_publication.qwp_update_publication_form import (
@@ -50,8 +50,3 @@ class UpdatePublicationWizard(QWizard):
             stored_data_id: (str) stored data id
         """
         self.qwp_update_publication_form.set_stored_data_id(stored_data_id)
-
-    def accept(self) -> None:
-        super().accept()
-        if self.result() == QDialog.DialogCode.Accepted:
-            self.restart()

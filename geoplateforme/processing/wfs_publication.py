@@ -24,6 +24,7 @@ from geoplateforme.api.custom_exceptions import (
     UnavailableEndpointException,
 )
 from geoplateforme.api.datastore import DatastoreRequestManager
+from geoplateforme.api.offerings import OfferingsRequestManager
 from geoplateforme.api.stored_data import StoredDataRequestManager
 from geoplateforme.processing.utils import (
     get_short_string,
@@ -62,7 +63,7 @@ class WfsPublicationAlgorithm(QgsProcessingAlgorithm):
     METADATA = "metadata"
     VISIBILITY = "visibility"
 
-    PUBLICATION_URL = "publication_url"
+    OFFERING_ID = "OFFERING_ID"
 
     def tr(self, message: str) -> str:
         """Get the translation for a string using Qt translation API.
@@ -262,14 +263,13 @@ class WfsPublicationAlgorithm(QgsProcessingAlgorithm):
 
         # create publication (offering)
         try:
-            manager_offering = ConfigurationRequestManager()
-            res = manager_offering.create_offering(
+            manager_offering = OfferingsRequestManager()
+            offering = manager_offering.create_offering(
                 visibility=publication_visibility,
                 endpoint=publication_endpoint,
                 datastore=datastore,
                 configuration_id=configuration_id,
             )
-            publication_urls = res
         except OfferingCreationException as exc:
             raise QgsProcessingException(f"exc publication url : {exc}")
 
@@ -284,11 +284,6 @@ class WfsPublicationAlgorithm(QgsProcessingAlgorithm):
         except AddTagException as exc:
             raise QgsProcessingException(f"exc tag update url : {exc}")
 
-        # One url defined
-        publication_url = publication_urls[0]
-        # Remove tms| indication
-        url_data = publication_url["url"]
-
         try:
             # Update stored data tags
             manager = StoredDataRequestManager()
@@ -301,7 +296,7 @@ class WfsPublicationAlgorithm(QgsProcessingAlgorithm):
             raise QgsProcessingException(f"exc tag update url : {exc}")
 
         return {
-            self.PUBLICATION_URL: url_data,
+            self.OFFERING_ID: offering._id,
         }
 
     def _check_relation(self, data) -> None:

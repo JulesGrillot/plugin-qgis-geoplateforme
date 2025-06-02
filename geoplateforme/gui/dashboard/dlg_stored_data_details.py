@@ -45,6 +45,9 @@ from geoplateforme.gui.wms_raster_publication.wzd_publication_creation import (
 from geoplateforme.gui.wms_vector_publication.wzd_publication_creation import (
     WMSVectorPublicationWizard,
 )
+from geoplateforme.gui.wmts_publication.wzd_publication_creation import (
+    WMTSPublicationWizard,
+)
 from geoplateforme.toolbelt import PlgLogger
 
 
@@ -102,6 +105,7 @@ class StoredDataDetailsDialog(QDialog):
         self.wfs_publish_wizard = None
         self.tms_publish_wizard = None
         self.wms_raster_publish_wizard = None
+        self.wmts_publish_wizard = None
 
     def set_stored_data(self, stored_data: StoredData) -> None:
         """
@@ -224,6 +228,27 @@ class StoredDataDetailsDialog(QDialog):
                 )
                 self.edit_toolbar.addWidget(button)
 
+                # WMTS-TMS publication
+                publish_wmts_action = QAction(
+                    QIcon(
+                        str(
+                            DIR_PLUGIN_ROOT
+                            / "resources"
+                            / "images"
+                            / "icons"
+                            / "Publie@2x.png"
+                        )
+                    ),
+                    self.tr("Publication WMTS-TMS"),
+                    self,
+                )
+                button = QToolButton(self)
+                button.setDefaultAction(publish_wmts_action)
+                button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+
+                publish_wmts_action.triggered.connect(self._show_wmts_publish_wizard)
+                self.edit_toolbar.addWidget(button)
+
     def _show_raster_tile_publish_wizard(self) -> None:
         """Show wms vector publication wizard for current stored data"""
         self._raster_tile_publish_wizard(self._stored_data)
@@ -259,6 +284,40 @@ class StoredDataDetailsDialog(QDialog):
                 self.select_offering.emit(offering_id)
             self.wms_raster_publish_wizard.deleteLater()
             self.wms_raster_publish_wizard = None
+
+    def _show_wmts_publish_wizard(self) -> None:
+        """Show wmts publication wizard for current stored data"""
+        self._wmts_publish_wizard(self._stored_data)
+
+    def _wmts_publish_wizard(self, stored_data: StoredData) -> None:
+        """
+        Show wmts publication wizard for a stored data
+
+        Args:
+            stored_data: (StoredData) stored data to generate tile
+        """
+        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
+        self.wmts_publish_wizard = WMTSPublicationWizard(
+            self,
+            stored_data.datastore_id,
+            stored_data.tags["datasheet_name"],
+            stored_data._id,
+        )
+        QGuiApplication.restoreOverrideCursor()
+        self.wmts_publish_wizard.finished.connect(self._del_wmts_publish_wizard)
+        self.wmts_publish_wizard.show()
+
+    def _del_wmts_publish_wizard(self) -> None:
+        """
+        Delete wmts publish wizard
+
+        """
+        if self.wmts_publish_wizard is not None:
+            offering_id = self.wmts_publish_wizard.get_offering_id()
+            if offering_id:
+                self.select_offering.emit(offering_id)
+            self.wmts_publish_wizard.deleteLater()
+            self.wmts_publish_wizard = None
 
     def _show_wms_vector_publish_wizard(self) -> None:
         """Show wms vector publication wizard for current stored data"""

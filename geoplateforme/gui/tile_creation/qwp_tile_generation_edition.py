@@ -18,8 +18,6 @@ from geoplateforme.gui.lne_validators import alphanum_qval
 
 
 class TileGenerationEditionPageWizard(QWizardPage):
-    STORED_DATA_ID_FIELD = "stored_data_id"
-
     MIN_ZOOM_LEVEL = 5
     MAX_ZOOM_LEVEL = 18
 

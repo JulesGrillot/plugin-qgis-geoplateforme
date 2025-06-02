@@ -151,3 +151,33 @@ class DatastoreRequestManager:
                 f"Error while endpoint publication is empty : {data}"
             )
         return endpoint_id
+
+    def get_endpoint_dict(self, datastore: str, endpoint_id: str) -> dict | None:
+        """
+        Get the endpoint dict
+
+        Args:
+            datastore: (str)
+            endpoint_id: (str)
+
+        Returns: endpoint with id endpoint_id, None if not available
+        """
+        self.log(
+            f"{__name__}.get_endpoint_dict(datastore:{datastore},endpoint_id:{endpoint_id})"
+        )
+
+        try:
+            reply = self.request_manager.get_url(
+                url=QUrl(self.get_base_url(datastore)),
+                config_id=self.plg_settings.qgis_auth_id,
+            )
+        except ConnectionError as err:
+            raise UnavailableEndpointException(
+                f"Error while getting datastore endpoint : {err}"
+            ) from err
+
+        data = json.loads(reply.data())
+        for endpoint in data["endpoints"]:
+            if endpoint["endpoint"]["_id"] == endpoint_id:
+                return endpoint["endpoint"]
+        return None

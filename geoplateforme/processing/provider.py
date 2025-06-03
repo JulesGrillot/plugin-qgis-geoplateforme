@@ -15,10 +15,14 @@ from geoplateforme.processing.check_layer import CheckLayerAlgorithm
 from geoplateforme.processing.create_geoserver_style import (
     CreateGeoserverStyleAlgorithm,
 )
-from geoplateforme.processing.create_raster_tiles_from_wms_vector import (
+from geoplateforme.processing.delete_data import DeleteDataAlgorithm
+from geoplateforme.processing.generation.create_raster_tiles_from_wms_vector import (
     RasterTilesFromWmsVectorAlgorithm,
 )
-from geoplateforme.processing.delete_data import DeleteDataAlgorithm
+from geoplateforme.processing.generation.tile_creation import TileCreationAlgorithm
+from geoplateforme.processing.generation.upload_database_integration import (
+    UploadDatabaseIntegrationAlgorithm,
+)
 from geoplateforme.processing.publication.upload_publication import (
     UploadPublicationAlgorithm,
 )
@@ -31,15 +35,11 @@ from geoplateforme.processing.publication.wmts_publication import (
     WmtsPublicationAlgorithm,
 )
 from geoplateforme.processing.sld_downgrade import SldDowngradeAlgorithm
-from geoplateforme.processing.tile_creation import TileCreationAlgorithm
 from geoplateforme.processing.unpublish import UnpublishAlgorithm
 from geoplateforme.processing.update_tile_upload import UpdateTileUploadAlgorithm
 from geoplateforme.processing.upload.upload_from_files import GpfUploadFromFileAlgorithm
 from geoplateforme.processing.upload.upload_from_layers import (
     GpfUploadFromLayersAlgorithm,
-)
-from geoplateforme.processing.upload_database_integration import (
-    UploadDatabaseIntegrationAlgorithm,
 )
 from geoplateforme.processing.vector_db_creation import VectorDatabaseCreationAlgorithm
 

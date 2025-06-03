@@ -19,7 +19,7 @@ from geoplateforme.api.custom_exceptions import (
 )
 from geoplateforme.api.processing import ProcessingRequestManager
 from geoplateforme.api.stored_data import StoredDataRequestManager
-from geoplateforme.processing.tile_creation import TileCreationAlgorithm
+from geoplateforme.processing.generation.tile_creation import TileCreationAlgorithm
 from geoplateforme.processing.vector_db_creation import VectorDatabaseCreationAlgorithm
 
 

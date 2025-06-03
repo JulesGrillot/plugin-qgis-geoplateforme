@@ -39,7 +39,7 @@ from geoplateforme.gui.tile_creation.qwp_tile_generation_sample import (
     TileGenerationSamplePageWizard,
 )
 from geoplateforme.processing import GeoplateformeProvider
-from geoplateforme.processing.tile_creation import TileCreationAlgorithm
+from geoplateforme.processing.generation.tile_creation import TileCreationAlgorithm
 from geoplateforme.processing.utils import tags_to_qgs_parameter_matrix_string
 from geoplateforme.toolbelt import PlgOptionsManager
 

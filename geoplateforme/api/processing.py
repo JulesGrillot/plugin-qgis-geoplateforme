@@ -80,7 +80,7 @@ class ProcessingRequestManager:
         :rtype: Processing
         """
         self.log(
-            f"{__name__}.get_processing(datastore:{datastore_id},possible_ids:{possible_ids})"
+            f"{__name__}.get_processing_by_id(datastore:{datastore_id},possible_ids:{possible_ids})"
         )
 
         try:

@@ -40,8 +40,8 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
         self.tbv_results.pressed.connect(self._item_clicked)
         self.tbv_results.doubleClicked.connect(self._add_layer)
 
-        self.buttonBox.button(QDialogButtonBox.Apply).setText("Ajouter")
-        self.buttonBox.button(QDialogButtonBox.Apply).setEnabled(False)
+        self.buttonBox.button(QDialogButtonBox.StandardButton.Apply).setText("Ajouter")
+        self.buttonBox.button(QDialogButtonBox.StandardButton.Apply).setEnabled(False)
 
         self.tw_search.currentChanged.connect(self._clear_search)
 
@@ -56,7 +56,7 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
         self.le_keywords.clear()
         self.metaTextBrowser.clear()
         self.mdl_search_result.clear()
-        self.buttonBox.button(QDialogButtonBox.Apply).setEnabled(False)
+        self.buttonBox.button(QDialogButtonBox.StandardButton.Apply).setEnabled(False)
 
     def _simple_search(self, text):
         if len(text) > 2:
@@ -72,7 +72,7 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
             self.mdl_search_result.advanced_search_text(search_dict)
 
     def _item_clicked(self, index):
-        self.buttonBox.button(QDialogButtonBox.Apply).setEnabled(True)
+        self.buttonBox.button(QDialogButtonBox.StandardButton.Apply).setEnabled(True)
         self.metaTextBrowser.clear()
         result = self.mdl_search_result.get_result(index)
         if result:
@@ -136,7 +136,7 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
         """
         Lorsque l'utilisateur valide
         """
-        if self.buttonBox.buttonRole(button) == QDialogButtonBox.ApplyRole:
+        if self.buttonBox.buttonRole(button) == QDialogButtonBox.ButtonRole.ApplyRole:
             indexes = self.tbv_results.selectedIndexes()
             if len(indexes) > 0:
                 self._add_layer(indexes[0])

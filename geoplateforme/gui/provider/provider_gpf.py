@@ -26,7 +26,7 @@ class ProviderGPF(QgsSourceSelectProvider):
     def createDataSourceWidget(
         self,
         parent=None,
-        fl=Qt.Widget,
+        fl=Qt.WindowType.Widget,
         widgetMode=QgsProviderRegistry.WidgetMode.Embedded,
     ):
         return ProviderDialog(self.iface)

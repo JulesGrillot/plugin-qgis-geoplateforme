@@ -85,10 +85,10 @@ class WmtsPublicationAlgorithm(QgsProcessingAlgorithm):
         return self.tr("Publication service WMTS")
 
     def group(self):
-        return self.tr("")
+        return self.tr("Publication")
 
     def groupId(self):
-        return ""
+        return "publication"
 
     def helpUrl(self):
         return get_user_manual_url(self.name())

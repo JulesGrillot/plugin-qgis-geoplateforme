@@ -274,7 +274,12 @@ class DashboardWidget(QWidget):
         )
         if offering:
             self.service_detail_dialog = ServiceDetailsWidget(self)
-            self.service_detail_dialog.set_offering(offering)
+            self.service_detail_dialog.set_offering(
+                offering, self.cbx_dataset.current_dataset_name()
+            )
+            self.service_detail_dialog.select_stored_data.connect(
+                self.select_stored_data
+            )
             self.service_detail_widget_layout.addWidget(self.service_detail_dialog)
             self.service_detail_zone.show()
 

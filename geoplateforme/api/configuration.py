@@ -476,7 +476,7 @@ class ConfigurationRequestManager:
         :param configuration: configuration id
         :type configuration: str
 
-        :raises ReadStoredDataException: when error occur during requesting the API
+        :raises ReadConfigurationException: when error occur during requesting the API
 
         :return: dict values of stored data
         :rtype: dict

@@ -4,7 +4,7 @@ Le plugin fournit plusieurs traitements QGIS pour intéragir avec les entrepôts
 
 Pour afficher tous les traitements QGIS : `Traitements > Boîte à outils`
 
-## Génération données
+## Livraison
 
 (upload_from_files)=
 
@@ -19,6 +19,8 @@ Pour afficher tous les traitements QGIS : `Traitements > Boîte à outils`
 
 ```{include} ../../geoplateforme/resources/help/upload_from_layers.md
 ```
+
+## Génération données
 
 (vector_db_creation)=
 

@@ -5,6 +5,7 @@ import os
 from qgis.core import QgsProject, QgsRasterLayer, QgsVectorLayer, QgsVectorTileLayer
 from qgis.gui import QgsAbstractDataSourceWidget
 from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QModelIndex
 from qgis.PyQt.QtWidgets import QAbstractItemView, QDialogButtonBox
 
 from geoplateforme.gui.provider.capabilities_reader import (
@@ -23,6 +24,12 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
     """
 
     def __init__(self, iface):
+        """
+        QgsAbstractDataSourceWidget to display IGN data provider
+
+        Args:
+            iface: iface
+        """
         super(ProviderDialog, self).__init__()
 
         self.iface = iface
@@ -51,6 +58,7 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
         self.buttonBox.clicked.connect(self.onAccept)
 
     def _clear_search(self):
+        """clear search results"""
         self.le_search.clear()
         self.le_title.clear()
         self.le_keywords.clear()
@@ -58,11 +66,17 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
         self.mdl_search_result.clear()
         self.buttonBox.button(QDialogButtonBox.StandardButton.Apply).setEnabled(False)
 
-    def _simple_search(self, text):
+    def _simple_search(self, text: str):
+        """launch simple search using suggest API
+
+        :param text: text to search
+        :type text: str
+        """
         if len(text) > 2:
             self.mdl_search_result.simple_search_text(text)
 
     def _advanced_search(self):
+        """launch advanced search using search API"""
         search_dict = {}
         if len(self.le_title.text()) > 2:
             search_dict["title"] = self.le_title.text()
@@ -71,14 +85,24 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
         if len(search_dict.keys()) > 0:
             self.mdl_search_result.advanced_search_text(search_dict)
 
-    def _item_clicked(self, index):
+    def _item_clicked(self, index: QModelIndex):
+        """Display metadata when a result is selected
+
+        :param index: selected index
+        :type index: QModelIndex
+        """
         self.buttonBox.button(QDialogButtonBox.StandardButton.Apply).setEnabled(True)
         self.metaTextBrowser.clear()
         result = self.mdl_search_result.get_result(index)
         if result:
             self.metaTextBrowser.setText(json.dumps(result, indent=2))
 
-    def _add_layer(self, index):
+    def _add_layer(self, index: QModelIndex):
+        """Add selected layer to QGIS project
+
+        :param index: selected index
+        :type index: QModelIndex
+        """
         result = self.mdl_search_result.get_result(index)
         layer = None
         if result:

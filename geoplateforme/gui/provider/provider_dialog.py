@@ -1,8 +1,10 @@
 import json
 import logging
+import os
 
 from qgis.core import QgsProject, QgsRasterLayer, QgsVectorLayer, QgsVectorTileLayer
 from qgis.gui import QgsAbstractDataSourceWidget
+from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QAbstractItemView, QDialogButtonBox
 
 from geoplateforme.gui.provider.capabilities_reader import (
@@ -10,13 +12,12 @@ from geoplateforme.gui.provider.capabilities_reader import (
     read_wmts_layer_capabilities,
 )
 from geoplateforme.gui.provider.mdl_search_result import SearchResultModel
-from geoplateforme.gui.provider.provider_form import Ui_ProviderForm
 from geoplateforme.toolbelt import PlgLogger
 
 logger = logging.getLogger(__name__)
 
 
-class ProviderDialog(QgsAbstractDataSourceWidget, Ui_ProviderForm):
+class ProviderDialog(QgsAbstractDataSourceWidget):
     """
     Boite de dialogue de sélection des couches
     """
@@ -25,7 +26,10 @@ class ProviderDialog(QgsAbstractDataSourceWidget, Ui_ProviderForm):
         super(ProviderDialog, self).__init__()
 
         self.iface = iface
-        self.setupUi(self)
+        uic.loadUi(
+            os.path.join(os.path.dirname(__file__), "provider_dialog.ui"),
+            self,
+        )
 
         self.log = PlgLogger().log
 

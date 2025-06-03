@@ -402,6 +402,9 @@ class DashboardWidget(QWidget):
                 self.detail_widget_layout.addWidget(self.detail_dialog)
                 self.detail_dialog.select_stored_data.connect(self.select_stored_data)
                 self.detail_dialog.select_offering.connect(self.select_offering)
+                self.detail_dialog.stored_data_deleted.connect(
+                    self._stored_data_deleted
+                )
                 self.detail_zone.show()
             elif isinstance(model, UploadListModel):
                 self.detail_dialog = UploadDetailsWidget(self)
@@ -409,6 +412,14 @@ class DashboardWidget(QWidget):
                 self.detail_widget_layout.addWidget(self.detail_dialog)
                 self.detail_dialog.select_stored_data.connect(self.select_stored_data)
                 self.detail_zone.show()
+
+    def _stored_data_deleted(self, stored_data_id: str) -> None:
+        """Refresh dataset after stored data delete
+
+        :param stored_data_id: deleted stored data id
+        :type stored_data_id: str
+        """
+        self._dataset_updated()
 
     def remove_detail_zone(self) -> None:
         """Hide detail zone and remove attached widgets"""

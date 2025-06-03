@@ -1,6 +1,4 @@
-import json
 import os
-import tempfile
 
 from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
 from qgis.PyQt import QtCore, uic
@@ -14,7 +12,6 @@ from qgis.PyQt.QtWidgets import (
     QWidget,
 )
 
-from geoplateforme.__about__ import __title_clean__
 from geoplateforme.api.custom_exceptions import (
     DeleteUploadException,
     UnavailableDatastoreException,
@@ -260,20 +257,14 @@ class StorageReportDialog(QDialog):
             stored_data: (StoredData) stored data to delete
         """
 
-        data = {
+        params = {
             DeleteStoredDataAlgorithm.DATASTORE: stored_data.datastore_id,
             DeleteStoredDataAlgorithm.STORED_DATA: stored_data._id,
         }
-        filename = tempfile.NamedTemporaryFile(
-            prefix=f"qgis_{__title_clean__}_", suffix=".json"
-        ).name
-        with open(filename, "w") as file:
-            json.dump(data, file)
         algo_str = (
             f"{GeoplateformeProvider().id()}:{DeleteStoredDataAlgorithm().name()}"
         )
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
-        params = {DeleteStoredDataAlgorithm.INPUT_JSON: filename}
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
         result, success = alg.run(parameters=params, context=context, feedback=feedback)

@@ -498,20 +498,15 @@ class DashboardWidget(QWidget):
             QMessageBox.StandardButton.No,
         )
         if reply == QMessageBox.StandardButton.Yes:
-            data = {
+            params = {
                 DeleteStoredDataAlgorithm.DATASTORE: stored_data.datastore_id,
                 DeleteStoredDataAlgorithm.STORED_DATA: stored_data._id,
             }
-            filename = tempfile.NamedTemporaryFile(
-                prefix=f"qgis_{__title_clean__}_", suffix=".json"
-            ).name
-            with open(filename, "w") as file:
-                json.dump(data, file)
+
             algo_str = (
                 f"{GeoplateformeProvider().id()}:{DeleteStoredDataAlgorithm().name()}"
             )
             alg = QgsApplication.processingRegistry().algorithmById(algo_str)
-            params = {DeleteStoredDataAlgorithm.INPUT_JSON: filename}
             context = QgsProcessingContext()
             feedback = QgsProcessingFeedback()
             result, success = alg.run(

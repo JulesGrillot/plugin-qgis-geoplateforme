@@ -67,10 +67,10 @@ class GpfUploadFromLayersAlgorithm(QgsProcessingAlgorithm):
         return self.tr("Création livraison depuis des couches vectorielles")
 
     def group(self):
-        return self.tr("")
+        return self.tr("Livraison")
 
     def groupId(self):
-        return ""
+        return "upload"
 
     def helpUrl(self):
         return get_user_manual_url(self.name())

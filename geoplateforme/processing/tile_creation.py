@@ -85,10 +85,10 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
         return self.tr("Génération de tuiles vectorielles")
 
     def group(self):
-        return self.tr("")
+        return self.tr("Génération données")
 
     def groupId(self):
-        return ""
+        return "generation"
 
     def helpUrl(self):
         return get_user_manual_url(self.name())

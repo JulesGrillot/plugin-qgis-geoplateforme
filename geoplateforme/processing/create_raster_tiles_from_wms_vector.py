@@ -83,10 +83,10 @@ class RasterTilesFromWmsVectorAlgorithm(QgsProcessingAlgorithm):
         return self.tr("Génération tuiles raster depuis un service WMS-Vecteur")
 
     def group(self):
-        return self.tr("")
+        return self.tr("Génération données")
 
     def groupId(self):
-        return ""
+        return "generation"
 
     def helpUrl(self):
         return get_user_manual_url(self.name())

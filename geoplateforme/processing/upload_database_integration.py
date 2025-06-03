@@ -68,10 +68,10 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
         return self.tr("Intégration d'une livraison en base de données vectorielle")
 
     def group(self):
-        return self.tr("")
+        return self.tr("Génération données")
 
     def groupId(self):
-        return ""
+        return "generation"
 
     def helpUrl(self):
         return get_user_manual_url(self.name())

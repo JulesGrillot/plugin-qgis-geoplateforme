@@ -27,7 +27,7 @@ from geoplateforme.gui.mdl_upload import UploadListModel
 from geoplateforme.gui.proxy_model_stored_data import StoredDataProxyModel
 from geoplateforme.gui.report.dlg_report import ReportDialog
 from geoplateforme.processing import GeoplateformeProvider
-from geoplateforme.processing.delete_data import DeleteDataAlgorithm
+from geoplateforme.processing.delete_stored_data import DeleteStoredDataAlgorithm
 from geoplateforme.toolbelt import PlgLogger
 
 
@@ -261,17 +261,19 @@ class StorageReportDialog(QDialog):
         """
 
         data = {
-            DeleteDataAlgorithm.DATASTORE: stored_data.datastore_id,
-            DeleteDataAlgorithm.STORED_DATA: stored_data._id,
+            DeleteStoredDataAlgorithm.DATASTORE: stored_data.datastore_id,
+            DeleteStoredDataAlgorithm.STORED_DATA: stored_data._id,
         }
         filename = tempfile.NamedTemporaryFile(
             prefix=f"qgis_{__title_clean__}_", suffix=".json"
         ).name
         with open(filename, "w") as file:
             json.dump(data, file)
-        algo_str = f"{GeoplateformeProvider().id()}:{DeleteDataAlgorithm().name()}"
+        algo_str = (
+            f"{GeoplateformeProvider().id()}:{DeleteStoredDataAlgorithm().name()}"
+        )
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
-        params = {DeleteDataAlgorithm.INPUT_JSON: filename}
+        params = {DeleteStoredDataAlgorithm.INPUT_JSON: filename}
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
         result, success = alg.run(parameters=params, context=context, feedback=feedback)

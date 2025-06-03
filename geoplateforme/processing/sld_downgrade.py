@@ -47,10 +47,10 @@ class SldDowngradeAlgorithm(QgsProcessingAlgorithm):
         )
 
     def group(self):
-        return self.tr("")
+        return self.tr("Outils géoplateforme")
 
     def groupId(self):
-        return ""
+        return "tools"
 
     def helpUrl(self):
         return get_user_manual_url(self.name())

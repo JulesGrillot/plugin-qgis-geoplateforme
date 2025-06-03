@@ -29,7 +29,7 @@ from geoplateforme.api.custom_exceptions import (
 from geoplateforme.api.datastore import DatastoreRequestManager
 from geoplateforme.api.offerings import OfferingsRequestManager
 from geoplateforme.api.stored_data import StoredDataRequestManager
-from geoplateforme.processing.create_geoserver_style import (
+from geoplateforme.processing.tools.create_geoserver_style import (
     CreateGeoserverStyleAlgorithm,
 )
 from geoplateforme.processing.utils import (

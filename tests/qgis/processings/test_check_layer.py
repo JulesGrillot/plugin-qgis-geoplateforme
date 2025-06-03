@@ -15,7 +15,7 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QVariant
 
 from geoplateforme.processing import GeoplateformeProvider
-from geoplateforme.processing.check_layer import CheckLayerAlgorithm
+from geoplateforme.processing.tools.check_layer import CheckLayerAlgorithm
 from tests.qgis.processings.conftest import QgsProcessingFeedBackTest
 
 INVALID_CHARS = CheckLayerAlgorithm.get_invalid_characters()

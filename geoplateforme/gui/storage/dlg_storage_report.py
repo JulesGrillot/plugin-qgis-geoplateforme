@@ -24,7 +24,7 @@ from geoplateforme.gui.mdl_upload import UploadListModel
 from geoplateforme.gui.proxy_model_stored_data import StoredDataProxyModel
 from geoplateforme.gui.report.dlg_report import ReportDialog
 from geoplateforme.processing import GeoplateformeProvider
-from geoplateforme.processing.delete_stored_data import DeleteStoredDataAlgorithm
+from geoplateforme.processing.tools.delete_stored_data import DeleteStoredDataAlgorithm
 from geoplateforme.toolbelt import PlgLogger
 
 

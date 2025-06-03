@@ -58,7 +58,7 @@ from geoplateforme.gui.update_publication.wzd_update_publication import (
 )
 from geoplateforme.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
 from geoplateforme.processing import GeoplateformeProvider
-from geoplateforme.processing.delete_stored_data import DeleteStoredDataAlgorithm
+from geoplateforme.processing.tools.delete_stored_data import DeleteStoredDataAlgorithm
 from geoplateforme.processing.unpublish import UnpublishAlgorithm
 from geoplateforme.toolbelt import PlgLogger
 

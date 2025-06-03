@@ -22,7 +22,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
-from geoplateforme.processing.upload_from_files import GpfUploadFromFileAlgorithm
+from geoplateforme.processing.upload.upload_from_files import GpfUploadFromFileAlgorithm
 
 # plugin
 from geoplateforme.processing.utils import (

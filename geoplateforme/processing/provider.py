@@ -34,11 +34,13 @@ from geoplateforme.processing.sld_downgrade import SldDowngradeAlgorithm
 from geoplateforme.processing.tile_creation import TileCreationAlgorithm
 from geoplateforme.processing.unpublish import UnpublishAlgorithm
 from geoplateforme.processing.update_tile_upload import UpdateTileUploadAlgorithm
+from geoplateforme.processing.upload.upload_from_files import GpfUploadFromFileAlgorithm
+from geoplateforme.processing.upload.upload_from_layers import (
+    GpfUploadFromLayersAlgorithm,
+)
 from geoplateforme.processing.upload_database_integration import (
     UploadDatabaseIntegrationAlgorithm,
 )
-from geoplateforme.processing.upload_from_files import GpfUploadFromFileAlgorithm
-from geoplateforme.processing.upload_from_layers import GpfUploadFromLayersAlgorithm
 from geoplateforme.processing.vector_db_creation import VectorDatabaseCreationAlgorithm
 
 # ############################################################################

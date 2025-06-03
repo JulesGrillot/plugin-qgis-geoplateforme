@@ -1,10 +1,14 @@
 import json
 import logging
 
-from qgis.core import QgsProject, QgsRasterLayer, QgsVectorLayer
+from qgis.core import QgsProject, QgsRasterLayer, QgsVectorLayer, QgsVectorTileLayer
 from qgis.gui import QgsAbstractDataSourceWidget
 from qgis.PyQt.QtWidgets import QAbstractItemView, QDialogButtonBox
 
+from geoplateforme.gui.provider.capabilities_reader import (
+    read_tms_layer_capabilities,
+    read_wmts_layer_capabilities,
+)
 from geoplateforme.gui.provider.mdl_search_result import SearchResultModel
 from geoplateforme.gui.provider.provider_form import Ui_ProviderForm
 from geoplateforme.toolbelt import PlgLogger
@@ -79,18 +83,36 @@ class ProviderDialog(QgsAbstractDataSourceWidget, Ui_ProviderForm):
                 layer = QgsRasterLayer(url, result["title"], "wms")
 
             if result["type"] == "TMS":
-                url = (
-                    "type=xyz&crs="
-                    + result["srs"][0]
-                    + "&url="
-                    + result["url"]
-                    + "/{z}/{x}/{y}.jpeg"
-                )
-                layer = QgsRasterLayer(url, result["title"], "wms")
+                params = read_tms_layer_capabilities(result["url"])
+                if params["format"] == "pbf":
+                    url = (
+                        "type=xyz&crs="
+                        + result["srs"][0]
+                        + f"&zmax={params['zmax']}"
+                        + f"&zmin={params['zmin']}"
+                        + "&url="
+                        + result["url"]
+                        + "/{z}/{x}/{y}.pbf"
+                    )
+                    layer = QgsVectorTileLayer(url, result["title"])
+                elif params["format"] is not None:
+                    url = (
+                        "type=xyz&crs="
+                        + result["srs"][0]
+                        + "&url="
+                        + result["url"]
+                        + "/{z}/{x}/{y}."
+                        + params["format"]
+                    )
+                    layer = QgsRasterLayer(url, result["title"], "wms")
 
             if result["type"] == "WMTS":
-                url = f"crs={result['srs'][0]}&format=image/png&layers={result['layer_name']}&styles=normal&tileMatrixSet=PM_0_19&url={result['url'].split('?')[0]}?SERVICE=WMTS&version=1.0.0&request=GetCapabilities"
-                layer = QgsRasterLayer(url, result["title"], "wms")
+                params = read_wmts_layer_capabilities(
+                    result["url"].split("?")[0], result["layer_name"]
+                )
+                if params:
+                    url = f"crs={result['srs'][0]}&format={params['format']}&layers={result['layer_name']}&styles={params['style']}&tileMatrixSet={params['tileMatrixSet']}&url={result['url'].split('?')[0]}?SERVICE%3DWMTS%26version%3D1.0.0%26request%3DGetCapabilities"
+                    layer = QgsRasterLayer(url, result["title"], "wms")
 
             if result["type"] == "WFS":
                 url = f"{result['url'].split('?')[0]}?typename={result['layer_name']}&version=auto"

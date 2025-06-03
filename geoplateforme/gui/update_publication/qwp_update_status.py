@@ -18,8 +18,10 @@ from geoplateforme.gui.update_publication.qwp_update_publication_form import (
     UpdatePublicationPageWizard,
 )
 from geoplateforme.processing import GeoplateformeProvider
+from geoplateforme.processing.publication.upload_publication import (
+    UploadPublicationAlgorithm,
+)
 from geoplateforme.processing.unpublish import UnpublishAlgorithm
-from geoplateforme.processing.upload_publication import UploadPublicationAlgorithm
 from geoplateforme.toolbelt import PlgLogger, PlgOptionsManager
 
 

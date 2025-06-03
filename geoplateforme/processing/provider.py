@@ -19,6 +19,17 @@ from geoplateforme.processing.create_raster_tiles_from_wms_vector import (
     RasterTilesFromWmsVectorAlgorithm,
 )
 from geoplateforme.processing.delete_data import DeleteDataAlgorithm
+from geoplateforme.processing.publication.upload_publication import (
+    UploadPublicationAlgorithm,
+)
+from geoplateforme.processing.publication.wfs_publication import WfsPublicationAlgorithm
+from geoplateforme.processing.publication.wms_publication import WmsPublicationAlgorithm
+from geoplateforme.processing.publication.wms_raster_publication import (
+    WmsRasterPublicationAlgorithm,
+)
+from geoplateforme.processing.publication.wmts_publication import (
+    WmtsPublicationAlgorithm,
+)
 from geoplateforme.processing.sld_downgrade import SldDowngradeAlgorithm
 from geoplateforme.processing.tile_creation import TileCreationAlgorithm
 from geoplateforme.processing.unpublish import UnpublishAlgorithm
@@ -28,14 +39,7 @@ from geoplateforme.processing.upload_database_integration import (
 )
 from geoplateforme.processing.upload_from_files import GpfUploadFromFileAlgorithm
 from geoplateforme.processing.upload_from_layers import GpfUploadFromLayersAlgorithm
-from geoplateforme.processing.upload_publication import UploadPublicationAlgorithm
 from geoplateforme.processing.vector_db_creation import VectorDatabaseCreationAlgorithm
-from geoplateforme.processing.wfs_publication import WfsPublicationAlgorithm
-from geoplateforme.processing.wms_publication import WmsPublicationAlgorithm
-from geoplateforme.processing.wms_raster_publication import (
-    WmsRasterPublicationAlgorithm,
-)
-from geoplateforme.processing.wmts_publication import WmtsPublicationAlgorithm
 
 # ############################################################################
 # ########## Classes ###############

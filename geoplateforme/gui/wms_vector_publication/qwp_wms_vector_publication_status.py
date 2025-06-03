@@ -15,8 +15,8 @@ from geoplateforme.gui.wms_vector_publication.qwp_table_style_selection import (
     TableRelationPageWizard,
 )
 from geoplateforme.processing import GeoplateformeProvider
+from geoplateforme.processing.publication.wms_publication import WmsPublicationAlgorithm
 from geoplateforme.processing.utils import tags_to_qgs_parameter_matrix_string
-from geoplateforme.processing.wms_publication import WmsPublicationAlgorithm
 
 
 class PublicationStatut(QWizardPage):

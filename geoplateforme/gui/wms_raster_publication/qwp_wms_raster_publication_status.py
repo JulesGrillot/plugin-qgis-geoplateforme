@@ -14,10 +14,10 @@ from geoplateforme.gui.wms_vector_publication.qwp_publication_form import (
     PublicationFormPageWizard,
 )
 from geoplateforme.processing import GeoplateformeProvider
-from geoplateforme.processing.utils import tags_to_qgs_parameter_matrix_string
-from geoplateforme.processing.wms_raster_publication import (
+from geoplateforme.processing.publication.wms_raster_publication import (
     WmsRasterPublicationAlgorithm,
 )
+from geoplateforme.processing.utils import tags_to_qgs_parameter_matrix_string
 
 
 class PublicationStatut(QWizardPage):

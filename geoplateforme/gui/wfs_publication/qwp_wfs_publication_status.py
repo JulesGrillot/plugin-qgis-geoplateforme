@@ -13,8 +13,8 @@ from geoplateforme.gui.wfs_publication.qwp_publication_form import (
 )
 from geoplateforme.gui.wfs_publication.qwp_table_relation import TableRelationPageWizard
 from geoplateforme.processing import GeoplateformeProvider
+from geoplateforme.processing.publication.wfs_publication import WfsPublicationAlgorithm
 from geoplateforme.processing.utils import tags_to_qgs_parameter_matrix_string
-from geoplateforme.processing.wfs_publication import WfsPublicationAlgorithm
 
 
 class PublicationStatut(QWizardPage):

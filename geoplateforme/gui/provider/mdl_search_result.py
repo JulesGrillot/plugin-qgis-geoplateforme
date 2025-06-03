@@ -6,7 +6,7 @@ from qgis.PyQt.QtCore import QByteArray, QModelIndex, QObject, Qt, QUrl
 from qgis.PyQt.QtGui import QStandardItemModel
 
 # plugin
-from geoplateforme.toolbelt import NetworkRequestsManager, PlgLogger
+from geoplateforme.toolbelt import NetworkRequestsManager, PlgLogger, PlgOptionsManager
 
 
 class SearchResultModel(QStandardItemModel):
@@ -25,6 +25,7 @@ class SearchResultModel(QStandardItemModel):
         """
         super().__init__(parent)
         self.log = PlgLogger().log
+        self.plg_settings = PlgOptionsManager.get_plg_settings()
         self.setHorizontalHeaderLabels(
             [
                 self.tr("Title"),
@@ -67,7 +68,7 @@ class SearchResultModel(QStandardItemModel):
         try:
             reply = request_manager.get_url(
                 url=QUrl(
-                    f"https://data.geopf.fr/recherche/api/indexes/geoplateforme/suggest?size=50&text={text}"
+                    f"{self.plg_settings.base_url_api_search}/indexes/geoplateforme/suggest?size=50&text={text}"
                 ),
             )
         except ConnectionError as err:
@@ -98,7 +99,7 @@ class SearchResultModel(QStandardItemModel):
             data.append(json.dumps(data_map))
             reply = request_manager.post_url(
                 url=QUrl(
-                    "https://data.geopf.fr/recherche/api/indexes/geoplateforme?page=1&size=50"
+                    f"{self.plg_settings.base_url_api_search}/indexes/geoplateforme?page=1&size=50"
                 ),
                 data=data,
                 headers={b"Content-Type": bytes("application/json", "utf8")},

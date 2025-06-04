@@ -15,6 +15,25 @@ Unreleased
 ### Removed
 
 -->
+## 0.7.0 - 2025-06-04
+
+### Bugs fixes 🐛
+
+* fix(endpoint): add option to use open endpoint by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/95>
+
+### Features and enhancements 🎉
+
+* Feature/add provider gpf by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/106>
+* feat(delete): add delete action for stored data by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/105>
+* feat(delete): add processing to delete stored data and associated offering and configuration by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/104>
+* feat(procesing): move processing to a dedicated dir for each group by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/103>
+* Feat/update documentation by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/102>
+* feat(wmts): add wizard for publication by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/101>
+* feat(wmts): init processing for publication by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/100>
+* feat(wms raster): add wizard for publication by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/99>
+* feat(wms raster): init processing for publication by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/98>
+* feat(raster tiles): add wizard for raster tiles creation from WMS-VECTOR service by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/97>
+
 
 ## 0.6.0 - 2025-05-28
 

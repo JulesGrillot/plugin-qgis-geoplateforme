@@ -1,6 +1,11 @@
 import os
 
-from qgis.core import QgsApplication, QgsProject
+from qgis.core import (
+    QgsApplication,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
+    QgsProject,
+)
 from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtCore import QSize, Qt, pyqtSignal
 from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon, QPixmap
@@ -9,6 +14,7 @@ from qgis.PyQt.QtWidgets import (
     QAction,
     QDialog,
     QHeaderView,
+    QMessageBox,
     QToolBar,
     QToolButton,
     QWidget,
@@ -48,12 +54,15 @@ from geoplateforme.gui.wms_vector_publication.wzd_publication_creation import (
 from geoplateforme.gui.wmts_publication.wzd_publication_creation import (
     WMTSPublicationWizard,
 )
+from geoplateforme.processing import GeoplateformeProvider
+from geoplateforme.processing.tools.delete_stored_data import DeleteStoredDataAlgorithm
 from geoplateforme.toolbelt import PlgLogger
 
 
 class StoredDataDetailsDialog(QDialog):
     select_stored_data = pyqtSignal(str)
     select_offering = pyqtSignal(str)
+    stored_data_deleted = pyqtSignal(str)
 
     def __init__(self, parent: QWidget = None):
         """
@@ -124,6 +133,18 @@ class StoredDataDetailsDialog(QDialog):
 
         # Only generated stored data have actions
         if status == StoredDataStatus.GENERATED:
+            # Data delete
+            delete_action = QAction(
+                QIcon(str(DIR_PLUGIN_ROOT / "resources/images/icons/Supprimer.svg")),
+                self.tr("Suppression"),
+                self,
+            )
+            delete_action.triggered.connect(self.delete_stored_data)
+            button = QToolButton(self)
+            button.setDefaultAction(delete_action)
+            button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+            self.edit_toolbar.addWidget(button)
+
             # Vector DB :
             # - tile generation
             # - WFS publication
@@ -248,6 +269,39 @@ class StoredDataDetailsDialog(QDialog):
 
                 publish_wmts_action.triggered.connect(self._show_wmts_publish_wizard)
                 self.edit_toolbar.addWidget(button)
+
+    def delete_stored_data(self) -> None:
+        """Delete current stored data"""
+        reply = QMessageBox.question(
+            self,
+            self.tr("Suppression donnée stockée"),
+            self.tr("Êtes-vous sûr de vouloir supprimer la donnée stockée ?"),
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        )
+        if reply == QMessageBox.StandardButton.Yes:
+            params = {
+                DeleteStoredDataAlgorithm.DATASTORE: self._stored_data.datastore_id,
+                DeleteStoredDataAlgorithm.STORED_DATA: self._stored_data._id,
+            }
+
+            algo_str = (
+                f"{GeoplateformeProvider().id()}:{DeleteStoredDataAlgorithm().name()}"
+            )
+            alg = QgsApplication.processingRegistry().algorithmById(algo_str)
+            context = QgsProcessingContext()
+            feedback = QgsProcessingFeedback()
+            _, success = alg.run(parameters=params, context=context, feedback=feedback)
+            if success:
+                self.stored_data_deleted.emit(self._stored_data._id)
+            else:
+                QMessageBox.critical(
+                    self,
+                    self.tr("Suppression donnée stockée"),
+                    self.tr("La donnée stockée n'a pas pu être supprimée:\n {}").format(
+                        feedback.textLog()
+                    ),
+                )
 
     def _show_raster_tile_publish_wizard(self) -> None:
         """Show wms vector publication wizard for current stored data"""

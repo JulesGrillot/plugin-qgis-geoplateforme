@@ -29,7 +29,7 @@ from geoplateforme.gui.upload_database_integration.qwp_vector_db_edition import 
     VectorDbEditionPageWizard,
 )
 from geoplateforme.processing import GeoplateformeProvider
-from geoplateforme.processing.upload_database_integration import (
+from geoplateforme.processing.generation.upload_database_integration import (
     UploadDatabaseIntegrationAlgorithm,
 )
 from geoplateforme.processing.utils import tags_to_qgs_parameter_matrix_string

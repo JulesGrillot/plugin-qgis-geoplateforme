@@ -29,10 +29,12 @@ from geoplateforme.api.upload import UploadRequestManager, UploadStatus
 from geoplateforme.gui.mdl_execution_list import ExecutionListModel
 from geoplateforme.gui.upload_creation.qwp_upload_edition import UploadEditionPageWizard
 from geoplateforme.processing import GeoplateformeProvider
-from geoplateforme.processing.upload_database_integration import (
+from geoplateforme.processing.generation.upload_database_integration import (
     UploadDatabaseIntegrationAlgorithm,
 )
-from geoplateforme.processing.upload_from_layers import GpfUploadFromLayersAlgorithm
+from geoplateforme.processing.upload.upload_from_layers import (
+    GpfUploadFromLayersAlgorithm,
+)
 from geoplateforme.processing.utils import tags_to_qgs_parameter_matrix_string
 from geoplateforme.toolbelt import PlgLogger, PlgOptionsManager
 

@@ -13,7 +13,9 @@ from geoplateforme.gui.publication_creation.qwp_publication_form import (
     PublicationFormPageWizard,
 )
 from geoplateforme.processing import GeoplateformeProvider
-from geoplateforme.processing.upload_publication import UploadPublicationAlgorithm
+from geoplateforme.processing.publication.upload_publication import (
+    UploadPublicationAlgorithm,
+)
 from geoplateforme.processing.utils import tags_to_qgs_parameter_matrix_string
 
 

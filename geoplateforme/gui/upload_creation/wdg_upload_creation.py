@@ -16,7 +16,7 @@ from qgis.PyQt.QtWidgets import QMessageBox, QWidget
 # Plugin
 from geoplateforme.gui.lne_validators import alphanum_qval
 from geoplateforme.processing import GeoplateformeProvider
-from geoplateforme.processing.check_layer import CheckLayerAlgorithm
+from geoplateforme.processing.tools.check_layer import CheckLayerAlgorithm
 
 
 class UploadCreationWidget(QWidget):

@@ -13,8 +13,10 @@ from geoplateforme.gui.wmts_publication.qwp_publication_form import (
 # Plugin
 from geoplateforme.gui.wmts_publication.qwp_wmts_edition import WMTSEditionPageWizard
 from geoplateforme.processing import GeoplateformeProvider
+from geoplateforme.processing.publication.wmts_publication import (
+    WmtsPublicationAlgorithm,
+)
 from geoplateforme.processing.utils import tags_to_qgs_parameter_matrix_string
-from geoplateforme.processing.wmts_publication import WmtsPublicationAlgorithm
 
 
 class PublicationStatut(QWizardPage):

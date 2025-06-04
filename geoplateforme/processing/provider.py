@@ -11,31 +11,37 @@ from qgis.PyQt.QtGui import QIcon
 
 # project
 from geoplateforme.__about__ import __icon_path__, __title__, __version__
-from geoplateforme.processing.check_layer import CheckLayerAlgorithm
-from geoplateforme.processing.create_geoserver_style import (
-    CreateGeoserverStyleAlgorithm,
-)
-from geoplateforme.processing.create_raster_tiles_from_wms_vector import (
+from geoplateforme.processing.delete_data import DeleteDataAlgorithm
+from geoplateforme.processing.generation.create_raster_tiles_from_wms_vector import (
     RasterTilesFromWmsVectorAlgorithm,
 )
-from geoplateforme.processing.delete_data import DeleteDataAlgorithm
-from geoplateforme.processing.sld_downgrade import SldDowngradeAlgorithm
-from geoplateforme.processing.tile_creation import TileCreationAlgorithm
-from geoplateforme.processing.unpublish import UnpublishAlgorithm
-from geoplateforme.processing.update_tile_upload import UpdateTileUploadAlgorithm
-from geoplateforme.processing.upload_database_integration import (
+from geoplateforme.processing.generation.tile_creation import TileCreationAlgorithm
+from geoplateforme.processing.generation.upload_database_integration import (
     UploadDatabaseIntegrationAlgorithm,
 )
-from geoplateforme.processing.upload_from_files import GpfUploadFromFileAlgorithm
-from geoplateforme.processing.upload_from_layers import GpfUploadFromLayersAlgorithm
-from geoplateforme.processing.upload_publication import UploadPublicationAlgorithm
-from geoplateforme.processing.vector_db_creation import VectorDatabaseCreationAlgorithm
-from geoplateforme.processing.wfs_publication import WfsPublicationAlgorithm
-from geoplateforme.processing.wms_publication import WmsPublicationAlgorithm
-from geoplateforme.processing.wms_raster_publication import (
+from geoplateforme.processing.publication.upload_publication import (
+    UploadPublicationAlgorithm,
+)
+from geoplateforme.processing.publication.wfs_publication import WfsPublicationAlgorithm
+from geoplateforme.processing.publication.wms_publication import WmsPublicationAlgorithm
+from geoplateforme.processing.publication.wms_raster_publication import (
     WmsRasterPublicationAlgorithm,
 )
-from geoplateforme.processing.wmts_publication import WmtsPublicationAlgorithm
+from geoplateforme.processing.publication.wmts_publication import (
+    WmtsPublicationAlgorithm,
+)
+from geoplateforme.processing.tools.check_layer import CheckLayerAlgorithm
+from geoplateforme.processing.tools.create_geoserver_style import (
+    CreateGeoserverStyleAlgorithm,
+)
+from geoplateforme.processing.tools.sld_downgrade import SldDowngradeAlgorithm
+from geoplateforme.processing.unpublish import UnpublishAlgorithm
+from geoplateforme.processing.update_tile_upload import UpdateTileUploadAlgorithm
+from geoplateforme.processing.upload.upload_from_files import GpfUploadFromFileAlgorithm
+from geoplateforme.processing.upload.upload_from_layers import (
+    GpfUploadFromLayersAlgorithm,
+)
+from geoplateforme.processing.vector_db_creation import VectorDatabaseCreationAlgorithm
 
 # ############################################################################
 # ########## Classes ###############

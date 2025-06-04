@@ -16,7 +16,9 @@ from qgis.PyQt.QtWidgets import QAbstractItemView, QShortcut, QWidget
 
 # Plugin
 from geoplateforme.gui.upload_creation.mdl_upload_files import UploadFilesTreeModel
-from geoplateforme.processing.upload_from_layers import GpfUploadFromLayersAlgorithm
+from geoplateforme.processing.upload.upload_from_layers import (
+    GpfUploadFromLayersAlgorithm,
+)
 
 
 class LayerSelectionWidget(QgsPanelWidget):

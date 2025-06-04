@@ -35,7 +35,7 @@ from geoplateforme.gui.create_raster_tiles_from_wms_vector.qwp_tile_generation_e
 )
 from geoplateforme.gui.mdl_execution_list import ExecutionListModel
 from geoplateforme.processing import GeoplateformeProvider
-from geoplateforme.processing.create_raster_tiles_from_wms_vector import (
+from geoplateforme.processing.generation.create_raster_tiles_from_wms_vector import (
     RasterTilesFromWmsVectorAlgorithm,
 )
 from geoplateforme.processing.utils import tags_to_qgs_parameter_matrix_string

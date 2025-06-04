@@ -17,10 +17,12 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
-from geoplateforme.processing.upload_database_integration import (
+from geoplateforme.processing.generation.upload_database_integration import (
     UploadDatabaseIntegrationAlgorithm,
 )
-from geoplateforme.processing.upload_from_layers import GpfUploadFromLayersAlgorithm
+from geoplateforme.processing.upload.upload_from_layers import (
+    GpfUploadFromLayersAlgorithm,
+)
 from geoplateforme.processing.utils import (
     get_short_string,
     get_user_manual_url,

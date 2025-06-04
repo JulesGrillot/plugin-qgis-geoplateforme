@@ -39,6 +39,9 @@ from geoplateforme.gui.tile_creation.wzd_tile_creation import TileCreationWizard
 from geoplateforme.gui.wfs_publication.wzd_publication_creation import (
     WFSPublicationWizard,
 )
+from geoplateforme.gui.wms_raster_publication.wzd_publication_creation import (
+    WMSRasterPublicationWizard,
+)
 from geoplateforme.gui.wms_vector_publication.wzd_publication_creation import (
     WMSVectorPublicationWizard,
 )
@@ -98,6 +101,7 @@ class StoredDataDetailsDialog(QDialog):
         self.wms_vector_publish_wizard = None
         self.wfs_publish_wizard = None
         self.tms_publish_wizard = None
+        self.wms_raster_publish_wizard = None
 
     def set_stored_data(self, stored_data: StoredData) -> None:
         """
@@ -197,6 +201,64 @@ class StoredDataDetailsDialog(QDialog):
 
                 publish_tile_action.triggered.connect(self._show_tile_publish_wizard)
                 self.edit_toolbar.addWidget(button)
+            elif stored_data.type == StoredDataType.PYRAMIDRASTER:
+                publish_tile_action = QAction(
+                    QIcon(
+                        str(
+                            DIR_PLUGIN_ROOT
+                            / "resources"
+                            / "images"
+                            / "icons"
+                            / "Publie@2x.png"
+                        )
+                    ),
+                    self.tr("Publication tuile"),
+                    self,
+                )
+                button = QToolButton(self)
+                button.setDefaultAction(publish_tile_action)
+                button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+
+                publish_tile_action.triggered.connect(
+                    self._show_raster_tile_publish_wizard
+                )
+                self.edit_toolbar.addWidget(button)
+
+    def _show_raster_tile_publish_wizard(self) -> None:
+        """Show wms vector publication wizard for current stored data"""
+        self._raster_tile_publish_wizard(self._stored_data)
+
+    def _raster_tile_publish_wizard(self, stored_data: StoredData) -> None:
+        """
+        Show wms vector publication wizard for a stored data
+
+        Args:
+            stored_data: (StoredData) stored data to generate tile
+        """
+        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
+        self.wms_raster_publish_wizard = WMSRasterPublicationWizard(
+            self,
+            stored_data.datastore_id,
+            stored_data.tags["datasheet_name"],
+            stored_data._id,
+        )
+        QGuiApplication.restoreOverrideCursor()
+        self.wms_raster_publish_wizard.finished.connect(
+            self._del_wms_raster_publish_wizard
+        )
+        self.wms_raster_publish_wizard.show()
+
+    def _del_wms_raster_publish_wizard(self) -> None:
+        """
+        Delete wms raster publish wizard
+
+        """
+        if self.wms_raster_publish_wizard is not None:
+            offering_id = self.wms_raster_publish_wizard.get_offering_id()
+            if offering_id:
+                self.select_offering.emit(offering_id)
+            self.wms_raster_publish_wizard.deleteLater()
+            self.wms_raster_publish_wizard = None
 
     def _show_wms_vector_publish_wizard(self) -> None:
         """Show wms vector publication wizard for current stored data"""

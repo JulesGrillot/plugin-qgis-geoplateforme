@@ -32,6 +32,9 @@ from geoplateforme.processing.upload_publication import UploadPublicationAlgorit
 from geoplateforme.processing.vector_db_creation import VectorDatabaseCreationAlgorithm
 from geoplateforme.processing.wfs_publication import WfsPublicationAlgorithm
 from geoplateforme.processing.wms_publication import WmsPublicationAlgorithm
+from geoplateforme.processing.wms_raster_publication import (
+    WmsRasterPublicationAlgorithm,
+)
 
 # ############################################################################
 # ########## Classes ###############
@@ -60,6 +63,7 @@ class GeoplateformeProvider(QgsProcessingProvider):
         self.addAlgorithm(SldDowngradeAlgorithm())
         self.addAlgorithm(WmsPublicationAlgorithm())
         self.addAlgorithm(RasterTilesFromWmsVectorAlgorithm())
+        self.addAlgorithm(WmsRasterPublicationAlgorithm())
 
     def id(self) -> str:
         """Unique provider id, used for identifying it. This string should be unique, \

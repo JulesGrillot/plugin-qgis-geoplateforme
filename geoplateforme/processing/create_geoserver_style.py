@@ -46,10 +46,10 @@ class CreateGeoserverStyleAlgorithm(QgsProcessingAlgorithm):
         return self.tr("Ajout style Geoserver dans l'entrepôt")
 
     def group(self):
-        return self.tr("")
+        return self.tr("Outils géoplateforme")
 
     def groupId(self):
-        return ""
+        return "tools"
 
     def helpUrl(self):
         return get_user_manual_url(self.name())

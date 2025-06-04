@@ -87,13 +87,13 @@ class WmsPublicationAlgorithm(QgsProcessingAlgorithm):
         return "wms_publish"
 
     def displayName(self):
-        return self.tr("Publication service WMS")
+        return self.tr("Publication service WMS-VECTOR")
 
     def group(self):
-        return self.tr("")
+        return self.tr("Publication")
 
     def groupId(self):
-        return ""
+        return "publication"
 
     def helpUrl(self):
         return get_user_manual_url(self.name())
@@ -106,7 +106,6 @@ class WmsPublicationAlgorithm(QgsProcessingAlgorithm):
             QgsProcessingParameterString(
                 name=self.DATASTORE,
                 description=self.tr("Identifiant de l'entrepôt"),
-                defaultValue="87e1beb6-ee07-4adc-8449-6a925dc28949",
             )
         )
 
@@ -114,7 +113,6 @@ class WmsPublicationAlgorithm(QgsProcessingAlgorithm):
             QgsProcessingParameterString(
                 name=self.STORED_DATA,
                 description=self.tr("Identifiant de la base de données vectorielle"),
-                defaultValue="fc79b4f9-aa31-4667-8f97-361a5dec6c7f",
             )
         )
 

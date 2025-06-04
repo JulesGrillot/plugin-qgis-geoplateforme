@@ -130,11 +130,11 @@ class DeleteStoredDataAlgorithm(QgsProcessingAlgorithm):
                         nb_unpublished_offering += 1
                         continue
 
-                    if offering.status == OfferingStatus.UNSTABLE:
+                    if offering.status != OfferingStatus.UNPUBLISHING:
                         raise QgsProcessingException(
-                            self.tr("L'offering {} est en état instable.").format(
-                                offering_id
-                            )
+                            self.tr(
+                                "L'offering {} n'est pas en cours de dépublication. La suppression de la donnée stockée est annulée."
+                            ).format(offering_id)
                         )
                 if nb_unpublished_offering != len(offering_ids):
                     sleep(1)

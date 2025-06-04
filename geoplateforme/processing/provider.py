@@ -11,7 +11,6 @@ from qgis.PyQt.QtGui import QIcon
 
 # project
 from geoplateforme.__about__ import __icon_path__, __title__, __version__
-from geoplateforme.processing.delete_data import DeleteDataAlgorithm
 from geoplateforme.processing.generation.create_raster_tiles_from_wms_vector import (
     RasterTilesFromWmsVectorAlgorithm,
 )
@@ -34,6 +33,7 @@ from geoplateforme.processing.tools.check_layer import CheckLayerAlgorithm
 from geoplateforme.processing.tools.create_geoserver_style import (
     CreateGeoserverStyleAlgorithm,
 )
+from geoplateforme.processing.tools.delete_stored_data import DeleteStoredDataAlgorithm
 from geoplateforme.processing.tools.sld_downgrade import SldDowngradeAlgorithm
 from geoplateforme.processing.unpublish import UnpublishAlgorithm
 from geoplateforme.processing.update_tile_upload import UpdateTileUploadAlgorithm
@@ -63,7 +63,7 @@ class GeoplateformeProvider(QgsProcessingProvider):
         self.addAlgorithm(UploadPublicationAlgorithm())
         self.addAlgorithm(UnpublishAlgorithm())
         self.addAlgorithm(UpdateTileUploadAlgorithm())
-        self.addAlgorithm(DeleteDataAlgorithm())
+        self.addAlgorithm(DeleteStoredDataAlgorithm())
         self.addAlgorithm(GpfUploadFromLayersAlgorithm())
         self.addAlgorithm(WfsPublicationAlgorithm())
         self.addAlgorithm(CreateGeoserverStyleAlgorithm())

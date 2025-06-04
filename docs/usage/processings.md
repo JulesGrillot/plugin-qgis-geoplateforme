@@ -57,6 +57,13 @@ Pour afficher tous les traitements QGIS : `Traitements > Boîte à outils`
 ```{include} ../../geoplateforme/resources/help/wms_raster_publish.md
 ```
 
+(wmts_publish=)
+
+### Publication WMTS-TMS
+
+```{include} ../../geoplateforme/resources/help/wmts_publish.md
+```
+
 ## Outils géoplateforme
 
 (create_geoserver_style=)

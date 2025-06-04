@@ -11,7 +11,7 @@ from typing import Optional
 
 # PyQGIS
 from qgis.core import Qgis, QgsApplication, QgsSettings
-from qgis.gui import QgisInterface
+from qgis.gui import QgisInterface, QgsGui
 from qgis.PyQt.QtCore import QCoreApplication, QLocale, QTranslator, QUrl
 from qgis.PyQt.QtGui import QDesktopServices, QIcon
 from qgis.PyQt.QtWidgets import QAction, QToolBar
@@ -29,6 +29,7 @@ from geoplateforme.constants import GPF_PLUGIN_LIST
 from geoplateforme.gui.dashboard.dlg_dashboard import DashboardDialog
 from geoplateforme.gui.dlg_authentication import AuthenticationDialog
 from geoplateforme.gui.dlg_settings import PlgOptionsFactory
+from geoplateforme.gui.provider.provider_gpf import ProviderGPF
 from geoplateforme.gui.storage.dlg_storage_report import StorageReportDialog
 from geoplateforme.gui.user.dlg_user import UserDialog
 from geoplateforme.processing import GeoplateformeProvider
@@ -183,6 +184,10 @@ class GeoplateformePlugin:
         self.toolbar.addAction(self.action_dashboard)
         self.toolbar.addAction(self.action_storage_report)
         self._update_actions_availability()
+
+        # -- Provider
+        provider_gpf = ProviderGPF(self.iface)
+        QgsGui.sourceSelectProviderRegistry().addProvider(provider_gpf)
 
         # -- Processings
         self.initProcessing()

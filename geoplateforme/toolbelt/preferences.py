@@ -58,6 +58,7 @@ class PlgSettingsStructure:
     # network and authentication
     url_geoplateforme: str = "https://cartes.gouv.fr/"
     url_api_entrepot: str = "https://data.geopf.fr/api"
+    url_api_search: str = "https://data.geopf.fr/recherche/api"
     qgis_auth_id: Optional[str] = None
 
     # status check sleep (in seconds)
@@ -82,6 +83,11 @@ class PlgSettingsStructure:
     def base_url_api_entrepot(self) -> str:
         """Return the URL for API entrepot"""
         return f"{self.url_api_entrepot}"
+
+    @property
+    def base_url_api_search(self) -> str:
+        """Return the URL for API search"""
+        return f"{self.url_api_search}"
 
     @property
     def sandbox_datastore_ids(self) -> List[str]:

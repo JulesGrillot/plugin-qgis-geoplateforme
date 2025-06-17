@@ -1,3 +1,4 @@
+# standard
 import json
 import math
 import re
@@ -5,10 +6,12 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import List, Optional, Self
 
-from qgis.PyQt.QtCore import QUrl
+# PyQGIS
+from qgis.PyQt.QtCore import QByteArray, QUrl
 
 # plugin
 from geoplateforme.api.custom_exceptions import (
+    CreateUserKeyException,
     DeleteUserKeyException,
     ReadUserKeyException,
 )
@@ -285,3 +288,66 @@ class UserKeyRequestManager:
             )
         except ConnectionError as err:
             raise DeleteUserKeyException(f"Error while deleting user key: {err}.")
+
+    def create_user_key(
+        self,
+        name: str,
+        user_key_type: UserKeyType,
+        type_infos: dict,
+        whitelist: Optional[List[str]] = None,
+        blacklist: Optional[List[str]] = None,
+        user_agent: Optional[str] = None,
+        referer: Optional[str] = None,
+    ) -> UserKey:
+        """Create a use key
+
+        :param name: key name
+        :type name: str
+        :param user_key_type: key type
+        :type user_key_type: UserKeyType
+        :param type_infos: key type infos (depends on key type)
+        :type type_infos: dict
+        :param whitelist: list of whitelist IPs, defaults to None
+        :type whitelist: Optional[List[str]], optional
+        :param blacklist: list of blacklist IPs, defaults to None
+        :type blacklist: Optional[List[str]], optional
+        :param user_agent: user agent, defaults to None
+        :type user_agent: Optional[str], optional
+        :param referer: referer, defaults to None
+        :type referer: Optional[str], optional
+        :raises CreateUserKeyException: Error when creating key
+        :return: created key
+        :rtype: UserKey
+        """
+        self.log(
+            f"{__name__}.create_user_key({name=},{user_key_type=},{type_infos=},{whitelist=},{blacklist=},{user_agent=},{referer=})"
+        )
+        try:
+            # encode data
+            data = QByteArray()
+            data_map = {
+                "name": name,
+                "type": user_key_type.value,
+                "type_infos": type_infos,
+            }
+            if whitelist:
+                data_map["whitelist"] = whitelist
+            if blacklist:
+                data_map["blacklist"] = blacklist
+            if user_agent:
+                data_map["user_agent"] = user_agent
+            if referer:
+                data_map["referer"] = referer
+
+            data.append(json.dumps(data_map))
+            reply = self.request_manager.post_url(
+                url=QUrl(self.get_base_url()),
+                config_id=self.plg_settings.qgis_auth_id,
+                data=data,
+                headers={b"Content-Type": bytes("application/json", "utf8")},
+            )
+        except ConnectionError as err:
+            raise CreateUserKeyException(f"Error in user key creation : {err}")
+        # check response type
+        data = json.loads(reply.data())
+        return UserKey.from_dict(data)

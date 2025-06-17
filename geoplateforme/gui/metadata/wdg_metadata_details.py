@@ -56,12 +56,16 @@ class MetadataDetailsWidget(QWidget):
         self.te_description.setText(self.metadata.fields.abstract)
         self.le_context.setText(self.datastore_id)
         self.le_unique_id.setText(self.metadata.fields.identifier)
-        self.le_thematics.setText(", ".join(self.metadata.fields.topics))
-        self.le_inspire_kw.setText(", ".join(self.metadata.fields.inspire_keywords))
-        self.le_kw.setText(", ".join(self.metadata.fields.free_keywords))
+        if self.metadata.fields.topics:
+            self.le_thematics.setText(", ".join(self.metadata.fields.topics))
+        if self.metadata.fields.inspire_keywords:
+            self.le_inspire_kw.setText(", ".join(self.metadata.fields.inspire_keywords))
+        if self.metadata.fields.free_keywords:
+            self.le_kw.setText(", ".join(self.metadata.fields.free_keywords))
 
         self.le_genealogy.setText(self.metadata.fields.genealogy)
-        self.de_creation_date.setDate(self.metadata.fields.creation_date)
+        if self.metadata.fields.creation_date:
+            self.de_creation_date.setDate(self.metadata.fields.creation_date)
         self.le_frequency.setText(self.metadata.fields.frequency)
 
         self.le_contact_email.setText(self.metadata.fields.contact_email)
@@ -197,12 +201,23 @@ class MetadataDetailsWidget(QWidget):
         """Update metadata with widget fields"""
         self.metadata.fields.title = self.le_title.text()
         self.metadata.fields.abstract = self.te_description.toPlainText()
-        self.le_thematics.setText(", ".join(self.metadata.fields.topics))
-        self.le_inspire_kw.setText(", ".join(self.metadata.fields.inspire_keywords))
-        self.le_kw.setText(", ".join(self.metadata.fields.free_keywords))
+        if self.le_thematics.text():
+            self.metadata.fields.topics = self.le_thematics.text().split(",")
+        else:
+            self.metadata.fields.topics = []
+        if self.le_inspire_kw.text():
+            self.metadata.fields.inspire_keywords = self.le_inspire_kw.text().split(",")
+        else:
+            self.metadata.fields.inspire_keywords = []
+
+        if self.le_kw.text():
+            self.metadata.fields.free_keywords = self.le_kw.text().split(",")
+        else:
+            self.metadata.fields.free_keywords = []
 
         self.metadata.fields.genealogy = self.le_genealogy.text()
-        self.metadata.fields.creation_date = self.de_creation_date.date().toPyDate()
+        if not self.de_creation_date.date().isNull():
+            self.metadata.fields.creation_date = self.de_creation_date.date().toPyDate()
         self.metadata.fields.frequency = self.le_frequency.text()
 
         self.metadata.fields.contact_email = self.le_contact_email.text()

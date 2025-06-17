@@ -11,6 +11,7 @@ from qgis.PyQt.QtCore import QByteArray, QUrl
 
 # plugin
 from geoplateforme.api.custom_exceptions import (
+    CreateAccessesException,
     CreateUserKeyException,
     DeleteUserKeyException,
     ReadUserKeyException,
@@ -351,3 +352,34 @@ class UserKeyRequestManager:
         # check response type
         data = json.loads(reply.data())
         return UserKey.from_dict(data)
+
+    def create_accesses(
+        self, user_key_id: str, permission_id: str, offering_ids: list[str]
+    ) -> None:
+        """Create accesses for a user key for a permission and a list of offering
+
+        :param user_key_id: user key id
+        :type user_key_id: str
+        :param permission_id: permission id
+        :type permission_id: str
+        :param offering_ids: offering ids list
+        :type offering_ids: list[str]
+        :raises CreateAccessesException: Error when creating accesses
+        """
+        self.log(
+            f"{__name__}.create_accesses({user_key_id=},{permission_id=},{offering_ids=})"
+        )
+        try:
+            # encode data
+            data = QByteArray()
+            data_map = {"permission": permission_id, "offerings": offering_ids}
+
+            data.append(json.dumps(data_map))
+            self.request_manager.post_url(
+                url=QUrl(f"{self.get_base_url()}/{user_key_id}/accesses"),
+                config_id=self.plg_settings.qgis_auth_id,
+                data=data,
+                headers={b"Content-Type": bytes("application/json", "utf8")},
+            )
+        except ConnectionError as err:
+            raise CreateAccessesException(f"Error in accesses creation : {err}")

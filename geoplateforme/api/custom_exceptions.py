@@ -180,3 +180,11 @@ class DeletePermissionException(Exception):
 
 class CreatePermissionException(Exception):
     pass
+
+
+class ReadUserPermissionException(Exception):
+    pass
+
+
+class DeleteUserPermissionException(Exception):
+    pass

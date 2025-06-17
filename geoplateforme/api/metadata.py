@@ -209,10 +209,16 @@ class Metadata:
                     creation_date_field = ident_el.find(
                         "./{*}citation/{*}CI_Citation/{*}date/{*}CI_Date/{*}date/{*}Date"
                     )
-                    if creation_date_field is not None:
-                        self._fields.creation_date = datetime.fromisoformat(
-                            creation_date_field.text
-                        )
+                    if (
+                        creation_date_field is not None
+                        and creation_date_field.text is not None
+                    ):
+                        try:
+                            self._fields.creation_date = datetime.fromisoformat(
+                                creation_date_field.text
+                            )
+                        except ValueError:
+                            self._fields.creation_date = None
 
                     abstract_field = ident_el.find("./{*}abstract/{*}CharacterString")
                     if abstract_field is not None:
@@ -292,8 +298,14 @@ class Metadata:
                     resolution_field = ident_el.find(
                         "./{*}spatialResolution/{*}MD_Resolution/{*}equivalentScale/{*}MD_RepresentativeFraction/{*}denominator/{*}Integer"
                     )
-                    if resolution_field is not None:
-                        self._fields.resolution = int(resolution_field.text)
+                    if (
+                        resolution_field is not None
+                        and resolution_field.text is not None
+                    ):
+                        try:
+                            self._fields.resolution = int(resolution_field.text)
+                        except ValueError:
+                            self._fields.resolution = None
 
                     bbox_field = ident_el.find(
                         "./{*}extent/{*}EX_Extent/{*}geographicElement/{*}EX_GeographicBoundingBox"
@@ -332,9 +344,12 @@ class Metadata:
                         update_date_field is not None
                         and update_date_field.text is not None
                     ):
-                        self._fields.update_date = datetime.fromisoformat(
-                            update_date_field.text
-                        )
+                        try:
+                            self._fields.update_date = datetime.fromisoformat(
+                                update_date_field.text
+                            )
+                        except ValueError:
+                            self._fields.update_date = None
 
                     genealogy_field = root.find(
                         "./{*}dataQualityInfo/{*}DQ_DataQuality/{*}lineage/{*}LI_Lineage/{*}statement/{*}CharacterString"

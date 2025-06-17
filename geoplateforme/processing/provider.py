@@ -47,6 +47,7 @@ from geoplateforme.processing.upload.upload_from_layers import (
     GpfUploadFromLayersAlgorithm,
 )
 from geoplateforme.processing.user_key.create_basic_key import CreateBasicKeyAlgorithm
+from geoplateforme.processing.user_key.create_hash_key import CreateHashKeyAlgorithm
 from geoplateforme.processing.vector_db_creation import VectorDatabaseCreationAlgorithm
 
 # ############################################################################
@@ -82,6 +83,7 @@ class GeoplateformeProvider(QgsProcessingProvider):
         self.addAlgorithm(WmtsPublicationAlgorithm())
         self.addAlgorithm(CreatePermissionAlgorithm())
         self.addAlgorithm(CreateBasicKeyAlgorithm())
+        self.addAlgorithm(CreateHashKeyAlgorithm())
 
     def id(self) -> str:
         """Unique provider id, used for identifying it. This string should be unique, \

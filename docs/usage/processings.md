@@ -98,6 +98,13 @@ Pour afficher tous les traitements QGIS : `Traitements > Boîte à outils`
 ```{include} ../../geoplateforme/resources/help/create_basic_key.md
 ```
 
+(create_hash_key)=
+
+### Création d'une clé hash
+
+```{include} ../../geoplateforme/resources/help/create_hash_key.md
+```
+
 ## Outils géoplateforme
 
 (delete_stored_data)=

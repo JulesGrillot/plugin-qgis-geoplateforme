@@ -73,5 +73,5 @@ class PermissionsWidget(QWidget):
                 datastore_id=self.datastore_id, parent=self
             )
         result = dialog.exec()
-        if result == QDialog.Accepted:
+        if result == QDialog.DialogCode.Accepted:
             self.refresh(self.datastore_id, self.offering_id)

@@ -125,7 +125,7 @@ class MetadataDetailsWidget(QWidget):
                         first_capabilities = False
                     else:
                         line = QFrame()
-                        line.setFrameShape(QFrame.HLine)
+                        line.setFrameShape(QFrame.Shape.HLine)
                         line.setStyleSheet("color: #BBBBBB;")
                         capabilities_vbox.addWidget(line)
                     label_name = QLabel()
@@ -144,7 +144,7 @@ class MetadataDetailsWidget(QWidget):
                         first_access = False
                     else:
                         line = QFrame()
-                        line.setFrameShape(QFrame.HLine)
+                        line.setFrameShape(QFrame.Shape.HLine)
                         line.setStyleSheet("color: #BBBBBB;")
                         access_vbox.addWidget(line)
                     label_name = QLabel()
@@ -161,7 +161,7 @@ class MetadataDetailsWidget(QWidget):
                         first_access = False
                     else:
                         line = QFrame()
-                        line.setFrameShape(QFrame.HLine)
+                        line.setFrameShape(QFrame.Shape.HLine)
                         line.setStyleSheet("color: #BBBBBB;")
                         style_vbox.addWidget(line)
                     label_name = QLabel()
@@ -175,7 +175,7 @@ class MetadataDetailsWidget(QWidget):
                         first_access = False
                     else:
                         line = QFrame()
-                        line.setFrameShape(QFrame.HLine)
+                        line.setFrameShape(QFrame.Shape.HLine)
                         line.setStyleSheet("color: #BBBBBB;")
                         doc_vbox.addWidget(line)
                     label_name = QLabel()

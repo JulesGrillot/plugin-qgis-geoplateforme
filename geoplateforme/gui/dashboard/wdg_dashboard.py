@@ -1,15 +1,6 @@
-import json
 import os
-import tempfile
 from typing import List, Optional
 
-from qgis.core import (
-    QgsApplication,
-    QgsProcessingContext,
-    QgsProcessingFeedback,
-    QgsProject,
-    QgsVectorTileLayer,
-)
 from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtCore import (
     QAbstractItemModel,
@@ -18,24 +9,14 @@ from qgis.PyQt.QtCore import (
     QModelIndex,
 )
 from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon
-from qgis.PyQt.QtWidgets import (
-    QAbstractItemView,
-    QAction,
-    QLabel,
-    QMenu,
-    QMessageBox,
-    QTableView,
-    QWidget,
-)
+from qgis.PyQt.QtWidgets import QAbstractItemView, QLabel, QTableView, QWidget
 
-from geoplateforme.__about__ import __title_clean__
 from geoplateforme.api.custom_exceptions import (
     ReadMetadataException,
     UnavailableMetadataFileException,
 )
 from geoplateforme.api.metadata import MetadataRequestManager
 from geoplateforme.api.stored_data import (
-    StoredData,
     StoredDataStatus,
     StoredDataStep,
     StoredDataType,
@@ -48,18 +29,7 @@ from geoplateforme.gui.mdl_stored_data import StoredDataListModel
 from geoplateforme.gui.mdl_upload import UploadListModel
 from geoplateforme.gui.metadata.wdg_metadata_details import MetadataDetailsWidget
 from geoplateforme.gui.proxy_model_stored_data import StoredDataProxyModel
-from geoplateforme.gui.publication_creation.wzd_publication_creation import (
-    PublicationFormCreation,
-)
-from geoplateforme.gui.report.dlg_report import ReportDialog
-from geoplateforme.gui.tile_creation.wzd_tile_creation import TileCreationWizard
-from geoplateforme.gui.update_publication.wzd_update_publication import (
-    UpdatePublicationWizard,
-)
 from geoplateforme.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
-from geoplateforme.processing import GeoplateformeProvider
-from geoplateforme.processing.tools.delete_stored_data import DeleteStoredDataAlgorithm
-from geoplateforme.processing.unpublish import UnpublishAlgorithm
 from geoplateforme.toolbelt import PlgLogger
 
 
@@ -465,207 +435,6 @@ class DashboardWidget(QWidget):
             self.service_detail_widget_layout.removeWidget(self.service_detail_dialog)
             self.service_detail_dialog = None
 
-    def _stored_data_main_action(self, stored_data: StoredData):
-        """
-        Execute stored data main action depending on current stored data status and step
-
-        Args:
-            stored_data: (StoredData) stored data
-        """
-        status = StoredDataStatus[stored_data.status]
-        if status == StoredDataStatus.GENERATING:
-            self._show_report(stored_data)
-        elif status == StoredDataStatus.GENERATED:
-            current_step = stored_data.get_current_step()
-            if current_step == StoredDataStep.TILE_GENERATION:
-                self._generate_tile_wizard(stored_data)
-            elif current_step == StoredDataStep.TILE_SAMPLE:
-                self._tile_sample_wizard(stored_data)
-            elif current_step == StoredDataStep.TILE_UPDATE:
-                self._compare(stored_data)
-            elif current_step == StoredDataStep.TILE_PUBLICATION:
-                self._publish_wizard(stored_data)
-            elif current_step == StoredDataStep.PUBLISHED:
-                self._view_tile(stored_data)
-        else:
-            self._show_report(stored_data)
-
-    def _stored_data_other_actions(self, stored_data: StoredData):
-        """
-        Display menu for other actions on stored data
-
-        Args:
-            stored_data: (StoredData) stored data
-        """
-        if stored_data.get_current_step() == StoredDataStep.PUBLISHED:
-            menu = QMenu(self)
-
-            replace_action = QAction(self.tr("Replace data"))
-            replace_action.triggered.connect(
-                lambda: self._replace_data_wizard(stored_data)
-            )
-            menu.addAction(replace_action)
-
-            style_action = QAction(self.tr("Manage styles"))
-            style_action.triggered.connect(lambda: self._style_wizard(stored_data))
-            menu.addAction(style_action)
-
-            update_publish_action = QAction(self.tr("Update publication informations"))
-            update_publish_action.triggered.connect(
-                lambda: self._publish_info_update_wizard(stored_data)
-            )
-            menu.addAction(update_publish_action)
-
-            unpublish_action = QAction(self.tr("Unpublish"))
-            unpublish_action.triggered.connect(lambda: self._unpublish(stored_data))
-            menu.addAction(unpublish_action)
-
-            menu.exec(QCursor.pos())
-
-    def _delete(self, stored_data: StoredData) -> None:
-        """
-        Delete a stored data
-
-        Args:
-            stored_data: (StoredData) stored data to delete
-        """
-
-        reply = QMessageBox.question(
-            self,
-            "Delete data",
-            "Are you sure you want to delete the data?",
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-            QMessageBox.StandardButton.No,
-        )
-        if reply == QMessageBox.StandardButton.Yes:
-            params = {
-                DeleteStoredDataAlgorithm.DATASTORE: stored_data.datastore_id,
-                DeleteStoredDataAlgorithm.STORED_DATA: stored_data._id,
-            }
-
-            algo_str = (
-                f"{GeoplateformeProvider().id()}:{DeleteStoredDataAlgorithm().name()}"
-            )
-            alg = QgsApplication.processingRegistry().algorithmById(algo_str)
-            context = QgsProcessingContext()
-            feedback = QgsProcessingFeedback()
-            result, success = alg.run(
-                parameters=params, context=context, feedback=feedback
-            )
-            if success:
-                row = self.mdl_stored_data.get_stored_data_row(stored_data._id)
-                self.mdl_stored_data.removeRow(row)
-
-            else:
-                self.log(
-                    self.tr("delete data error").format(
-                        stored_data._id, feedback.textLog()
-                    ),
-                    log_level=1,
-                    push=True,
-                )
-
-    def _show_report(self, stored_data: StoredData) -> None:
-        """
-        Show report for a stored data
-
-        Args:
-            stored_data: (StoredData) stored data to publish
-        """
-        dialog = ReportDialog(self)
-        dialog.set_stored_data(stored_data)
-        dialog.show()
-
-    def _tile_sample_wizard(self, stored_data: StoredData) -> None:
-        """
-        Show tile sample wizard for a stored data
-
-        Args:
-            stored_data: (StoredData) stored data to view tile sample wizard
-        """
-        self.log("Tile sample wizard not implemented yet", push=True)
-
-    def _generate_tile_wizard(self, stored_data: StoredData) -> None:
-        """
-        Show tile generation wizard for a stored data
-
-        Args:
-            stored_data: (StoredData) stored data to generate tile
-        """
-        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
-        publication_wizard = TileCreationWizard(self)
-        publication_wizard.set_datastore_id(stored_data.datastore_id)
-        publication_wizard.set_stored_data_id(stored_data._id)
-        QGuiApplication.restoreOverrideCursor()
-        publication_wizard.show()
-
-    def _publish_wizard(self, stored_data: StoredData) -> None:
-        """
-        Show publish wizard for a stored data
-
-        Args:
-            stored_data: (StoredData) stored data to publish
-        """
-        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
-        publication_wizard = PublicationFormCreation(self)
-        publication_wizard.set_datastore_id(stored_data.datastore_id)
-        publication_wizard.set_stored_data_id(stored_data._id)
-        QGuiApplication.restoreOverrideCursor()
-        publication_wizard.show()
-
-    def _view_tile(self, stored_data: StoredData) -> None:
-        """
-        View tile for a stored data
-
-        Args:
-            stored_data: (StoredData) stored data to be viewed
-        """
-        # TODO : tag tms_url can't be used in stored data because of a 99 char limits
-        if stored_data.tags and "tms_url" in stored_data.tags:
-            tms_url = stored_data.tags["tms_url"]
-            zoom_levels = stored_data.zoom_levels()
-            bottom = zoom_levels[-1]
-            top = zoom_levels[0]
-            layer = QgsVectorTileLayer(
-                path=f"type=xyz&url={tms_url}/%7Bz%7D/%7Bx%7D/%7By%7D.pbf&zmax={bottom}&zmin={top}",
-                baseName=self.tr("Vector tile : {0}").format(stored_data.name),
-            )
-            QgsProject.instance().addMapLayer(layer)
-
-    def _replace_data_wizard(self, stored_data: StoredData) -> None:
-        """
-        Show replace data wizard for a stored data
-
-        Args:
-            stored_data: (StoredData) stored data
-        """
-        self.log("Replace data not implemented yet", push=True)
-
-    def _style_wizard(self, stored_data: StoredData) -> None:
-        """
-        Show style wizard for a stored data
-
-        Args:
-            stored_data: (StoredData) stored data
-        """
-        self.log("Tile style management not implemented yet", push=True)
-
-    def _publish_info_update_wizard(self, stored_data: StoredData) -> None:
-        """
-        Show publish information update wizard for a stored data
-
-        Args:
-            stored_data: (StoredData) stored data
-        """
-
-        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
-        publication_wizard = UpdatePublicationWizard(self)
-        publication_wizard.set_datastore_id(stored_data.datastore_id)
-        publication_wizard.set_stored_data_id(stored_data._id)
-
-        QGuiApplication.restoreOverrideCursor()
-        publication_wizard.show()
-
     def _create_dataset(self) -> None:
         """
         Show upload creation wizard with current datastore
@@ -710,61 +479,6 @@ class DashboardWidget(QWidget):
                 self.select_upload(created_upload_id, False)
             self.import_wizard.deleteLater()
             self.import_wizard = None
-
-    def _compare(self, stored_data: StoredData) -> None:
-        """
-        Compare update with initial stored data
-
-        Args:
-            stored_data: (StoredData) stored data
-        """
-        self.log("Compare not implemented yet", push=True)
-
-    def _unpublish(self, stored_data: StoredData) -> None:
-        """
-        Unpublish a stored data
-
-        Args:
-            stored_data: (StoredData) stored data
-        """
-        reply = QMessageBox.question(
-            self,
-            "Unpublish",
-            "Are you sure you want to unpublish the data?",
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-            QMessageBox.StandardButton.No,
-        )
-        if reply == QMessageBox.StandardButton.Yes:
-            data = {
-                UnpublishAlgorithm.DATASTORE: stored_data.datastore_id,
-                UnpublishAlgorithm.STORED_DATA: stored_data._id,
-            }
-            filename = tempfile.NamedTemporaryFile(
-                prefix=f"qgis_{__title_clean__}_", suffix=".json"
-            ).name
-            with open(filename, "w") as file:
-                json.dump(data, file)
-            algo_str = f"{GeoplateformeProvider().id()}:{UnpublishAlgorithm().name()}"
-            alg = QgsApplication.processingRegistry().algorithmById(algo_str)
-            params = {UnpublishAlgorithm.INPUT_JSON: filename}
-            context = QgsProcessingContext()
-            feedback = QgsProcessingFeedback()
-            alg.run(parameters=params, context=context, feedback=feedback)
-            self.refresh()
-
-            result, success = alg.run(
-                parameters=params, context=context, feedback=feedback
-            )
-            if success:
-                self.refresh()
-            else:
-                self.log(
-                    self.tr("Unpublish error ").format(
-                        stored_data._id, feedback.textLog()
-                    ),
-                    log_level=1,
-                    push=True,
-                )
 
     def _create_proxy_model(
         self,

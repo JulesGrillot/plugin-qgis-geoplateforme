@@ -236,6 +236,18 @@ Ce type d’authentification est adapté en particulier pour une utilisation sur
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>lne_name</tabstop>
+  <tabstop>rbtn_basic</tabstop>
+  <tabstop>rbtn_hash</tabstop>
+  <tabstop>rbtn_oauth</tabstop>
+  <tabstop>lne_login</tabstop>
+  <tabstop>lne_password</tabstop>
+  <tabstop>gpb_ip_filter</tabstop>
+  <tabstop>lne_user_agent</tabstop>
+  <tabstop>lne_referer</tabstop>
+  <tabstop>tbv_permissions</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -1,11 +1,14 @@
 # standard
 import os
+from typing import Tuple
 
 # PyQGIS
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QAbstractItemView, QHeaderView, QWidget
 
 # plugin
+from geoplateforme.api.offerings import Offering
+from geoplateforme.api.permissions import Permission
 from geoplateforme.gui.user_keys.mdl_user_permissions import UserPermissionListModel
 from geoplateforme.processing.provider import GeoplateformeProvider
 from geoplateforme.processing.user_key.create_basic_key import CreateBasicKeyAlgorithm
@@ -96,3 +99,17 @@ class UserKeyCreationWidget(QWidget):
         elif self.rbtn_hash.isChecked():
             return f"{GeoplateformeProvider().id()}:{CreateHashKeyAlgorithm().name()}"
         return f"{GeoplateformeProvider().id()}:{CreateOAuthKeyAlgorithm().name()}"
+
+    def get_selected_permission_and_offering(
+        self,
+    ) -> list[Tuple[Permission, list[Offering]]]:
+        """Return permission and offering with wanted checked status
+
+        :param checked: wanted check status, defaults to True
+        :type checked: bool, optional
+        :return: list of permission and selected offering
+        :rtype: list[Tuple[Permission, list[Offering]]]
+        """
+        return self.mdl_user_permission.get_checked_permission_and_offering(
+            checked=True
+        )

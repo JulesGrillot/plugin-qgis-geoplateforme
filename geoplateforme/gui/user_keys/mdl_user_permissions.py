@@ -1,7 +1,11 @@
+from typing import Tuple
+
 from qgis.PyQt.QtCore import QModelIndex, QObject, Qt
 from qgis.PyQt.QtGui import QStandardItemModel
 
 from geoplateforme.api.custom_exceptions import ReadUserPermissionException
+from geoplateforme.api.offerings import Offering
+from geoplateforme.api.permissions import Permission
 from geoplateforme.api.user_permission import UserPermissionRequestManager
 from geoplateforme.toolbelt import PlgLogger
 
@@ -72,7 +76,6 @@ class UserPermissionListModel(QStandardItemModel):
                         offering,
                         Qt.ItemDataRole.UserRole,
                     )
-                    print(f"{offering=}")
                     self.setData(
                         self.index(row, self.SERVICE_TYPE), offering.type.value
                     )
@@ -83,3 +86,49 @@ class UserPermissionListModel(QStandardItemModel):
                 log_level=2,
                 push=False,
             )
+
+    def get_checked_permission_and_offering(
+        self, checked: bool = True
+    ) -> list[Tuple[Permission, list[Offering]]]:
+        """Return permission and offering with wanted checked status
+
+        :param checked: wanted check status, defaults to True
+        :type checked: bool, optional
+        :return: list of permission and selected offering
+        :rtype: list[Tuple[Permission, list[Offering]]]
+        """
+        result = []
+        current_permission = None
+        current_permission_offering_list = []
+        for row in range(self.rowCount()):
+            row_checked = (
+                self.data(
+                    self.index(row, self.LICENCE_COL), Qt.ItemDataRole.CheckStateRole
+                )
+                == Qt.CheckState.Checked
+            )
+            if row_checked == checked:
+                permission = self.data(
+                    self.index(row, self.LICENCE_COL), Qt.ItemDataRole.UserRole
+                )
+                offering = self.data(
+                    self.index(row, self.SERVICE), Qt.ItemDataRole.UserRole
+                )
+
+                # Check if a permission was already found
+                if current_permission is None:
+                    # Define current permission
+                    current_permission = permission
+
+                if current_permission != permission:
+                    result.append(
+                        (current_permission, current_permission_offering_list)
+                    )
+                    current_permission = permission
+                    current_permission_offering_list = []
+
+                current_permission_offering_list.append(offering)
+        if current_permission:
+            result.append((current_permission, current_permission_offering_list))
+
+        return result

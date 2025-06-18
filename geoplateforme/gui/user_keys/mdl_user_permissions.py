@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Any, Tuple
 
 from qgis.PyQt.QtCore import QModelIndex, QObject, Qt
 from qgis.PyQt.QtGui import QStandardItemModel
@@ -32,6 +32,7 @@ class UserPermissionListModel(QStandardItemModel):
             ]
         )
         self._checkable = checkable
+        self.editable = True
 
     def flags(self, index: QModelIndex) -> Qt.ItemFlags:
         """Define flags for model
@@ -46,6 +47,28 @@ class UserPermissionListModel(QStandardItemModel):
         if index.column() == self.LICENCE_COL and self._checkable:
             flags = flags | Qt.ItemFlag.ItemIsUserCheckable
         return flags
+
+    def setData(
+        self,
+        index: QModelIndex,
+        value: Any,
+        role: int = Qt.ItemDataRole.DisplayRole,
+    ) -> bool:
+        """
+        Override QStandardItemModel setData to disable edition.
+
+        Args:
+            index: QModelIndex
+            value: new value
+            role: Qt role
+
+        Returns: True if data set, False otherwise
+
+        """
+        if not self.editable:
+            return False
+
+        return super().setData(index, value, role)
 
     def refresh(self) -> None:
         """Refresh QStandardItemModel data with user permission list"""

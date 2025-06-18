@@ -7,6 +7,7 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QAbstractItemView, QHeaderView, QWidget
 
 # plugin
+from geoplateforme.api.key_access import KeyAccessRequestManager
 from geoplateforme.api.offerings import Offering
 from geoplateforme.api.permissions import Permission
 from geoplateforme.api.user_key import UserKey, UserKeyType
@@ -68,6 +69,13 @@ class UserKeyWidget(QWidget):
             self.lne_user_agent.setText(user_key.user_agent)
         if user_key.referer:
             self.lne_referer.setText(user_key.referer)
+
+        # Get key accesses
+        manager = KeyAccessRequestManager()
+        access_key_list = manager.get_key_access_list(user_key_id=user_key._id)
+
+        for key_access in access_key_list:
+            self.mdl_user_permission.check_user_key_access(key_access=key_access)
 
     def get_selected_permission_and_offering(
         self,

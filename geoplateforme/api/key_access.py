@@ -12,6 +12,7 @@ from geoplateforme.api.custom_exceptions import (
     ReadKeyAccessException,
 )
 from geoplateforme.api.offerings import Offering
+from geoplateforme.api.permissions import Permission
 from geoplateforme.toolbelt import NetworkRequestsManager, PlgLogger, PlgOptionsManager
 
 
@@ -19,7 +20,7 @@ from geoplateforme.toolbelt import NetworkRequestsManager, PlgLogger, PlgOptions
 class KeyAccess:
     _id: str
     key_id: str
-    permission: dict
+    permission: Permission
     offering: Offering
 
     @classmethod
@@ -37,7 +38,7 @@ class KeyAccess:
         res = cls(
             _id=val["_id"],
             key_id=key_id,
-            permission=val["permission"],
+            permission=Permission.from_dict(datastore_id="", val=val["permission"]),
             offering=Offering.from_dict(datastore_id="", val=val["offering"]),
         )
         return res
@@ -113,7 +114,7 @@ class KeyAccessRequestManager:
             raise ReadKeyAccessException(f"Error while fetching user key : {err}")
 
         data = json.loads(reply.data())
-        return [KeyAccess.from_dict(val) for val in data]
+        return [KeyAccess.from_dict(key_id=user_key_id, val=val) for val in data]
 
     def _get_nb_available_access(self, user_key_id: str) -> int:
         """Get number of available user key access

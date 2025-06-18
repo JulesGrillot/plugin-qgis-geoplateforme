@@ -84,7 +84,10 @@ class Permission:
             ]
 
         if "end_date" in val:
-            res.end_date = val["end_date"]
+            try:
+                res.end_date = datetime.fromisoformat(val["end_date"])
+            except ValueError:
+                res.end_date = None
         if "datastore_author" in val:
             res.datastore_author = PermissionDatastoreAuthor(**val["datastore_author"])
         if "beneficiary" in val:

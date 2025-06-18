@@ -62,11 +62,16 @@ class UserKeyCreationWidget(QWidget):
         :return: user key creation algorithm parameters
         :rtype: dict
         """
+        whitelist = self.wdg_user_key_ip_filter.get_whitelist()
+        whitelist_str = ",".join(whitelist) if whitelist else ""
+        blacklist = self.wdg_user_key_ip_filter.get_blacklist()
+        blacklist_str = ",".join(blacklist) if blacklist else ""
+
         if self.rbtn_basic.isChecked():
             return {
                 CreateBasicKeyAlgorithm.NAME: self.lne_name.text(),
-                CreateBasicKeyAlgorithm.WHITELIST: self.wdg_user_key_ip_filter.get_whitelist(),
-                CreateBasicKeyAlgorithm.BLACKLIST: self.wdg_user_key_ip_filter.get_blacklist(),
+                CreateBasicKeyAlgorithm.WHITELIST: whitelist_str,
+                CreateBasicKeyAlgorithm.BLACKLIST: blacklist_str,
                 CreateBasicKeyAlgorithm.USER_AGENT: self.lne_user_agent.text(),
                 CreateBasicKeyAlgorithm.REFERER: self.lne_referer.text(),
                 CreateBasicKeyAlgorithm.LOGIN: self.lne_login.text(),
@@ -75,15 +80,15 @@ class UserKeyCreationWidget(QWidget):
         elif self.rbtn_hash.isChecked():
             return {
                 CreateHashKeyAlgorithm.NAME: self.lne_name.text(),
-                CreateHashKeyAlgorithm.WHITELIST: self.wdg_user_key_ip_filter.get_whitelist(),
-                CreateHashKeyAlgorithm.BLACKLIST: self.wdg_user_key_ip_filter.get_blacklist(),
+                CreateHashKeyAlgorithm.WHITELIST: whitelist_str,
+                CreateHashKeyAlgorithm.BLACKLIST: blacklist_str,
                 CreateHashKeyAlgorithm.USER_AGENT: self.lne_user_agent.text(),
                 CreateHashKeyAlgorithm.REFERER: self.lne_referer.text(),
             }
         return {
             CreateOAuthKeyAlgorithm.NAME: self.lne_name.text(),
-            CreateOAuthKeyAlgorithm.WHITELIST: self.wdg_user_key_ip_filter.get_whitelist(),
-            CreateOAuthKeyAlgorithm.BLACKLIST: self.wdg_user_key_ip_filter.get_blacklist(),
+            CreateOAuthKeyAlgorithm.WHITELIST: whitelist_str,
+            CreateOAuthKeyAlgorithm.BLACKLIST: blacklist_str,
             CreateOAuthKeyAlgorithm.USER_AGENT: self.lne_user_agent.text(),
             CreateOAuthKeyAlgorithm.REFERER: self.lne_referer.text(),
         }

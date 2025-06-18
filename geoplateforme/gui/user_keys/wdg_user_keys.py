@@ -3,7 +3,7 @@ import os
 
 # PyQGIS
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtCore import QModelIndex, Qt
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAbstractItemView, QDialog, QWidget
 from qgis.utils import OverrideCursor
@@ -11,6 +11,7 @@ from qgis.utils import OverrideCursor
 # plugin
 from geoplateforme.gui.user_keys.dlg_user_key_creation import UserKeyCreationDialog
 from geoplateforme.gui.user_keys.mdl_user_keys import UserKeysListModel
+from geoplateforme.gui.user_keys.wdg_user_key import UserKeyWidget
 
 
 class UserKeysWidget(QWidget):
@@ -29,11 +30,28 @@ class UserKeysWidget(QWidget):
         self.tbv_user_keys.setModel(self.mdl_user_keys)
         self.tbv_user_keys.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
 
+        self.tbv_user_keys.pressed.connect(self._user_key_clicked)
+
         self.btn_add.setIcon(QIcon(":images/themes/default/locked.svg"))
         self.btn_add.clicked.connect(self._add_user_key)
 
         self.detail_dialog = None
         self.remove_detail_zone()
+
+    def _user_key_clicked(self, index: QModelIndex) -> None:
+        # Hide detail zone
+        self.remove_detail_zone()
+
+        # Get user key
+        user_key = self.mdl_user_keys.data(
+            self.mdl_user_keys.index(index.row(), UserKeysListModel.NAME_COL),
+            Qt.ItemDataRole.UserRole,
+        )
+        if user_key:
+            self.detail_dialog = UserKeyWidget(self)
+            self.detail_dialog.set_user_key(user_key)
+            self.detail_widget_layout.addWidget(self.detail_dialog)
+            self.detail_zone.show()
 
     def _add_user_key(self) -> None:
         """Display user key creation dialog and refresh display model if permission created"""

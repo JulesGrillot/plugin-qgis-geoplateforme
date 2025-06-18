@@ -52,12 +52,22 @@ class UserKeysWidget(QWidget):
             self.detail_dialog.set_user_key(user_key)
             self.detail_widget_layout.addWidget(self.detail_dialog)
             self.detail_dialog.user_key_deleted.connect(self._user_key_deleted)
+            self.detail_dialog.user_key_updated.connect(self._user_key_updated)
             self.detail_zone.show()
 
     def _user_key_deleted(self, user_key_id: str) -> None:
         """Refresh after user key delete
 
         :param user_key_id: deleted user key id
+        :type user_key_id: str
+        """
+        self.mdl_user_keys.refresh(force=True)
+        self.remove_detail_zone()
+
+    def _user_key_updated(self, user_key_id: str) -> None:
+        """Refresh after user key update
+
+        :param user_key_id: updated user key id
         :type user_key_id: str
         """
         self.mdl_user_keys.refresh(force=True)

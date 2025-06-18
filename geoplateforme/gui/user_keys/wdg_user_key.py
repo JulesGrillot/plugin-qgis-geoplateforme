@@ -7,7 +7,14 @@ from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedbac
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAbstractItemView, QHeaderView, QMessageBox, QWidget
+from qgis.PyQt.QtWidgets import (
+    QAbstractButton,
+    QAbstractItemView,
+    QDialogButtonBox,
+    QHeaderView,
+    QMessageBox,
+    QWidget,
+)
 
 # plugin
 from geoplateforme.__about__ import DIR_PLUGIN_ROOT
@@ -21,10 +28,12 @@ from geoplateforme.gui.user_keys.proxy_model_user_permissions import (
 )
 from geoplateforme.processing.provider import GeoplateformeProvider
 from geoplateforme.processing.user_key.delete_key import DeleteUserKeyAlgorithm
+from geoplateforme.processing.user_key.update_key import UpdateKeyAlgorithm
 
 
 class UserKeyWidget(QWidget):
     user_key_deleted = pyqtSignal(str)
+    user_key_updated = pyqtSignal(str)
 
     def __init__(self, parent: QWidget):
         """
@@ -56,8 +65,103 @@ class UserKeyWidget(QWidget):
             QIcon(str(DIR_PLUGIN_ROOT / "resources/images/icons/Supprimer.svg"))
         )
         self.btn_delete.clicked.connect(self.delete_key)
+        self.btn_update.setIcon(
+            QIcon(":images/themes/default/mActionToggleEditing.svg")
+        )
+        self.btn_update.clicked.connect(self._update_key)
+        self.btnbox_update.clicked.connect(self._update_btnbox_clicked)
+        self.btnbox_update.setVisible(False)
+
+        self._apply_update_mode(apply=False)
 
         self._user_key = None
+
+    def _update_key(self) -> None:
+        """Update widget to display component for update apply"""
+        self._apply_update_mode(apply=True)
+
+    def _apply_update_mode(self, apply: bool) -> None:
+        """Update widget to display component if update is apply
+
+        :param apply: apply update mode
+        :type apply: bool
+        """
+        self.btnbox_update.setVisible(apply)
+        self.btn_update.setVisible(not apply)
+        self.btn_delete.setVisible(not apply)
+        self.lne_name.setReadOnly(not apply)
+        self.lne_user_agent.setReadOnly(not apply)
+        self.lne_referer.setReadOnly(not apply)
+        self.wdg_user_key_ip_filter.set_read_only(not apply)
+
+        if apply:
+            self.tbv_permissions.setEditTriggers(
+                QAbstractItemView.EditTrigger.DoubleClicked
+                | QAbstractItemView.EditTrigger.EditKeyPressed
+                | QAbstractItemView.EditTrigger.AnyKeyPressed
+            )
+            self.mdl_user_permission.editable = True
+        else:
+            self.tbv_permissions.setEditTriggers(
+                QAbstractItemView.EditTrigger.NoEditTriggers
+            )
+            self.mdl_user_permission.editable = False
+
+    def _update_btnbox_clicked(self, button: QAbstractButton) -> None:
+        """Cancel update or apply modification
+
+        :param button: button selected by user
+        :type button: QAbstractButton
+        """
+        btn_role = self.btnbox_update.buttonRole(button)
+        # Update rejected, restore previous values
+        if btn_role == QDialogButtonBox.ButtonRole.RejectRole:
+            self._apply_update_mode(apply=False)
+            self.set_user_key(self._user_key)
+        # Update accepted, try to update user key
+        elif btn_role == QDialogButtonBox.ButtonRole.ApplyRole:
+            reply = QMessageBox.question(
+                self,
+                self.tr("Modification"),
+                self.tr("Êtes-vous sûr de vouloir modifier cette clé ?"),
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No,
+            )
+            if reply == QMessageBox.StandardButton.Yes:
+                whitelist = self.wdg_user_key_ip_filter.get_whitelist()
+                whitelist_str = ",".join(whitelist) if whitelist else ""
+                blacklist = self.wdg_user_key_ip_filter.get_blacklist()
+                blacklist_str = ",".join(blacklist) if blacklist else ""
+
+                params = {
+                    UpdateKeyAlgorithm.KEY_ID: self._user_key._id,
+                    UpdateKeyAlgorithm.NAME: self.lne_name.text(),
+                    UpdateKeyAlgorithm.WHITELIST: whitelist_str,
+                    UpdateKeyAlgorithm.BLACKLIST: blacklist_str,
+                    UpdateKeyAlgorithm.USER_AGENT: self.lne_user_agent.text(),
+                    UpdateKeyAlgorithm.REFERER: self.lne_referer.text(),
+                }
+
+                algo_str = (
+                    f"{GeoplateformeProvider().id()}:{UpdateKeyAlgorithm().name()}"
+                )
+                alg = QgsApplication.processingRegistry().algorithmById(algo_str)
+                context = QgsProcessingContext()
+                feedback = QgsProcessingFeedback()
+                _, success = alg.run(
+                    parameters=params, context=context, feedback=feedback
+                )
+                if success:
+                    self._apply_update_mode(apply=False)
+                    self.user_key_updated.emit(self._user_key._id)
+                else:
+                    QMessageBox.critical(
+                        self,
+                        self.tr("Modification"),
+                        self.tr("La clé n'a pas pu être modifiée :\n {}").format(
+                            feedback.textLog()
+                        ),
+                    )
 
     def delete_key(self) -> None:
         """Delete current key"""

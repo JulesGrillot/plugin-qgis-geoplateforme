@@ -4,7 +4,12 @@ import os
 # PyQGIS
 from qgis.PyQt import uic
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QHeaderView, QTableWidgetItem, QWidget
+from qgis.PyQt.QtWidgets import (
+    QAbstractItemView,
+    QHeaderView,
+    QTableWidgetItem,
+    QWidget,
+)
 
 # plugin
 from geoplateforme.__about__ import DIR_PLUGIN_ROOT
@@ -39,8 +44,19 @@ class IpFilterTableWidget(QWidget):
         self.btn_del.clicked.connect(self._del_selected_item)
         self.btn_del.setEnabled(False)
 
+        self.tbw_list.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.tbw_list.itemSelectionChanged.connect(self._update_delete_button_state)
         self.lne_ip.textChanged.connect(self._update_add_button_state)
+
+    def set_read_only(self, read_only: bool) -> None:
+        """Set widget as read only by disabling or enabling button and line edit
+
+        :param read_only: read only
+        :type read_only: bool
+        """
+        self.btn_del.setVisible(not read_only)
+        self.btn_add.setVisible(not read_only)
+        self.lne_ip.setVisible(not read_only)
 
     def _update_add_button_state(self):
         """Enable add button if ip is valid"""

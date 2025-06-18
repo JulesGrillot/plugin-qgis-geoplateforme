@@ -60,6 +60,7 @@ class UserKeyIpFilterWidget(QWidget):
         """
         if blacklist:
             self.wdg_ip_blacklist.set_ip_list(blacklist)
+            self.rbtn_blacklist.setChecked(True)
 
     def get_whitelist(self) -> Optional[list[str]]:
         """Get whitelist IP if option selected
@@ -79,3 +80,4 @@ class UserKeyIpFilterWidget(QWidget):
         """
         if whitelist:
             self.wdg_ip_whitelist.set_ip_list(whitelist)
+            self.rbtn_whitelist.setChecked(True)

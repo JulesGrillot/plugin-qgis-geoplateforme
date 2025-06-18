@@ -110,13 +110,13 @@ class UpdateKeyAlgorithm(QgsProcessingAlgorithm):
         if whitelist_str:
             whitelist = whitelist_str.split(",")
         else:
-            whitelist = None
+            whitelist = []
 
         blacklist_str = self.parameterAsString(parameters, self.BLACKLIST, context)
         if blacklist_str:
             blacklist = blacklist_str.split(",")
         else:
-            blacklist = None
+            blacklist = []
 
         user_agent = self.parameterAsString(parameters, self.USER_AGENT, context)
         referer = self.parameterAsString(parameters, self.REFERER, context)

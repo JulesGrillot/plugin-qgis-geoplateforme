@@ -388,9 +388,9 @@ class UserKeyRequestManager:
             data_map = {
                 "name": name,
             }
-            if whitelist:
+            if whitelist is not None:
                 data_map["whitelist"] = whitelist
-            if blacklist:
+            if blacklist is not None:
                 data_map["blacklist"] = blacklist
             if user_agent:
                 data_map["user_agent"] = user_agent

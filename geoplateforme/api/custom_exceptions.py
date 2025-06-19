@@ -186,6 +186,10 @@ class CreatePermissionException(Exception):
     pass
 
 
+class UpdatePermissionException(Exception):
+    pass
+
+
 class ReadUserPermissionException(Exception):
     pass
 

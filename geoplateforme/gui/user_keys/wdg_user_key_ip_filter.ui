@@ -29,6 +29,22 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
+   <item row="2" column="0" colspan="4">
+    <widget class="IpFilterTableWidget" name="wdg_ip_whitelist" native="true"/>
+   </item>
+   <item row="0" column="3">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
    <item row="0" column="1">
     <widget class="QRadioButton" name="rbtn_whitelist">
      <property name="text">
@@ -53,84 +69,19 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="3">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
    <item row="1" column="0" colspan="4">
-    <widget class="QStackedWidget" name="stack_filter">
-     <widget class="QWidget" name="page_no_filter"/>
-     <widget class="QWidget" name="page_whitelist">
-      <layout class="QGridLayout" name="gridLayout">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item row="0" column="0" colspan="2">
-        <widget class="QTableWidget" name="tbw_whitelist"/>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLineEdit" name="lne_whitelist"/>
-       </item>
-       <item row="1" column="1">
-        <widget class="QPushButton" name="btn_add_whitelist">
-         <property name="text">
-          <string>Ajouter</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="page_blacklist">
-      <layout class="QGridLayout" name="gridLayout_2">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item row="0" column="0" colspan="2">
-        <widget class="QTableWidget" name="tbw_blacklist"/>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLineEdit" name="lne_blacklist"/>
-       </item>
-       <item row="1" column="1">
-        <widget class="QPushButton" name="btn_add_blacklist">
-         <property name="text">
-          <string>Ajouter</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
+    <widget class="IpFilterTableWidget" name="wdg_ip_blacklist" native="true"/>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>IpFilterTableWidget</class>
+   <extends>QWidget</extends>
+   <header>geoplateforme.gui.user_keys.wdg_ip_filter_table</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

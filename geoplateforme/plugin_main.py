@@ -48,6 +48,7 @@ class GeoplateformePlugin:
         self.iface = iface
         self.log = PlgLogger().log
         self.provider = None
+        self.provider_gpf = None
 
         # initialize the locale
         self.locale: str = QgsSettings().value("locale/userLocale", QLocale().name())[
@@ -199,8 +200,8 @@ class GeoplateformePlugin:
         self._update_actions_availability()
 
         # -- Provider
-        provider_gpf = ProviderGPF(self.iface)
-        QgsGui.sourceSelectProviderRegistry().addProvider(provider_gpf)
+        self.provider_gpf = ProviderGPF(self.iface)
+        QgsGui.sourceSelectProviderRegistry().addProvider(self.provider_gpf)
 
         # -- Processings
         self.initProcessing()
@@ -286,6 +287,10 @@ class GeoplateformePlugin:
 
         # -- Unregister processing
         QgsApplication.processingRegistry().removeProvider(self.provider)
+
+        # -- Unregister datasource provider
+        if self.provider_gpf:
+            QgsGui.sourceSelectProviderRegistry().removeProvider(self.provider_gpf)
 
         # remove actions
         del self.action_settings

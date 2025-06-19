@@ -22,11 +22,11 @@ Pour afficher tous les traitements QGIS : `Traitements > Boîte à outils`
 
 ## Génération données
 
-(vector_db_creation)=
+(upload_database_integration)=
 
-### Création d'une base de données vectorielles depuis une liste de couches vectorielles
+### Intégration d'une livraison en base de données vectorielle
 
-```{include} ../../geoplateforme/resources/help/vector_db_creation.md
+```{include} ../../geoplateforme/resources/help/upload_database_integration.md
 ```
 
 (tile_vector_creation)=

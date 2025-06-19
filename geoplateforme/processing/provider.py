@@ -40,8 +40,6 @@ from geoplateforme.processing.tools.delete_offering import DeleteOfferingAlgorit
 from geoplateforme.processing.tools.delete_stored_data import DeleteStoredDataAlgorithm
 from geoplateforme.processing.tools.delete_upload import DeleteUploadAlgorithm
 from geoplateforme.processing.tools.sld_downgrade import SldDowngradeAlgorithm
-from geoplateforme.processing.unpublish import UnpublishAlgorithm
-from geoplateforme.processing.update_tile_upload import UpdateTileUploadAlgorithm
 from geoplateforme.processing.upload.upload_from_files import GpfUploadFromFileAlgorithm
 from geoplateforme.processing.upload.upload_from_layers import (
     GpfUploadFromLayersAlgorithm,
@@ -50,7 +48,6 @@ from geoplateforme.processing.user_key.create_accesses import CreateAccessesAlgo
 from geoplateforme.processing.user_key.create_basic_key import CreateBasicKeyAlgorithm
 from geoplateforme.processing.user_key.create_hash_key import CreateHashKeyAlgorithm
 from geoplateforme.processing.user_key.create_oauth_key import CreateOAuthKeyAlgorithm
-from geoplateforme.processing.vector_db_creation import VectorDatabaseCreationAlgorithm
 
 # ############################################################################
 # ########## Classes ###############
@@ -67,11 +64,8 @@ class GeoplateformeProvider(QgsProcessingProvider):
         self.addAlgorithm(CheckLayerAlgorithm())
         self.addAlgorithm(GpfUploadFromFileAlgorithm())
         self.addAlgorithm(UploadDatabaseIntegrationAlgorithm())
-        self.addAlgorithm(VectorDatabaseCreationAlgorithm())
         self.addAlgorithm(TileCreationAlgorithm())
         self.addAlgorithm(UploadPublicationAlgorithm())
-        self.addAlgorithm(UnpublishAlgorithm())
-        self.addAlgorithm(UpdateTileUploadAlgorithm())
         self.addAlgorithm(DeleteStoredDataAlgorithm())
         self.addAlgorithm(DeleteUploadAlgorithm())
         self.addAlgorithm(DeleteOfferingAlgorithm())

@@ -16,6 +16,9 @@ from geoplateforme.api.offerings import Offering
 from geoplateforme.api.permissions import Permission
 from geoplateforme.api.user_key import UserKey, UserKeyType
 from geoplateforme.gui.user_keys.mdl_user_permissions import UserPermissionListModel
+from geoplateforme.gui.user_keys.proxy_model_user_permissions import (
+    UserPermissionListProxyModel,
+)
 from geoplateforme.processing.provider import GeoplateformeProvider
 from geoplateforme.processing.user_key.delete_key import DeleteUserKeyAlgorithm
 
@@ -37,7 +40,10 @@ class UserKeyWidget(QWidget):
         self.mdl_user_permission = UserPermissionListModel(parent=self, checkable=True)
         self.mdl_user_permission.refresh()
 
-        self.tbv_permissions.setModel(self.mdl_user_permission)
+        self.proxy_mdl_user_permission = UserPermissionListProxyModel(self)
+        self.proxy_mdl_user_permission.setSourceModel(self.mdl_user_permission)
+
+        self.tbv_permissions.setModel(self.proxy_mdl_user_permission)
         self.tbv_permissions.setEditTriggers(
             QAbstractItemView.EditTrigger.NoEditTriggers
         )

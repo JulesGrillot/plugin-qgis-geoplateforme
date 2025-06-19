@@ -10,6 +10,9 @@ from qgis.PyQt.QtWidgets import QAbstractItemView, QHeaderView, QWidget
 from geoplateforme.api.offerings import Offering
 from geoplateforme.api.permissions import Permission
 from geoplateforme.gui.user_keys.mdl_user_permissions import UserPermissionListModel
+from geoplateforme.gui.user_keys.proxy_model_user_permissions import (
+    UserPermissionListProxyModel,
+)
 from geoplateforme.processing.provider import GeoplateformeProvider
 from geoplateforme.processing.user_key.create_basic_key import CreateBasicKeyAlgorithm
 from geoplateforme.processing.user_key.create_hash_key import CreateHashKeyAlgorithm
@@ -33,7 +36,10 @@ class UserKeyCreationWidget(QWidget):
         self.mdl_user_permission = UserPermissionListModel(parent=self, checkable=True)
         self.mdl_user_permission.refresh()
 
-        self.tbv_permissions.setModel(self.mdl_user_permission)
+        self.proxy_mdl_user_permission = UserPermissionListProxyModel(self)
+        self.proxy_mdl_user_permission.setSourceModel(self.mdl_user_permission)
+
+        self.tbv_permissions.setModel(self.proxy_mdl_user_permission)
         self.tbv_permissions.setEditTriggers(
             QAbstractItemView.EditTrigger.NoEditTriggers
         )

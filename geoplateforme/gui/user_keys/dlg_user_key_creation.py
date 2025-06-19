@@ -28,6 +28,16 @@ class UserKeyCreationDialog(QDialog):
         """Create user key from creation widget.
         Dialog is not closed if an error occurs during creation
         """
+        selected_offering_and_permission = (
+            self.wdg_user_key_creation.get_selected_permission_and_offering()
+        )
+        if len(selected_offering_and_permission) == 0:
+            QMessageBox.warning(
+                self,
+                self.tr("Aucun service sélectionné"),
+                self.tr("Veuillez choisir au moins un accès à un service."),
+            )
+            return None
 
         algo_str = self.wdg_user_key_creation.get_creation_algo_str()
         params = self.wdg_user_key_creation.get_creation_parameters()
@@ -48,9 +58,6 @@ class UserKeyCreationDialog(QDialog):
             return None
 
         # Add access to the selected offerings
-        selected_offering_and_permission = (
-            self.wdg_user_key_creation.get_selected_permission_and_offering()
-        )
         for permission, offerings in selected_offering_and_permission:
             algo_str = (
                 f"{GeoplateformeProvider().id()}:{CreateAccessesAlgorithm().name()}"

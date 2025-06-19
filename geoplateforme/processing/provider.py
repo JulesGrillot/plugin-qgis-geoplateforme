@@ -46,6 +46,7 @@ from geoplateforme.processing.upload.upload_from_files import GpfUploadFromFileA
 from geoplateforme.processing.upload.upload_from_layers import (
     GpfUploadFromLayersAlgorithm,
 )
+from geoplateforme.processing.user_key.create_accesses import CreateAccessesAlgorithm
 from geoplateforme.processing.user_key.create_basic_key import CreateBasicKeyAlgorithm
 from geoplateforme.processing.user_key.create_hash_key import CreateHashKeyAlgorithm
 from geoplateforme.processing.user_key.create_oauth_key import CreateOAuthKeyAlgorithm
@@ -86,6 +87,7 @@ class GeoplateformeProvider(QgsProcessingProvider):
         self.addAlgorithm(CreateBasicKeyAlgorithm())
         self.addAlgorithm(CreateHashKeyAlgorithm())
         self.addAlgorithm(CreateOAuthKeyAlgorithm())
+        self.addAlgorithm(CreateAccessesAlgorithm())
 
     def id(self) -> str:
         """Unique provider id, used for identifying it. This string should be unique, \

@@ -112,6 +112,13 @@ Pour afficher tous les traitements QGIS : `Traitements > Boîte à outils`
 ```{include} ../../geoplateforme/resources/help/create_oauth_key.md
 ```
 
+(create_accesses)=
+
+### Création d'acces à une ou des offres d'une permission
+
+```{include} ../../geoplateforme/resources/help/create_accesses.md
+```
+
 ## Outils géoplateforme
 
 (delete_stored_data)=

@@ -1,6 +1,5 @@
 # standard
 import os
-from datetime import datetime
 from typing import Optional
 
 # PyQGIS
@@ -207,7 +206,7 @@ class PermissionWidget(QWidget):
         self.mdl_offering.set_datastore(permission.datastore_id)
         self.lne_licence.setText(permission.licence)
         if permission.end_date:
-            self.datetime_end_date.setDateTime(permission.end_date)
+            self.datetime_end_date.setDateTime(permission.local_end_date)
         if permission.offerings:
             self.mdl_offering.set_checked_offering(
                 [offering._id for offering in permission.offerings]
@@ -221,15 +220,15 @@ class PermissionWidget(QWidget):
         """
         return self.lne_licence.text()
 
-    def get_end_date(self) -> Optional[datetime]:
+    def get_end_date(self) -> Optional[QDateTime]:
         """Get end date if defined
 
         :return: end date, None if not defined
-        :rtype: Optional[datetime]
+        :rtype: Optional[QDateTime]
         """
         end_date = self.datetime_end_date.dateTime()
         if not end_date.isNull():
-            return end_date.toUTC().toPyDateTime()
+            return end_date
         return None
 
     def get_offering_ids(self) -> list[str]:

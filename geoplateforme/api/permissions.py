@@ -6,7 +6,7 @@ from datetime import datetime
 from enum import Enum
 from typing import List, Optional, Self
 
-from qgis.PyQt.QtCore import QByteArray, QUrl
+from qgis.PyQt.QtCore import QByteArray, QDateTime, Qt, QUrl
 
 # plugin
 from geoplateforme.api.custom_exceptions import (
@@ -60,6 +60,23 @@ class Permission:
         PermissionAccountBeneficiary | PermissionCommunityBeneficiary
     ] = None
     only_oauth: Optional[bool] = None
+
+    @property
+    def local_end_date(self) -> Optional[QDateTime]:
+        """Get end date with current local
+
+        :return: end date with current local, None if no end date
+        :rtype: Optional[QDateTime]
+        """
+        if self.end_date:
+            qt_date = QDateTime(
+                self.end_date.date(),
+                self.end_date.time(),
+                Qt.TimeSpec.UTC,
+            )
+            qt_date = qt_date.toLocalTime()
+            return qt_date
+        return None
 
     @classmethod
     def from_dict(cls, datastore_id: str, val: dict) -> Self:

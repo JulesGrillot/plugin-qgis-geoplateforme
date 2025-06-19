@@ -30,6 +30,18 @@ class UserKeyIpFilterWidget(QWidget):
         self.wdg_ip_blacklist.setVisible(False)
         self.wdg_ip_whitelist.setVisible(False)
 
+    def set_read_only(self, read_only: bool) -> None:
+        """Set widget as read only by disabling or enabling ip edit widget and radio button
+
+        :param read_only: read only
+        :type read_only: bool
+        """
+        self.wdg_ip_blacklist.set_read_only(read_only)
+        self.wdg_ip_whitelist.set_read_only(read_only)
+        self.rbtn_no_filter.setEnabled(not read_only)
+        self.rbtn_whitelist.setEnabled(not read_only)
+        self.rbtn_blacklist.setEnabled(not read_only)
+
     def _filter_type_updated(self) -> None:
         """Change displayed page when filter type is changed"""
         if self.rbtn_no_filter.isChecked():

@@ -166,6 +166,10 @@ class CreateUserKeyException(Exception):
     pass
 
 
+class UpdateUserKeyException(Exception):
+    pass
+
+
 class CreateAccessesException(Exception):
     pass
 

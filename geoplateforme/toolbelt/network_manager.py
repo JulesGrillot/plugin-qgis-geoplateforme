@@ -24,6 +24,7 @@ from qgis.core import (
     QgsApplication,
     QgsBlockingNetworkRequest,
     QgsFileDownloader,
+    QgsNetworkAccessManager,
     QgsNetworkReplyContent,
 )
 from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QEventLoop, QUrl
@@ -694,6 +695,77 @@ class NetworkRequestsManager:
             headers=all_headers,
         )
         return req_reply
+
+    def patch_url(
+        self,
+        url: QUrl,
+        data: Optional[QByteArray] = None,
+        config_id: Optional[str] = None,
+        debug_log_response: bool = True,
+        headers: Optional[dict] = None,
+    ) -> Optional[QByteArray]:
+        """Send a patch method with data option.
+        :raises ConnectionError: if any problem occurs during feed fetching.
+        :raises TypeError: if response mime-type is not valid
+
+        :param url: url
+        :type url: QUrl
+        :param data: data for post, defaults to None
+        :type data: QByteArray, optional
+        :param config_id: QGIS auth config ID, defaults to None
+        :type config_id: str, optional
+        :param debug_log_response: option to do not log decoded content in debug mode, defaults to True
+        :type debug_log_response: bool, optional
+        :param headers: headers to add to the request, defaults to None
+        :type headers: dict, optional
+
+        :return: feed response in bytes
+        :rtype: QByteArray
+        """
+        req = self.build_request(url=url, config_id=config_id, headers=headers)
+
+        # send request
+        try:
+            # There is no patch method for QgsBlockingNetworkRequest
+            # Need to use QgsNetworkAccessManager to send custom PATCH request
+            network_manager = QgsNetworkAccessManager.instance()
+            reply = network_manager.sendCustomRequest(req, b"PATCH", data)
+
+            # Wait for result
+            loop = QEventLoop()
+            reply.finished.connect(loop.quit)
+            loop.exec()
+
+            req_reply = QgsNetworkReplyContent(reply)
+
+            # Check for error
+            if reply.error() != QNetworkReply.NetworkError.NoError:
+                error = self.get_error_description_from_reply(req_reply)
+                self.log(
+                    message=error,
+                    log_level=Qgis.MessageLevel.Critical,
+                    push=False,
+                )
+                raise ConnectionError(error)
+
+            if PlgOptionsManager.get_plg_settings().debug_mode:
+                self.log_reply(
+                    method="PATCH",
+                    req_reply=req_reply,
+                    url=url,
+                    debug_log_response=debug_log_response,
+                )
+            return req_reply.content()
+
+        except ConnectionError as err:
+            raise err
+        except Exception as err:
+            err_msg = self.tr(
+                "PATCH request on URL {} (with auth config {}) failed. Trace: {}".format(
+                    url, config_id, err
+                )
+            )
+            self.log(message=err_msg, log_level=Qgis.MessageLevel.Critical, push=False)
 
     def test_url(self, url: str, method: str = "head") -> bool:
         """Test if URL is reachable. First, try a HEAD then a GET.

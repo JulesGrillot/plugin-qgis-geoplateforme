@@ -75,7 +75,6 @@ class DeleteOfferingAlgorithm(QgsProcessingAlgorithm):
             manager_stored.delete_offering(datastore_id, offering_id)
 
         except UnavailableOfferingsException as exc:
-            print(self.tr("Erreur lors de la suppression de l'offre : {}").format(exc))
             raise QgsProcessingException(
                 self.tr("Erreur lors de la suppression de l'offre : {}").format(exc)
             ) from exc

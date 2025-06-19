@@ -126,6 +126,13 @@ Pour afficher tous les traitements QGIS : `Traitements > Boîte à outils`
 ```{include} ../../geoplateforme/resources/help/delete_key.md
 ```
 
+(update_key)=
+
+### Mise à jour d'une clé
+
+```{include} ../../geoplateforme/resources/help/update_key.md
+```
+
 ## Outils géoplateforme
 
 (delete_stored_data)=

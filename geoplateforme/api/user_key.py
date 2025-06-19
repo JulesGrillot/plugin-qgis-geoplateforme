@@ -15,6 +15,7 @@ from geoplateforme.api.custom_exceptions import (
     CreateUserKeyException,
     DeleteUserKeyException,
     ReadUserKeyException,
+    UpdateUserKeyException,
 )
 from geoplateforme.toolbelt import NetworkRequestsManager, PlgLogger, PlgOptionsManager
 
@@ -278,7 +279,7 @@ class UserKeyRequestManager:
         :param user_key_id: user key id
         :type user_key_id: str
 
-        :raises ReadUserKeyException: when error occur during requesting the API
+        :raises DeleteUserKeyException: when error occur during requesting the API
         """
         self.log(f"{__name__}.delete(user_key_id:{user_key_id})")
 
@@ -352,6 +353,59 @@ class UserKeyRequestManager:
         # check response type
         data = json.loads(reply.data())
         return UserKey.from_dict(data)
+
+    def update_user_key(
+        self,
+        user_key_id: str,
+        name: str,
+        whitelist: Optional[List[str]] = None,
+        blacklist: Optional[List[str]] = None,
+        user_agent: Optional[str] = None,
+        referer: Optional[str] = None,
+    ) -> None:
+        """Update a user key
+
+        :param user_key_id: user key id
+        :type user_key_id: str
+        :param name: key name
+        :type name: str
+        :param whitelist: list of whitelist IPs, defaults to None
+        :type whitelist: Optional[List[str]], optional
+        :param blacklist: list of blacklist IPs, defaults to None
+        :type blacklist: Optional[List[str]], optional
+        :param user_agent: user agent, defaults to None
+        :type user_agent: Optional[str], optional
+        :param referer: referer, defaults to None
+        :type referer: Optional[str], optional
+        :raises UpdateUserKeyException: Error when updating key
+        """
+        self.log(
+            f"{__name__}.update_user_key({name=},{user_key_id=},{whitelist=},{blacklist=},{user_agent=},{referer=})"
+        )
+        try:
+            # encode data
+            data = QByteArray()
+            data_map = {
+                "name": name,
+            }
+            if whitelist is not None:
+                data_map["whitelist"] = whitelist
+            if blacklist is not None:
+                data_map["blacklist"] = blacklist
+            if user_agent:
+                data_map["user_agent"] = user_agent
+            if referer:
+                data_map["referer"] = referer
+
+            data.append(json.dumps(data_map))
+            self.request_manager.patch_url(
+                url=QUrl(f"{self.get_base_url()}/{user_key_id}"),
+                config_id=self.plg_settings.qgis_auth_id,
+                data=data,
+                headers={b"Content-Type": bytes("application/json", "utf8")},
+            )
+        except ConnectionError as err:
+            raise UpdateUserKeyException(f"Error in user key update : {err}")
 
     def create_accesses(
         self, user_key_id: str, permission_id: str, offering_ids: list[str]

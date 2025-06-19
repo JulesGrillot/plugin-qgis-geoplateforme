@@ -56,8 +56,9 @@ class PermissionsWidget(QWidget):
             Qt.ItemDataRole.UserRole,
         )
         if permission:
-            self.detail_dialog = PermissionWidget(self)
-            self.detail_dialog.set_permission(permission)
+            with OverrideCursor(Qt.CursorShape.WaitCursor):
+                self.detail_dialog = PermissionWidget(self)
+                self.detail_dialog.set_permission(permission)
             self.detail_widget_layout.addWidget(self.detail_dialog)
             self.detail_dialog.permission_deleted.connect(self._permission_deleted)
             self.detail_dialog.permission_updated.connect(self._permission_updated)

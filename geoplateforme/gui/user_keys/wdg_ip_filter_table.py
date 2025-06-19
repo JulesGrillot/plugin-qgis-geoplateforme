@@ -31,6 +31,7 @@ class IpFilterTableWidget(QWidget):
             QHeaderView.ResizeMode.Stretch
         )
         self.btn_add.clicked.connect(self._add_ip)
+        self.btn_add.setEnabled(False)
 
         self.btn_del.setIcon(
             QIcon(str(DIR_PLUGIN_ROOT / "resources/images/icons/Supprimer.svg"))
@@ -39,6 +40,11 @@ class IpFilterTableWidget(QWidget):
         self.btn_del.setEnabled(False)
 
         self.tbw_list.itemSelectionChanged.connect(self._update_delete_button_state)
+        self.lne_ip.textChanged.connect(self._update_add_button_state)
+
+    def _update_add_button_state(self):
+        """Enable add button if ip is valid"""
+        self.btn_add.setEnabled(self.lne_ip.valid())
 
     def _update_delete_button_state(self):
         """Enable delete button if at least one row is selected."""

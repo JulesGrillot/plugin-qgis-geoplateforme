@@ -1,4 +1,4 @@
-from qgis.PyQt.QtCore import QObject
+from qgis.PyQt.QtCore import QObject, Qt
 from qgis.PyQt.QtGui import QStandardItemModel
 
 from geoplateforme.api.custom_exceptions import ReadUserKeyException
@@ -36,6 +36,11 @@ class UserKeysListModel(QStandardItemModel):
                     self.insertRow(self.rowCount())
                     row = self.rowCount() - 1
                     self.setData(self.index(row, self.NAME_COL), user_key.name)
+                    self.setData(
+                        self.index(row, self.NAME_COL),
+                        user_key,
+                        Qt.ItemDataRole.UserRole,
+                    )
                     self.setData(self.index(row, self.TYPE_COL), user_key._type.value)
 
             except ReadUserKeyException as exc:

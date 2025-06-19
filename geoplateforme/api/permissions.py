@@ -52,7 +52,7 @@ class Permission:
     _id: str
     datastore_id: str
     licence: str
-    offerings: list[Offering]
+    offerings: Optional[list[Offering]] = None
     end_date: Optional[datetime] = None
     datastore_author: Optional[PermissionDatastoreAuthor] = None
     beneficiary: Optional[
@@ -76,11 +76,12 @@ class Permission:
             _id=val["_id"],
             datastore_id=datastore_id,
             licence=val["licence"],
-            offerings=[
+        )
+        if "offerings" in val:
+            res.offerings = [
                 Offering.from_dict(datastore_id=datastore_id, val=offer)
                 for offer in val["offerings"]
-            ],
-        )
+            ]
 
         if "end_date" in val:
             res.end_date = val["end_date"]

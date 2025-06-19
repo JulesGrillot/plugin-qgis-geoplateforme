@@ -4,6 +4,7 @@ from qgis.PyQt.QtCore import QModelIndex, QObject, Qt
 from qgis.PyQt.QtGui import QStandardItemModel
 
 from geoplateforme.api.custom_exceptions import ReadUserPermissionException
+from geoplateforme.api.key_access import KeyAccess
 from geoplateforme.api.offerings import Offering
 from geoplateforme.api.permissions import Permission
 from geoplateforme.api.user_permission import UserPermissionRequestManager
@@ -86,6 +87,30 @@ class UserPermissionListModel(QStandardItemModel):
                 log_level=2,
                 push=False,
             )
+
+    def check_user_key_access(self, key_access: KeyAccess) -> None:
+        """Check offering for a key access
+
+        :param key_access: key access
+        :type key_access: KeyAccess
+        """
+        for row in range(self.rowCount()):
+            permission = self.data(
+                self.index(row, self.LICENCE_COL), Qt.ItemDataRole.UserRole
+            )
+            offering = self.data(
+                self.index(row, self.SERVICE), Qt.ItemDataRole.UserRole
+            )
+            if (
+                permission._id == key_access.permission._id
+                and offering._id == key_access.offering._id
+            ):
+                self.setData(
+                    self.index(row, self.LICENCE_COL),
+                    Qt.CheckState.Checked,
+                    Qt.ItemDataRole.CheckStateRole,
+                )
+                break
 
     def get_checked_permission_and_offering(
         self, checked: bool = True

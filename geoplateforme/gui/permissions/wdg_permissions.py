@@ -4,7 +4,7 @@ from typing import Optional
 
 # PyQGIS
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtCore import QModelIndex, Qt
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAbstractItemView, QDialog, QWidget
 from qgis.utils import OverrideCursor
@@ -14,6 +14,7 @@ from geoplateforme.gui.permissions.dlg_permission_creation import (
     PermissionCreationDialog,
 )
 from geoplateforme.gui.permissions.mdl_permissions import PermissionListModel
+from geoplateforme.gui.permissions.wdg_permission import PermissionWidget
 
 
 class PermissionsWidget(QWidget):
@@ -33,6 +34,7 @@ class PermissionsWidget(QWidget):
             QAbstractItemView.EditTrigger.NoEditTriggers
         )
         self.tbv_permissions.verticalHeader().setVisible(False)
+        self.tbv_permissions.pressed.connect(self._permission_clicked)
 
         self.detail_dialog = None
         self.remove_detail_zone()
@@ -43,6 +45,41 @@ class PermissionsWidget(QWidget):
         self.btn_add_permission.setEnabled(False)
         self.btn_add_permission.setIcon(QIcon(":images/themes/default/locked.svg"))
         self.btn_add_permission.clicked.connect(self._add_permission)
+
+    def _permission_clicked(self, index: QModelIndex) -> None:
+        # Hide detail zone
+        self.remove_detail_zone()
+
+        # Get permission
+        permission = self.mdl_permissions.data(
+            self.mdl_permissions.index(index.row(), PermissionListModel.LICENCE_COL),
+            Qt.ItemDataRole.UserRole,
+        )
+        if permission:
+            self.detail_dialog = PermissionWidget(self)
+            self.detail_dialog.set_permission(permission)
+            self.detail_widget_layout.addWidget(self.detail_dialog)
+            self.detail_dialog.permission_deleted.connect(self._permission_deleted)
+            self.detail_dialog.permission_updated.connect(self._permission_updated)
+            self.detail_zone.show()
+
+    def _permission_deleted(self, permission_id: str) -> None:
+        """Refresh after permission delete
+
+        :param permission_id: deleted user key id
+        :type permission_id: str
+        """
+        self.mdl_permissions.refresh(self.datastore_id)
+        self.remove_detail_zone()
+
+    def _permission_updated(self, permission_id: str) -> None:
+        """Refresh after user key update
+
+        :param permission_id: updated permission id
+        :type permission_id: str
+        """
+        self.refresh(self.datastore_id, self.offering_id)
+        self.remove_detail_zone()
 
     def remove_detail_zone(self) -> None:
         """Hide detail zone and remove attached widgets"""

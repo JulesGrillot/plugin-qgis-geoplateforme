@@ -515,6 +515,11 @@ class DashboardWidget(QWidget):
             self.cbx_datastore.current_datastore_id(), force_refresh
         )
 
+        # Update permission content
+        self.wdg_permission.refresh(
+            datastore_id=self.cbx_datastore.current_datastore_id()
+        )
+
     def _dataset_updated(self) -> None:
         """
         Update stored data combobox when dataset is updated

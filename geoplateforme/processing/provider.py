@@ -21,6 +21,12 @@ from geoplateforme.processing.generation.upload_database_integration import (
 from geoplateforme.processing.permissions.create_permission import (
     CreatePermissionAlgorithm,
 )
+from geoplateforme.processing.permissions.delete_permission import (
+    DeletePermissionAlgorithm,
+)
+from geoplateforme.processing.permissions.update_permission import (
+    UpdatePermissionAlgorithm,
+)
 from geoplateforme.processing.publication.upload_publication import (
     UploadPublicationAlgorithm,
 )
@@ -86,6 +92,8 @@ class GeoplateformeProvider(QgsProcessingProvider):
         self.addAlgorithm(CreateAccessesAlgorithm())
         self.addAlgorithm(DeleteUserKeyAlgorithm())
         self.addAlgorithm(UpdateKeyAlgorithm())
+        self.addAlgorithm(DeletePermissionAlgorithm())
+        self.addAlgorithm(UpdatePermissionAlgorithm())
 
     def id(self) -> str:
         """Unique provider id, used for identifying it. This string should be unique, \

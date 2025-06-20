@@ -61,7 +61,7 @@ class PermissionListModel(QStandardItemModel):
                 )
                 if permission.end_date:
                     self.setData(
-                        self.index(row, self.END_DATE_COL), permission.end_date
+                        self.index(row, self.END_DATE_COL), permission.local_end_date
                     )
                 else:
                     self.setData(self.index(row, self.END_DATE_COL), self.tr("Aucune"))

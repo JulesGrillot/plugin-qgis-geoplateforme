@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, Optional
 
 from qgis.PyQt.QtCore import QModelIndex, QObject, Qt
 from qgis.PyQt.QtGui import QStandardItemModel
@@ -41,6 +41,29 @@ class OfferingListModel(QStandardItemModel):
             ]
         )
         self._checkable = checkable
+        self.editable = True
+
+    def setData(
+        self,
+        index: QModelIndex,
+        value: Any,
+        role: int = Qt.ItemDataRole.DisplayRole,
+    ) -> bool:
+        """
+        Override QStandardItemModel setData to disable edition.
+
+        Args:
+            index: QModelIndex
+            value: new value
+            role: Qt role
+
+        Returns: True if data set, False otherwise
+
+        """
+        if not self.editable:
+            return False
+
+        return super().setData(index, value, role)
 
     def flags(self, index: QModelIndex) -> Qt.ItemFlags:
         """Define flags for model
@@ -124,6 +147,8 @@ class OfferingListModel(QStandardItemModel):
         :param stored_data: stored data to insert
         :type stored_data: StoredData
         """
+        prev_editable = self.editable
+        self.editable = True
 
         row = self.rowCount()
         self.insertRow(row)
@@ -144,6 +169,8 @@ class OfferingListModel(QStandardItemModel):
         self.setData(self.index(row, self.STATUS_COL), offering.status.value)
         self.setData(self.index(row, self.OPEN_COL), offering.open)
         self.setData(self.index(row, self.AVAILABLE_COL), offering.available)
+
+        self.editable = prev_editable
 
     def get_checked_offering(self, checked: bool = True) -> list[Offering]:
         """Return offering with wanted checked status
@@ -166,6 +193,27 @@ class OfferingListModel(QStandardItemModel):
                     self.data(self.index(row, self.NAME_COL), Qt.ItemDataRole.UserRole)
                 )
         return result
+
+    def set_checked_offering(self, offering_ids: list[str]) -> None:
+        """Define checked offering, force edition mode and restore previous mode
+
+        :param offering_ids: list of offering to check
+        :type offering_ids: list[str]
+        """
+        prev_editable = self.editable
+        self.editable = True
+        for row in range(0, self.rowCount()):
+            offering = self.data(
+                self.index(row, self.NAME_COL), Qt.ItemDataRole.UserRole
+            )
+            if offering and offering._id in offering_ids:
+                self.setData(
+                    self.index(row, self.NAME_COL),
+                    Qt.CheckState.Checked,
+                    Qt.ItemDataRole.CheckStateRole,
+                )
+
+        self.editable = prev_editable
 
     def get_offering_row(self, offering_id: str) -> int:
         """Get offering row for an id; returns -1 if offering is not available

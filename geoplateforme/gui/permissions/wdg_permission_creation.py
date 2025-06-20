@@ -1,6 +1,5 @@
 # standard
 import os
-from datetime import datetime
 from typing import Optional
 
 # PyQGIS
@@ -139,15 +138,15 @@ class PermissionCreationWidget(QWidget):
         """
         return self.lne_licence.text()
 
-    def get_end_date(self) -> Optional[datetime]:
+    def get_end_date(self) -> Optional[QDateTime]:
         """Get end date if defined
 
         :return: end date, None if not defined
-        :rtype: Optional[datetime]
+        :rtype: Optional[QDateTime]
         """
         end_date = self.datetime_end_date.dateTime()
         if not end_date.isNull():
-            return end_date.toUTC().toPyDateTime()
+            return end_date
         return None
 
     def get_offering_ids(self) -> list[str]:

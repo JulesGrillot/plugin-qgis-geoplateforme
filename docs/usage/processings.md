@@ -89,6 +89,20 @@ Pour afficher tous les traitements QGIS : `Traitements > Boîte à outils`
 ```{include} ../../geoplateforme/resources/help/create_permission.md
 ```
 
+(delete_permission)=
+
+### Suppression d'une permission
+
+```{include} ../../geoplateforme/resources/help/delete_permission.md
+```
+
+(update_permission)=
+
+### Mise à jour d'une permission
+
+```{include} ../../geoplateforme/resources/help/update_permission.md
+```
+
 ## Clé
 
 (create_basic_key)=

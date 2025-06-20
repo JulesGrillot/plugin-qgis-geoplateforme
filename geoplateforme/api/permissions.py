@@ -6,13 +6,14 @@ from datetime import datetime
 from enum import Enum
 from typing import List, Optional, Self
 
-from qgis.PyQt.QtCore import QByteArray, QUrl
+from qgis.PyQt.QtCore import QByteArray, QDateTime, Qt, QUrl
 
 # plugin
 from geoplateforme.api.custom_exceptions import (
     CreatePermissionException,
     DeletePermissionException,
     ReadPermissionException,
+    UpdatePermissionException,
 )
 from geoplateforme.api.offerings import Offering
 from geoplateforme.toolbelt import NetworkRequestsManager, PlgLogger, PlgOptionsManager
@@ -59,6 +60,23 @@ class Permission:
         PermissionAccountBeneficiary | PermissionCommunityBeneficiary
     ] = None
     only_oauth: Optional[bool] = None
+
+    @property
+    def local_end_date(self) -> Optional[QDateTime]:
+        """Get end date with current local
+
+        :return: end date with current local, None if no end date
+        :rtype: Optional[QDateTime]
+        """
+        if self.end_date:
+            qt_date = QDateTime(
+                self.end_date.date(),
+                self.end_date.time(),
+                Qt.TimeSpec.UTC,
+            )
+            qt_date = qt_date.toLocalTime()
+            return qt_date
+        return None
 
     @classmethod
     def from_dict(cls, datastore_id: str, val: dict) -> Self:
@@ -260,6 +278,26 @@ class PermissionRequestManager:
         end_date: Optional[datetime] = None,
         only_oauth: Optional[bool] = None,
     ) -> List[Permission]:
+        """Create a permission
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param licence: licence
+        :type licence: str
+        :param permission_type: permission type
+        :type permission_type: PermissionType
+        :param users_or_communities: list of user or communities (depends on permission type)
+        :type users_or_communities: List[str]
+        :param offerings: list of offering for permission
+        :type offerings: List[str]
+        :param end_date: end date, defaults to None
+        :type end_date: Optional[datetime], optional
+        :param only_oauth: authorize only OAuth2 key, defaults to None
+        :type only_oauth: Optional[bool], optional
+        :raises CreatePermissionException: error during creation
+        :return: list of created permission. One permission for each user or community
+        :rtype: List[Permission]
+        """
         self.log(
             f"{__name__}.create_permission({datastore_id=},{licence=},{permission_type=},{users_or_communities=},{offerings=},{end_date=},{only_oauth=})"
         )
@@ -296,3 +334,49 @@ class PermissionRequestManager:
             Permission.from_dict(datastore_id, permission_data)
             for permission_data in data
         ]
+
+    def update_permission(
+        self,
+        datastore_id: str,
+        permission_id: str,
+        licence: str,
+        offerings: List[str],
+        end_date: Optional[datetime] = None,
+    ) -> None:
+        """Update a permission
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param permission_id: permission id
+        :type permission_id: str
+        :param licence: licence
+        :type licence: str
+        :param offerings: list of offering for permission
+        :type offerings: List[str]
+        :param end_date: end date, defaults to None
+        :type end_date: Optional[datetime], optional
+        :raises UpdatePermissionException: error during update
+        """
+        self.log(
+            f"{__name__}.update_permission({datastore_id=},{permission_id=},{licence=},{offerings=},{end_date=})"
+        )
+        try:
+            # encode data
+            data = QByteArray()
+            data_map = {
+                "licence": licence,
+                "offerings": offerings,
+            }
+
+            if end_date:
+                data_map["end_date"] = f"{end_date.isoformat()}Z"
+
+            data.append(json.dumps(data_map))
+            self.request_manager.patch_url(
+                url=QUrl(f"{self.get_base_url(datastore_id)}/{permission_id}"),
+                config_id=self.plg_settings.qgis_auth_id,
+                data=data,
+                headers={b"Content-Type": bytes("application/json", "utf8")},
+            )
+        except ConnectionError as err:
+            raise UpdatePermissionException(f"Error in permission update : {err}")

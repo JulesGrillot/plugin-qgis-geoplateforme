@@ -72,6 +72,8 @@ class UserPermissionListModel(QStandardItemModel):
 
     def refresh(self) -> None:
         """Refresh QStandardItemModel data with user permission list"""
+        prev_editable = self.editable
+        self.editable = True
         self.removeRows(0, self.rowCount())
         try:
             manager = UserPermissionRequestManager()
@@ -110,6 +112,7 @@ class UserPermissionListModel(QStandardItemModel):
                 log_level=2,
                 push=False,
             )
+        self.editable = prev_editable
 
     def check_user_key_access(self, key_access: KeyAccess) -> None:
         """Check offering for a key access
@@ -117,6 +120,8 @@ class UserPermissionListModel(QStandardItemModel):
         :param key_access: key access
         :type key_access: KeyAccess
         """
+        prev_editable = self.editable
+        self.editable = True
         for row in range(self.rowCount()):
             permission = self.data(
                 self.index(row, self.LICENCE_COL), Qt.ItemDataRole.UserRole
@@ -134,6 +139,7 @@ class UserPermissionListModel(QStandardItemModel):
                     Qt.ItemDataRole.CheckStateRole,
                 )
                 break
+        self.editable = prev_editable
 
     def get_checked_permission_and_offering(
         self, checked: bool = True

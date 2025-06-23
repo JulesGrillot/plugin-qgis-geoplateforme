@@ -22,7 +22,7 @@ qgisMaximumVersion=3.99
 supportsQt6=True
 
 # versionnement
-version=0.8.0-DEV
+version=0.9.0-DEV
 changelog=
 
 plugin_dependencies=French Locator Filter,GPF - Isochrone Isodistance Itinéraire

@@ -15,6 +15,38 @@ Unreleased
 ### Removed
 
 -->
+## 0.8.0 - 2025-06-23
+
+### Bugs fixes 🐛
+
+* fix(dataprovider): remove provider from sourceSelectProviderRegistry at unload by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/130>
+* fix(processing): add output to be able to use processing in QGIS modeler by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/144>
+
+### Features and enhancements 🎉
+
+* feat(upload): add processing and GUI for upload delete by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/120>
+* feat(unpublish): add processing for offering delete by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/121>
+* feat(user key): display available keys in table by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/122>
+* feat(permission): add processing for permission creation by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/123>
+* feat(permission): add widget to display permission in closed services by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/124>
+* feat(permission): add permission creation by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/126>
+* Feat/new metadata widget by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/125>
+* feat(user key): add processing for key creation by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/127>
+* feat(user key): add accesses creation processing by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/128>
+* feat(user key): add dialog to create user key by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/129>
+* refactor(processing): remove unused processing and dead code by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/131>
+* feat(user key): display user key by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/132>
+* feat(user key): add button to delete key by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/133>
+* feat(user key): add button to delete selected ip by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/135>
+* feat(user key): add specific component for IP CIDR adress edit by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/136>
+* feat(user key): display only permission with end date over now by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/137>
+* feat(user key): check that at least one offering is selected by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/138>
+* feat(user key): add processing and GUI for update  by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/140>
+* feat(permission): add widget to display / delete / update permission by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/141>
+* feat(dashboard): move button and add permission widget by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/142>
+* feat(permission): display public community for creation by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/143>
+* feat(permission): small fixes and add option to delete added user and community by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/145>
+
 ## 0.7.0 - 2025-06-04
 
 ### Bugs fixes 🐛
@@ -33,7 +65,6 @@ Unreleased
 * feat(wms raster): add wizard for publication by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/99>
 * feat(wms raster): init processing for publication by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/98>
 * feat(raster tiles): add wizard for raster tiles creation from WMS-VECTOR service by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/97>
-
 
 ## 0.6.0 - 2025-05-28
 

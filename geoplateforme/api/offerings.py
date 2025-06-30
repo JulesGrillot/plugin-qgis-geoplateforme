@@ -12,7 +12,7 @@ from qgis.core import QgsBlockingNetworkRequest
 from qgis.PyQt.QtCore import QByteArray, QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
-from geoplateforme.api.configuration import ConfigurationType
+from geoplateforme.api.configuration import Configuration, ConfigurationType
 
 # project
 from geoplateforme.api.custom_exceptions import (
@@ -60,7 +60,7 @@ class Offering:
     _layer_name: Optional[str] = None
     _type: Optional[ConfigurationType] = None
     _status: Optional[OfferingStatus] = None
-    _configuration: Optional[dict] = None
+    _configuration: Optional[Configuration] = None
     _endpoint: Optional[dict] = None
     _urls: Optional[List[dict]] = None
     _extra: Optional[dict] = None
@@ -121,7 +121,7 @@ class Offering:
         return self._status
 
     @property
-    def configuration(self) -> dict:
+    def configuration(self) -> Configuration:
         """Returns the configuration dict for the offering.
 
         :return: configuration dict
@@ -191,7 +191,9 @@ class Offering:
         if "status" in val:
             res._status = OfferingStatus(val["status"])
         if "configuration" in val:
-            res._configuration = val["configuration"]
+            res._configuration = Configuration.from_dict(
+                datastore_id=datastore_id, val=val["configuration"]
+            )
         if "endpoint" in val:
             res._endpoint = val["endpoint"]
         if "urls" in val:
@@ -217,7 +219,9 @@ class Offering:
         if "status" in val:
             self._status = OfferingStatus(val["status"])
         if "configuration" in val:
-            self._configuration = val["configuration"]
+            self._configuration = Configuration.from_dict(
+                datastore_id=self.datastore_id, val=val["configuration"]
+            )
         if "endpoint" in val:
             self._endpoint = val["endpoint"]
         if "urls" in val:

@@ -75,6 +75,8 @@ class ServiceDetailsWidget(QWidget):
         self.lne_name.setText(offering.layer_name)
         self.lne_id.setText(offering._id)
 
+        self.gpb_styles.setVisible(False)
+
         # Only published offering have actions
         if status == OfferingStatus.PUBLISHED:
             # Data delete
@@ -92,6 +94,10 @@ class ServiceDetailsWidget(QWidget):
             self.gpb_permissions.setVisible(not offering.open)
             if not offering.open:
                 self.wdg_permissions.refresh(offering.datastore_id, offering._id)
+
+            # Styles
+            self.gpb_styles.setVisible(True)
+            self.wdg_styles.set_configuration(offering.configuration)
 
             # WMS_VECTOR :
             # - raster tile generation

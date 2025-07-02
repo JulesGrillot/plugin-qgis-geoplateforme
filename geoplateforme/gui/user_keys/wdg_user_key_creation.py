@@ -164,7 +164,7 @@ class UserKeyCreationWidget(QWidget):
             elif self.rbtn_hash.isChecked():
                 auth_config = UserKey.create_hash_auth_config(
                     name=self.lne_name.text(),
-                    hash=result[CreateHashKeyAlgorithm.CREATED_HASH],
+                    hash_val=result[CreateHashKeyAlgorithm.CREATED_HASH],
                 )
 
             auth_manager = QgsApplication.authManager()

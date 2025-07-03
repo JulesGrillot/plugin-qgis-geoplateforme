@@ -15,6 +15,15 @@ Unreleased
 ### Removed
 
 -->
+## 0.9.0 - 2025-07-03
+
+### Features and enhancements 🎉
+
+* feat(annexe): add processing for annexe creation and delete by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/147>
+* feat(style): new processing to add style to service configuration by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/148>
+* feat(style): display configuration style for a service by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/149>
+* feat(user key): ask user for QGIS auth creation after user key creation by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/152>
+
 ## 0.8.0 - 2025-06-23
 
 ### Bugs fixes 🐛

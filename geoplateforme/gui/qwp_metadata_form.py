@@ -52,6 +52,7 @@ class MetadataFormPageWizard(QWizardPage):
                     datastore_id=datastore_id,
                     creation_mode=True,
                 )
+                self.wdg_metadata.le_unique_id.setReadOnly(True)
             except UnavailableMetadataFileException as exc:
                 self.log(
                     f"Error while getting Metadata informations: {exc}",

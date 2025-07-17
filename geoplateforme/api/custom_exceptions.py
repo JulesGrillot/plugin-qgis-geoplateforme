@@ -214,6 +214,10 @@ class AnnexeFileUploadException(Exception):
     pass
 
 
+class MetadataFileUploadException(Exception):
+    pass
+
+
 class DeleteAnnexeException(Exception):
     pass
 

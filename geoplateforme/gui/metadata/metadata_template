@@ -18,10 +18,10 @@
         <gco:CharacterString>{{ fields.type }}</gco:CharacterString>
     </gmd:hierarchyLevelName>
 
-    {% if fields.title is defined or fields.abstract is defined or fields.org_name is defined or fields.org_email is defined or fields.topics is defined or fields.resolution is defined or fields.creation_date is defined %}
+    {% if fields.title is not none or fields.abstract is not none or fields.org_name is not none or fields.org_email is not none or fields.topics is not none or fields.resolution is not none or fields.creation_date is not none %}
         <gmd:identificationInfo>
             <gmd:MD_DataIdentification>
-                {% if fields.title is defined %}
+                {% if fields.title is not none %}
                     <gmd:citation>
                         <gmd:CI_Citation>
                             <gmd:title>
@@ -29,7 +29,7 @@
                                 <gco:CharacterString>{{ fields.title }}</gco:CharacterString>
                             </gmd:title>
 
-                            {% if fields.creation_date is defined %}
+                            {% if fields.creation_date is not none %}
                                 <gmd:date>
                                     <gmd:CI_Date>
                                         <gmd:date>
@@ -45,18 +45,18 @@
                     </gmd:citation>
                 {% endif %}
 
-                {% if fields.abstract is defined %}
+                {% if fields.abstract is not none %}
                     <gmd:abstract>
                         {# résumé #}
                         <gco:CharacterString>{{ fields.abstract }}</gco:CharacterString>
                     </gmd:abstract>
                 {% endif %}
 
-                {% if fields.org_email is defined or fields.org_name is defined %}
+                {% if fields.org_email is not none or fields.org_name is not none %}
                     {# email de contact sur les métadonnées #}
                     <gmd:pointOfContact>
                         <gmd:CI_ResponsibleParty>
-                            {% if fields.org_name is defined %}
+                            {% if fields.org_name is not none %}
                                 <gmd:organisationName>
                                     <gco:CharacterString>{{ fields.org_name }}</gco:CharacterString>
                                 </gmd:organisationName>
@@ -129,7 +129,7 @@
                     {% endfor %}
                 {% endif %}
 
-                {% if fields.thumbnail is defined %}
+                {% if fields.thumbnail is not none %}
                     <gmd:graphicOverview>
                         <gmd:MD_BrowseGraphic>
                             <gmd:fileName>
@@ -145,7 +145,7 @@
                     </gmd:graphicOverview>
                 {% endif %}
 
-                {% if fields.frequency is defined %}
+                {% if fields.frequency is not none %}
                     <gmd:resourceMaintenance>
                         <gmd:MD_MaintenanceInformation>
                             <gmd:maintenanceAndUpdateFrequency>
@@ -155,7 +155,7 @@
                     </gmd:resourceMaintenance>
                 {% endif %}
 
-                {% if fields.resolution is defined %}
+                {% if fields.resolution is not none %}
                     <gmd:spatialResolution>
                         <gmd:MD_Resolution>
                             <gmd:equivalentScale>
@@ -169,7 +169,7 @@
                     </gmd:spatialResolution>
                 {% endif %}
 
-                {% if fields.bbox is defined %}
+                {% if fields.bbox is not none %}
                     <gmd:extent>
                         <gmd:EX_Extent>
                             <gmd:geographicElement>
@@ -199,7 +199,7 @@
         </gmd:identificationInfo>
     {% endif %}
 
-    {% if fields.contact_email is defined %}
+    {% if fields.contact_email is not none %}
         {# responsable de la ressource #}
         <gmd:contact>
             <gmd:CI_ResponsibleParty>
@@ -218,13 +218,13 @@
         </gmd:contact>
     {% endif %}
 
-    {% if fields.update_date is defined %}
+    {% if fields.update_date is not none %}
         <gmd:dateStamp>
             <gco:DateTime>{{ fields.update_date }}</gco:DateTime>
         </gmd:dateStamp>
     {% endif %}
 
-    {% if fields.genealogy is defined %}
+    {% if fields.genealogy is not none %}
         <gmd:dataQualityInfo>
             <gmd:DQ_DataQuality>
                 <gmd:lineage>
@@ -238,7 +238,7 @@
         </gmd:dataQualityInfo>
     {% endif %}
 
-    {% if fields.links is defined %}
+    {% if fields.links is not none %}
         <gmd:distributionInfo>
             <gmd:MD_Distribution>
                 <gmd:transferOptions>
@@ -247,7 +247,7 @@
                         {# Le champ linkage précise l’adresse du service, le champ « protocol » précise de quel type de service il s’agit (OGC:WMS, OGC:WFS, OGC:WMTS, OGC:CSW) et le champ « name » contient le nom de la couche. #}
                         {% for link in fields.links %}
                             {% if link.type == "offering" %}
-                                <gmd:onLine type="offering" offeringId="{{ link.offering_id }}" {% if link.open is defined %} offeringOpen="{{ link.open }}" {% endif %} >
+                                <gmd:onLine type="offering" offeringId="{{ link.offering_id }}" {% if link.open is not none %} offeringOpen="{{ link.open }}" {% endif %} >
                                     <gmd:CI_OnlineResource>
                                         <gmd:linkage>
                                             <gmd:URL>{{ link.url }}</gmd:URL>
@@ -311,7 +311,7 @@
                                         <gmd:name>
                                             <gco:CharacterString>{{ link.name }}</gco:CharacterString>
                                         </gmd:name>
-                                        {% if link.description is defined %}
+                                        {% if link.description is not none %}
                                             <gmd:description>
                                                 <gco:CharacterString>{{ link.description }}</gco:CharacterString>
                                             </gmd:description>

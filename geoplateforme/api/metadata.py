@@ -23,6 +23,7 @@ from geoplateforme.api.custom_exceptions import (
     AddTagException,
     DeleteMetadataException,
     DeleteTagException,
+    MetadataCreationException,
     MetadataUpdateException,
     ReadMetadataException,
     UnavailableMetadataException,
@@ -747,7 +748,6 @@ class MetadataRequestManager:
         self.log(
             f"{__name__}.update_metadata(datastore:{datastore_id}, metadata_id: {metadata._id})"
         )
-        print(metadata.generate_xml_from_fields())
         with tempfile.TemporaryDirectory() as tmpdirname:
             temp_dir = Path(tmpdirname)
             file_name = temp_dir / f"{metadata._id}.xml"
@@ -762,54 +762,47 @@ class MetadataRequestManager:
             except ConnectionError as err:
                 raise MetadataUpdateException(f"Error while updating metadata : {err}")
 
-    # TODO :
-    # def create_metadata(
-    #     self,
-    #     datastore_id: str,
-    #     open_data: bool,
-    #     metadata_type: MetadataType,
-    #     filename: str
-    # ) -> Metadata:
-    #     """Create metadata on Geoplateforme entrepot
+    def create_metadata(
+        self,
+        datastore_id: str,
+        file_path: Path,
+        open_data: bool,
+        metadata_type: MetadataType,
+    ) -> Metadata:
+        """Create metadata on Geoplateforme entrepot
 
-    #     :param datastore_id: datastore id
-    #     :type datastore_id: str
-    #     :param open_data: metadata open_data propertie
-    #     :type open_data: bool
-    #     :param metadata_type: metadata type
-    #     :type metadata_type: MetadataType
-    #     :param filename: metadata file to import
-    #     :type filename: str
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param file_path: path to metadata file
+        :type file_path: Path
+        :param open_data: True to open data, False otherwise
+        :type open_data: bool
+        :param metadata_type: Metadata type (ISOAP or INSPIRE)
+        :type metadata_type: MetadataType
 
-    #     :raises MetadataCreationException: when error occur during requesting the API
+        :raises MetadataCreationException: when error occur during requesting the API
 
-    #     :return: Metadata if creation succeeded
-    #     :rtype: Metadata
-    #     """
-    #     self.log(
-    #         f"{__name__}.create_metadata(datastore:{datastore_id}, open_data: {open_data}, type: {metadata_type}, filename: {filename})"
-    #     )
+        :return: Metadata if creation succeeded
+        :rtype: Metadata
+        """
+        self.log(
+            f"{__name__}.create_metadata(datastore:{datastore_id}, file_path:{file_path}, open_data:{open_data}, metadata_type:{metadata_type.value})"
+        )
 
-    #     try:
-    #         # encode data
-    #         data = QByteArray()
-    #         data_map = {
-    #             "open_data": open_data,
-    #             "type": metadata_type.value,
-    #         }
-    #         data.append(json.dumps(data_map))
-    #         reply = self.request_manager.post_url(
-    #             url=QUrl(self.get_base_url(datastore_id)),
-    #             config_id=self.plg_settings.qgis_auth_id,
-    #             data=data,
-    #             headers={b"Content-Type": bytes("application/json", "utf8")},
-    #         )
-    #     except ConnectionError as err:
-    #         raise MetadataCreationException(f"Error while creating metadata : {err}")
+        try:
+            reply = self.request_manager.post_file(
+                url=QUrl(
+                    f"{self.get_base_url(datastore_id)}?open_data={open_data}&type={metadata_type.value}"
+                ),
+                file_path=file_path,
+                config_id=self.plg_settings.qgis_auth_id,
+            )
+        except ConnectionError as err:
+            raise MetadataCreationException(f"Error while creating metadata : {err}")
 
-    #     # check response type
-    #     data = json.loads(reply.data())
-    #     return Metadata.from_dict(datastore_id, data)
+        # check response type
+        data = json.loads(reply.data())
+        return Metadata.from_dict(datastore_id, data)
 
     def get_metadata_file(self, datastore_id: str, metadata_id: str) -> str:
         """Get metadata file.

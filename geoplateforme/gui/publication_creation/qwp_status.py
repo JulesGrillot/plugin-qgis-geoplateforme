@@ -1,5 +1,7 @@
 # standard
 import os
+import tempfile
+from pathlib import Path
 
 # PyQGIS
 from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
@@ -8,9 +10,13 @@ from qgis.PyQt.QtWidgets import QWizardPage
 
 # Plugin
 from geoplateforme.api.custom_exceptions import ReadStoredDataException
+from geoplateforme.api.metadata import MetadataRequestManager, MetadataType
 from geoplateforme.api.stored_data import StoredDataRequestManager
 from geoplateforme.gui.publication_creation.qwp_publication_form import (
     PublicationFormPageWizard,
+)
+from geoplateforme.gui.qwp_metadata_form import (
+    MetadataFormPageWizard,
 )
 from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.publication.upload_publication import (
@@ -23,6 +29,7 @@ class PublicationStatut(QWizardPage):
     def __init__(
         self,
         qwp_publication_form: PublicationFormPageWizard,
+        qwp_metadata_form: MetadataFormPageWizard,
         parent=None,
     ):
         """
@@ -35,6 +42,7 @@ class PublicationStatut(QWizardPage):
         super().__init__(parent)
         self.setTitle(self.tr("Publication WMTS-TMS"))
         self.qwp_publication_form = qwp_publication_form
+        self.qwp_metadata_form = qwp_metadata_form
         uic.loadUi(os.path.join(os.path.dirname(__file__), "qwp_status.ui"), self)
         self.offering_id = ""
         self.tbw_errors.setVisible(False)
@@ -111,6 +119,71 @@ class PublicationStatut(QWizardPage):
         if success:
             self.lbl_result.setText(self.tr("Service WMTS-TMS publié avec succès"))
             self.offering_id = result[UploadPublicationAlgorithm.OFFERING_ID]
+            try:
+                if self.qwp_metadata_form.new_metadata:
+                    self.lbl_result.setText(
+                        "\n".join(
+                            [
+                                self.lbl_result.text(),
+                                self.tr("Création de la métadonnée"),
+                            ]
+                        )
+                    )
+                    metadata = self.qwp_metadata_form.metadata
+                    manager = MetadataRequestManager()
+
+                    with tempfile.TemporaryDirectory() as tmpdirname:
+                        temp_dir = Path(tmpdirname)
+                        file_name = temp_dir / f"{metadata._id}.xml"
+                        file_name.write_text(metadata.generate_xml_from_fields())
+                        metadata_type = MetadataType("ISOAP")
+                        metadata_open = True
+                        metadata = manager.create_metadata(
+                            datastore_id=datastore_id,
+                            file_path=file_name,
+                            open_data=metadata_open,
+                            metadata_type=metadata_type,
+                        )
+                        manager.add_tags(
+                            datastore_id, metadata._id, {"datasheet_name": dataset_name}
+                        )
+
+                    self.lbl_result.setText(
+                        "\n".join(
+                            [
+                                self.lbl_result.text(),
+                                self.tr("Métadonnée créée avec succès"),
+                            ]
+                        )
+                    )
+                else:
+                    self.lbl_result.setText(
+                        "\n".join(
+                            [
+                                self.lbl_result.text(),
+                                self.tr("Mise à jour de la métadonnée"),
+                            ]
+                        )
+                    )
+                    manager = MetadataRequestManager()
+                    manager.update_metadata(
+                        datastore_id, self.qwp_metadata_form.metadata
+                    )
+                    self.lbl_result.setText(
+                        "\n".join(
+                            [
+                                self.lbl_result.text(),
+                                self.tr("Métadonnée mise à jour avec succès"),
+                            ]
+                        )
+                    )
+            except Exception as e:
+                self.lbl_result.setText(
+                    self.tr("Erreur lors de l'enregistrement de la métadonnée")
+                )
+                self.tbw_errors.setVisible(True)
+                self.tbw_errors.setText(e)
+
         else:
             self.lbl_result.setText(
                 self.tr("Erreur lors de la publication du service WMTS-TMS")

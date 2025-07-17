@@ -400,7 +400,6 @@ class Metadata:
         """Generate xml file from the metadata fields."""
         env = Environment(loader=FileSystemLoader(DIR_PLUGIN_ROOT / "gui/metadata"))
         template = env.get_template("metadata_template")
-        print(self.fields)
         xml = template.render(fields=self.fields)
         return xml
 

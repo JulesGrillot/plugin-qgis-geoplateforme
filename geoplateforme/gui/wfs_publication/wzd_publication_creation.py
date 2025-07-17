@@ -4,6 +4,9 @@ from typing import Optional
 # PyQGIS
 from qgis.PyQt.QtWidgets import QWizard
 
+from geoplateforme.gui.qwp_metadata_form import (
+    MetadataFormPageWizard,
+)
 from geoplateforme.gui.wfs_publication.qwp_publication_form import (
     PublicationFormPageWizard,
 )
@@ -41,16 +44,25 @@ class WFSPublicationWizard(QWizard):
             self, datastore_id, dataset_name, stored_data_id
         )
 
+        # Third page for metadata
+        self.qwp_metadata_form = MetadataFormPageWizard(
+            datastore_id, dataset_name, self
+        )
+
         # Second page to display publication form
         self.qwp_publication_form = PublicationFormPageWizard()
 
         # Last page to launch processing and display results
         self.qwp_publication_status = PublicationStatut(
-            self.qwp_table_relation, self.qwp_publication_form, self
+            self.qwp_table_relation,
+            self.qwp_publication_form,
+            self.qwp_metadata_form,
+            self,
         )
 
         self.addPage(self.qwp_table_relation)
         self.addPage(self.qwp_publication_form)
+        self.addPage(self.qwp_metadata_form)
         self.addPage(self.qwp_publication_status)
 
         self.setOption(QWizard.WizardOption.NoBackButtonOnStartPage, True)

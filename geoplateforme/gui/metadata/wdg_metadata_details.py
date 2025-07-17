@@ -119,76 +119,77 @@ class MetadataDetailsWidget(QWidget):
             self.gbp_doc.setLayout(doc_vbox)
             first_capabilities = True
             first_access = True
-            for link in self.metadata.fields.links:
-                if link["type"] == "getcapabilities":
-                    if first_capabilities:
-                        first_capabilities = False
-                    else:
-                        line = QFrame()
-                        line.setFrameShape(QFrame.Shape.HLine)
-                        line.setStyleSheet("color: #BBBBBB;")
-                        capabilities_vbox.addWidget(line)
-                    label_name = QLabel()
-                    label_name.setText(f"<b>{link['name']}</b>")
-                    capabilities_vbox.addWidget(label_name)
-                    label_description = QLabel()
-                    label_description.setText(
-                        f"<b>Description :</b> {link['description']}"
-                    )
-                    capabilities_vbox.addWidget(label_description)
-                    label_url = QLabel()
-                    label_url.setText(f"<b>URL :</b> {link['url']}")
-                    capabilities_vbox.addWidget(label_url)
-                if link["type"] == "offering":
-                    if first_access:
-                        first_access = False
-                    else:
-                        line = QFrame()
-                        line.setFrameShape(QFrame.Shape.HLine)
-                        line.setStyleSheet("color: #BBBBBB;")
-                        access_vbox.addWidget(line)
-                    label_name = QLabel()
-                    label_name.setText(f"<b>{link['name']}</b>")
-                    access_vbox.addWidget(label_name)
-                    label_description = QLabel()
-                    label_description.setText(f"<b>Type :</b> {link['format']}")
-                    access_vbox.addWidget(label_description)
-                    label_url = QLabel()
-                    label_url.setText(f"<b>URL :</b> {link['url']}")
-                    access_vbox.addWidget(label_url)
-                if link["type"] == "style":
-                    if first_access:
-                        first_access = False
-                    else:
-                        line = QFrame()
-                        line.setFrameShape(QFrame.Shape.HLine)
-                        line.setStyleSheet("color: #BBBBBB;")
-                        style_vbox.addWidget(line)
-                    label_name = QLabel()
-                    label_name.setText(f"<b>{link['name']}</b>")
-                    style_vbox.addWidget(label_name)
-                    label_url = QLabel()
-                    label_url.setText(f"<b>URL :</b> {link['url']}")
-                    style_vbox.addWidget(label_url)
-                if link["type"] == "document":
-                    if first_access:
-                        first_access = False
-                    else:
-                        line = QFrame()
-                        line.setFrameShape(QFrame.Shape.HLine)
-                        line.setStyleSheet("color: #BBBBBB;")
-                        doc_vbox.addWidget(line)
-                    label_name = QLabel()
-                    label_name.setText(f"<b>{link['name']}</b>")
-                    doc_vbox.addWidget(label_name)
-                    label_description = QLabel()
-                    label_description.setText(
-                        f"<b>Description :</b> {link['description']}"
-                    )
-                    doc_vbox.addWidget(label_description)
-                    label_url = QLabel()
-                    label_url.setText(f"<b>URL :</b> {link['url']}")
-                    doc_vbox.addWidget(label_url)
+            if self.metadata.fields.links is not None:
+                for link in self.metadata.fields.links:
+                    if link["type"] == "getcapabilities":
+                        if first_capabilities:
+                            first_capabilities = False
+                        else:
+                            line = QFrame()
+                            line.setFrameShape(QFrame.Shape.HLine)
+                            line.setStyleSheet("color: #BBBBBB;")
+                            capabilities_vbox.addWidget(line)
+                        label_name = QLabel()
+                        label_name.setText(f"<b>{link['name']}</b>")
+                        capabilities_vbox.addWidget(label_name)
+                        label_description = QLabel()
+                        label_description.setText(
+                            f"<b>Description :</b> {link['description']}"
+                        )
+                        capabilities_vbox.addWidget(label_description)
+                        label_url = QLabel()
+                        label_url.setText(f"<b>URL :</b> {link['url']}")
+                        capabilities_vbox.addWidget(label_url)
+                    if link["type"] == "offering":
+                        if first_access:
+                            first_access = False
+                        else:
+                            line = QFrame()
+                            line.setFrameShape(QFrame.Shape.HLine)
+                            line.setStyleSheet("color: #BBBBBB;")
+                            access_vbox.addWidget(line)
+                        label_name = QLabel()
+                        label_name.setText(f"<b>{link['name']}</b>")
+                        access_vbox.addWidget(label_name)
+                        label_description = QLabel()
+                        label_description.setText(f"<b>Type :</b> {link['format']}")
+                        access_vbox.addWidget(label_description)
+                        label_url = QLabel()
+                        label_url.setText(f"<b>URL :</b> {link['url']}")
+                        access_vbox.addWidget(label_url)
+                    if link["type"] == "style":
+                        if first_access:
+                            first_access = False
+                        else:
+                            line = QFrame()
+                            line.setFrameShape(QFrame.Shape.HLine)
+                            line.setStyleSheet("color: #BBBBBB;")
+                            style_vbox.addWidget(line)
+                        label_name = QLabel()
+                        label_name.setText(f"<b>{link['name']}</b>")
+                        style_vbox.addWidget(label_name)
+                        label_url = QLabel()
+                        label_url.setText(f"<b>URL :</b> {link['url']}")
+                        style_vbox.addWidget(label_url)
+                    if link["type"] == "document":
+                        if first_access:
+                            first_access = False
+                        else:
+                            line = QFrame()
+                            line.setFrameShape(QFrame.Shape.HLine)
+                            line.setStyleSheet("color: #BBBBBB;")
+                            doc_vbox.addWidget(line)
+                        label_name = QLabel()
+                        label_name.setText(f"<b>{link['name']}</b>")
+                        doc_vbox.addWidget(label_name)
+                        label_description = QLabel()
+                        label_description.setText(
+                            f"<b>Description :</b> {link['description']}"
+                        )
+                        doc_vbox.addWidget(label_description)
+                        label_url = QLabel()
+                        label_url.setText(f"<b>URL :</b> {link['url']}")
+                        doc_vbox.addWidget(label_url)
             self.scrollAreaWidgetContents.layout().insertWidget(6, self.gbp_access)
             self.scrollAreaWidgetContents.layout().insertWidget(7, self.gbp_style)
             self.scrollAreaWidgetContents.layout().insertWidget(
@@ -197,10 +198,11 @@ class MetadataDetailsWidget(QWidget):
             self.scrollAreaWidgetContents.layout().insertWidget(9, self.gbp_doc)
         self.update()
 
-    def update_metadata(self):
+    def update_metadata_fields(self):
         """Update metadata with widget fields"""
         self.metadata.fields.title = self.le_title.text()
         self.metadata.fields.abstract = self.te_description.toPlainText()
+        self.metadata.fields.identifier = self.le_unique_id.text()
         if self.le_thematics.text():
             self.metadata.fields.topics = self.le_thematics.text().split(",")
         else:
@@ -229,5 +231,8 @@ class MetadataDetailsWidget(QWidget):
         self.metadata.fields.language = self.le_language.text()
         self.metadata.fields.encoding = self.le_encoding.text()
 
+    def update_metadata(self):
+        """Update metadata on GPF with widget fields"""
+        self.update_metadata_fields()
         manager = MetadataRequestManager()
         manager.update_metadata(self.datastore_id, self.metadata)

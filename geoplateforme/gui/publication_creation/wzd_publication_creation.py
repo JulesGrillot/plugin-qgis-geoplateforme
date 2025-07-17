@@ -8,8 +8,9 @@ from geoplateforme.gui.publication_creation.qwp_publication_form import (
     PublicationFormPageWizard,
 )
 from geoplateforme.gui.publication_creation.qwp_status import PublicationStatut
-
-# Plugin
+from geoplateforme.gui.qwp_metadata_form import (
+    MetadataFormPageWizard,
+)
 
 
 class PublicationFormCreation(QWizard):
@@ -35,9 +36,15 @@ class PublicationFormCreation(QWizard):
         self.qwp_publication_form = PublicationFormPageWizard(
             self, datastore_id, dataset_name, stored_data_id
         )
-        self.qwp_publication_status = PublicationStatut(self.qwp_publication_form, self)
+        self.qwp_metadata_form = MetadataFormPageWizard(
+            datastore_id, dataset_name, self
+        )
+        self.qwp_publication_status = PublicationStatut(
+            self.qwp_publication_form, self.qwp_metadata_form, self
+        )
 
         self.addPage(self.qwp_publication_form)
+        self.addPage(self.qwp_metadata_form)
         self.addPage(self.qwp_publication_status)
 
         self.setOption(QWizard.WizardOption.NoBackButtonOnStartPage, True)

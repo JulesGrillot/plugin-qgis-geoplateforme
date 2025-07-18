@@ -201,7 +201,10 @@ class AddConfigurationStyleAlgorithm(QgsProcessingAlgorithm):
         url_api_entrepot = settings.url_api_entrepot
         url_entrepot = url_api_entrepot.removesuffix("/api")
 
-        config_extra = config.extra
+        if config.extra:
+            config_extra = config.extra
+        else:
+            config_extra = {}
         config_styles = []
         if "styles" in config_extra:
             config_styles = config_extra["styles"]

@@ -217,7 +217,7 @@ class StoredDataDetailsDialog(QDialog):
                             / "Publie@2x.png"
                         )
                     ),
-                    self.tr("Publication tuile"),
+                    self.tr("Publication WMS-TMS"),
                     self,
                 )
                 button = QToolButton(self)
@@ -237,7 +237,7 @@ class StoredDataDetailsDialog(QDialog):
                             / "Publie@2x.png"
                         )
                     ),
-                    self.tr("Publication tuile"),
+                    self.tr("Publication WMS-Raster"),
                     self,
                 )
                 button = QToolButton(self)

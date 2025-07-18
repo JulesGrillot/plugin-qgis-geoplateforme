@@ -101,7 +101,10 @@ class DeleteConfigurationStyleAlgorithm(QgsProcessingAlgorithm):
         # Define new extra for configuration
         feedback.pushInfo(self.tr("Récupération styles à supprimer"))
 
-        config_extra = config.extra
+        if config.extra:
+            config_extra = config.extra
+        else:
+            config_extra = {}
         config_styles = []
         if "styles" in config_extra:
             config_styles = config_extra["styles"]

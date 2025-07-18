@@ -18,6 +18,7 @@ from geoplateforme.api.configuration import Configuration, ConfigurationType
 from geoplateforme.api.custom_exceptions import (
     OfferingCreationException,
     ReadOfferingException,
+    SynchronizeOfferingException,
     UnavailableOfferingsException,
 )
 from geoplateforme.api.utils import qgs_blocking_get_request
@@ -528,3 +529,23 @@ class OfferingsRequestManager:
             return json.loads(reply.data().decode("utf-8"))
         except ConnectionError as err:
             raise ReadOfferingException(f"Error while getting offering : {err}")
+
+    def synchronize(self, datastore_id: str, offering_id: str) -> None:
+        """Synchronize configuration update on service
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param offering_id: offering id
+        :type offering_id: str
+        :raises SynchronizeOfferingException: error when synchronizing offering
+        """
+        try:
+            # send request
+            self.request_manager.put_url(
+                url=QUrl(f"{self.get_base_url(datastore_id)}/{offering_id}"),
+                config_id=self.plg_settings.qgis_auth_id,
+            )
+        except ConnectionError as err:
+            raise SynchronizeOfferingException(
+                f"Error while synchronizing offering : {err}"
+            )

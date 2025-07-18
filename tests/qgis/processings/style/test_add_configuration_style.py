@@ -1,5 +1,6 @@
 import pytest_httpserver
 
+from geoplateforme.api.offerings import OfferingsRequestManager
 from geoplateforme.processing.style.add_configuration_style import (
     AddConfigurationStyleAlgorithm,
 )
@@ -108,6 +109,16 @@ CONFIGURATION_JSON = {
     },
 }
 
+OFFERING_ID = "offering_id"
+OFFERING_JSON = {
+    "open": True,
+    "available": True,
+    "layer_name": "layer_name",
+    "type": "WMTS-TMS",
+    "status": "PUBLISHED",
+    "_id": OFFERING_ID,
+}
+
 
 def test_add_configuration_style(
     tmp_path,
@@ -182,6 +193,41 @@ def test_add_configuration_style(
     data_geopf_srv.expect_oneshot_request(
         f"/api/datastores/{datastore_id}/configurations/{configuration_id}",
         method="PATCH",
+    ).respond_with_data(status=202)
+
+    data_geopf_srv.expect_oneshot_request(
+        f"/api/datastores/{datastore_id}/configurations/{configuration_id}",
+        method="PUT",
+    ).respond_with_data(status=202)
+
+    # Offering request
+    headers = {
+        "Content-Range": "0-1/1",
+    }
+    data_geopf_srv.expect_oneshot_request(
+        uri=f"/api/datastores/{datastore_id}/offerings",
+        query_string=f"limit=1&configuration={configuration_id}",
+        method="GET",
+    ).respond_with_json(
+        {},
+        status=202,
+        headers=headers,
+    )
+
+    data_geopf_srv.expect_oneshot_request(
+        uri=f"/api/datastores/{datastore_id}/offerings",
+        query_string=f"page=1&limit={OfferingsRequestManager.MAX_LIMIT}&configuration={configuration_id}",
+        method="GET",
+    ).respond_with_json(
+        [OFFERING_JSON],
+        status=202,
+        headers=headers,
+    )
+
+    # Offering sync
+    data_geopf_srv.expect_oneshot_request(
+        f"/api/datastores/{datastore_id}/offerings/{OFFERING_ID}",
+        method="PUT",
     ).respond_with_data(status=202)
 
     params = {

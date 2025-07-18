@@ -2,6 +2,7 @@
 import os
 import tempfile
 from pathlib import Path
+from typing import Optional
 
 # PyQGIS
 from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
@@ -9,14 +10,13 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QWizardPage
 
 # Plugin
+from geoplateforme.api.custom_exceptions import ReadStoredDataException
 from geoplateforme.api.metadata import MetadataRequestManager, MetadataType
-from geoplateforme.gui.qwp_metadata_form import (
-    MetadataFormPageWizard,
-)
+from geoplateforme.api.stored_data import StoredDataRequestManager
+from geoplateforme.gui.qwp_metadata_form import MetadataFormPageWizard
 from geoplateforme.gui.wmts_publication.qwp_publication_form import (
     PublicationFormPageWizard,
 )
-from geoplateforme.gui.wmts_publication.qwp_wmts_edition import WMTSEditionPageWizard
 from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.publication.wmts_publication import (
     WmtsPublicationAlgorithm,
@@ -27,9 +27,11 @@ from geoplateforme.processing.utils import tags_to_qgs_parameter_matrix_string
 class PublicationStatut(QWizardPage):
     def __init__(
         self,
-        qwp_wmts_edition: WMTSEditionPageWizard,
         qwp_publication_form: PublicationFormPageWizard,
         qwp_metadata_form: MetadataFormPageWizard,
+        datastore_id: Optional[str] = None,
+        dataset_name: Optional[str] = None,
+        stored_data_id: Optional[str] = None,
         parent=None,
     ):
         """
@@ -41,7 +43,10 @@ class PublicationStatut(QWizardPage):
 
         super().__init__(parent)
         self.setTitle(self.tr("Publication WMTS-TMS"))
-        self.qwp_wmts_edition = qwp_wmts_edition
+        self.datastore_id = datastore_id
+        self.dataset_name = dataset_name
+        self.stored_data_id = stored_data_id
+
         self.qwp_publication_form = qwp_publication_form
         self.qwp_metadata_form = qwp_metadata_form
         uic.loadUi(
@@ -64,12 +69,37 @@ class PublicationStatut(QWizardPage):
 
         """
         configuration = self.qwp_publication_form.wdg_publication_form.get_config()
-        datastore_id = self.qwp_wmts_edition.datastore_id
-        stored_data = self.qwp_wmts_edition.stored_data_id
-        dataset_name = self.qwp_wmts_edition.dataset_name
+        datastore_id = self.datastore_id
+        stored_data = self.stored_data_id
+        dataset_name = self.dataset_name
 
-        bottom_level: int = self.qwp_wmts_edition.get_bottom_level()
-        top_level: int = self.qwp_wmts_edition.get_top_level()
+        # Getting zoom levels parameters
+        manager = StoredDataRequestManager()
+        try:
+            stored_data_levels = manager.get_stored_data(datastore_id, stored_data)
+            zoom_levels = stored_data_levels.zoom_levels()
+        except ReadStoredDataException as exc:
+            self.lbl_result.setText(
+                self.tr(
+                    "Erreur lors de récupération de la données stockées pour les niveaux de zoom"
+                )
+            )
+            self.tbw_errors.setVisible(True)
+            self.tbw_errors.setText(exc)
+            return
+
+        try:
+            zoom_levels_int = [int(zoom_level) for zoom_level in zoom_levels]
+            zoom_levels_int = sorted(zoom_levels_int)
+            bottom_level = zoom_levels_int[-1]
+            top_level = zoom_levels_int[0]
+        except ValueError as exc:
+            self.lbl_result.setText(
+                self.tr("Erreur lors de la publication du service WMS-Raster")
+            )
+            self.tbw_errors.setVisible(True)
+            self.tbw_errors.setText(f"Invalid zoom levels value: {exc}")
+            return
 
         params = {
             WmtsPublicationAlgorithm.ABSTRACT: configuration.abstract,

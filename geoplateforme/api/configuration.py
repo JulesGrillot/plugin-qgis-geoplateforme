@@ -662,7 +662,7 @@ class ConfigurationRequestManager:
             )
         return nb_val
 
-    def delete_configuration(self, datastore: str, configuration_ids: str):
+    def delete_configuration(self, datastore: str, configuration_id: str):
         """
         Delete a configuration
 
@@ -670,13 +670,13 @@ class ConfigurationRequestManager:
             configuration_id: (str) datastore_id : (str)
         """
         self.log(
-            f"{__name__}.delete_configuration(datastore:{datastore}, configuration_ids: {configuration_ids})"
+            f"{__name__}.delete_configuration(datastore:{datastore}, configuration_id: {configuration_id})"
         )
 
         try:
             # send request
             self.request_manager.delete_url(
-                url=QUrl(f"{self.get_base_url(datastore)}/{configuration_ids}"),
+                url=QUrl(f"{self.get_base_url(datastore)}/{configuration_id}"),
                 config_id=self.plg_settings.qgis_auth_id,
                 headers={b"Content-Type": bytes("application/json", "utf8")},
             )

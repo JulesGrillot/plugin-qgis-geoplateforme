@@ -14,8 +14,11 @@ from qgis.PyQt.QtCore import QCoreApplication
 from geoplateforme.api.configuration import ConfigurationRequestManager
 from geoplateforme.api.custom_exceptions import (
     ReadConfigurationException,
+    ReadOfferingException,
+    SynchronizeOfferingException,
     UpdateConfigurationException,
 )
+from geoplateforme.api.offerings import OfferingsRequestManager
 from geoplateforme.processing.annexes.delete_annexe import DeleteAnnexeAlgorithm
 from geoplateforme.processing.utils import get_short_string, get_user_manual_url
 
@@ -110,16 +113,29 @@ class DeleteConfigurationStyleAlgorithm(QgsProcessingAlgorithm):
             config_styles = config_extra["styles"]
 
         annexes_to_delete = []
+        # Keep only styles with other name
         new_config_styles = []
+        # Store deleted annexe url to remove them from metadata
+        deleted_annexe_url = []
         for style in config_styles:
             if style["name"] != style_name:
                 new_config_styles.append(style)
             else:
                 for layer in style["layers"]:
                     annexes_to_delete.append(layer["annexe_id"])
+                    deleted_annexe_url.append(layer["url"])
+
+        # Remove metadata for deleted annex
+        new_config_metadata = []
+        for metadata in config.metadata:
+            if metadata.url not in deleted_annexe_url:
+                new_config_metadata.append(metadata)
+        config._metadata = new_config_metadata
 
         # Update configuration
         feedback.pushInfo(self.tr("Mise à jour de la configuration"))
+
+        # Update extra and name with PATCH
         config_extra["styles"] = new_config_styles
 
         try:
@@ -131,6 +147,38 @@ class DeleteConfigurationStyleAlgorithm(QgsProcessingAlgorithm):
         except UpdateConfigurationException as exc:
             raise QgsProcessingException(
                 f"Erreur lors de la mise à jour de la configuration : {exc}"
+            ) from exc
+
+        # Update style metadata with PUT
+        try:
+            config_manager.update_configuration(configuration=config)
+        except UpdateConfigurationException as exc:
+            raise QgsProcessingException(
+                f"Erreur lors de la mise à jour de la configuration : {exc}"
+            ) from exc
+
+        # Get offering for synchronization
+        feedback.pushInfo(self.tr("Récupération des offres"))
+        offering_manager = OfferingsRequestManager()
+        try:
+            offering_list = offering_manager.get_offering_list(
+                datastore_id=datastore_id, configuration_id=config_id
+            )
+        except ReadOfferingException as exc:
+            raise QgsProcessingException(
+                f"Erreur lors de la lecture des offres : {exc}"
+            ) from exc
+
+        # Synchronize
+        feedback.pushInfo(self.tr("Synchronisation des offres"))
+        try:
+            for offering in offering_list:
+                offering_manager.synchronize(
+                    datastore_id=datastore_id, offering_id=offering._id
+                )
+        except SynchronizeOfferingException as exc:
+            raise QgsProcessingException(
+                f"Erreur lors de la lecture synchronisation : {exc}"
             ) from exc
 
         feedback.pushInfo(self.tr("Suppression des annexes associées"))

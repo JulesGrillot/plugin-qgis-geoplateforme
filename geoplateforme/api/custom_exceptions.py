@@ -82,6 +82,10 @@ class ReadOfferingException(Exception):
     pass
 
 
+class SynchronizeOfferingException(Exception):
+    pass
+
+
 class UnavailableConfigurationException(Exception):
     pass
 

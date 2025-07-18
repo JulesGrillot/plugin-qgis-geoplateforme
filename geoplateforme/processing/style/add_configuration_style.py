@@ -14,13 +14,20 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication
 
 # Plugin
-from geoplateforme.api.configuration import ConfigurationRequestManager
+from geoplateforme.api.configuration import (
+    ConfigurationMetadata,
+    ConfigurationMetadataType,
+    ConfigurationRequestManager,
+)
 from geoplateforme.api.custom_exceptions import (
     ReadConfigurationException,
+    ReadOfferingException,
+    SynchronizeOfferingException,
     UnavailableDatastoreException,
     UpdateConfigurationException,
 )
 from geoplateforme.api.datastore import DatastoreRequestManager
+from geoplateforme.api.offerings import OfferingsRequestManager
 from geoplateforme.processing.annexes.create_annexe import CreateAnnexeAlgorithm
 from geoplateforme.processing.utils import get_short_string, get_user_manual_url
 from geoplateforme.toolbelt.preferences import PlgOptionsManager
@@ -201,6 +208,7 @@ class AddConfigurationStyleAlgorithm(QgsProcessingAlgorithm):
         url_api_entrepot = settings.url_api_entrepot
         url_entrepot = url_api_entrepot.removesuffix("/api")
 
+        # Update configuration extra
         if config.extra:
             config_extra = config.extra
         else:
@@ -210,12 +218,22 @@ class AddConfigurationStyleAlgorithm(QgsProcessingAlgorithm):
             config_styles = config_extra["styles"]
 
         layer_list = []
+        style_metadata_list = []
         for i, created_annexe_id in enumerate(created_annexe_ids):
             url_annexe = f"{url_entrepot}/annexes/{datastore.technical_name}{created_annexe_public_path[i]}"
             layer_dict = {"url": url_annexe, "annexe_id": created_annexe_id}
             if layer_style_name_str:
                 layer_dict["name"] = layer_style_names[i]
             layer_list.append(layer_dict)
+
+            # For now use type OTHER, specific type will be defined later by IGN
+            style_metadata_list.append(
+                ConfigurationMetadata(
+                    format="application/json",
+                    url=url_annexe,
+                    type=ConfigurationMetadataType.OTHER,
+                )
+            )
 
         config_styles.append(
             {
@@ -226,6 +244,7 @@ class AddConfigurationStyleAlgorithm(QgsProcessingAlgorithm):
         # Update configuration
         config_extra["styles"] = config_styles
 
+        # Update extra and name with PATCH
         try:
             config_manager.update_extra_and_name(
                 datastore_id=datastore_id,
@@ -234,7 +253,40 @@ class AddConfigurationStyleAlgorithm(QgsProcessingAlgorithm):
             )
         except UpdateConfigurationException as exc:
             raise QgsProcessingException(
-                f"Erreur lors de la lecture de la configuration : {exc}"
+                f"Erreur lors de la mise à jour de la configuration : {exc}"
+            ) from exc
+
+        # Update style metadata with PUT
+        config.metadata.extend(style_metadata_list)
+        try:
+            config_manager.update_configuration(configuration=config)
+        except UpdateConfigurationException as exc:
+            raise QgsProcessingException(
+                f"Erreur lors de la mise à jour de la configuration : {exc}"
+            ) from exc
+
+        # Get offering for synchronization
+        feedback.pushInfo(self.tr("Récupération des offres"))
+        offering_manager = OfferingsRequestManager()
+        try:
+            offering_list = offering_manager.get_offering_list(
+                datastore_id=datastore_id, configuration_id=config_id
+            )
+        except ReadOfferingException as exc:
+            raise QgsProcessingException(
+                f"Erreur lors de la lecture des offres : {exc}"
+            ) from exc
+
+        # Synchronize
+        feedback.pushInfo(self.tr("Synchronisation des offres"))
+        try:
+            for offering in offering_list:
+                offering_manager.synchronize(
+                    datastore_id=datastore_id, offering_id=offering._id
+                )
+        except SynchronizeOfferingException as exc:
+            raise QgsProcessingException(
+                f"Erreur lors de la lecture synchronisation : {exc}"
             ) from exc
 
         return {self.CREATED_ANNEXE_IDS: ",".join(created_annexe_ids)}

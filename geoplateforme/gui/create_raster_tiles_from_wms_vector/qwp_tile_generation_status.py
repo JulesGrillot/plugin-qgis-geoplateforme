@@ -188,7 +188,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
         config_manager = ConfigurationRequestManager()
         try:
             configuration = config_manager.get_configuration(
-                datastore=datastore_id, configuration=offering.configuration["_id"]
+                datastore=datastore_id, configuration=offering.configuration._id
             )
         except ReadConfigurationException as exc:
             self._report_processing_error(

@@ -143,6 +143,12 @@ def read_tms_layer_capabilities(url: str) -> Optional[dict]:
     else:
         return None
 
+    tile_srs = getFirstElementByTagName(capabilities, "SRS")
+    if tile_srs:
+        srs = tile_srs.firstChild.nodeValue
+    else:
+        return None
+
     zmin = None
     zmax = None
     for tile_set in capabilities.getElementsByTagName("TileSet"):
@@ -153,4 +159,4 @@ def read_tms_layer_capabilities(url: str) -> Optional[dict]:
         if zmax is None or z > zmax:
             zmax = z
 
-    return {"format": format_ext, "zmin": zmin, "zmax": zmax}
+    return {"format": format_ext, "zmin": zmin, "zmax": zmax, "srs": srs}

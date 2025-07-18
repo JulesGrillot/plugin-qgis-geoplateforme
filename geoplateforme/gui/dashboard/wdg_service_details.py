@@ -9,6 +9,7 @@ from qgis.core import (
     QgsProject,
     QgsRasterLayer,
     QgsVectorLayer,
+    QgsVectorTileLayer,
 )
 from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtCore import QSize, Qt, pyqtSignal
@@ -21,7 +22,7 @@ from geoplateforme.api.offerings import Offering, OfferingStatus
 from geoplateforme.gui.create_raster_tiles_from_wms_vector.wzd_raster_tiles_from_wms_vector import (
     TileRasterCreationWizard,
 )
-from geoplateforme.gui.provider.capabilities_reader import read_wmts_layer_capabilities
+from geoplateforme.gui.provider.capabilities_reader import read_tms_layer_capabilities
 from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.tools.delete_offering import DeleteOfferingAlgorithm
 from geoplateforme.toolbelt import PlgLogger
@@ -301,21 +302,37 @@ class ServiceDetailsWidget(QWidget):
         ):
             for val in urls:
                 if val["type"] == "WMS":
-                    # TODO : comment définir le CRS
-                    url = f"crs=EPSG:4326&format=image/png&layers={self._offering.layer_name}&styles&url={val['url'].split('?')[0]}?GetCapabilities"
+                    # Le CRS est défini a 3857 par defaut
+                    url = f"crs=EPSG:3857&format=image/png&layers={self._offering.layer_name}&styles&url={val['url'].split('?')[0]}?GetCapabilities"
                     return QgsRasterLayer(url, self._offering.layer_name, "wms")
         if self._offering.type == ConfigurationType.WMTS_TMS:
             for val in urls:
-                if val["type"] == "WMTS":
-                    params = read_wmts_layer_capabilities(
-                        val["url"].split("?")[0],
-                        self._offering.configuration.name,
-                    )
-                    if params:
-                        # TODO : define url
-                        url = "invalid"
-                        # url = f"format={params['format']}&layers={self._offering.layer_name}&styles={params['style']}&tileMatrixSet={params['tileMatrixSet']}&url={result['url'].split('?')[0]}?SERVICE%3DWMTS%26version%3D1.0.0%26request%3DGetCapabilities"
+                if val["type"] == "TMS":
+                    params = read_tms_layer_capabilities(val["url"])
+                    print(params)
+                    print(val["url"])
+                    if params["format"] == "pbf":
+                        url = (
+                            "type=xyz&crs="
+                            + params["srs"]
+                            + f"&zmax={params['zmax']}"
+                            + f"&zmin={params['zmin']}"
+                            + "&url="
+                            + val["url"]
+                            + "/{z}/{x}/{y}.pbf"
+                        )
+                        return QgsVectorTileLayer(url, self._offering.layer_name)
+                    elif params["format"] is not None:
+                        url = (
+                            "type=xyz&crs="
+                            + params["srs"]
+                            + "&url="
+                            + val["url"]
+                            + "/{z}/{x}/{y}."
+                            + params["format"]
+                        )
                         return QgsRasterLayer(url, self._offering.layer_name, "wms")
+
         if self._offering.type == ConfigurationType.VECTOR_TMS:
             return None
 

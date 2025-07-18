@@ -70,6 +70,21 @@ class ConfigurationStatus(Enum):
     SYNCHRONIZING = "SYNCHRONIZING"
 
 
+class ConfigurationMetadataType(Enum):
+    ISO19115_2003 = "ISO19115:2003"
+    FGDC = "FGDC"
+    TC211 = "TC211"
+    ISO_19139 = "19139"
+    OTHER = "Other"
+
+
+@dataclass
+class ConfigurationMetadata:
+    format: str
+    url: str
+    type: ConfigurationMetadataType
+
+
 @dataclass
 class Configuration:
     _id: str
@@ -85,7 +100,7 @@ class Configuration:
     _attribution: Optional[dict] = None
     _last_event: Optional[dict] = None
     _extra: Optional[dict] = None
-    _metadata: Optional[list[dict]] = None
+    _metadata: Optional[list[ConfigurationMetadata]] = None
     _type_infos: Optional[dict] = None
 
     @property
@@ -230,7 +245,7 @@ class Configuration:
         return self._extra
 
     @property
-    def metadata(self) -> list[dict]:
+    def metadata(self) -> list[ConfigurationMetadata]:
         """Returns the metadata of the configuration.
 
         :return: configuration metadata
@@ -314,7 +329,7 @@ class Configuration:
         if "layer_name" in val:
             res._layer_name = val["layer_name"]
         if "type" in val:
-            res._type = val["type"]
+            res._type = ConfigurationType(val["type"])
         if "status" in val:
             res._status = ConfigurationStatus(val["status"])
         if "tags" in val:
@@ -326,7 +341,15 @@ class Configuration:
         if "extra" in val:
             res._extra = val["extra"]
         if "metadata" in val:
-            res._metadata = val["metadata"]
+            res._metadata = []
+            for metadata in val["metadata"]:
+                res._metadata.append(
+                    ConfigurationMetadata(
+                        format=metadata["format"],
+                        url=metadata["url"],
+                        type=ConfigurationMetadataType(metadata["type"]),
+                    )
+                )
         if "type_infos" in val:
             res._type_infos = val["type_infos"]
 
@@ -354,7 +377,15 @@ class Configuration:
         if "extra" in data:
             self._extra = data["extra"]
         if "metadata" in data:
-            self._metadata = data["metadata"]
+            self._metadata = []
+            for metadata in data["metadata"]:
+                self._metadata.append(
+                    ConfigurationMetadata(
+                        format=metadata["format"],
+                        url=metadata["url"],
+                        type=ConfigurationMetadataType(metadata["type"]),
+                    )
+                )
         if "type_infos" in data:
             self._type_infos = data["type_infos"]
         self.is_detailed = True
@@ -407,12 +438,16 @@ class ConfigurationRequestManager:
         data = QByteArray()
         data_map = {
             "type": configuration.type.value,
-            "metadata": configuration.metadata,
+            "metadata": [
+                {"format": meta.format, "url": meta.url, "type": meta.type.value}
+                for meta in configuration.metadata
+            ],
             "name": configuration.name,
             "layer_name": configuration.layer_name,
             "type_infos": configuration.type_infos,
-            "attribution": configuration.attribution,
         }
+        if configuration.attribution:
+            data_map["attribution"] = configuration.attribution
         data.append(json.dumps(data_map))
         try:
             # send request
@@ -465,9 +500,11 @@ class ConfigurationRequestManager:
             f"{__name__}.get_configuration(datastore:{datastore}, configuration: {configuration})"
         )
 
-        return Configuration.from_dict(
+        config = Configuration.from_dict(
             datastore, self.get_configuration_json(datastore, configuration)
         )
+        config.is_detailed = True
+        return config
 
     def get_configuration_json(self, datastore_id: str, configuration: str) -> dict:
         """Get dict values of configuration
@@ -728,3 +765,43 @@ class ConfigurationRequestManager:
             raise UpdateConfigurationException(
                 f"Error in configuration update : {err}"
             ) from err
+
+    def update_configuration(
+        self,
+        configuration: Configuration,
+    ) -> None:
+        """Update configuration
+        :param configuration: configuration to update
+        :type configuration: Configuration
+        :raises UpdateConfigurationException: error when updating configuraiton
+        """
+        self.log(f"{__name__}.update_configuration(configuration: {configuration})")
+
+        # encode data
+        data = QByteArray()
+        data_map = {
+            "type": configuration.type.value,
+            "metadata": [
+                {"format": meta.format, "url": meta.url, "type": meta.type.value}
+                for meta in configuration.metadata
+            ],
+            "name": configuration.name,
+            "type_infos": configuration.type_infos,
+        }
+        if configuration.attribution:
+            data_map["attribution"] = configuration.attribution
+        data.append(json.dumps(data_map))
+        try:
+            # send request
+            self.request_manager.put_url(
+                url=QUrl(
+                    f"{self.get_base_url(configuration.datastore_id)}/{configuration._id}"
+                ),
+                config_id=self.plg_settings.qgis_auth_id,
+                data=data,
+                headers={b"Content-Type": bytes("application/json", "utf8")},
+            )
+        except ConnectionError as err:
+            raise UpdateConfigurationException(
+                f"Error while updating configuration : {err}"
+            )

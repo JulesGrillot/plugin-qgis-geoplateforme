@@ -1,6 +1,16 @@
 import os
+from typing import Optional
 
-from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
+from qgis.core import (
+    QgsApplication,
+    QgsMapLayer,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
+    QgsProject,
+    QgsRasterLayer,
+    QgsVectorLayer,
+    QgsVectorTileLayer,
+)
 from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtCore import QSize, Qt, pyqtSignal
 from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon, QPixmap
@@ -12,6 +22,7 @@ from geoplateforme.api.offerings import Offering, OfferingStatus
 from geoplateforme.gui.create_raster_tiles_from_wms_vector.wzd_raster_tiles_from_wms_vector import (
     TileRasterCreationWizard,
 )
+from geoplateforme.gui.provider.capabilities_reader import read_tms_layer_capabilities
 from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.tools.delete_offering import DeleteOfferingAlgorithm
 from geoplateforme.toolbelt import PlgLogger
@@ -60,6 +71,19 @@ class ServiceDetailsWidget(QWidget):
         self._dataset_name = dataset_name
         self._set_offering_details(offering)
 
+    def _load_icon(self) -> QIcon:
+        if self._offering.type == ConfigurationType.WFS:
+            return QIcon(":images/themes/default/mActionAddWfsLayer.svg")
+        if (
+            self._offering.type == ConfigurationType.WMTS_TMS
+            or self._offering.type == ConfigurationType.WMS_RASTER
+            or self._offering.type == ConfigurationType.WMS_VECTOR
+        ):
+            return QIcon(":images/themes/default/mActionAddWmsLayer.svg")
+
+        if self._offering.type == ConfigurationType.VECTOR_TMS:
+            return QIcon(":images/themes/default/mActionAddVectorTileLayer.svg")
+
     def _set_offering_details(self, offering: Offering) -> None:
         """
         Define offering details
@@ -88,6 +112,18 @@ class ServiceDetailsWidget(QWidget):
             delete_action.triggered.connect(self.delete_offering)
             button = QToolButton(self)
             button.setDefaultAction(delete_action)
+            button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+            self.edit_toolbar.addWidget(button)
+
+            # Load service
+            load_action = QAction(
+                self._load_icon(),
+                self.tr("Charger"),
+                self,
+            )
+            load_action.triggered.connect(self.load_offering)
+            button = QToolButton(self)
+            button.setDefaultAction(load_action)
             button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
             self.edit_toolbar.addWidget(button)
 
@@ -252,3 +288,57 @@ class ServiceDetailsWidget(QWidget):
             )
 
         return result
+
+    def _offering_map_layer(self) -> Optional[QgsMapLayer]:
+        urls = self._offering.urls
+        if self._offering.type == ConfigurationType.WFS:
+            for val in urls:
+                if val["type"] == "WFS":
+                    url = val["url"].replace("typeNames", "typename")
+                    return QgsVectorLayer(url, self._offering.layer_name, "WFS")
+        if (
+            self._offering.type == ConfigurationType.WMS_RASTER
+            or self._offering.type == ConfigurationType.WMS_VECTOR
+        ):
+            for val in urls:
+                if val["type"] == "WMS":
+                    # Le CRS est défini a 3857 par defaut
+                    url = f"crs=EPSG:3857&format=image/png&layers={self._offering.layer_name}&styles&url={val['url'].split('?')[0]}?GetCapabilities"
+                    return QgsRasterLayer(url, self._offering.layer_name, "wms")
+        if self._offering.type == ConfigurationType.WMTS_TMS:
+            for val in urls:
+                if val["type"] == "TMS":
+                    params = read_tms_layer_capabilities(val["url"])
+                    print(params)
+                    print(val["url"])
+                    if params["format"] == "pbf":
+                        url = (
+                            "type=xyz&crs="
+                            + params["srs"]
+                            + f"&zmax={params['zmax']}"
+                            + f"&zmin={params['zmin']}"
+                            + "&url="
+                            + val["url"]
+                            + "/{z}/{x}/{y}.pbf"
+                        )
+                        return QgsVectorTileLayer(url, self._offering.layer_name)
+                    elif params["format"] is not None:
+                        url = (
+                            "type=xyz&crs="
+                            + params["srs"]
+                            + "&url="
+                            + val["url"]
+                            + "/{z}/{x}/{y}."
+                            + params["format"]
+                        )
+                        return QgsRasterLayer(url, self._offering.layer_name, "wms")
+
+        if self._offering.type == ConfigurationType.VECTOR_TMS:
+            return None
+
+        return None
+
+    def load_offering(self) -> None:
+        layer = self._offering_map_layer()
+        if layer:
+            QgsProject.instance().addMapLayer(layer)

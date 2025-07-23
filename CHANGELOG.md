@@ -15,6 +15,22 @@ Unreleased
 ### Removed
 
 -->
+## 0.10.0 - 2025-07-23
+
+### Bugs fixes 🐛
+
+* fix(style): None return for configuration.extra if no styles available by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/159>
+* fix(pyr raster): offering now contains Configuration object and not dict by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/160>
+* fix(publication): no need for zoom level definition for WMS Raster and WMS-TMS by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/162>
+* fix(unpublish): wait for offering unpublication and check if configuration must be deleted by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/164>
+
+### Features and enhancements 🎉
+
+* Add processing and metadata form in tiles publication interface by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/155>
+* Ajout du formulaire de métadonnée pour les publication wms et wmts by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/156>
+* feat(style): update configuration metadata and synchronize offering after style add/delete by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/161>
+* Load service from dashboard by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/163>
+
 ## 0.9.0 - 2025-07-03
 
 ### Features and enhancements 🎉

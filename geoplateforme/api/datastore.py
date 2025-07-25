@@ -24,6 +24,7 @@ class Datastore:
     name: str
     technical_name: str
     storages: dict
+    endpoints: list[dict]
 
     def get_storage_use_and_quota(self, storage_type: str) -> (int, int):
         """
@@ -56,6 +57,46 @@ class Datastore:
                 self.storages["uploads"]["quota"],
             )
         return result
+
+    def get_endpoint(self, data_type: str, open: bool = True) -> str:
+        """
+        Get the endpoint for publication
+
+        Args:
+            data_type: (str)
+            open: (bool) : use open endpoint
+
+        Returns: first available endpoint id for data_type, raise UnavailableEndpointException otherwise
+        """
+        endpoint_id = ""
+        for endpoint in self.endpoints:
+            if (
+                endpoint["endpoint"]["type"] == data_type
+                and endpoint["endpoint"]["open"] == open
+                and endpoint["use"] < endpoint["quota"]
+            ):
+                endpoint_id = endpoint["endpoint"]["_id"]
+                break
+
+        if not endpoint_id:
+            raise UnavailableEndpointException(
+                f"Error while endpoint publication is empty : {self.endpoints}"
+            )
+        return endpoint_id
+
+    def get_endpoint_dict(self, endpoint_id: str) -> dict | None:
+        """
+        Get the endpoint dict
+
+        Args:
+            endpoint_id: (str)
+
+        Returns: endpoint with id endpoint_id, None if not available
+        """
+        for endpoint in self.endpoints:
+            if endpoint["endpoint"]["_id"] == endpoint_id:
+                return endpoint["endpoint"]
+        return None
 
 
 class DatastoreRequestManager:
@@ -107,77 +148,6 @@ class DatastoreRequestManager:
             name=data["name"],
             technical_name=data["technical_name"],
             storages=data["storages"],
+            endpoints=data["endpoints"],
         )
         return result
-
-    def get_endpoint(self, datastore: str, data_type: str, open: bool = True) -> str:
-        """
-        Get the endpoint for publication
-
-        Args:
-            datastore: (str)
-            data_type: (str)
-            open: (bool) : use open endpoint
-
-        Returns: first available endpoint id for data_type, raise UnavailableEndpointException otherwise
-        """
-        self.log(
-            f"{__name__}.get_endpoint(datastore:{datastore},data_type:{data_type})"
-        )
-
-        try:
-            reply = self.request_manager.get_url(
-                url=QUrl(self.get_base_url(datastore)),
-                config_id=self.plg_settings.qgis_auth_id,
-            )
-        except ConnectionError as err:
-            raise UnavailableEndpointException(
-                f"Error while getting datastore endpoint : {err}"
-            )
-
-        data = json.loads(reply.data())
-        endpoints = data["endpoints"]
-        endpoint_id = ""
-        for endpoint in endpoints:
-            if (
-                endpoint["endpoint"]["type"] == data_type
-                and endpoint["endpoint"]["open"] == open
-            ):
-                endpoint_id = endpoint["endpoint"]["_id"]
-                break
-
-        if not endpoint_id:
-            raise UnavailableEndpointException(
-                f"Error while endpoint publication is empty : {data}"
-            )
-        return endpoint_id
-
-    def get_endpoint_dict(self, datastore: str, endpoint_id: str) -> dict | None:
-        """
-        Get the endpoint dict
-
-        Args:
-            datastore: (str)
-            endpoint_id: (str)
-
-        Returns: endpoint with id endpoint_id, None if not available
-        """
-        self.log(
-            f"{__name__}.get_endpoint_dict(datastore:{datastore},endpoint_id:{endpoint_id})"
-        )
-
-        try:
-            reply = self.request_manager.get_url(
-                url=QUrl(self.get_base_url(datastore)),
-                config_id=self.plg_settings.qgis_auth_id,
-            )
-        except ConnectionError as err:
-            raise UnavailableEndpointException(
-                f"Error while getting datastore endpoint : {err}"
-            ) from err
-
-        data = json.loads(reply.data())
-        for endpoint in data["endpoints"]:
-            if endpoint["endpoint"]["_id"] == endpoint_id:
-                return endpoint["endpoint"]
-        return None

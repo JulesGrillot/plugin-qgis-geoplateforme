@@ -67,7 +67,10 @@ class MetadataFormPageWizard(QWizardPage):
                 )
         if self.metadata is None:
             self.metadata = Metadata(
-                _id="", datastore_id=datastore_id, is_detailed=True
+                _id="",
+                datastore_id=datastore_id,
+                is_detailed=True,
+                _dataset_name=dataset_name,
             )
             self.metadata._fields = MetadataFields()
             self.wdg_metadata = MetadataDetailsWidget(

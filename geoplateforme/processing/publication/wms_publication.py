@@ -191,7 +191,7 @@ class WmsPublicationAlgorithm(QgsProcessingAlgorithm):
         )
 
     def processAlgorithm(self, parameters, context, feedback):
-        datastore = self.parameterAsString(parameters, self.DATASTORE, context)
+        datastore_id = self.parameterAsString(parameters, self.DATASTORE, context)
         stored_data_id = self.parameterAsString(parameters, self.STORED_DATA, context)
         name = self.parameterAsString(parameters, self.NAME, context)
         layer_name = self.parameterAsString(parameters, self.LAYER_NAME, context)
@@ -212,7 +212,7 @@ class WmsPublicationAlgorithm(QgsProcessingAlgorithm):
         for relation in relations:
             # Create new static file
             id_style = self._create_geoserver_style(
-                datastore=datastore,
+                datastore=datastore_id,
                 name=relation[self.RELATIONS_NAME],
                 file_path=relation[self.RELATIONS_STYLE_FILE],
                 feedback=feedback,
@@ -232,7 +232,9 @@ class WmsPublicationAlgorithm(QgsProcessingAlgorithm):
         sandbox_datastore_ids = (
             PlgOptionsManager.get_plg_settings().sandbox_datastore_ids
         )
-        if datastore in sandbox_datastore_ids and not layer_name.startswith("SANDBOX"):
+        if datastore_id in sandbox_datastore_ids and not layer_name.startswith(
+            "SANDBOX"
+        ):
             layer_name = f"SANDBOX_{layer_name}"
             feedback.pushInfo(
                 self.tr(
@@ -250,7 +252,7 @@ class WmsPublicationAlgorithm(QgsProcessingAlgorithm):
 
             configuration = Configuration(
                 _id="",
-                datastore_id=datastore,
+                datastore_id=datastore_id,
                 _type=ConfigurationType.WMS_VECTOR,
                 _metadata=metadata,
                 _name=name,
@@ -273,7 +275,7 @@ class WmsPublicationAlgorithm(QgsProcessingAlgorithm):
 
             # response = configuration
             res = manager_configuration.create_configuration(
-                datastore=datastore,
+                datastore=datastore_id,
                 configuration=configuration,
             )
             configuration_id = res
@@ -283,10 +285,9 @@ class WmsPublicationAlgorithm(QgsProcessingAlgorithm):
 
         # get the endpoint for the publication
         try:
-            manager_endpoint = DatastoreRequestManager()
-            res = manager_endpoint.get_endpoint(
-                datastore=datastore, data_type=data_type
-            )
+            datastore_manager = DatastoreRequestManager()
+            datastore = datastore_manager.get_datastore(datastore_id)
+            res = datastore.get_endpoint(data_type=data_type)
 
             publication_endpoint = res
         except UnavailableEndpointException as exc:
@@ -298,7 +299,7 @@ class WmsPublicationAlgorithm(QgsProcessingAlgorithm):
             offering = manager_offering.create_offering(
                 visibility=publication_visibility,
                 endpoint=publication_endpoint,
-                datastore=datastore,
+                datastore=datastore_id,
                 configuration_id=configuration_id,
             )
         except OfferingCreationException as exc:
@@ -308,7 +309,7 @@ class WmsPublicationAlgorithm(QgsProcessingAlgorithm):
             # Update configuration tags
             manager_configuration = ConfigurationRequestManager()
             manager_configuration.add_tags(
-                datastore_id=datastore,
+                datastore_id=datastore_id,
                 configuration_id=configuration_id,
                 tags=tags,
             )
@@ -319,7 +320,7 @@ class WmsPublicationAlgorithm(QgsProcessingAlgorithm):
             # Update stored data tags
             manager = StoredDataRequestManager()
             manager.add_tags(
-                datastore_id=datastore,
+                datastore_id=datastore_id,
                 stored_data_id=stored_data_id,
                 tags={"published": "true"},
             )
@@ -356,7 +357,7 @@ class WmsPublicationAlgorithm(QgsProcessingAlgorithm):
 
     def _create_geoserver_style(
         self,
-        datastore: str,
+        datastore_id: str,
         name: str,
         file_path: str,
         context: QgsProcessingContext,
@@ -366,8 +367,8 @@ class WmsPublicationAlgorithm(QgsProcessingAlgorithm):
 
         :param name: static name
         :type name: str
-        :param datastore: datastore id
-        :type datastore: str
+        :param datastore_id: datastore id
+        :type datastore_id: str
         :param file_path: path to file
         :type file_path: str
         :param context: context of processing
@@ -382,7 +383,7 @@ class WmsPublicationAlgorithm(QgsProcessingAlgorithm):
         algo_str = f"geoplateforme:{CreateGeoserverStyleAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
         params = {
-            CreateGeoserverStyleAlgorithm.DATASTORE: datastore,
+            CreateGeoserverStyleAlgorithm.DATASTORE: datastore_id,
             CreateGeoserverStyleAlgorithm.NAME: name,
             CreateGeoserverStyleAlgorithm.FILE_PATH: file_path,
         }

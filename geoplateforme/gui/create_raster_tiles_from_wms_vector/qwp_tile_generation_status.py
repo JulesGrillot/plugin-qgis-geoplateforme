@@ -147,11 +147,10 @@ class TileGenerationStatusPageWizard(QWizardPage):
             return
 
         # Récupération du endpoint pour avoir l'url pour le moissonnage
-        endpoint_manager = DatastoreRequestManager()
+        datastore_manager = DatastoreRequestManager()
         try:
-            endpoint = endpoint_manager.get_endpoint_dict(
-                datastore=datastore_id, endpoint_id=offering.endpoint["_id"]
-            )
+            datastore = datastore_manager.get_datastore(datastore_id)
+            endpoint = datastore.get_endpoint_dict(endpoint_id=offering.endpoint["_id"])
         except ReadOfferingException as exc:
             self._report_processing_error(
                 processing=self.tr("Récupération endpoint"), error=str(exc)

@@ -76,9 +76,6 @@ class MetadataFormPageWizard(QWizardPage):
             self.wdg_metadata = MetadataDetailsWidget(
                 metadata=self.metadata, datastore_id=datastore_id, creation_mode=True
             )
-            self.wdg_metadata.le_type.setText("dataset")
-            self.wdg_metadata.le_language.setText("fre")
-            self.wdg_metadata.le_encoding.setText("utf8")
         self.gridLayout.addWidget(self.wdg_metadata)
 
         self.setCommitPage(True)
@@ -101,8 +98,8 @@ class MetadataFormPageWizard(QWizardPage):
                 "not_valid": len(self.wdg_metadata.te_description.toPlainText()) == 0,
             },
             {
-                "field": self.wdg_metadata.le_thematics,
-                "not_valid": len(self.wdg_metadata.le_thematics.text()) == 0,
+                "field": self.wdg_metadata.tb_thematics,
+                "not_valid": len(self.wdg_metadata.tb_thematics.tags) == 0,
             },
             {
                 "field": self.wdg_metadata.le_contact_email,

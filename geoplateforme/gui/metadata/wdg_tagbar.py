@@ -21,13 +21,15 @@ class TagBarWidget(QWidget):
         self.setLayout(self.h_layout)
         self.combobox = QComboBox()
         self.combobox.setEditable(True)
-        self.combobox.setInsertPolicy(QComboBox.NoInsert)
+        self.combobox.setInsertPolicy(QComboBox.InsertPolicy.NoInsert)
         self.combobox.completer().setCompletionMode(
             QCompleter.CompletionMode.PopupCompletion
         )
         self.combobox.setCurrentIndex(-1)
-        self.combobox.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Maximum)
-        self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.combobox.setSizePolicy(
+            QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Maximum
+        )
+        self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
         self.setContentsMargins(2, 2, 2, 2)
         self.h_layout.setContentsMargins(2, 2, 2, 2)
 
@@ -63,10 +65,10 @@ class TagBarWidget(QWidget):
         x_button = QPushButton("x")
         x_button.setFixedSize(20, 20)
         x_button.setStyleSheet("border:0px; font-weight:bold")
-        x_button.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
+        x_button.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum)
         x_button.clicked.connect(partial(self.delete_tag, text))
         hbox.addWidget(x_button)
-        tag.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Preferred)
+        tag.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Preferred)
         self.h_layout.addWidget(tag)
 
     def delete_tag(self, tag_name): ...

@@ -19,16 +19,23 @@ from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QUrl
 
 # plugin
 from geoplateforme.__about__ import DIR_PLUGIN_ROOT
+from geoplateforme.api.configuration import (
+    ConfigurationRequestManager,
+    ConfigurationType,
+)
 from geoplateforme.api.custom_exceptions import (
     AddTagException,
     DeleteMetadataException,
     DeleteTagException,
     MetadataCreationException,
     MetadataUpdateException,
+    MetadataUpdateLinksException,
     ReadMetadataException,
     UnavailableMetadataException,
     UnavailableMetadataFileException,
 )
+from geoplateforme.api.datastore import DatastoreRequestManager
+from geoplateforme.api.offerings import OfferingField, OfferingsRequestManager
 from geoplateforme.toolbelt import NetworkRequestsManager, PlgLogger, PlgOptionsManager
 
 logger = logging.getLogger(__name__)
@@ -75,6 +82,7 @@ class Metadata:
     is_detailed: bool = False
     _fields: Optional[MetadataFields] = None
     # Optional
+    _dataset_name: Optional[str] = None
     _type: Optional[MetadataType] = None
     _open_data: Optional[bool] = None
     _level: Optional[MetadataLevel] = None
@@ -82,6 +90,17 @@ class Metadata:
     _tags: Optional[dict] = None
     _endpoints: Optional[List[dict]] = None
     _extra: Optional[dict] = None
+
+    @property
+    def dataset_name(self) -> str | None:
+        """Returns the type of the metadata.
+
+        :return: metadata type
+        :rtype: MetadataType
+        """
+        if not self._dataset_name and not self.is_detailed:
+            self.update_from_api()
+        return self._dataset_name
 
     @property
     def type(self) -> MetadataType:
@@ -418,6 +437,8 @@ class Metadata:
             self._file_identifier = data["file_identifier"]
         if "tags" in data:
             self._tags = data["tags"]
+            if "datasheet_name" in self._tags:
+                self._dataset_name = self._tags["datasheet_name"]
         if "endpoints" in data:
             self._endpoints = data["endpoints"]
         if "extra" in data:
@@ -748,6 +769,7 @@ class MetadataRequestManager:
         self.log(
             f"{__name__}.update_metadata(datastore:{datastore_id}, metadata_id: {metadata._id})"
         )
+        self.update_metadata_links(metadata)
         with tempfile.TemporaryDirectory() as tmpdirname:
             temp_dir = Path(tmpdirname)
             file_name = temp_dir / f"{metadata._id}.xml"
@@ -843,3 +865,107 @@ class MetadataRequestManager:
                 f"Error while fetching metadata file : {err}"
             )
         return data
+
+    def update_metadata_links(self, metadata: Metadata):
+        """Update metadata links by parsing dataset.
+
+        :param metadata_id: metadata id
+        :type metadata_id: str
+
+        :raises MetadataUpdateLinksException: when error occur
+        """
+        self.log(f"{__name__}.update_metadata_links(metadata: {metadata._id})")
+        datastore_manager = DatastoreRequestManager()
+        config_manager = ConfigurationRequestManager()
+        offering_manager = OfferingsRequestManager()
+        try:
+            datastore = datastore_manager.get_datastore(metadata.datastore_id)
+            dataset = metadata.dataset_name
+            configurations = config_manager.get_configuration_list(
+                datastore_id=metadata.datastore_id, tags={"datasheet_name": dataset}
+            )
+            access_links = []
+            style_links = []
+            capabilities_links = []
+            endpoints = []
+            for conf in configurations:
+                offerings = offering_manager.get_offering_list(
+                    metadata.datastore_id,
+                    [OfferingField.LAYER_NAME, OfferingField.ENDPOINT],
+                    conf._id,
+                )
+                if len(offerings) > 0:
+                    offering = offerings[0]
+                    endpoint = datastore.get_endpoint_dict(offering.endpoint["_id"])
+                    if offering.endpoint["_id"] not in endpoints:
+                        endpoints.append(offering.endpoint["_id"])
+                        capabilities_links.append(
+                            {
+                                "type": "getcapabilities",
+                                "name": f"GetCapabilities - {endpoint['type']}",
+                                "description": endpoint["name"],
+                                "url": f"https://data.geopf.fr/annexes/{datastore.technical_name}/{endpoint['technical_name']}/capabilities.xml",
+                            }
+                        )
+                    # Layer Type
+                    layer_type = ""
+                    if conf.type in [
+                        ConfigurationType.WMS_RASTER,
+                        ConfigurationType.WMS_VECTOR,
+                    ]:
+                        layer_type = "OGC:WMS"
+                    if conf.type == ConfigurationType.WFS:
+                        layer_type = "OGC:WFS"
+                    if conf.type in [
+                        ConfigurationType.WMTS_TMS,
+                        ConfigurationType.VECTOR_TMS,
+                    ]:
+                        layer_type = "TMS"
+                    # Layer URL
+                    layer_url = endpoint["urls"][0]["url"]
+                    if endpoint["type"] == "WMTS-TMS":
+                        for url in endpoint["urls"]:
+                            if url["type"] == "TMS":
+                                layer_url = url["url"]
+                                break
+                    # For WFS we need to add one access for each relation
+                    layer_name = offering.layer_name
+                    if conf.type == ConfigurationType.WFS:
+                        for rel in conf.type_infos["used_data"][0]["relations"]:
+                            access_links.append(
+                                {
+                                    "type": "offering",
+                                    "offering_id": offering._id,
+                                    "name": f"{layer_name}:{rel['native_name']}",
+                                    "format": layer_type,
+                                    "url": layer_url,
+                                }
+                            )
+                    else:
+                        access_links.append(
+                            {
+                                "type": "offering",
+                                "offering_id": offering._id,
+                                "name": layer_name,
+                                "format": layer_type,
+                                "url": layer_url,
+                            }
+                        )
+
+                    if conf.extra is not None:
+                        if config_style := conf.extra.get("styles", None):
+                            for style in config_style:
+                                style_links.append(
+                                    {
+                                        "type": "style",
+                                        "name": style["name"],
+                                        "description": "",
+                                        "url": style["layers"][0]["url"],
+                                    }
+                                )
+            metadata.fields.links = access_links + style_links + capabilities_links
+
+        except ConnectionError as err:
+            raise MetadataUpdateLinksException(
+                f"Error while updating metadata links : {err}"
+            )

@@ -187,7 +187,7 @@ class WfsPublicationAlgorithm(QgsProcessingAlgorithm):
         )
 
     def processAlgorithm(self, parameters, context, feedback):
-        datastore = self.parameterAsString(parameters, self.DATASTORE, context)
+        datastore_id = self.parameterAsString(parameters, self.DATASTORE, context)
         stored_data_id = self.parameterAsString(parameters, self.STORED_DATA, context)
         name = self.parameterAsString(parameters, self.NAME, context)
         layer_name = self.parameterAsString(parameters, self.LAYER_NAME, context)
@@ -209,7 +209,9 @@ class WfsPublicationAlgorithm(QgsProcessingAlgorithm):
         sandbox_datastore_ids = (
             PlgOptionsManager.get_plg_settings().sandbox_datastore_ids
         )
-        if datastore in sandbox_datastore_ids and not layer_name.startswith("SANDBOX"):
+        if datastore_id in sandbox_datastore_ids and not layer_name.startswith(
+            "SANDBOX"
+        ):
             layer_name = f"SANDBOX_{layer_name}"
             feedback.pushInfo(
                 self.tr(
@@ -227,7 +229,7 @@ class WfsPublicationAlgorithm(QgsProcessingAlgorithm):
 
             configuration = Configuration(
                 _id="",
-                datastore_id=datastore,
+                datastore_id=datastore_id,
                 _type=ConfigurationType.WFS,
                 _metadata=metadata,
                 _name=name,
@@ -250,7 +252,7 @@ class WfsPublicationAlgorithm(QgsProcessingAlgorithm):
 
             # response = configuration
             res = manager_configuration.create_configuration(
-                datastore=datastore,
+                datastore=datastore_id,
                 configuration=configuration,
             )
             configuration_id = res
@@ -260,10 +262,9 @@ class WfsPublicationAlgorithm(QgsProcessingAlgorithm):
 
         # get the endpoint for the publication
         try:
-            manager_endpoint = DatastoreRequestManager()
-            res = manager_endpoint.get_endpoint(
-                datastore=datastore, data_type=data_type
-            )
+            datastore_manager = DatastoreRequestManager()
+            datastore = datastore_manager.get_datastore(datastore_id)
+            res = datastore.get_endpoint(data_type=data_type)
 
             publication_endpoint = res
         except UnavailableEndpointException as exc:
@@ -275,7 +276,7 @@ class WfsPublicationAlgorithm(QgsProcessingAlgorithm):
             offering = manager_offering.create_offering(
                 visibility=publication_visibility,
                 endpoint=publication_endpoint,
-                datastore=datastore,
+                datastore=datastore_id,
                 configuration_id=configuration_id,
             )
         except OfferingCreationException as exc:
@@ -285,7 +286,7 @@ class WfsPublicationAlgorithm(QgsProcessingAlgorithm):
             # Update configuration tags
             manager_configuration = ConfigurationRequestManager()
             manager_configuration.add_tags(
-                datastore_id=datastore,
+                datastore_id=datastore_id,
                 configuration_id=configuration_id,
                 tags=tags,
             )
@@ -296,7 +297,7 @@ class WfsPublicationAlgorithm(QgsProcessingAlgorithm):
             # Update stored data tags
             manager = StoredDataRequestManager()
             manager.add_tags(
-                datastore_id=datastore,
+                datastore_id=datastore_id,
                 stored_data_id=stored_data_id,
                 tags={"published": "true"},
             )

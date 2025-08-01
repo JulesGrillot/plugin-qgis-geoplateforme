@@ -58,6 +58,10 @@ class MetadataUpdateException(Exception):
     pass
 
 
+class MetadataUpdateLinksException(Exception):
+    pass
+
+
 class OfferingCreationException(Exception):
     pass
 

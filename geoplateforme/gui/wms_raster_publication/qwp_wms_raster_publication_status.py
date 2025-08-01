@@ -144,7 +144,7 @@ class PublicationStatut(QWizardPage):
                     )
                     metadata = self.qwp_metadata_form.metadata
                     manager = MetadataRequestManager()
-
+                    manager.update_metadata_links(metadata)
                     with tempfile.TemporaryDirectory() as tmpdirname:
                         temp_dir = Path(tmpdirname)
                         file_name = temp_dir / f"{metadata._id}.xml"

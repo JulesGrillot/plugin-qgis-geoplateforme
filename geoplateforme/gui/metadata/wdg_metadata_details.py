@@ -4,9 +4,17 @@ from typing import Optional
 from qgis.core import QgsCoordinateReferenceSystem, QgsRectangle
 from qgis.gui import QgsCollapsibleGroupBox, QgsExtentGroupBox
 from qgis.PyQt import uic
-from qgis.PyQt.QtWidgets import QFrame, QLabel, QVBoxLayout, QWidget
+from qgis.PyQt.QtWidgets import QCompleter, QFrame, QLabel, QVBoxLayout, QWidget
 
 from geoplateforme.api.metadata import Metadata, MetadataRequestManager
+from geoplateforme.constants import (
+    metadata_encoding_values,
+    metadata_inspire_keyword,
+    metadata_languages,
+    metadata_maintenance_frequency,
+    metadata_topic_categories,
+)
+from geoplateforme.gui.metadata.wdg_tagbar import DictTagBarWidget, ListTagBarWidget
 
 
 class MetadataDetailsWidget(QWidget):
@@ -56,27 +64,69 @@ class MetadataDetailsWidget(QWidget):
         self.te_description.setText(self.metadata.fields.abstract)
         self.le_context.setText(self.datastore_id)
         self.le_unique_id.setText(self.metadata.fields.identifier)
+        self.tb_thematics = DictTagBarWidget(metadata_topic_categories)
+        self.gl_description.addWidget(self.tb_thematics, 4, 2)
         if self.metadata.fields.topics:
-            self.le_thematics.setText(", ".join(self.metadata.fields.topics))
+            self.tb_thematics.create_tags(self.metadata.fields.topics)
+        self.tb_inspire_kw = ListTagBarWidget(metadata_inspire_keyword)
+        self.gl_description.addWidget(self.tb_inspire_kw, 5, 2)
         if self.metadata.fields.inspire_keywords:
-            self.le_inspire_kw.setText(", ".join(self.metadata.fields.inspire_keywords))
+            self.tb_inspire_kw.create_tags(self.metadata.fields.inspire_keywords)
         if self.metadata.fields.free_keywords:
             self.le_kw.setText(", ".join(self.metadata.fields.free_keywords))
 
         self.le_genealogy.setText(self.metadata.fields.genealogy)
         if self.metadata.fields.creation_date:
             self.de_creation_date.setDate(self.metadata.fields.creation_date)
-        self.le_frequency.setText(self.metadata.fields.frequency)
+        self.cb_frequency.addItems([v for v in metadata_maintenance_frequency.values()])
+        self.cb_frequency.completer().setCompletionMode(
+            QCompleter.CompletionMode.PopupCompletion
+        )
+        self.cb_frequency.setCurrentText("Inconnue")
+        if (
+            self.metadata.fields.frequency
+            and self.metadata.fields.frequency in metadata_maintenance_frequency
+        ):
+            self.cb_frequency.setCurrentText(
+                metadata_maintenance_frequency[self.metadata.fields.frequency]
+            )
 
         self.le_contact_email.setText(self.metadata.fields.contact_email)
 
         self.le_org_name.setText(self.metadata.fields.org_name)
         self.le_org_email.setText(self.metadata.fields.org_email)
 
-        self.le_type.setText(self.metadata.fields.type)
-        self.le_language.setText(self.metadata.fields.language)
-        # self.le_link.setText(self.metadata.fields)
-        self.le_encoding.setText(self.metadata.fields.encoding)
+        self.cb_type.addItems(["dataset", "series"])
+        self.cb_type.setCurrentText("dataset")
+        if self.metadata.fields.type and self.metadata.fields.type in [
+            "dataset",
+            "series",
+        ]:
+            self.cb_type.setCurrentText(self.metadata.fields.type)
+
+        self.cb_language.addItems([v for v in metadata_languages.values()])
+        self.cb_language.completer().setCompletionMode(
+            QCompleter.CompletionMode.PopupCompletion
+        )
+        self.cb_language.setCurrentText("français")
+        if (
+            self.metadata.fields.language
+            and self.metadata.fields.language in metadata_languages
+        ):
+            self.cb_language.setCurrentText(
+                metadata_languages[self.metadata.fields.language]
+            )
+
+        self.cb_encoding.addItems(metadata_encoding_values)
+        self.cb_encoding.completer().setCompletionMode(
+            QCompleter.CompletionMode.PopupCompletion
+        )
+        self.cb_encoding.setCurrentText("utf8")
+        if (
+            self.metadata.fields.encoding
+            and self.metadata.fields.encoding in metadata_encoding_values
+        ):
+            self.cb_encoding.setCurrentText(self.metadata.fields.encoding)
 
         if not self.creation_mode:
             self.le_unique_id.setReadOnly(True)
@@ -203,12 +253,12 @@ class MetadataDetailsWidget(QWidget):
         self.metadata.fields.title = self.le_title.text()
         self.metadata.fields.abstract = self.te_description.toPlainText()
         self.metadata.fields.identifier = self.le_unique_id.text()
-        if self.le_thematics.text():
-            self.metadata.fields.topics = self.le_thematics.text().split(",")
+        if len(self.tb_thematics.tags) > 0:
+            self.metadata.fields.topics = self.tb_thematics.tags
         else:
             self.metadata.fields.topics = []
-        if self.le_inspire_kw.text():
-            self.metadata.fields.inspire_keywords = self.le_inspire_kw.text().split(",")
+        if len(self.tb_inspire_kw.tags) > 0:
+            self.metadata.fields.inspire_keywords = self.tb_inspire_kw.tags
         else:
             self.metadata.fields.inspire_keywords = []
 
@@ -220,16 +270,22 @@ class MetadataDetailsWidget(QWidget):
         self.metadata.fields.genealogy = self.le_genealogy.text()
         if not self.de_creation_date.date().isNull():
             self.metadata.fields.creation_date = self.de_creation_date.date().toPyDate()
-        self.metadata.fields.frequency = self.le_frequency.text()
+        self.metadata.fields.frequency = list(metadata_maintenance_frequency.keys())[
+            list(metadata_maintenance_frequency.values()).index(
+                self.cb_frequency.currentText()
+            )
+        ]
 
         self.metadata.fields.contact_email = self.le_contact_email.text()
 
         self.metadata.fields.org_name = self.le_org_name.text()
         self.metadata.fields.org_email = self.le_org_email.text()
 
-        self.metadata.fields.type = self.le_type.text()
-        self.metadata.fields.language = self.le_language.text()
-        self.metadata.fields.encoding = self.le_encoding.text()
+        self.metadata.fields.type = self.cb_type.currentText()
+        self.metadata.fields.language = list(metadata_languages.keys())[
+            list(metadata_languages.values()).index(self.cb_language.currentText())
+        ]
+        self.metadata.fields.encoding = self.cb_encoding.currentText()
 
     def update_metadata(self):
         """Update metadata on GPF with widget fields"""

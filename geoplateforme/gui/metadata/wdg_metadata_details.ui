@@ -32,9 +32,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-14</y>
         <width>565</width>
-        <height>892</height>
+        <height>876</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -43,7 +43,7 @@
          <property name="title">
           <string>Description</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_7">
+         <layout class="QGridLayout" name="gl_description">
           <item row="0" column="2">
            <widget class="QLineEdit" name="le_title">
             <property name="toolTip">
@@ -132,6 +132,9 @@
             <property name="toolTip">
              <string>Datastore Id</string>
             </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item row="3" column="2">
@@ -142,16 +145,6 @@
             </property>
             <property name="readOnly">
              <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="2">
-           <widget class="QLineEdit" name="le_thematics"/>
-          </item>
-          <item row="5" column="2">
-           <widget class="QLineEdit" name="le_inspire_kw">
-            <property name="text">
-             <string/>
             </property>
            </widget>
           </item>
@@ -186,13 +179,6 @@
           <string>Temporal References</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="0" column="0">
-           <widget class="QLabel" name="lbl_creation_date">
-            <property name="text">
-             <string>Creation date</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <widget class="QDateEdit" name="de_creation_date">
             <property name="dateTime">
@@ -217,6 +203,13 @@
             </property>
            </widget>
           </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="lbl_creation_date">
+            <property name="text">
+             <string>Creation date</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0">
            <widget class="QLabel" name="lbl_frequency">
             <property name="text">
@@ -225,7 +218,14 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QLineEdit" name="le_frequency"/>
+           <widget class="QComboBox" name="cb_frequency">
+            <property name="editable">
+             <bool>true</bool>
+            </property>
+            <property name="insertPolicy">
+             <enum>QComboBox::NoInsert</enum>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -284,10 +284,20 @@
           <string>Metadata Informations</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_8">
-          <item row="3" column="0">
-           <widget class="QLabel" name="lbl_encoding">
+          <item row="5" column="0">
+           <widget class="QLabel" name="lbl_link">
             <property name="text">
-             <string>Encoding</string>
+             <string>Metadata link</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QComboBox" name="cb_encoding">
+            <property name="editable">
+             <bool>true</bool>
+            </property>
+            <property name="insertPolicy">
+             <enum>QComboBox::NoInsert</enum>
             </property>
            </widget>
           </item>
@@ -298,31 +308,35 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="lbl_link">
-            <property name="text">
-             <string>Metadata link</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="lbl_language">
             <property name="text">
              <string>Metadata language</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="le_type"/>
+          <item row="6" column="0">
+           <widget class="QLabel" name="lbl_encoding">
+            <property name="text">
+             <string>Encoding</string>
+            </property>
+           </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="le_language"/>
-          </item>
-          <item row="2" column="1">
+          <item row="5" column="1">
            <widget class="QLineEdit" name="le_link"/>
           </item>
           <item row="3" column="1">
-           <widget class="QLineEdit" name="le_encoding"/>
+           <widget class="QComboBox" name="cb_language">
+            <property name="editable">
+             <bool>true</bool>
+            </property>
+            <property name="insertPolicy">
+             <enum>QComboBox::NoInsert</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="cb_type"/>
           </item>
          </layout>
         </widget>

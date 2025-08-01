@@ -23,6 +23,9 @@ from geoplateforme.gui.create_raster_tiles_from_wms_vector.wzd_raster_tiles_from
     TileRasterCreationWizard,
 )
 from geoplateforme.gui.provider.capabilities_reader import read_tms_layer_capabilities
+from geoplateforme.gui.provider.choose_authentication_dialog import (
+    ChooseAuthenticationDialog,
+)
 from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.tools.delete_offering import DeleteOfferingAlgorithm
 from geoplateforme.toolbelt import PlgLogger
@@ -289,12 +292,14 @@ class ServiceDetailsWidget(QWidget):
 
         return result
 
-    def _offering_map_layer(self) -> Optional[QgsMapLayer]:
+    def _offering_map_layer(self, authid: str | None = None) -> Optional[QgsMapLayer]:
         urls = self._offering.urls
         if self._offering.type == ConfigurationType.WFS:
             for val in urls:
                 if val["type"] == "WFS":
                     url = val["url"].replace("typeNames", "typename")
+                    if authid is not None:
+                        url += f"&authcfg={authid}"
                     return QgsVectorLayer(url, self._offering.layer_name, "WFS")
         if (
             self._offering.type == ConfigurationType.WMS_RASTER
@@ -304,6 +309,8 @@ class ServiceDetailsWidget(QWidget):
                 if val["type"] == "WMS":
                     # Le CRS est défini a 3857 par defaut
                     url = f"crs=EPSG:3857&format=image/png&layers={self._offering.layer_name}&styles&url={val['url'].split('?')[0]}?GetCapabilities"
+                    if authid is not None:
+                        url = f"authcfg={authid}&" + url
                     return QgsRasterLayer(url, self._offering.layer_name, "wms")
         if self._offering.type == ConfigurationType.WMTS_TMS:
             for val in urls:
@@ -321,6 +328,8 @@ class ServiceDetailsWidget(QWidget):
                             + val["url"]
                             + "/{z}/{x}/{y}.pbf"
                         )
+                        if authid is not None:
+                            url = f"authcfg={authid}&" + url
                         return QgsVectorTileLayer(url, self._offering.layer_name)
                     elif params["format"] is not None:
                         url = (
@@ -331,6 +340,8 @@ class ServiceDetailsWidget(QWidget):
                             + "/{z}/{x}/{y}."
                             + params["format"]
                         )
+                        if authid is not None:
+                            url = f"authcfg={authid}&" + url
                         return QgsRasterLayer(url, self._offering.layer_name, "wms")
 
         if self._offering.type == ConfigurationType.VECTOR_TMS:
@@ -339,6 +350,13 @@ class ServiceDetailsWidget(QWidget):
         return None
 
     def load_offering(self) -> None:
-        layer = self._offering_map_layer()
+        authid = None
+        if self._offering.open is False:
+            auth_dlg = ChooseAuthenticationDialog()
+            if auth_dlg.exec():
+                authid = auth_dlg.authent.configId()
+            else:
+                return
+        layer = self._offering_map_layer(authid)
         if layer:
             QgsProject.instance().addMapLayer(layer)

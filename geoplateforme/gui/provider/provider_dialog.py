@@ -12,7 +12,11 @@ from geoplateforme.gui.provider.capabilities_reader import (
     read_tms_layer_capabilities,
     read_wmts_layer_capabilities,
 )
+from geoplateforme.gui.provider.choose_authentication_dialog import (
+    ChooseAuthenticationDialog,
+)
 from geoplateforme.gui.provider.mdl_search_result import SearchResultModel
+from geoplateforme.gui.provider.wdg_range_slider import QtRangeSlider
 from geoplateforme.toolbelt import PlgLogger
 
 logger = logging.getLogger(__name__)
@@ -40,6 +44,27 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
 
         self.log = PlgLogger().log
 
+        self.rs_production_year = QtRangeSlider(self, 1800, 2200, 1900, 2100)
+        self.rs_production_year.left_thumb_value_changed.connect(
+            lambda x: self.lb_py_min.setText(str(x))
+        )
+        self.rs_production_year.right_thumb_value_changed.connect(
+            lambda x: self.lb_py_max.setText(str(x))
+        )
+        self.layout_advanced_search.addWidget(self.rs_production_year, 6, 6)
+
+        self.cb_open.addItems(["True", "False"])
+        self.cb_open.setCurrentIndex(-1)
+        self.cb_type.addItems(
+            [
+                "WFS",
+                "WMS",
+                "WMTS",
+                "TMS",
+            ]
+        )
+        self.cb_type.setCurrentIndex(-1)
+
         self.mdl_search_result = SearchResultModel()
         self.tbv_results.setModel(self.mdl_search_result)
         self.tbv_results.verticalHeader().setVisible(False)
@@ -53,15 +78,24 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
         self.tw_search.currentChanged.connect(self._clear_search)
 
         self.le_search.textChanged.connect(self._simple_search)
-        self.le_title.textChanged.connect(self._advanced_search)
-        self.le_keywords.textChanged.connect(self._advanced_search)
+        self.btn_search.clicked.connect(self._advanced_search)
+        self.btn_clear_search.clicked.connect(self._clear_search)
         self.buttonBox.clicked.connect(self.onAccept)
 
     def _clear_search(self):
         """clear search results"""
         self.le_search.clear()
+
         self.le_title.clear()
+        self.le_layername.clear()
+        self.le_theme.clear()
+        self.le_producer.clear()
         self.le_keywords.clear()
+        self.cb_open.setCurrentIndex(-1)
+        self.cb_type.setCurrentIndex(-1)
+        self.rs_production_year.set_left_thumb_value(1900)
+        self.rs_production_year.set_right_thumb_value(2100)
+
         self.metaTextBrowser.clear()
         self.mdl_search_result.clear()
         self.buttonBox.button(QDialogButtonBox.StandardButton.Apply).setEnabled(False)
@@ -78,10 +112,24 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
     def _advanced_search(self):
         """launch advanced search using search API"""
         search_dict = {}
-        if len(self.le_title.text()) > 2:
+        if len(self.le_title.text()) > 0:
             search_dict["title"] = self.le_title.text()
-        if len(self.le_keywords.text()) > 2:
+        if len(self.le_layername.text()) > 0:
+            search_dict["layer_name"] = self.le_layername.text()
+        if self.cb_open.currentIndex() >= 0:
+            search_dict["open"] = self.cb_open.currentText()
+        if self.cb_type.currentIndex() >= 0:
+            search_dict["type"] = self.cb_type.currentText()
+        if len(self.le_theme.text()) > 0:
+            search_dict["theme"] = self.le_theme.text()
+        if len(self.le_producer.text()) > 0:
+            search_dict["producer"] = self.le_producer.text()
+        if len(self.le_keywords.text()) > 0:
             search_dict["keywords"] = self.le_keywords.text()
+        # if self.sb_pymin.value() > 0:
+        #     search_dict["production_year"] = self.le_title.text()
+        # if self.sb_pymax.value() > 0:
+        #     search_dict["production_year"] = self.le_title.text()
         if len(search_dict.keys()) > 0:
             self.mdl_search_result.advanced_search_text(search_dict)
 
@@ -106,6 +154,14 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
         result = self.mdl_search_result.get_result(index)
         layer = None
         if result:
+            authid = None
+            if result["open"] is False:
+                auth_dlg = ChooseAuthenticationDialog()
+                if auth_dlg.exec():
+                    authid = auth_dlg.authent.configId()
+                    print(authid)
+                else:
+                    return
             if result["type"] == "WMS":
                 url = f"crs={result['srs'][0]}&format=image/png&layers={result['layer_name']}&styles&url={result['url'].split('?')[0]}"
                 layer = QgsRasterLayer(url, result["title"], "wms")

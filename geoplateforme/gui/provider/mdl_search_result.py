@@ -13,7 +13,8 @@ class SearchResultModel(QStandardItemModel):
     TITLE_COL = 0
     PRODUCER_COL = 1
     THEME_COL = 2
-    TYPE_COL = 3
+    OPEN_COL = 3
+    TYPE_COL = 4
 
     authorized_type = ["WMS", "TMS", "WMTS", "WFS"]
 
@@ -31,6 +32,7 @@ class SearchResultModel(QStandardItemModel):
                 self.tr("Title"),
                 self.tr("Producer"),
                 self.tr("Theme"),
+                self.tr("Open"),
                 self.tr("Type"),
             ]
         )
@@ -68,7 +70,7 @@ class SearchResultModel(QStandardItemModel):
         try:
             reply = request_manager.get_url(
                 url=QUrl(
-                    f"{self.plg_settings.base_url_api_search}/indexes/geoplateforme/suggest?size=50&text={text}"
+                    f"{self.plg_settings.base_url_api_search}/indexes/geoplateforme/suggest?size=50&text={text}&fields=title&fields=layer_name&fields=description&fields=type"
                 ),
             )
         except ConnectionError as err:
@@ -137,4 +139,5 @@ class SearchResultModel(QStandardItemModel):
             self.setData(self.index(row, self.THEME_COL), result["theme"])
         else:
             self.setData(self.index(row, self.THEME_COL), "")
+        self.setData(self.index(row, self.OPEN_COL), result["open"])
         self.setData(self.index(row, self.TYPE_COL), result["type"])

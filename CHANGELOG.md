@@ -15,6 +15,14 @@ Unreleased
 ### Removed
 
 -->
+## 0.11.0 - 2025-08-01
+
+### Features and enhancements 🎉
+
+* feat(metadata): Update metadata links (access, styles and getCapabilities) by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/166>
+* feat(metadata): Add better UI for metadata and combo lists by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/174>
+* feat(search-provider): add auth selector and new UI for advanced search by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/177>
+
 ## 0.10.0 - 2025-07-23
 
 ### Bugs fixes 🐛

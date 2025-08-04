@@ -5,7 +5,7 @@ category=None
 hasProcessingProvider=True
 description=Connectez-vous avec votre compte cartes.gouv.fr, accédez à votre communauté, publiez vos données sous forme de services hébergés sur la Géoplateforme de l'IGN.
 icon=resources/images/logo.svg
-tags=IGN,Géoplateforme,téléversement,publication,Entrepôt
+tags=IGN,Géoplateforme,geoplateforme,téléversement,publication,Entrepôt
 
 # credits and contact
 author=Oslandia, IGN France

@@ -71,6 +71,10 @@ class TagBarWidget(QWidget):
         tag.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Preferred)
         self.h_layout.addWidget(tag)
 
+    def clear(self):
+        self.tags = []
+        self.refresh()
+
     def delete_tag(self, tag_name): ...
 
     def is_valid_tag(self, tag_name) -> bool:

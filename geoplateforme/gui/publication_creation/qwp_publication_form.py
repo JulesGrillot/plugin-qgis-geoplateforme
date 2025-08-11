@@ -58,8 +58,6 @@ class PublicationFormPageWizard(QWizardPage):
             self.set_stored_data_id(stored_data_id)
             self.cbx_stored_data.setEnabled(False)
 
-        self.setCommitPage(True)
-
     def set_datastore_id(self, datastore_id: str) -> None:
         """
         Define current datastore from datastore id

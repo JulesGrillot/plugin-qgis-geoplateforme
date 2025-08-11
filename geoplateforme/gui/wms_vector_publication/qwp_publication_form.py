@@ -26,8 +26,6 @@ class PublicationFormPageWizard(QWizardPage):
             os.path.join(os.path.dirname(__file__), "qwp_publication_form.ui"), self
         )
 
-        self.setCommitPage(True)
-
     def validatePage(self) -> bool:
         """
         Validate current page content by checking files

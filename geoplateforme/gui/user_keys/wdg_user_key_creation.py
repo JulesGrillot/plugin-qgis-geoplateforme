@@ -177,3 +177,38 @@ class UserKeyCreationWidget(QWidget):
                         "La configuration d'authentification QGIS n'a pas été correctement ajouté.\nVous devez ajouter manuellement la configuration."
                     ),
                 )
+
+    def check_input_validity(self) -> bool:
+        """Check if current inputs are valid
+
+        :return: True if inputs are valid, False otherwise
+        :rtype: bool
+        """
+
+        selected_offering_and_permission = self.get_selected_permission_and_offering()
+        if len(selected_offering_and_permission) == 0:
+            QMessageBox.warning(
+                self,
+                self.tr("Aucun service sélectionné"),
+                self.tr("Veuillez choisir au moins un accès à un service."),
+            )
+            return False
+
+        if self.rbtn_basic.isChecked():
+            if not self.lne_login.text():
+                QMessageBox.warning(
+                    self,
+                    self.tr("Aucun utilisateur défini"),
+                    self.tr("Veuillez définir le nom d'utilisateur."),
+                )
+                return False
+
+            if not self.lne_password.text():
+                QMessageBox.warning(
+                    self,
+                    self.tr("Aucun mot de passe défini"),
+                    self.tr("Veuillez définir le mot de passe."),
+                )
+                return False
+
+        return True

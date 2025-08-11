@@ -20,6 +20,8 @@ from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QUrl
 # plugin
 from geoplateforme.__about__ import DIR_PLUGIN_ROOT
 from geoplateforme.api.configuration import (
+    ConfigurationMetadata,
+    ConfigurationMetadataType,
     ConfigurationRequestManager,
     ConfigurationType,
 )
@@ -963,6 +965,36 @@ class MetadataRequestManager:
                                         "url": style["layers"][0]["url"],
                                     }
                                 )
+                # Update and tag configuration for Geoplateforme Index
+                if metadata.fields.topics is not None:
+                    config_manager.add_tags(
+                        metadata.datastore_id,
+                        conf._id,
+                        {"theme": ", ".join(metadata.fields.topics)},
+                    )
+                    if conf.type_infos is None:
+                        conf._type_infos = {}
+                    conf.type_infos["keywords"] = []
+                    if metadata.fields.topics is not None:
+                        conf.type_infos["keywords"] += metadata.fields.topics
+                    if metadata.fields.inspire_keywords is not None:
+                        conf.type_infos["keywords"] += metadata.fields.inspire_keywords
+                    if metadata.fields.free_keywords is not None:
+                        conf.type_infos["keywords"] += metadata.fields.free_keywords
+                    conf._metadata = [
+                        ConfigurationMetadata(
+                            format="application/xml",
+                            url=f"https://data.geopf.fr/csw?REQUEST=GetRecordById&SERVICE=CSW&VERSION=2.0.2&OUTPUTSCHEMA=http://www.isotc211.org/2005/gmd&elementSetName=full&ID={metadata.dataset_name}",
+                            type=ConfigurationMetadataType.ISO19115_2003,
+                        ),
+                        ConfigurationMetadata(
+                            format="text/html",
+                            url=f"https://cartes.gouv.fr/catalogue/dataset/{metadata.dataset_name}",
+                            type=ConfigurationMetadataType.OTHER,
+                        ),
+                    ]
+                    config_manager.update_configuration(conf)
+
             metadata.fields.links = access_links + style_links + capabilities_links
 
         except ConnectionError as err:

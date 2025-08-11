@@ -212,7 +212,7 @@ class WmsPublicationAlgorithm(QgsProcessingAlgorithm):
         for relation in relations:
             # Create new static file
             id_style = self._create_geoserver_style(
-                datastore=datastore_id,
+                datastore_id=datastore_id,
                 name=relation[self.RELATIONS_NAME],
                 file_path=relation[self.RELATIONS_STYLE_FILE],
                 feedback=feedback,

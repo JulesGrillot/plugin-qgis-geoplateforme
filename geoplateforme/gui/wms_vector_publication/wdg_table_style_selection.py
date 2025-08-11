@@ -49,7 +49,7 @@ class TableStyleSelectionWidget(QWidget):
         if self.grp_table.isChecked():
             return WmsVectorTableStyle(
                 native_name=self.grp_table.title(),
-                stl_file=self.wdg_stl_file.filePath(),
+                stl_file=self.wdg_stl_file.get_selected_stl_file(),
             )
 
         return result

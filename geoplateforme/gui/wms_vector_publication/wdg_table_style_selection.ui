@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>376</width>
-    <height>69</height>
+    <width>542</width>
+    <height>262</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -42,14 +42,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0" colspan="2">
-       <widget class="QLabel" name="lbl_public_name">
-        <property name="text">
-         <string>Fichier style .sld</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QgsFileWidget" name="wdg_stl_file"/>
+       <widget class="SldSelectionWidget" name="wdg_stl_file" native="true"/>
       </item>
      </layout>
     </widget>
@@ -64,9 +57,10 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsFileWidget</class>
+   <class>SldSelectionWidget</class>
    <extends>QWidget</extends>
-   <header>qgsfilewidget.h</header>
+   <header>geoplateforme.gui.styles.wdg_sld_selection</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -222,9 +222,12 @@ class DashboardWidget(QWidget):
 
         QCoreApplication.processEvents()
 
-        # Diconnect signals
-        self.cbx_datastore.currentIndexChanged.disconnect(self._datastore_updated)
-        self.cbx_dataset.activated.disconnect(self._dataset_updated)
+        # Try to disconnect signals
+        try:
+            self.cbx_datastore.currentIndexChanged.disconnect(self._datastore_updated)
+            self.cbx_dataset.activated.disconnect(self._dataset_updated)
+        except (TypeError, RuntimeError):
+            pass
 
         # Update datastore content
         self.cbx_datastore.refresh()

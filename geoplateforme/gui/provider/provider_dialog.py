@@ -8,6 +8,8 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QModelIndex
 from qgis.PyQt.QtWidgets import QAbstractItemView, QDialogButtonBox
 
+from geoplateforme.constants import metadata_topic_categories
+from geoplateforme.gui.metadata.wdg_tagbar import DictTagBarWidget
 from geoplateforme.gui.provider.capabilities_reader import (
     read_tms_layer_capabilities,
     read_wmts_layer_capabilities,
@@ -43,6 +45,9 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
         )
 
         self.log = PlgLogger().log
+
+        self.tb_thematics = DictTagBarWidget(metadata_topic_categories)
+        self.layout_advanced_search.addWidget(self.tb_thematics, 0, 5, 1, 3)
 
         self.rs_production_year = QtRangeSlider(self, 1800, 2200, 1900, 2100)
         self.rs_production_year.left_thumb_value_changed.connect(
@@ -88,7 +93,7 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
 
         self.le_title.clear()
         self.le_layername.clear()
-        self.le_theme.clear()
+        self.tb_thematics.clear()
         self.le_producer.clear()
         self.le_keywords.clear()
         self.cb_open.setCurrentIndex(-1)
@@ -120,16 +125,20 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
             search_dict["open"] = self.cb_open.currentText()
         if self.cb_type.currentIndex() >= 0:
             search_dict["type"] = self.cb_type.currentText()
-        if len(self.le_theme.text()) > 0:
-            search_dict["theme"] = self.le_theme.text()
+        if len(self.tb_thematics.tags) > 0:
+            search_dict["theme"] = ", ".join(self.tb_thematics.tags)
         if len(self.le_producer.text()) > 0:
-            search_dict["producer"] = self.le_producer.text()
+            search_dict["producers"] = self.le_producer.text()
         if len(self.le_keywords.text()) > 0:
             search_dict["keywords"] = self.le_keywords.text()
-        # if self.sb_pymin.value() > 0:
-        #     search_dict["production_year"] = self.le_title.text()
-        # if self.sb_pymax.value() > 0:
-        #     search_dict["production_year"] = self.le_title.text()
+        if (
+            self.rs_production_year.get_left_thumb_value() != 1900
+            or self.rs_production_year.get_right_thumb_value() != 2100
+        ):
+            search_dict["production_years"] = {
+                "min": self.rs_production_year.get_left_thumb_value(),
+                "max": self.rs_production_year.get_right_thumb_value(),
+            }
         if len(search_dict.keys()) > 0:
             self.mdl_search_result.advanced_search_text(search_dict)
 

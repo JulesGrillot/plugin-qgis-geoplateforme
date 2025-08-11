@@ -56,7 +56,7 @@ class CreatePermissionAlgorithm(QgsProcessingAlgorithm):
         return self.tr("Permissions")
 
     def groupId(self):
-        return "permissions"
+        return "permission"
 
     def helpUrl(self):
         return get_user_manual_url(self.name())

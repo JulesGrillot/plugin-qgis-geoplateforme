@@ -12,8 +12,10 @@ from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon, QPixmap
 from qgis.PyQt.QtWidgets import (
     QAbstractItemView,
     QAction,
+    QLayout,
     QMessageBox,
-    QToolBar,
+    QSizePolicy,
+    QSpacerItem,
     QToolButton,
     QWidget,
 )
@@ -60,11 +62,25 @@ class UploadDetailsWidget(QWidget):
         self.btn_add_extent_layer.pressed.connect(self._add_extent_layer)
         self.btn_load_report.pressed.connect(self._load_generation_report)
 
-        # Add toolbar for stored data actions
-        self.edit_toolbar = QToolBar(self)
-        self.layout().setMenuBar(self.edit_toolbar)
-
         self.vector_db_wizard = None
+
+    def clear_layout(self, layout: QLayout) -> None:
+        """Remove all widgets from a layout and delete them.
+
+        :param layout: layout to clear
+        :type layout: QLayout
+        """
+        while layout.count():
+            item = layout.takeAt(0)  # Take item from position 0
+            widget = item.widget()
+            if widget is not None:
+                widget.setParent(None)  # Detach from layout
+                widget.deleteLater()  # Schedule for deletion
+            else:
+                # If it's a nested layout, clear it recursively
+                sub_layout = item.layout()
+                if sub_layout is not None:
+                    self.clear_layout(sub_layout)
 
     def set_upload(self, upload: Upload) -> None:
         """
@@ -76,8 +92,8 @@ class UploadDetailsWidget(QWidget):
         self._upload = upload
         self._set_upload_details(upload)
 
-        # Remove all available action in toolbar
-        self.edit_toolbar.clear()
+        # Remove all available action
+        self.clear_layout(self.action_layout)
 
         status = upload.status
 
@@ -92,7 +108,7 @@ class UploadDetailsWidget(QWidget):
             button = QToolButton(self)
             button.setDefaultAction(delete_action)
             button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-            self.edit_toolbar.addWidget(button)
+            self.action_layout.addWidget(button)
 
             generate_vector_db_action = QAction(
                 QIcon(str(DIR_PLUGIN_ROOT / "resources/images/dashboard/db.png")),
@@ -105,7 +121,14 @@ class UploadDetailsWidget(QWidget):
             button = QToolButton(self)
             button.setDefaultAction(generate_vector_db_action)
             button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-            self.edit_toolbar.addWidget(button)
+            self.action_layout.addWidget(button)
+
+            # Add spacer to have button align left
+            self.action_layout.addItem(
+                QSpacerItem(
+                    40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
+                )
+            )
 
     def _show_generate_vector_db_wizard(self) -> None:
         """Show generate vector db wizard for current upload"""

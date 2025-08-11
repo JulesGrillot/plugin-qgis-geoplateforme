@@ -101,6 +101,7 @@ class SldDowngradeAlgorithm(QgsProcessingAlgorithm):
         # - Change the version and the schemaLocation values
         # - Map SvgParameter elements in the http://www.opengis.net/se namespace to CssParameter in the http://www.opengis.net/sld namespace
         # - Map remaining http://www.opengis.net/se elements and attributes to the http://www.opengis.net/sld namespace
+        # - Update ogc:PropertyName to be lowercase
         transform_file = Path(__file__).parent / "sld11-10.xsl"
         transform = etree.XSLT(etree.parse(transform_file))
 

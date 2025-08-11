@@ -71,4 +71,13 @@
     <xsl:copy>.</xsl:copy>
   </xsl:template>
 
+  <!-- Transform ogc:PropertyName content to lowercase -->
+  <xsl:template match="ogc:PropertyName">
+    <xsl:copy>
+      <xsl:value-of select="translate(.,
+              'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+              'abcdefghijklmnopqrstuvwxyz')"/>
+    </xsl:copy>
+  </xsl:template>
+
 </xsl:stylesheet>

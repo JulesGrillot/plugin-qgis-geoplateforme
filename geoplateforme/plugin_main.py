@@ -370,8 +370,7 @@ class GeoplateformePlugin:
         """
         if self.dlg_dashboard is None:
             self.dlg_dashboard = DashboardDialog(self.iface.mainWindow())
-
-        self.dlg_dashboard.refresh()
+            self.dlg_dashboard.refresh()
         self.dlg_dashboard.show()
 
     def display_storage_report(self) -> None:

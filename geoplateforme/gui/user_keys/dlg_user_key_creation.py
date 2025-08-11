@@ -28,15 +28,8 @@ class UserKeyCreationDialog(QDialog):
         """Create user key from creation widget.
         Dialog is not closed if an error occurs during creation
         """
-        selected_offering_and_permission = (
-            self.wdg_user_key_creation.get_selected_permission_and_offering()
-        )
-        if len(selected_offering_and_permission) == 0:
-            QMessageBox.warning(
-                self,
-                self.tr("Aucun service sélectionné"),
-                self.tr("Veuillez choisir au moins un accès à un service."),
-            )
+
+        if not self.wdg_user_key_creation.check_input_validity():
             return None
 
         algo_str = self.wdg_user_key_creation.get_creation_algo_str()
@@ -56,6 +49,10 @@ class UserKeyCreationDialog(QDialog):
                 feedback.textLog(),
             )
             return None
+
+        selected_offering_and_permission = (
+            self.wdg_user_key_creation.get_selected_permission_and_offering()
+        )
 
         # Add access to the selected offerings
         for permission, offerings in selected_offering_and_permission:

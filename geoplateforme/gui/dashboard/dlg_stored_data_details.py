@@ -14,8 +14,10 @@ from qgis.PyQt.QtWidgets import (
     QAction,
     QDialog,
     QHeaderView,
+    QLayout,
     QMessageBox,
-    QToolBar,
+    QSizePolicy,
+    QSpacerItem,
     QToolButton,
     QWidget,
 )
@@ -105,16 +107,30 @@ class StoredDataDetailsDialog(QDialog):
         self.btn_add_extent_layer.pressed.connect(self._add_extent_layer)
         self.btn_load_report.pressed.connect(self._load_generation_report)
 
-        # Add toolbar for stored data actions
-        self.edit_toolbar = QToolBar(self)
-        self.layout().setMenuBar(self.edit_toolbar)
-
         self.tile_generation_wizard = None
         self.wms_vector_publish_wizard = None
         self.wfs_publish_wizard = None
         self.tms_publish_wizard = None
         self.wms_raster_publish_wizard = None
         self.wmts_publish_wizard = None
+
+    def clear_layout(self, layout: QLayout) -> None:
+        """Remove all widgets from a layout and delete them.
+
+        :param layout: layout to clear
+        :type layout: QLayout
+        """
+        while layout.count():
+            item = layout.takeAt(0)  # Take item from position 0
+            widget = item.widget()
+            if widget is not None:
+                widget.setParent(None)  # Detach from layout
+                widget.deleteLater()  # Schedule for deletion
+            else:
+                # If it's a nested layout, clear it recursively
+                sub_layout = item.layout()
+                if sub_layout is not None:
+                    self.clear_layout(sub_layout)
 
     def set_stored_data(self, stored_data: StoredData) -> None:
         """
@@ -126,8 +142,8 @@ class StoredDataDetailsDialog(QDialog):
         self._stored_data = stored_data
         self._set_stored_data_details(stored_data)
 
-        # Remove all available action in toolbar
-        self.edit_toolbar.clear()
+        # Remove all available action
+        self.clear_layout(self.action_layout)
 
         status = stored_data.status
 
@@ -143,7 +159,7 @@ class StoredDataDetailsDialog(QDialog):
             button = QToolButton(self)
             button.setDefaultAction(delete_action)
             button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-            self.edit_toolbar.addWidget(button)
+            self.action_layout.addWidget(button)
 
             # Vector DB :
             # - tile generation
@@ -161,7 +177,7 @@ class StoredDataDetailsDialog(QDialog):
                 button = QToolButton(self)
                 button.setDefaultAction(generate_tile_action)
                 button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-                self.edit_toolbar.addWidget(button)
+                self.action_layout.addWidget(button)
 
                 # WFS publication
                 publish_tile_action = QAction(
@@ -182,7 +198,7 @@ class StoredDataDetailsDialog(QDialog):
                 button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
 
                 publish_tile_action.triggered.connect(self._show_wfs_publish_wizard)
-                self.edit_toolbar.addWidget(button)
+                self.action_layout.addWidget(button)
 
                 wms_vector_publish_action = QAction(
                     QIcon(
@@ -204,7 +220,7 @@ class StoredDataDetailsDialog(QDialog):
                 wms_vector_publish_action.triggered.connect(
                     self._show_wms_vector_publish_wizard
                 )
-                self.edit_toolbar.addWidget(button)
+                self.action_layout.addWidget(button)
 
             elif stored_data.type == StoredDataType.PYRAMIDVECTOR:
                 publish_tile_action = QAction(
@@ -225,7 +241,7 @@ class StoredDataDetailsDialog(QDialog):
                 button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
 
                 publish_tile_action.triggered.connect(self._show_tile_publish_wizard)
-                self.edit_toolbar.addWidget(button)
+                self.action_layout.addWidget(button)
             elif stored_data.type == StoredDataType.PYRAMIDRASTER:
                 publish_tile_action = QAction(
                     QIcon(
@@ -247,7 +263,7 @@ class StoredDataDetailsDialog(QDialog):
                 publish_tile_action.triggered.connect(
                     self._show_raster_tile_publish_wizard
                 )
-                self.edit_toolbar.addWidget(button)
+                self.action_layout.addWidget(button)
 
                 # WMTS-TMS publication
                 publish_wmts_action = QAction(
@@ -268,7 +284,14 @@ class StoredDataDetailsDialog(QDialog):
                 button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
 
                 publish_wmts_action.triggered.connect(self._show_wmts_publish_wizard)
-                self.edit_toolbar.addWidget(button)
+                self.action_layout.addWidget(button)
+
+            # Add spacer to have button align left
+            self.action_layout.addItem(
+                QSpacerItem(
+                    40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
+                )
+            )
 
     def delete_stored_data(self) -> None:
         """Delete current stored data"""

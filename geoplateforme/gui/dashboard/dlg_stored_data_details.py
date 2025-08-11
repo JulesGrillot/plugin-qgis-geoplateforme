@@ -652,7 +652,7 @@ class StoredDataDetailsDialog(QDialog):
             )
         else:
             # GENERATED and DELETED
-            if stored_data.type == "VECTOR-DB":
+            if stored_data.type == StoredDataType.VECTORDB:
                 result = self.tr("Database integration successful.")
             else:
                 result = self.tr("Tile creation successful.")

@@ -14,7 +14,15 @@ from qgis.core import (
 from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtCore import QSize, Qt, pyqtSignal
 from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon, QPixmap
-from qgis.PyQt.QtWidgets import QAction, QMessageBox, QToolBar, QToolButton, QWidget
+from qgis.PyQt.QtWidgets import (
+    QAction,
+    QLayout,
+    QMessageBox,
+    QSizePolicy,
+    QSpacerItem,
+    QToolButton,
+    QWidget,
+)
 
 from geoplateforme.__about__ import DIR_PLUGIN_ROOT
 from geoplateforme.api.configuration import ConfigurationType
@@ -55,10 +63,6 @@ class ServiceDetailsWidget(QWidget):
         self._offering = None
         self._dataset_name = None
 
-        # Add toolbar for stored data actions
-        self.edit_toolbar = QToolBar(self)
-        self.layout().setMenuBar(self.edit_toolbar)
-
         self.gpb_permissions.setVisible(False)
 
         self.tile_raster_generation_wizard = None
@@ -87,6 +91,24 @@ class ServiceDetailsWidget(QWidget):
         if self._offering.type == ConfigurationType.VECTOR_TMS:
             return QIcon(":images/themes/default/mActionAddVectorTileLayer.svg")
 
+    def clear_layout(self, layout: QLayout) -> None:
+        """Remove all widgets from a layout and delete them.
+
+        :param layout: layout to clear
+        :type layout: QLayout
+        """
+        while layout.count():
+            item = layout.takeAt(0)  # Take item from position 0
+            widget = item.widget()
+            if widget is not None:
+                widget.setParent(None)  # Detach from layout
+                widget.deleteLater()  # Schedule for deletion
+            else:
+                # If it's a nested layout, clear it recursively
+                sub_layout = item.layout()
+                if sub_layout is not None:
+                    self.clear_layout(sub_layout)
+
     def _set_offering_details(self, offering: Offering) -> None:
         """
         Define offering details
@@ -104,6 +126,9 @@ class ServiceDetailsWidget(QWidget):
 
         self.gpb_styles.setVisible(False)
 
+        # Remove all available action
+        self.clear_layout(self.action_layout)
+
         # Only published offering have actions
         if status == OfferingStatus.PUBLISHED:
             # Data delete
@@ -116,7 +141,7 @@ class ServiceDetailsWidget(QWidget):
             button = QToolButton(self)
             button.setDefaultAction(delete_action)
             button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-            self.edit_toolbar.addWidget(button)
+            self.action_layout.addWidget(button)
 
             # Load service
             load_action = QAction(
@@ -128,7 +153,7 @@ class ServiceDetailsWidget(QWidget):
             button = QToolButton(self)
             button.setDefaultAction(load_action)
             button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-            self.edit_toolbar.addWidget(button)
+            self.action_layout.addWidget(button)
 
             self.gpb_permissions.setVisible(not offering.open)
             if not offering.open:
@@ -153,7 +178,14 @@ class ServiceDetailsWidget(QWidget):
                 button = QToolButton(self)
                 button.setDefaultAction(generate_tile_action)
                 button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-                self.edit_toolbar.addWidget(button)
+                self.action_layout.addWidget(button)
+
+            # Add spacer to have button align left
+            self.action_layout.addItem(
+                QSpacerItem(
+                    40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
+                )
+            )
 
     def _show_tile_raster_generation_wizard(self) -> None:
         """Show tile generation wizard for current offerring"""

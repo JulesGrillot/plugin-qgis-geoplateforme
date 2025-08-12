@@ -10,6 +10,7 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QWizardPage
 
 # Plugin
+from geoplateforme.api.datastore import DatastoreRequestManager
 from geoplateforme.api.metadata import MetadataRequestManager, MetadataType
 from geoplateforme.gui.publication.qwp_visibility import VisibilityPageWizard
 from geoplateforme.gui.qwp_metadata_form import MetadataFormPageWizard
@@ -153,6 +154,35 @@ class PublicationStatut(QWizardPage):
                             [
                                 self.lbl_result.text(),
                                 self.tr("Métadonnée créée avec succès"),
+                            ]
+                        )
+                    )
+                    self.lbl_result.setText(
+                        "\n".join(
+                            [
+                                self.lbl_result.text(),
+                                self.tr("Publication de la métadonnée"),
+                            ]
+                        )
+                    )
+
+                    # get the endpoint for the publication
+                    datastore_manager = DatastoreRequestManager()
+                    datastore = datastore_manager.get_datastore(datastore_id)
+                    metadata_endpoint_id = datastore.get_endpoint(data_type="METADATA")
+
+                    # publish metadata
+                    manager.publish(
+                        datastore_id=datastore_id,
+                        endpoint_id=metadata_endpoint_id,
+                        metadata_file_identifier=metadata.file_identifier,
+                    )
+
+                    self.lbl_result.setText(
+                        "\n".join(
+                            [
+                                self.lbl_result.text(),
+                                self.tr("Métadonnée publiée avec succès"),
                             ]
                         )
                     )

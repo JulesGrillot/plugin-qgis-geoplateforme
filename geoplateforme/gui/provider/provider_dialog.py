@@ -168,11 +168,12 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
                 auth_dlg = ChooseAuthenticationDialog()
                 if auth_dlg.exec():
                     authid = auth_dlg.authent.configId()
-                    print(authid)
                 else:
                     return
             if result["type"] == "WMS":
                 url = f"crs={result['srs'][0]}&format=image/png&layers={result['layer_name']}&styles&url={result['url'].split('?')[0]}"
+                if authid is not None:
+                    url = f"authcfg={authid}&" + url
                 layer = QgsRasterLayer(url, result["title"], "wms")
 
             if result["type"] == "TMS":
@@ -187,6 +188,8 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
                         + result["url"]
                         + "/{z}/{x}/{y}.pbf"
                     )
+                    if authid is not None:
+                        url = f"authcfg={authid}&" + url
                     layer = QgsVectorTileLayer(url, result["title"])
                 elif params["format"] is not None:
                     url = (
@@ -197,18 +200,24 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
                         + "/{z}/{x}/{y}."
                         + params["format"]
                     )
+                    if authid is not None:
+                        url = f"authcfg={authid}&" + url
                     layer = QgsRasterLayer(url, result["title"], "wms")
 
             if result["type"] == "WMTS":
                 params = read_wmts_layer_capabilities(
-                    result["url"].split("?")[0], result["layer_name"]
+                    result["url"].split("?")[0], result["layer_name"], authid
                 )
                 if params:
                     url = f"crs={result['srs'][0]}&format={params['format']}&layers={result['layer_name']}&styles={params['style']}&tileMatrixSet={params['tileMatrixSet']}&url={result['url'].split('?')[0]}?SERVICE%3DWMTS%26version%3D1.0.0%26request%3DGetCapabilities"
+                    if authid is not None:
+                        url = f"authcfg={authid}&" + url
                     layer = QgsRasterLayer(url, result["title"], "wms")
 
             if result["type"] == "WFS":
                 url = f"{result['url'].split('?')[0]}?typename={result['layer_name']}&version=auto"
+                if authid is not None:
+                    url += f"&authcfg={authid}"
                 layer = QgsVectorLayer(url, result["title"], "WFS")
 
         if layer is not None:

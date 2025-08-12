@@ -78,8 +78,6 @@ class MetadataFormPageWizard(QWizardPage):
             )
         self.gridLayout.addWidget(self.wdg_metadata)
 
-        self.setCommitPage(True)
-
     def validatePage(self) -> bool:
         """
         Validate current page content by checking files

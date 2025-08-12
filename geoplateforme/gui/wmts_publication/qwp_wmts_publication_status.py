@@ -13,6 +13,7 @@ from qgis.PyQt.QtWidgets import QWizardPage
 from geoplateforme.api.custom_exceptions import ReadStoredDataException
 from geoplateforme.api.metadata import MetadataRequestManager, MetadataType
 from geoplateforme.api.stored_data import StoredDataRequestManager
+from geoplateforme.gui.publication.qwp_visibility import VisibilityPageWizard
 from geoplateforme.gui.qwp_metadata_form import MetadataFormPageWizard
 from geoplateforme.gui.wmts_publication.qwp_publication_form import (
     PublicationFormPageWizard,
@@ -29,6 +30,7 @@ class PublicationStatut(QWizardPage):
         self,
         qwp_publication_form: PublicationFormPageWizard,
         qwp_metadata_form: MetadataFormPageWizard,
+        qwp_visibility: VisibilityPageWizard,
         datastore_id: Optional[str] = None,
         dataset_name: Optional[str] = None,
         stored_data_id: Optional[str] = None,
@@ -49,6 +51,7 @@ class PublicationStatut(QWizardPage):
 
         self.qwp_publication_form = qwp_publication_form
         self.qwp_metadata_form = qwp_metadata_form
+        self.qwp_visibility = qwp_visibility
         uic.loadUi(
             os.path.join(os.path.dirname(__file__), "qwp_wmts_publication_status.ui"),
             self,
@@ -117,6 +120,7 @@ class PublicationStatut(QWizardPage):
             WmtsPublicationAlgorithm.TAGS: tags_to_qgs_parameter_matrix_string(
                 {"datasheet_name": dataset_name}
             ),
+            WmtsPublicationAlgorithm.OPEN: self.qwp_visibility.is_open(),
         }
 
         algo_str = f"{GeoplateformeProvider().id()}:{WmtsPublicationAlgorithm().name()}"

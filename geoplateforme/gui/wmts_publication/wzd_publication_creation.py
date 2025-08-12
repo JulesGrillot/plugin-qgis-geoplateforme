@@ -5,6 +5,7 @@ from typing import Optional
 from qgis.PyQt.QtWidgets import QWizard
 
 # Plugin
+from geoplateforme.gui.publication.qwp_visibility import VisibilityPageWizard
 from geoplateforme.gui.qwp_metadata_form import MetadataFormPageWizard
 from geoplateforme.gui.wmts_publication.qwp_publication_form import (
     PublicationFormPageWizard,
@@ -42,11 +43,14 @@ class WMTSPublicationWizard(QWizard):
         self.qwp_metadata_form = MetadataFormPageWizard(
             datastore_id, dataset_name, self
         )
+        # Fourth page to define visibility
+        self.qwp_visibility = VisibilityPageWizard(self)
 
         # Last page to launch processing and display results
         self.qwp_publication_status = PublicationStatut(
             self.qwp_publication_form,
             self.qwp_metadata_form,
+            self.qwp_visibility,
             datastore_id,
             dataset_name,
             stored_data_id,
@@ -55,6 +59,7 @@ class WMTSPublicationWizard(QWizard):
 
         self.addPage(self.qwp_publication_form)
         self.addPage(self.qwp_metadata_form)
+        self.addPage(self.qwp_visibility)
         self.addPage(self.qwp_publication_status)
 
         self.setOption(QWizard.WizardOption.NoBackButtonOnStartPage, True)

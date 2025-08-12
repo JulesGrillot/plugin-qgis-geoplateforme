@@ -11,6 +11,7 @@ from qgis.PyQt.QtWidgets import QWizardPage
 
 # Plugin
 from geoplateforme.api.metadata import MetadataRequestManager, MetadataType
+from geoplateforme.gui.publication.qwp_visibility import VisibilityPageWizard
 from geoplateforme.gui.qwp_metadata_form import MetadataFormPageWizard
 from geoplateforme.gui.wfs_publication.qwp_publication_form import (
     PublicationFormPageWizard,
@@ -27,6 +28,7 @@ class PublicationStatut(QWizardPage):
         qwp_table_relation: TableRelationPageWizard,
         qwp_publication_form: PublicationFormPageWizard,
         qwp_metadata_form: MetadataFormPageWizard,
+        qwp_visibility: VisibilityPageWizard,
         parent=None,
     ):
         """
@@ -41,6 +43,7 @@ class PublicationStatut(QWizardPage):
         self.qwp_table_relation = qwp_table_relation
         self.qwp_publication_form = qwp_publication_form
         self.qwp_metadata_form = qwp_metadata_form
+        self.qwp_visibility = qwp_visibility
         uic.loadUi(
             os.path.join(os.path.dirname(__file__), "qwp_wfs_publication_status.ui"),
             self,
@@ -79,6 +82,7 @@ class PublicationStatut(QWizardPage):
             WfsPublicationAlgorithm.TAGS: tags_to_qgs_parameter_matrix_string(
                 {"datasheet_name": dataset_name}
             ),
+            WfsPublicationAlgorithm.OPEN: self.qwp_visibility.is_open(),
         }
 
         selected_table_relations = (

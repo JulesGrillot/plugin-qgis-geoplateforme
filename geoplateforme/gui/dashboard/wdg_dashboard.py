@@ -1,26 +1,47 @@
 import os
 from typing import List, Optional
 
+# PyQGIS
+from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
 from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtCore import (
     QAbstractItemModel,
     QCoreApplication,
     QItemSelectionModel,
     QModelIndex,
+    Qt,
 )
 from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon
-from qgis.PyQt.QtWidgets import QAbstractItemView, QLabel, QTableView, QWidget
+from qgis.PyQt.QtWidgets import (
+    QAbstractItemView,
+    QLabel,
+    QMessageBox,
+    QTableView,
+    QWidget,
+)
+from qgis.utils import OverrideCursor
 
+from geoplateforme.__about__ import DIR_PLUGIN_ROOT
+from geoplateforme.api.configuration import ConfigurationRequestManager
 from geoplateforme.api.custom_exceptions import (
+    DeleteMetadataException,
+    ReadConfigurationException,
     ReadMetadataException,
+    ReadOfferingException,
+    ReadStoredDataException,
+    ReadUploadException,
     UnavailableMetadataFileException,
 )
-from geoplateforme.api.metadata import MetadataRequestManager
+from geoplateforme.api.metadata import Metadata, MetadataRequestManager
+from geoplateforme.api.offerings import Offering, OfferingsRequestManager
 from geoplateforme.api.stored_data import (
+    StoredData,
+    StoredDataRequestManager,
     StoredDataStatus,
     StoredDataStep,
     StoredDataType,
 )
+from geoplateforme.api.upload import Upload, UploadRequestManager
 from geoplateforme.gui.dashboard.dlg_stored_data_details import StoredDataDetailsDialog
 from geoplateforme.gui.dashboard.wdg_service_details import ServiceDetailsWidget
 from geoplateforme.gui.dashboard.wdg_upload_details import UploadDetailsWidget
@@ -30,6 +51,10 @@ from geoplateforme.gui.mdl_upload import UploadListModel
 from geoplateforme.gui.metadata.wdg_metadata_details import MetadataDetailsWidget
 from geoplateforme.gui.proxy_model_stored_data import StoredDataProxyModel
 from geoplateforme.gui.upload_creation.wzd_upload_creation import UploadCreationWizard
+from geoplateforme.processing.provider import GeoplateformeProvider
+from geoplateforme.processing.tools.delete_offering import DeleteOfferingAlgorithm
+from geoplateforme.processing.tools.delete_stored_data import DeleteStoredDataAlgorithm
+from geoplateforme.processing.tools.delete_upload import DeleteUploadAlgorithm
 from geoplateforme.toolbelt import PlgLogger
 
 
@@ -124,6 +149,11 @@ class DashboardWidget(QWidget):
         self.btn_refresh.clicked.connect(self.refresh)
         self.btn_refresh.setIcon(QIcon(":/images/themes/default/mActionRefresh.svg"))
 
+        self.btn_delete_dataset.clicked.connect(self.delete_dataset)
+        self.btn_delete_dataset.setIcon(
+            QIcon(str(DIR_PLUGIN_ROOT / "resources/images/icons/Supprimer.svg"))
+        )
+
         self.btn_create.clicked.connect(self._create_dataset)
         self.btn_create.setIcon(QIcon(":/images/themes/default/mActionAdd.svg"))
 
@@ -206,6 +236,377 @@ class DashboardWidget(QWidget):
         if self.wdg_metadata is not None:
             self.wdg_metadata.update_metadata()
 
+    def delete_dataset(
+        self, datastore_id: Optional[str] = None, dataset_name: Optional[str] = None
+    ) -> None:
+        """Delete dataset by removing all related element from geoplateforme:
+        - offering and configuration
+        - stored data
+        - upload
+        - metadata
+
+        :param datastore_id: datastore id, defaults to None, use current selected datastore
+        :type datastore_id: Optional[str], optional
+        :param dataset_name: dataset_name, defaults to None, use current selected dataset
+        :type dataset_name: Optional[str], optional
+        """
+        if not datastore_id:
+            datastore_id = self.cbx_datastore.current_datastore_id()
+        if not dataset_name:
+            dataset_name = self.cbx_dataset.current_dataset_name()
+
+        if not dataset_name or not datastore_id:
+            QMessageBox.warning(
+                self,
+                self.tr("Suppression impossible"),
+                self.tr("L'entrepôt ou le dataset ne sont pas définis"),
+            )
+            return
+
+        # Get all data related to dataset
+        try:
+            with OverrideCursor(Qt.CursorShape.WaitCursor):
+                # Offering
+                offering_list = self._get_dataset_offering(
+                    datastore_id=datastore_id, dataset_name=dataset_name
+                )
+                # Stored data
+                stored_data_list = self._get_dataset_stored_data(
+                    datastore_id=datastore_id, dataset_name=dataset_name
+                )
+                # Upload
+                upload_list = self._get_dataset_upload(
+                    datastore_id=datastore_id, dataset_name=dataset_name
+                )
+                # Metadata
+                metadata_list = self._get_dataset_metadata(
+                    datastore_id=datastore_id, dataset_name=dataset_name
+                )
+        except (ReadConfigurationException, ReadOfferingException) as exc:
+            QMessageBox.critical(
+                self,
+                self.tr("Suppression impossible"),
+                self.tr(
+                    "Impossible de récupérer les configurations et offres associées au dataset : {}".format(
+                        exc
+                    )
+                ),
+            )
+            return
+        except ReadStoredDataException as exc:
+            QMessageBox.critical(
+                self,
+                self.tr("Suppression impossible"),
+                self.tr(
+                    "Impossible de récupérer les données stockées associées au dataset : {}".format(
+                        exc
+                    )
+                ),
+            )
+            return
+        except ReadUploadException as exc:
+            QMessageBox.critical(
+                self,
+                self.tr("Suppression impossible"),
+                self.tr(
+                    "Impossible de récupérer les livraisons associées au dataset : {}".format(
+                        exc
+                    )
+                ),
+            )
+            return
+        except ReadMetadataException as exc:
+            QMessageBox.critical(
+                self,
+                self.tr("Suppression impossible"),
+                self.tr(
+                    "Impossible de récupérer les métadatas associées au dataset : {}".format(
+                        exc
+                    )
+                ),
+            )
+            return
+
+        # Indicate to user number of deleted elements
+        message = self.tr("Êtes-vous sûr de vouloir supprimer le dataset ?")
+        message += self.tr("\nLes éléments suivants seront supprimés:")
+        # Offering
+        nb_offer = len(offering_list)
+        if nb_offer != 0:
+            message += self.tr("\n{} Offre(s)".format(nb_offer))
+        # Stored data
+        nb_stored_data = len(stored_data_list)
+        if nb_stored_data != 0:
+            message += self.tr("\n{} Données stockées(s)".format(nb_stored_data))
+        # Upload
+        nb_upload = len(upload_list)
+        if nb_upload != 0:
+            message += self.tr("\n{} Livraison(s)".format(nb_upload))
+        # Metadata
+        nb_metadata = len(metadata_list)
+        if nb_metadata != 0:
+            message += self.tr(
+                "\n La métadonnée associée ({})".format(
+                    metadata_list[0].file_identifier
+                )
+            )
+
+        reply = QMessageBox.question(
+            self,
+            self.tr("Suppression dataset {}".format(dataset_name)),
+            message,
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        )
+        if reply != QMessageBox.StandardButton.Yes:
+            return
+
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
+            # Delete offering
+            if not self._delete_dataset_offering(offering_list=offering_list):
+                return
+
+            # Delete stored data
+            if not self._delete_dataset_stored_data(stored_data_list=stored_data_list):
+                return
+
+            # Delete upload
+            if not self._delete_dataset_upload(upload_list=upload_list):
+                return
+
+            # Delete metadata
+            if not self._delete_dataset_metadata(metadata_list=metadata_list):
+                return
+
+        self.refresh()
+
+    def _get_dataset_offering(
+        self, datastore_id: str, dataset_name: str
+    ) -> List[Offering]:
+        """Get list of offering for a dataset
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param dataset_name: dataset name
+        :type dataset_name: str
+        :return: list of offering related to a dataset
+        :rtype: List[Offering]
+        """
+        result = []
+        config_manager = ConfigurationRequestManager()
+        offerring_manager = OfferingsRequestManager()
+
+        # Get all configuration for dataset
+        tags = {"datasheet_name": dataset_name}
+        configurations = config_manager.get_configuration_list(
+            datastore_id=datastore_id,
+            tags=tags,
+        )
+
+        # Get offering for each configuration
+        for config in configurations:
+            offering_list = offerring_manager.get_offering_list(
+                datastore_id=config.datastore_id,
+                configuration_id=config._id,
+            )
+
+            result.extend(offering_list)
+
+        return result
+
+    def _delete_dataset_offering(self, offering_list: List[Offering]) -> bool:
+        """Delete a list of offering for a dataset
+        Display message box in case of errors.
+
+        :param offering_list: offering to delete
+        :type offering_list: List[Offering]
+        :return: True if no error occured, False otherwise
+        :rtype: bool
+        """
+        # Delete offering
+        for offering in offering_list:
+            params = {
+                DeleteOfferingAlgorithm.DATASTORE: offering.datastore_id,
+                DeleteOfferingAlgorithm.OFFERING: offering._id,
+            }
+
+            algo_str = (
+                f"{GeoplateformeProvider().id()}:{DeleteOfferingAlgorithm().name()}"
+            )
+            alg = QgsApplication.processingRegistry().algorithmById(algo_str)
+            context = QgsProcessingContext()
+            feedback = QgsProcessingFeedback()
+            _, success = alg.run(parameters=params, context=context, feedback=feedback)
+            if not success:
+                QMessageBox.critical(
+                    self,
+                    self.tr("Suppression impossible"),
+                    self.tr("Un service n'a pas pu être dépublié :\n {}").format(
+                        feedback.textLog()
+                    ),
+                )
+                return False
+
+        return True
+
+    def _get_dataset_stored_data(
+        self, datastore_id: str, dataset_name: str
+    ) -> List[StoredData]:
+        """Get list of stored data for a dataset
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param dataset_name: dataset name
+        :type dataset_name: str
+        :return: list of stored data related to a dataset
+        :rtype: List[StoredData]
+        """
+        manager = StoredDataRequestManager()
+
+        # Get all stored data for dataset
+        tags = {"datasheet_name": dataset_name}
+        stored_data_list = manager.get_stored_data_list(
+            datastore_id=datastore_id,
+            tags=tags,
+        )
+        return stored_data_list
+
+    def _delete_dataset_stored_data(self, stored_data_list: List[StoredData]) -> bool:
+        """Delete a list of stored data for a dataset
+        Display message box in case of errors.
+
+        :param stored_data_list: stored data to delete
+        :type stored_data_list: List[StoredData]
+        :return: True if no error occured, False otherwise
+        :rtype: bool
+        """
+        # Delete stored data
+        for stored_data in stored_data_list:
+            params = {
+                DeleteStoredDataAlgorithm.DATASTORE: stored_data.datastore_id,
+                DeleteStoredDataAlgorithm.STORED_DATA: stored_data._id,
+            }
+
+            algo_str = (
+                f"{GeoplateformeProvider().id()}:{DeleteStoredDataAlgorithm().name()}"
+            )
+            alg = QgsApplication.processingRegistry().algorithmById(algo_str)
+            context = QgsProcessingContext()
+            feedback = QgsProcessingFeedback()
+            _, success = alg.run(parameters=params, context=context, feedback=feedback)
+            if not success:
+                QMessageBox.critical(
+                    self,
+                    self.tr("Suppression impossible"),
+                    self.tr(
+                        "Une données stockées n'a pas pu être supprimée :\n {}"
+                    ).format(feedback.textLog()),
+                )
+                return False
+        return True
+
+    def _get_dataset_upload(self, datastore_id: str, dataset_name: str) -> List[Upload]:
+        """Get list of upload for a dataset
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param dataset_name: dataset name
+        :type dataset_name: str
+        :return: list of upload related to a dataset
+        :rtype: List[Upload]
+        """
+        manager = UploadRequestManager()
+
+        # Get all upload for dataset
+        tags = {"datasheet_name": dataset_name}
+        upload_list = manager.get_upload_list(
+            datastore_id=datastore_id,
+            tags=tags,
+        )
+        return upload_list
+
+    def _delete_dataset_upload(self, upload_list: List[Upload]) -> bool:
+        """Delete a list of upload for a dataset
+        Display message box in case of errors.
+
+        :param upload_list: upload to delete
+        :type upload_list: List[Upload]
+        :return: True if no error occured, False otherwise
+        :rtype: bool
+        """
+        # Delete upload
+        for upload in upload_list:
+            params = {
+                DeleteUploadAlgorithm.DATASTORE: upload.datastore_id,
+                DeleteUploadAlgorithm.UPLOAD: upload._id,
+            }
+
+            algo_str = (
+                f"{GeoplateformeProvider().id()}:{DeleteUploadAlgorithm().name()}"
+            )
+            alg = QgsApplication.processingRegistry().algorithmById(algo_str)
+            context = QgsProcessingContext()
+            feedback = QgsProcessingFeedback()
+            _, success = alg.run(parameters=params, context=context, feedback=feedback)
+            if not success:
+                QMessageBox.critical(
+                    self,
+                    self.tr("Suppression impossible"),
+                    self.tr("Une livraison n'a pas pu être supprimée :\n {}").format(
+                        feedback.textLog()
+                    ),
+                )
+                return False
+        return True
+
+    def _get_dataset_metadata(
+        self, datastore_id: str, dataset_name: str
+    ) -> List[Metadata]:
+        """Get list of metadata for a dataset
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param dataset_name: dataset name
+        :type dataset_name: str
+        :return: list of metadata related to a dataset
+        :rtype: List[Metadata]
+        """
+        manager = MetadataRequestManager()
+
+        # Get all metadata for dataset
+        tags = {"datasheet_name": dataset_name}
+        metadata_list = manager.get_metadata_list(
+            datastore_id=datastore_id,
+            tags=tags,
+        )
+        return metadata_list
+
+    def _delete_dataset_metadata(self, metadata_list: List[Metadata]) -> bool:
+        """Delete a list of metadata for a dataset
+        Display message box in case of errors.
+
+        :param metadata_list: metadata to delete
+        :type metadata_list: List[Metadata]
+        :return: True if no error occured, False otherwise
+        :rtype: bool
+        """
+        manager = MetadataRequestManager()
+
+        # Delete metadata
+        for metadata in metadata_list:
+            try:
+                manager.delete(
+                    datastore_id=metadata.datastore_id, metadata_id=metadata._id
+                )
+            except DeleteMetadataException as exc:
+                QMessageBox.critical(
+                    self,
+                    self.tr("Suppression impossible"),
+                    self.tr("Une metadata n'a pas pu être supprimée : {}".format(exc)),
+                )
+                return False
+        return True
+
     def refresh(
         self, datastore_id: Optional[str] = None, dataset_name: Optional[str] = None
     ) -> None:
@@ -213,8 +614,9 @@ class DashboardWidget(QWidget):
         Force refresh of stored data model
 
         """
-        # Disable refresh button : must processEvents so user can't click while updating
+        # Disable refresh and delete buttons : must processEvents so user can't click while updating
         self.btn_refresh.setEnabled(False)
+        self.btn_delete_dataset.setEnabled(False)
         if not datastore_id:
             datastore_id = self.cbx_datastore.current_datastore_id()
         if not dataset_name:
@@ -240,8 +642,9 @@ class DashboardWidget(QWidget):
         self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
         self.cbx_dataset.activated.connect(self._dataset_updated)
 
-        # Enable new refresh
+        # Enable new refresh and delete
         self.btn_refresh.setEnabled(True)
+        self.btn_delete_dataset.setEnabled(True)
 
     def _service_clicked(self, index: QModelIndex) -> None:
         """Display service details when clicked

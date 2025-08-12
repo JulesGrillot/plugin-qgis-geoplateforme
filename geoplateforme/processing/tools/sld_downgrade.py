@@ -144,4 +144,4 @@ class SldDowngradeAlgorithm(QgsProcessingAlgorithm):
             output_file_path, pretty_print=True, xml_declaration=True, encoding="UTF-8"
         )
 
-        return {}
+        return {self.OUTPUT: output_file_path}

@@ -52,6 +52,9 @@
     </xsl:element>
   </xsl:template>
 
+  <!-- Delete se:Description if children of se:Rule -->
+  <xsl:template match="se:Rule/se:Description" />
+
   <!--
    Preserve all other elements and attributes
   -->

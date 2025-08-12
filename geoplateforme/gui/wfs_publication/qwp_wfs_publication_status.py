@@ -11,9 +11,7 @@ from qgis.PyQt.QtWidgets import QWizardPage
 
 # Plugin
 from geoplateforme.api.metadata import MetadataRequestManager, MetadataType
-from geoplateforme.gui.qwp_metadata_form import (
-    MetadataFormPageWizard,
-)
+from geoplateforme.gui.qwp_metadata_form import MetadataFormPageWizard
 from geoplateforme.gui.wfs_publication.qwp_publication_form import (
     PublicationFormPageWizard,
 )
@@ -115,7 +113,7 @@ class PublicationStatut(QWizardPage):
 
         result, success = alg.run(parameters=params, context=context, feedback=feedback)
         if success:
-            self.lbl_result.setText(self.tr("Service WMS-Vecteur publié avec succès"))
+            self.lbl_result.setText(self.tr("Service WFS publié avec succès"))
             self.offering_id = result[WfsPublicationAlgorithm.OFFERING_ID]
             try:
                 if self.qwp_metadata_form.new_metadata:

@@ -11,9 +11,8 @@ from qgis.PyQt.QtWidgets import QWizardPage
 
 # Plugin
 from geoplateforme.api.metadata import MetadataRequestManager, MetadataType
-from geoplateforme.gui.qwp_metadata_form import (
-    MetadataFormPageWizard,
-)
+from geoplateforme.gui.publication.qwp_visibility import VisibilityPageWizard
+from geoplateforme.gui.qwp_metadata_form import MetadataFormPageWizard
 from geoplateforme.gui.wms_vector_publication.qwp_publication_form import (
     PublicationFormPageWizard,
 )
@@ -31,6 +30,7 @@ class PublicationStatut(QWizardPage):
         qwp_table_style_selection: TableRelationPageWizard,
         qwp_publication_form: PublicationFormPageWizard,
         qwp_metadata_form: MetadataFormPageWizard,
+        qwp_visibility: VisibilityPageWizard,
         parent=None,
     ):
         """
@@ -45,6 +45,7 @@ class PublicationStatut(QWizardPage):
         self.qwp_table_style_selection = qwp_table_style_selection
         self.qwp_publication_form = qwp_publication_form
         self.qwp_metadata_form = qwp_metadata_form
+        self.qwp_visibility = qwp_visibility
         uic.loadUi(
             os.path.join(
                 os.path.dirname(__file__), "qwp_wms_vector_publication_status.ui"
@@ -89,6 +90,7 @@ class PublicationStatut(QWizardPage):
             WmsPublicationAlgorithm.TAGS: tags_to_qgs_parameter_matrix_string(
                 {"datasheet_name": dataset_name}
             ),
+            WmsPublicationAlgorithm.OPEN: self.qwp_visibility.is_open(),
         }
 
         selected_table_styles = (

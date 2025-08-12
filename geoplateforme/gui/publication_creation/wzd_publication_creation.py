@@ -4,13 +4,12 @@ from typing import Optional
 
 from qgis.PyQt.QtWidgets import QWizard
 
+from geoplateforme.gui.publication.qwp_visibility import VisibilityPageWizard
 from geoplateforme.gui.publication_creation.qwp_publication_form import (
     PublicationFormPageWizard,
 )
 from geoplateforme.gui.publication_creation.qwp_status import PublicationStatut
-from geoplateforme.gui.qwp_metadata_form import (
-    MetadataFormPageWizard,
-)
+from geoplateforme.gui.qwp_metadata_form import MetadataFormPageWizard
 
 
 class PublicationFormCreation(QWizard):
@@ -33,18 +32,27 @@ class PublicationFormCreation(QWizard):
 
         super().__init__(parent)
         self.setWindowTitle(self.tr("Publication WMTS-TMS"))
+
+        # First page to display publication form
         self.qwp_publication_form = PublicationFormPageWizard(
             self, datastore_id, dataset_name, stored_data_id
         )
+        # Second page for metadata
         self.qwp_metadata_form = MetadataFormPageWizard(
             datastore_id, dataset_name, self
         )
+
+        # Third page to define visibility
+        self.qwp_visibility = VisibilityPageWizard(self)
+
+        # Last page to launch processing and display results
         self.qwp_publication_status = PublicationStatut(
-            self.qwp_publication_form, self.qwp_metadata_form, self
+            self.qwp_publication_form, self.qwp_metadata_form, self.qwp_visibility, self
         )
 
         self.addPage(self.qwp_publication_form)
         self.addPage(self.qwp_metadata_form)
+        self.addPage(self.qwp_visibility)
         self.addPage(self.qwp_publication_status)
 
         self.setOption(QWizard.WizardOption.NoBackButtonOnStartPage, True)

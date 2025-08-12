@@ -6,6 +6,7 @@ from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingException,
     QgsProcessingOutputString,
+    QgsProcessingParameterBoolean,
     QgsProcessingParameterMatrix,
     QgsProcessingParameterString,
 )
@@ -60,9 +61,10 @@ class WfsPublicationAlgorithm(QgsProcessingAlgorithm):
     RELATIONS_ABSTRACT = "abstract"
     RELATIONS_KEYWORDS = "keywords"
 
+    OPEN = "OPEN"
+
     # Parameter not yet implemented
     METADATA = "metadata"
-    VISIBILITY = "visibility"
 
     OFFERING_ID = "OFFERING_ID"
 
@@ -179,6 +181,15 @@ class WfsPublicationAlgorithm(QgsProcessingAlgorithm):
             )
         )
 
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                name=self.OPEN,
+                description=self.tr("Ouvert à tout public"),
+                optional=True,
+                defaultValue=True,
+            )
+        )
+
         self.addOutput(
             QgsProcessingOutputString(
                 name=self.OFFERING_ID,
@@ -206,6 +217,8 @@ class WfsPublicationAlgorithm(QgsProcessingAlgorithm):
         tag_data = self.parameterAsMatrix(parameters, self.TAGS, context)
         tags = tags_from_qgs_parameter_matrix_string(tag_data)
 
+        is_open = self.parameterAsBool(parameters, self.OPEN, context)
+
         sandbox_datastore_ids = (
             PlgOptionsManager.get_plg_settings().sandbox_datastore_ids
         )
@@ -219,9 +232,8 @@ class WfsPublicationAlgorithm(QgsProcessingAlgorithm):
                 ).format(layer_name)
             )
 
-        # TODO : add metadata and visibility
+        # TODO : add metadata
         metadata = []
-        publication_visibility = "PUBLIC"
 
         # create (post) configuration from input data
         try:
@@ -264,7 +276,7 @@ class WfsPublicationAlgorithm(QgsProcessingAlgorithm):
         try:
             datastore_manager = DatastoreRequestManager()
             datastore = datastore_manager.get_datastore(datastore_id)
-            res = datastore.get_endpoint(data_type=data_type)
+            res = datastore.get_endpoint(data_type=data_type, open=is_open)
 
             publication_endpoint = res
         except UnavailableEndpointException as exc:
@@ -274,10 +286,10 @@ class WfsPublicationAlgorithm(QgsProcessingAlgorithm):
         try:
             manager_offering = OfferingsRequestManager()
             offering = manager_offering.create_offering(
-                visibility=publication_visibility,
                 endpoint=publication_endpoint,
                 datastore=datastore_id,
                 configuration_id=configuration_id,
+                is_open=is_open,
             )
         except OfferingCreationException as exc:
             raise QgsProcessingException(f"exc publication url : {exc}")

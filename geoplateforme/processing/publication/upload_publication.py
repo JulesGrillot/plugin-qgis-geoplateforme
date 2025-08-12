@@ -5,6 +5,7 @@ from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingException,
     QgsProcessingOutputString,
+    QgsProcessingParameterBoolean,
     QgsProcessingParameterMatrix,
     QgsProcessingParameterNumber,
     QgsProcessingParameterString,
@@ -46,13 +47,13 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
     BOTTOM_LEVEL = "BOTTOM_LEVEL"
     TOP_LEVEL = "TOP_LEVEL"
     TAGS = "TAGS"
+    OPEN = "OPEN"
 
     URL_ATTRIBUTION = "URL_ATTRIBUTION"
     URL_TITLE = "URL_TITLE"
 
     # Parameter not yet implemented
     METADATA = "metadata"
-    VISIBILITY = "visibility"
 
     OFFERING_ID = "OFFERING_ID"
 
@@ -181,6 +182,15 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
             )
         )
 
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                name=self.OPEN,
+                description=self.tr("Ouvert à tout public"),
+                optional=True,
+                defaultValue=True,
+            )
+        )
+
         self.addOutput(
             QgsProcessingOutputString(
                 name=self.OFFERING_ID,
@@ -205,6 +215,8 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
         tag_data = self.parameterAsMatrix(parameters, self.TAGS, context)
         tags = tags_from_qgs_parameter_matrix_string(tag_data)
 
+        is_open = self.parameterAsBool(parameters, self.OPEN, context)
+
         sandbox_datastore_ids = (
             PlgOptionsManager.get_plg_settings().sandbox_datastore_ids
         )
@@ -218,9 +230,8 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
                 ).format(layer_name)
             )
 
-        # TODO : add metadata and visibility
+        # TODO : add metadata
         metadata = []
-        publication_visibility = "PUBLIC"
 
         # create (post) configuration from input data
         try:
@@ -264,7 +275,9 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
         try:
             datastore_manager = DatastoreRequestManager()
             datastore = datastore_manager.get_datastore(datastore_id)
-            res = datastore.get_endpoint(data_type=ConfigurationType.WMTS_TMS.value)
+            res = datastore.get_endpoint(
+                data_type=ConfigurationType.WMTS_TMS.value, open=is_open
+            )
 
             publication_endpoint = res
         except UnavailableEndpointException as exc:
@@ -274,10 +287,10 @@ class UploadPublicationAlgorithm(QgsProcessingAlgorithm):
         try:
             manager_offering = OfferingsRequestManager()
             offering = manager_offering.create_offering(
-                visibility=publication_visibility,
                 endpoint=publication_endpoint,
                 datastore=datastore_id,
                 configuration_id=configuration_id,
+                is_open=is_open,
             )
         except OfferingCreationException as exc:
             raise QgsProcessingException(f"exc publication url : {exc}")

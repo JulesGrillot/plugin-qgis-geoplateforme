@@ -18,6 +18,7 @@ Publication de tuiles vectorielles.
 | Url attribution | `URL_ATTRIBUTION`      | Url attribution |
 | Titre attribution | `URL_TITLE`      | Titre attribution |
 | Tags à ajouter | `TAGS`  | List de tags à importer. Format `"clé 1,valeur 1;clé 2,valeur 2;..;clé n,valeur n"` |
+| Ouvert à tout public | `OPEN`      | Booléen pour ouvrir la publication |
 
 - Sorties :
 

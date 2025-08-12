@@ -6,6 +6,7 @@ from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingException,
     QgsProcessingOutputString,
+    QgsProcessingParameterBoolean,
     QgsProcessingParameterEnum,
     QgsProcessingParameterMatrix,
     QgsProcessingParameterNumber,
@@ -64,9 +65,10 @@ class WmsRasterPublicationAlgorithm(QgsProcessingAlgorithm):
     URL_ATTRIBUTION = "URL_ATTRIBUTION"
     URL_TITLE = "URL_TITLE"
 
+    OPEN = "OPEN"
+
     # Parameter not yet implemented
     METADATA = "metadata"
-    VISIBILITY = "visibility"
 
     INTERPOLATION_ENUM = [
         "NEAREST-NEIGHBOUR",
@@ -248,6 +250,15 @@ class WmsRasterPublicationAlgorithm(QgsProcessingAlgorithm):
             )
         )
 
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                name=self.OPEN,
+                description=self.tr("Ouvert à tout public"),
+                optional=True,
+                defaultValue=True,
+            )
+        )
+
         self.addOutput(
             QgsProcessingOutputString(
                 name=self.OFFERING_ID,
@@ -279,6 +290,8 @@ class WmsRasterPublicationAlgorithm(QgsProcessingAlgorithm):
         interpolation = self.parameterAsEnumString(
             parameters, self.INTERPOLATION, context
         )
+
+        is_open = self.parameterAsBool(parameters, self.OPEN, context)
 
         sandbox_datastore_ids = (
             PlgOptionsManager.get_plg_settings().sandbox_datastore_ids
@@ -330,9 +343,8 @@ class WmsRasterPublicationAlgorithm(QgsProcessingAlgorithm):
         else:
             type_infos["getfeatureinfo"] = {"stored_data": True}
 
-        # TODO : add metadata and visibility
+        # TODO : add metadata
         metadata = []
-        publication_visibility = "PUBLIC"
 
         # create (post) configuration from input data
         try:
@@ -368,7 +380,7 @@ class WmsRasterPublicationAlgorithm(QgsProcessingAlgorithm):
         try:
             datastore_manager = DatastoreRequestManager()
             datastore = datastore_manager.get_datastore(datastore_id)
-            res = datastore.get_endpoint(data_type=data_type)
+            res = datastore.get_endpoint(data_type=data_type, open=is_open)
 
             publication_endpoint = res
         except UnavailableEndpointException as exc:
@@ -378,10 +390,10 @@ class WmsRasterPublicationAlgorithm(QgsProcessingAlgorithm):
         try:
             manager_offering = OfferingsRequestManager()
             offering = manager_offering.create_offering(
-                visibility=publication_visibility,
                 endpoint=publication_endpoint,
                 datastore=datastore_id,
                 configuration_id=configuration_id,
+                is_open=is_open,
             )
         except OfferingCreationException as exc:
             raise QgsProcessingException(f"exc publication url : {exc}")

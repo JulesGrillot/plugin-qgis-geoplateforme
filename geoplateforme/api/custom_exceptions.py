@@ -66,6 +66,10 @@ class MetadataPublishException(Exception):
     pass
 
 
+class MetadataUnpublishException(Exception):
+    pass
+
+
 class OfferingCreationException(Exception):
     pass
 

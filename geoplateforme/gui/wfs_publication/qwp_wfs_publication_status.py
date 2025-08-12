@@ -121,6 +121,7 @@ class PublicationStatut(QWizardPage):
             self.lbl_result.setText(self.tr("Service WFS publié avec succès"))
             self.offering_id = result[WfsPublicationAlgorithm.OFFERING_ID]
             try:
+                metadata = self.qwp_metadata_form.metadata
                 if self.qwp_metadata_form.new_metadata:
                     self.lbl_result.setText(
                         "\n".join(
@@ -130,7 +131,6 @@ class PublicationStatut(QWizardPage):
                             ]
                         )
                     )
-                    metadata = self.qwp_metadata_form.metadata
                     manager = MetadataRequestManager()
                     manager.update_metadata_links(metadata)
                     with tempfile.TemporaryDirectory() as tmpdirname:
@@ -157,35 +157,6 @@ class PublicationStatut(QWizardPage):
                             ]
                         )
                     )
-                    self.lbl_result.setText(
-                        "\n".join(
-                            [
-                                self.lbl_result.text(),
-                                self.tr("Publication de la métadonnée"),
-                            ]
-                        )
-                    )
-
-                    # get the endpoint for the publication
-                    datastore_manager = DatastoreRequestManager()
-                    datastore = datastore_manager.get_datastore(datastore_id)
-                    metadata_endpoint_id = datastore.get_endpoint(data_type="METADATA")
-
-                    # publish metadata
-                    manager.publish(
-                        datastore_id=datastore_id,
-                        endpoint_id=metadata_endpoint_id,
-                        metadata_file_identifier=metadata.file_identifier,
-                    )
-
-                    self.lbl_result.setText(
-                        "\n".join(
-                            [
-                                self.lbl_result.text(),
-                                self.tr("Métadonnée publiée avec succès"),
-                            ]
-                        )
-                    )
                 else:
                     self.lbl_result.setText(
                         "\n".join(
@@ -196,9 +167,7 @@ class PublicationStatut(QWizardPage):
                         )
                     )
                     manager = MetadataRequestManager()
-                    manager.update_metadata(
-                        datastore_id, self.qwp_metadata_form.metadata
-                    )
+                    manager.update_metadata(datastore_id, metadata)
                     self.lbl_result.setText(
                         "\n".join(
                             [
@@ -207,6 +176,37 @@ class PublicationStatut(QWizardPage):
                             ]
                         )
                     )
+
+                # Publish metadata
+                self.lbl_result.setText(
+                    "\n".join(
+                        [
+                            self.lbl_result.text(),
+                            self.tr("Publication de la métadonnée"),
+                        ]
+                    )
+                )
+
+                # get the endpoint for the publication
+                datastore_manager = DatastoreRequestManager()
+                datastore = datastore_manager.get_datastore(datastore_id)
+                metadata_endpoint_id = datastore.get_endpoint(data_type="METADATA")
+
+                # publish metadata
+                manager.publish(
+                    datastore_id=datastore_id,
+                    endpoint_id=metadata_endpoint_id,
+                    metadata_file_identifier=metadata.file_identifier,
+                )
+
+                self.lbl_result.setText(
+                    "\n".join(
+                        [
+                            self.lbl_result.text(),
+                            self.tr("Métadonnée publiée avec succès"),
+                        ]
+                    )
+                )
             except Exception as e:
                 self.lbl_result.setText(
                     self.tr("Erreur lors de l'enregistrement de la métadonnée")

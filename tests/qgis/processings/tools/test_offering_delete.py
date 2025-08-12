@@ -30,6 +30,36 @@ OFFERING_JSON = {
     "_id": OFFERING_ID,
 }
 
+CONFIGURATION_JSON = {
+    "creation": "2025-08-12T13:17:33.659260Z",
+    "update": "2025-08-12T13:17:45.255108Z",
+    "name": "SANDBOX_pyr_raster_wms_raster_3",
+    "layer_name": "SANDBOX_pyr_raster_wms_raster_3",
+    "type": "WMS-RASTER",
+    "status": "PUBLISHED",
+    "tags": {},
+    "attribution": {},
+    "last_event": {
+        "title": "Publication",
+        "text": "Publication de la couche 'SANDBOX_wms_vector' sur le point d'accès WMS_VECTOR 'Service de diffusion WMS Vecteur Bac à Sable'",
+        "date": "2025-08-12T13:17:38.548758",
+        "initiator": {
+            "last_name": "KERLOCH",
+            "first_name": "Jean-Marie",
+            "_id": "e29d7c1d-d315-4576-b9c0-964cb347d625",
+        },
+        "urls": [
+            {
+                "type": "WMS",
+                "url": "https://data.geopf.fr/sandbox/wms-v?service=WMS&version=1.3.0&request=GetMap&layers=SANDBOX_wms_vector&bbox={xmin},{ymin},{xmax},{ymax}&styles={styles}&width={width}&height={height}&srs={srs}&format={format}",
+            }
+        ],
+    },
+    "_id": CONFIGURATION_ID,
+    "metadata": [],
+    "type_infos": {},
+}
+
 
 def test_no_error(
     data_geopf_srv: pytest_httpserver.HTTPServer,
@@ -49,6 +79,12 @@ def test_no_error(
     data_geopf_srv.expect_oneshot_request(
         f"/api/datastores/{datastore_id}/offerings/{offering_id}", method="GET"
     ).respond_with_json(OFFERING_JSON, status=200)
+
+    # Get configuration for dataset definition. No dataset to avoid mock of metadata unpublish
+    data_geopf_srv.expect_oneshot_request(
+        f"/api/datastores/{datastore_id}/configurations/{configuration_id}",
+        method="GET",
+    ).respond_with_json(CONFIGURATION_JSON, status=200)
 
     # Delete offering
     data_geopf_srv.expect_oneshot_request(

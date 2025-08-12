@@ -326,23 +326,33 @@ class OfferingsRequestManager:
             )
 
     def create_offering(
-        self, visibility: str, endpoint: str, datastore: str, configuration_id: str
+        self,
+        endpoint: str,
+        datastore: str,
+        configuration_id: str,
+        is_open: bool,
     ) -> Offering:
-        """
-        Create offering on Geoplateforme entrepot
+        """Create offering on Geoplateforme entrepot
 
-        Args:
-            configuration_id: (str) datastore_id :(str)
-            visibility :(str) endpoint : (str)
-
+        :param endpoint: endpoint for publication
+        :type endpoint: str
+        :param datastore: datastore id
+        :type datastore: str
+        :param configuration_id: configuration id
+        :type configuration_id: str
+        :param is_open: offering is open
+        :type is_open: bool
+        :raises OfferingCreationException: error during creation
+        :return: created offering
+        :rtype: Offering
         """
         self.log(
-            f"{__name__}.create_offering(visibility:{visibility}, endpoint: {endpoint}, datastore: {datastore}, configuration_id: {configuration_id})"
+            f"{__name__}.create_offering(endpoint: {endpoint}, datastore: {datastore}, configuration_id: {configuration_id}, is_open: {is_open})"
         )
 
         # encode data
         data = QByteArray()
-        data_map = {"visibility": visibility, "endpoint": endpoint, "open": True}
+        data_map = {"endpoint": endpoint, "open": is_open}
 
         data.append(json.dumps(data_map))
 

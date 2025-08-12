@@ -147,8 +147,8 @@ class StoredDataDetailsDialog(QDialog):
 
         status = stored_data.status
 
-        # Only generated stored data have actions
-        if status == StoredDataStatus.GENERATED:
+        # Add delete action for GENERATED or UNSTABLE stored data
+        if status == StoredDataStatus.GENERATED or status == StoredDataStatus.UNSTABLE:
             # Data delete
             delete_action = QAction(
                 QIcon(str(DIR_PLUGIN_ROOT / "resources/images/icons/Supprimer.svg")),
@@ -161,6 +161,8 @@ class StoredDataDetailsDialog(QDialog):
             button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
             self.action_layout.addWidget(button)
 
+        # Only generated stored data have publication and generation actions
+        if status == StoredDataStatus.GENERATED:
             # Vector DB :
             # - tile generation
             # - WFS publication
@@ -286,12 +288,12 @@ class StoredDataDetailsDialog(QDialog):
                 publish_wmts_action.triggered.connect(self._show_wmts_publish_wizard)
                 self.action_layout.addWidget(button)
 
-            # Add spacer to have button align left
-            self.action_layout.addItem(
-                QSpacerItem(
-                    40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
-                )
+        # Add spacer to have button align left
+        self.action_layout.addItem(
+            QSpacerItem(
+                40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
             )
+        )
 
     def delete_stored_data(self) -> None:
         """Delete current stored data"""

@@ -23,7 +23,9 @@ def getFirstElementValueByTagName(parent, name):
         return ""
 
 
-def read_wmts_layer_capabilities(url: str, layerName: str) -> Optional[dict]:
+def read_wmts_layer_capabilities(
+    url: str, layerName: str, authid: Optional[str] = None
+) -> Optional[dict]:
     """Get layer informations from GetCapabilities
 
     :param url: service url
@@ -38,7 +40,7 @@ def read_wmts_layer_capabilities(url: str, layerName: str) -> Optional[dict]:
 
     try:
         reply = request_manager.get_url(
-            url=QUrl(f"{url}?service=WMTS&request=GetCapabilities"),
+            url=QUrl(f"{url}?service=WMTS&request=GetCapabilities"), config_id=authid
         )
     except ConnectionError as err:
         log(

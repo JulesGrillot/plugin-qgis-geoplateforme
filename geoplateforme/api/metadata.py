@@ -30,6 +30,7 @@ from geoplateforme.api.custom_exceptions import (
     DeleteMetadataException,
     DeleteTagException,
     MetadataCreationException,
+    MetadataPublishException,
     MetadataUpdateException,
     MetadataUpdateLinksException,
     ReadMetadataException,
@@ -1001,3 +1002,37 @@ class MetadataRequestManager:
             raise MetadataUpdateLinksException(
                 f"Error while updating metadata links : {err}"
             )
+
+    def publish(
+        self, datastore_id: str, endpoint_id: str, metadata_file_identifier: str
+    ) -> None:
+        """Publish metadata for a metadata file_identifier and a endpoint
+
+        :param datastore_id: datastore id
+        :type datastore_id: str
+        :param endpoint_id: METADATA endpoint id
+        :type endpoint_id: str
+        :param metadata_file_identifier: metadata file_identifier
+        :type metadata_file_identifier: str
+        :raises MetadataPublishException: error when publishing metadata
+        """
+        self.log(
+            f"{__name__}.publish({datastore_id=},{endpoint_id=},{metadata_file_identifier=})"
+        )
+
+        try:
+            # encode data
+            data = QByteArray()
+            params = {
+                "file_identifiers": [metadata_file_identifier],
+                "endpoint": endpoint_id,
+            }
+            data.append(json.dumps(params))
+            self.request_manager.post_url(
+                url=QUrl(f"{self.get_base_url(datastore_id)}/publication"),
+                config_id=self.plg_settings.qgis_auth_id,
+                data=data,
+                headers={b"Content-Type": bytes("application/json", "utf8")},
+            )
+        except ConnectionError as err:
+            raise MetadataPublishException(f"Error while publishing metadata : {err}")

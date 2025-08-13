@@ -47,7 +47,13 @@ class PublicationFormCreation(QWizard):
 
         # Last page to launch processing and display results
         self.qwp_publication_status = PublicationStatut(
-            self.qwp_publication_form, self.qwp_metadata_form, self.qwp_visibility, self
+            self.qwp_publication_form,
+            self.qwp_metadata_form,
+            self.qwp_visibility,
+            datastore_id,
+            dataset_name,
+            stored_data_id,
+            self,
         )
 
         self.addPage(self.qwp_publication_form)
@@ -93,3 +99,13 @@ class PublicationFormCreation(QWizard):
         :rtype: str
         """
         return self.qwp_publication_status.offering_id
+
+    def reject(self) -> None:
+        """Override reject to check last page and wait for metadata publication"""
+        # If service publication page, check that page is valid
+        current_page = self.currentPage()
+        if current_page == self.qwp_publication_status:
+            if current_page.validatePage():
+                super().reject()
+        else:
+            super().reject()

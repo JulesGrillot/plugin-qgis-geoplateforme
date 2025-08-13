@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>UploadCreationPageWizard</class>
- <widget class="QWizardPage" name="UploadCreationPageWizard">
+ <class>AbstractPublishServicePage</class>
+ <widget class="QWizardPage" name="AbstractPublishServicePage">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>459</width>
-    <height>414</height>
+    <width>709</width>
+    <height>514</height>
    </rect>
   </property>
   <property name="windowTitle">

@@ -10,10 +10,12 @@ from qgis.core import (
     QgsSldExportContext,
 )
 from qgis.PyQt import uic
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QWidget
 
 # PyQGIS
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.utils import OverrideCursor
 
 # Project
 from geoplateforme.processing.provider import GeoplateformeProvider
@@ -67,6 +69,7 @@ class SldSelectionWidget(QWidget):
         :return: created temporary sld file, empty str in case of error
         :rtype: str
         """
+
         layer = self.cbx_layer.currentLayer()
         if not layer:
             QMessageBox.critical(
@@ -76,80 +79,85 @@ class SldSelectionWidget(QWidget):
             )
             return ""
 
-        # Use temporary file for 1.1.0 .sld creation with QGIS export
-        qgis_sld_file_output = tempfile.NamedTemporaryFile(
-            delete=False, suffix="1_1_0.sld", mode="w", encoding="utf-8"
-        )
-
-        # Create Sld export context
-        context = QgsSldExportContext()
-        context.setExportFilePath(qgis_sld_file_output.name)
-        context.setVendorExtension(
-            Qgis.SldExportVendorExtension.GeoServerVendorExtension
-        )
-        context.setExportOptions(Qgis.SldExportOption.NoOptions)
-
-        version_int = Qgis.versionInt()
-
-        # Empty error message
-        error_msg = ""
-        if version_int > 34400:
-            doc = layer.exportSldStyleV3(
-                exportContext=context,
-            )
-            error_msg = "\n".join(context.errors())
-        else:
-            # Empty QDomDocument
-            doc = QDomDocument()
-
-            layer.exportSldStyleV2(
-                doc=doc,
-                errorMsg=error_msg,
-                exportContext=context,
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
+            # Use temporary file for 1.1.0 .sld creation with QGIS export
+            qgis_sld_file_output = tempfile.NamedTemporaryFile(
+                delete=False, suffix="1_1_0.sld", mode="w", encoding="utf-8"
             )
 
-        if error_msg:
-            QMessageBox.critical(
-                self,
-                self.tr("Création .sld"),
-                self.tr(
-                    "Le fichier .sld n'a pas pu être exporté depuis la couche vectorielle:\n {}"
-                ).format(error_msg),
+            # Create Sld export context
+            context = QgsSldExportContext()
+            context.setExportFilePath(qgis_sld_file_output.name)
+            context.setVendorExtension(
+                Qgis.SldExportVendorExtension.GeoServerVendorExtension
             )
-            return ""
+            context.setExportOptions(Qgis.SldExportOption.NoOptions)
 
-        # Write content to output file
-        sld_xml = doc.toString()
-        qgis_sld_file_output.write(sld_xml)
-        qgis_sld_file_output.close()
+            version_int = Qgis.versionInt()
 
-        output_file = tempfile.NamedTemporaryFile(
-            delete=False, suffix="1_0_0.sld", mode="w", encoding="utf-8"
-        )
+            # Empty error message
+            error_msg = ""
+            if version_int > 34400:
+                doc = layer.exportSldStyleV3(
+                    exportContext=context,
+                )
+                error_msg = "\n".join(context.errors())
+            else:
+                # Empty QDomDocument
+                doc = QDomDocument()
 
-        # Convert to 1.0.0 version of sld
-        params = {
-            SldDowngradeAlgorithm.FILE_PATH: qgis_sld_file_output.name,
-            SldDowngradeAlgorithm.CHECK_INPUT: True,
-            SldDowngradeAlgorithm.CHECK_OUTPUT: True,
-            SldDowngradeAlgorithm.OUTPUT: output_file.name,
-        }
+                layer.exportSldStyleV2(
+                    doc=doc,
+                    errorMsg=error_msg,
+                    exportContext=context,
+                )
 
-        algo_str = f"{GeoplateformeProvider().id()}:{SldDowngradeAlgorithm().name()}"
-        alg = QgsApplication.processingRegistry().algorithmById(algo_str)
-        context = QgsProcessingContext()
-        feedback = QgsProcessingFeedback()
-        result, success = alg.run(parameters=params, context=context, feedback=feedback)
-        if not success:
-            QMessageBox.critical(
-                self,
-                self.tr("Conversion .sld"),
-                self.tr(
-                    "Le fichier .sld n'a pas pu être converti au format 1.0.0:\n {}"
-                ).format(feedback.textLog()),
+            if error_msg:
+                QMessageBox.critical(
+                    self,
+                    self.tr("Création .sld"),
+                    self.tr(
+                        "Le fichier .sld n'a pas pu être exporté depuis la couche vectorielle:\n {}"
+                    ).format(error_msg),
+                )
+                return ""
+
+            # Write content to output file
+            sld_xml = doc.toString()
+            qgis_sld_file_output.write(sld_xml)
+            qgis_sld_file_output.close()
+
+            output_file = tempfile.NamedTemporaryFile(
+                delete=False, suffix="1_0_0.sld", mode="w", encoding="utf-8"
             )
-        else:
-            return result[SldDowngradeAlgorithm.OUTPUT]
+
+            # Convert to 1.0.0 version of sld
+            params = {
+                SldDowngradeAlgorithm.FILE_PATH: qgis_sld_file_output.name,
+                SldDowngradeAlgorithm.CHECK_INPUT: True,
+                SldDowngradeAlgorithm.CHECK_OUTPUT: True,
+                SldDowngradeAlgorithm.OUTPUT: output_file.name,
+            }
+
+            algo_str = (
+                f"{GeoplateformeProvider().id()}:{SldDowngradeAlgorithm().name()}"
+            )
+            alg = QgsApplication.processingRegistry().algorithmById(algo_str)
+            context = QgsProcessingContext()
+            feedback = QgsProcessingFeedback()
+            result, success = alg.run(
+                parameters=params, context=context, feedback=feedback
+            )
+            if not success:
+                QMessageBox.critical(
+                    self,
+                    self.tr("Conversion .sld"),
+                    self.tr(
+                        "Le fichier .sld n'a pas pu être converti au format 1.0.0:\n {}"
+                    ).format(feedback.textLog()),
+                )
+            else:
+                return result[SldDowngradeAlgorithm.OUTPUT]
 
         return ""
 

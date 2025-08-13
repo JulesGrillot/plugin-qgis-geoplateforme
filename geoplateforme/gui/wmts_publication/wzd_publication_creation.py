@@ -73,3 +73,13 @@ class WMTSPublicationWizard(QWizard):
         :rtype: str
         """
         return self.qwp_publication_status.offering_id
+
+    def reject(self) -> None:
+        """Override reject to check last page and wait for metadata publication"""
+        # If service publication page, check that page is valid
+        current_page = self.currentPage()
+        if current_page == self.qwp_publication_status:
+            if current_page.validatePage():
+                super().reject()
+        else:
+            super().reject()

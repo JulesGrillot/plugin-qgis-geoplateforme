@@ -15,6 +15,34 @@ Unreleased
 ### Removed
 
 -->
+## 0.12.0 - 2025-08-13
+
+### Bugs fixes 🐛
+
+* fix(search): add tag widget for theme field and fix production year search by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/185>
+* fix(permission): invalid groupId for create_permission by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/187>
+* fix(user key): login and password are mandatory for BASIC key by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/188>
+* fix(publish): first page is not a commit page, metadata page is by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/189>
+* fix(wms): invalid parameter datastore for geoserver style creation must use datastore_id by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/192>
+* fix(stored data): need to check enum not string for status text by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/193>
+* feat(dashboard): avoid multiple refresh when multiple display ask by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/194>
+* fix(actions): use layout instead of toolbar for actions by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/195>
+* fix(stored data): allow delete if status is UNSTABLE by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/197>
+* fix(provider): use user define authid for authentication by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/199>
+
+### Features and enhancements 🎉
+
+* feat(sld transform): add transform to lowercase for ogc:PropertyName by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/190>
+* feat(markdown): add editor for configuration abstract by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/191>
+* feat(sld): add option to create sld file from layer by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/196>
+* feat(publish): add page to define publication visibility by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/198>
+* feat(metadata): publish metadata on METADATA endpoint after creation by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/200>
+* feat(metadata): unpublish if no service available for dataset by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/201>
+* feat(dashboard): add button to delete current dataset by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/202>
+* feat(metadata): metadata create/update and publish are done in task by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/203>
+* update(index): tagging and update configurations with metadata by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/186>
+* Update metadata.txt by @IGNF-Xavier in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/184>
+
 ## 0.11.0 - 2025-08-01
 
 ### Features and enhancements 🎉

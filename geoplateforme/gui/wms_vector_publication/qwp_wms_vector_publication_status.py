@@ -127,6 +127,7 @@ class PublicationStatut(AbstractPublishServicePage):
             self.offering_id = result[WmsPublicationAlgorithm.OFFERING_ID]
             self._update_metadata()
         else:
+            self.publish_error = True
             self.lbl_result.setText(
                 self.tr("Erreur lors de la publication du service WMS-Vecteur")
             )

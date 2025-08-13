@@ -38,7 +38,10 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="3" column="0" colspan="5">
+   <item row="1" column="1" colspan="3">
+    <widget class="DatasetComboBox" name="cbx_dataset"/>
+   </item>
+   <item row="3" column="0" colspan="6">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
       <number>1</number>
@@ -312,6 +315,26 @@
      </widget>
     </widget>
    </item>
+   <item row="0" column="5">
+    <widget class="QPushButton" name="btn_create">
+     <property name="maximumSize">
+      <size>
+       <width>150</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Create dataset</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="5">
+    <widget class="QPushButton" name="btn_refresh">
+     <property name="text">
+      <string>Refresh</string>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="0">
     <widget class="QLabel" name="lbl_dataset">
      <property name="sizePolicy">
@@ -350,31 +373,15 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="4">
-    <widget class="QPushButton" name="btn_create">
-     <property name="maximumSize">
-      <size>
-       <width>150</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="text">
-      <string>Create dataset</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1" colspan="3">
-    <widget class="DatastoreComboBox" name="cbx_datastore"/>
-   </item>
    <item row="1" column="4">
-    <widget class="QPushButton" name="btn_refresh">
+    <widget class="QPushButton" name="btn_delete_dataset">
      <property name="text">
-      <string>Refresh</string>
+      <string>Delete</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1" colspan="3">
-    <widget class="DatasetComboBox" name="cbx_dataset"/>
+   <item row="0" column="1" colspan="4">
+    <widget class="DatastoreComboBox" name="cbx_datastore"/>
    </item>
   </layout>
  </widget>

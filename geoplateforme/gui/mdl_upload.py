@@ -59,7 +59,7 @@ class UploadListModel(QStandardItemModel):
         return result
 
     def data(
-        self, index: QtCore.QModelIndex, role: int = QtCore.Qt.DisplayRole
+        self, index: QtCore.QModelIndex, role: int = Qt.ItemDataRole.DisplayRole
     ) -> QVariant:
         """Override QStandardItemModel data() for decoration role for status icon
 
@@ -75,7 +75,7 @@ class UploadListModel(QStandardItemModel):
         result = super().data(index, role)
         if role == QtCore.Qt.DecorationRole:
             if index.column() == self.STATUS_COL:
-                status_value = self.data(index, QtCore.Qt.DisplayRole)
+                status_value = self.data(index, Qt.ItemDataRole.DisplayRole)
                 result = self._get_status_icon(status_value)
 
         return result

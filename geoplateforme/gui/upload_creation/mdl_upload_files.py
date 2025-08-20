@@ -103,14 +103,14 @@ class UploadFilesTreeModel(QStandardItemModel):
         return result
 
     def data(
-        self, index: QtCore.QModelIndex, role: int = QtCore.Qt.DisplayRole
+        self, index: QtCore.QModelIndex, role: int = Qt.ItemDataRole.DisplayRole
     ) -> QVariant:
         """Override QStandardItemModel data() for :
         - decoration role for CRS icon if invalid value
 
         :param index: QModelIndex
         :type index: QtCore.QModelIndex
-        :param role: Qt Rpme, defaults to QtCore.Qt.DisplayRole
+        :param role: Qt Rpme, defaults to Qt.ItemDataRole.DisplayRole
         :type role: int, optional
         :return: data for wanted rol
         :rtype: QVariant
@@ -119,7 +119,7 @@ class UploadFilesTreeModel(QStandardItemModel):
 
         if role == QtCore.Qt.DecorationRole:
             if index.column() == self.CSR_COL:
-                crs = self.data(index, QtCore.Qt.DisplayRole)
+                crs = self.data(index, Qt.ItemDataRole.DisplayRole)
                 if crs:
                     first_crs = self.get_first_crs()
                     valid = ("EPSG:" in crs or "IGNF" in crs) and crs == first_crs
@@ -129,7 +129,7 @@ class UploadFilesTreeModel(QStandardItemModel):
                         result = QIcon(QgsApplication.iconPath("mIconWarning.svg"))
         elif role == QtCore.Qt.ToolTipRole:
             if index.column() == self.CSR_COL:
-                crs = self.data(index, QtCore.Qt.DisplayRole)
+                crs = self.data(index, Qt.ItemDataRole.DisplayRole)
                 if crs:
                     first_crs = self.get_first_crs()
                     valid = "EPSG:" in crs or "IGNF" in crs

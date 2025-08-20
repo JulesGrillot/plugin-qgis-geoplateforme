@@ -58,7 +58,7 @@ class StoredDataListModel(QStandardItemModel):
         return result
 
     def data(
-        self, index: QtCore.QModelIndex, role: int = QtCore.Qt.DisplayRole
+        self, index: QtCore.QModelIndex, role: int = Qt.ItemDataRole.DisplayRole
     ) -> QVariant:
         """Override QStandardItemModel data() for decoration role for status icon
 
@@ -80,7 +80,8 @@ class StoredDataListModel(QStandardItemModel):
                 type_ = stored_data.type
 
                 status_value = self.data(
-                    self.index(index.row(), self.STATUS_COL), QtCore.Qt.DisplayRole
+                    self.index(index.row(), self.STATUS_COL),
+                    Qt.ItemDataRole.DisplayRole,
                 )
                 status = status_value
 

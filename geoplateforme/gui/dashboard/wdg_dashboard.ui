@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1101</width>
-    <height>862</height>
+    <width>500</width>
+    <height>500</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,8 +18,8 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>980</width>
-    <height>800</height>
+    <width>500</width>
+    <height>500</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -99,8 +99,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>573</width>
-             <height>749</height>
+             <width>159</width>
+             <height>523</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -224,7 +224,7 @@
              <x>0</x>
              <y>0</y>
              <width>498</width>
-             <height>749</height>
+             <height>387</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_8">
@@ -257,8 +257,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>573</width>
-             <height>749</height>
+             <width>88</width>
+             <height>373</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_6">
@@ -284,7 +284,7 @@
              <x>0</x>
              <y>0</y>
              <width>498</width>
-             <height>749</height>
+             <height>387</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_7">

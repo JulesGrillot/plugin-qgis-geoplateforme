@@ -12,11 +12,6 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - "**.py"
-      - .github/workflows/tester.yml
-      - geoplateforme/metadata.txt
-      - requirements/testing.txt
 
 env:
   PROJECT_FOLDER: "geoplateforme"

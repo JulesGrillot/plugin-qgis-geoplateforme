@@ -76,7 +76,7 @@
         </widget>
         <widget class="QWidget" name="tab_avanced_search">
          <attribute name="title">
-          <string>Avanced search</string>
+          <string>Advanced search</string>
          </attribute>
          <layout class="QGridLayout" name="layout_advanced_search">
           <item row="3" column="5" colspan="3">
@@ -263,3 +263,4 @@
   </connection>
  </connections>
 </ui>
+

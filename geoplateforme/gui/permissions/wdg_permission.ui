@@ -37,7 +37,7 @@
      <item>
       <widget class="QPushButton" name="btn_delete">
        <property name="text">
-        <string>Suppprimer</string>
+        <string>Supprimer</string>
        </property>
       </widget>
      </item>

@@ -134,8 +134,8 @@ class SldSelectionWidget(QWidget):
             # Convert to 1.0.0 version of sld
             params = {
                 SldDowngradeAlgorithm.FILE_PATH: qgis_sld_file_output.name,
-                SldDowngradeAlgorithm.CHECK_INPUT: True,
-                SldDowngradeAlgorithm.CHECK_OUTPUT: True,
+                SldDowngradeAlgorithm.CHECK_INPUT: False,
+                SldDowngradeAlgorithm.CHECK_OUTPUT: False,
                 SldDowngradeAlgorithm.OUTPUT: output_file.name,
             }
 

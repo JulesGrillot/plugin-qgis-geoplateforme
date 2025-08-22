@@ -74,7 +74,9 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
         self.tbv_results.setModel(self.mdl_search_result)
         self.tbv_results.verticalHeader().setVisible(False)
         self.tbv_results.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-        self.tbv_results.pressed.connect(self._item_clicked)
+        self.tbv_results.selectionModel().selectionChanged.connect(
+            self._item_selection_changed
+        )
         self.tbv_results.doubleClicked.connect(self._add_layer)
 
         self.buttonBox.button(QDialogButtonBox.StandardButton.Apply).setText("Ajouter")
@@ -142,17 +144,18 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
         if len(search_dict.keys()) > 0:
             self.mdl_search_result.advanced_search_text(search_dict)
 
-    def _item_clicked(self, index: QModelIndex):
-        """Display metadata when a result is selected
-
-        :param index: selected index
-        :type index: QModelIndex
-        """
-        self.buttonBox.button(QDialogButtonBox.StandardButton.Apply).setEnabled(True)
-        self.metaTextBrowser.clear()
-        result = self.mdl_search_result.get_result(index)
-        if result:
-            self.metaTextBrowser.setText(json.dumps(result, indent=2))
+    def _item_selection_changed(self) -> None:
+        """Display metadata when a result is selected"""
+        selected_indexes = self.tbv_results.selectionModel().selectedIndexes()
+        if len(selected_indexes):
+            index = selected_indexes[0]
+            self.buttonBox.button(QDialogButtonBox.StandardButton.Apply).setEnabled(
+                True
+            )
+            self.metaTextBrowser.clear()
+            result = self.mdl_search_result.get_result(index)
+            if result:
+                self.metaTextBrowser.setText(json.dumps(result, indent=2))
 
     def _add_layer(self, index: QModelIndex):
         """Add selected layer to QGIS project

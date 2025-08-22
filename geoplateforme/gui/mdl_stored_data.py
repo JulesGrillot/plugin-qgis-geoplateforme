@@ -77,6 +77,11 @@ class StoredDataListModel(QStandardItemModel):
                 stored_data = self.data(
                     self.index(index.row(), self.NAME_COL), Qt.ItemDataRole.UserRole
                 )
+
+                # Check if stored data is defined
+                if not stored_data:
+                    return result
+
                 type_ = stored_data.type
 
                 status_value = self.data(

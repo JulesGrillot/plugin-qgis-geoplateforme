@@ -205,8 +205,8 @@ class RangeSlider(QtWidgets.QSlider):
                     self.active_slider = i
                     self.pressed_control = hit
 
-                    self.triggerAction(self.SliderMove)
-                    self.setRepeatAction(self.SliderNoAction)
+                    self.triggerAction(self.SliderAction.SliderMove)
+                    self.setRepeatAction(self.SliderAction.SliderNoAction)
                     self.setSliderDown(True)
                     break
 
@@ -215,8 +215,8 @@ class RangeSlider(QtWidgets.QSlider):
                 self.click_offset = self.__pixelPosToRangeValue(
                     self.__pick(event.pos())
                 )
-                self.triggerAction(self.SliderMove)
-                self.setRepeatAction(self.SliderNoAction)
+                self.triggerAction(self.SliderAction.SliderMove)
+                self.setRepeatAction(self.SliderAction.SliderNoAction)
         else:
             event.ignore()
 

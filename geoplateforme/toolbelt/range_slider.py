@@ -95,7 +95,7 @@ class RangeSlider(QtWidgets.QSlider):
 
         c = QtCore.QRect(low_rect.center(), high_rect.center()).center()
         # print(min_pos, max_pos, c)
-        if opt.orientation == QtCore.Qt.Horizontal:
+        if opt.orientation == QtCore.Qt.Orientation.Horizontal:
             span_rect = QtCore.QRect(
                 QtCore.QPoint(min_pos, c.y() - 2), QtCore.QPoint(max_pos, c.y() + 1)
             )
@@ -106,7 +106,7 @@ class RangeSlider(QtWidgets.QSlider):
 
         # self.initStyleOption(opt)
         # print(groove.x(), groove.y(), groove.width(), groove.height())
-        if opt.orientation == QtCore.Qt.Horizontal:
+        if opt.orientation == QtCore.Qt.Orientation.Horizontal:
             groove.adjust(0, 0, -1, 0)
         else:
             groove.adjust(0, 0, 0, -1)
@@ -117,7 +117,7 @@ class RangeSlider(QtWidgets.QSlider):
             painter.setPen(QtGui.QPen(highlight, 0))
             # painter.setPen(QtGui.QPen(self.palette().color(QtGui.QPalette.Dark), 0))
             """
-            if opt.orientation == QtCore.Qt.Horizontal:
+            if opt.orientation == QtCore.Qt.Orientation.Horizontal:
                 self.setupPainter(
                     painter,
                     opt.orientation,
@@ -246,7 +246,7 @@ class RangeSlider(QtWidgets.QSlider):
         self.sliderMoved.emit(self._low, self._high)
 
     def __pick(self, pt):
-        if self.orientation() == QtCore.Qt.Horizontal:
+        if self.orientation() == QtCore.Qt.Orientation.Horizontal:
             return pt.x()
         else:
             return pt.y()
@@ -259,7 +259,7 @@ class RangeSlider(QtWidgets.QSlider):
         gr = style.subControlRect(style.CC_Slider, opt, style.SC_SliderGroove, self)
         sr = style.subControlRect(style.CC_Slider, opt, style.SC_SliderHandle, self)
 
-        if self.orientation() == QtCore.Qt.Horizontal:
+        if self.orientation() == QtCore.Qt.Orientation.Horizontal:
             slider_length = sr.width()
             slider_min = gr.x()
             slider_max = gr.right() - slider_length + 1

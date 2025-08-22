@@ -1,8 +1,7 @@
 import json
 
 from qgis.core import QgsApplication
-from qgis.PyQt import QtCore
-from qgis.PyQt.QtCore import QModelIndex, QObject
+from qgis.PyQt.QtCore import QModelIndex, QObject, Qt
 from qgis.PyQt.QtGui import QIcon, QStandardItemModel
 
 from geoplateforme.api.custom_exceptions import UnavailableUploadFileTreeException
@@ -89,13 +88,13 @@ class UploadDetailsTreeModel(QStandardItemModel):
             self.setData(
                 file_tree_index,
                 QIcon(QgsApplication.iconPath("mIconFile.svg")),
-                QtCore.Qt.DecorationRole,
+                Qt.ItemDataRole.DecorationRole,
             )
         elif data["type"] == "directory":
             self.setData(
                 file_tree_index,
                 QIcon(QgsApplication.iconPath("mIconFolder.svg")),
-                QtCore.Qt.DecorationRole,
+                Qt.ItemDataRole.DecorationRole,
             )
         self.setData(
             self.index(last_row, self.VALUE_COL, parent),

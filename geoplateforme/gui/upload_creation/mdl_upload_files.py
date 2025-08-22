@@ -117,7 +117,7 @@ class UploadFilesTreeModel(QStandardItemModel):
         """
         result = super().data(index, role)
 
-        if role == QtCore.Qt.DecorationRole:
+        if role == Qt.ItemDataRole.DecorationRole:
             if index.column() == self.CSR_COL:
                 crs = self.data(index, Qt.ItemDataRole.DisplayRole)
                 if crs:

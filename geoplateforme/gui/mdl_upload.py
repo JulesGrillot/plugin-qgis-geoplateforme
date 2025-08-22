@@ -73,7 +73,7 @@ class UploadListModel(QStandardItemModel):
         :rtype: QVariant
         """
         result = super().data(index, role)
-        if role == QtCore.Qt.DecorationRole:
+        if role == Qt.ItemDataRole.DecorationRole:
             if index.column() == self.STATUS_COL:
                 status_value = self.data(index, Qt.ItemDataRole.DisplayRole)
                 result = self._get_status_icon(status_value)

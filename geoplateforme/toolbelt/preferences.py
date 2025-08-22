@@ -69,14 +69,15 @@ class PlgSettingsStructure:
         "122b878c-aad8-4507-87b2-465e664467d3,87e1beb6-ee07-4adc-8449-6a925dc28949"
     )
 
-    # processing names
-    vector_db_generation_processing_names_str: str = "Intégration de données vecteur livrées en base,Intégration de données vecteur livrées en base (Bac à sable)"
-
-    vector_tile_generation_processing_names_str: str = "Calcul de pyramide vecteur,Calcul de pyramide vecteur (Bac à sable),Calcul ou mise à jour de pyramide vecteur"
-
     # processing ids
     raster_tiles_from_wms_vector_processing_ids_str: str = (
         "6a54dc92-fc93-4c8e-9f02-046bf889550e,2e56e7ba-552b-49b8-abcf-563184dd8c55"
+    )
+    vector_db_generation_processing_ids_str: str = (
+        "0de8c60b-9938-4be9-aa36-9026b77c3c96, 5a348542-61a7-4289-a950-8544bb0ce2b8"
+    )
+    vector_tile_generation_processing_ids_str: str = (
+        "aa5f9391-0bdb-4b97-9209-fcde351b82f6,a07a2d00-2bb3-45cb-a4c3-ac298501148c"
     )
 
     @property
@@ -99,31 +100,31 @@ class PlgSettingsStructure:
         return self.sandbox_datastore_ids_str.split(",")
 
     @property
-    def vector_db_generation_processing_names(self) -> List[str]:
-        """Return list name possible for vector db generation processing.
-
-        :return: list of name for processing
-        :rtype: List[str]
-        """
-        return self.vector_db_generation_processing_names_str.split(",")
-
-    @property
-    def vector_tile_generation_processing_names(self) -> List[str]:
-        """Return list name possible for vector tile generation processing.
-
-        :return: list of name for processing
-        :rtype: List[str]
-        """
-        return self.vector_tile_generation_processing_names_str.split(",")
-
-    @property
     def raster_tiles_from_wms_vector_processing_ids(self) -> List[str]:
-        """Return list name possible for vector tile generation processing.
+        """Return list id possible for raster tile from wms vector generation processing.
 
         :return: list of name for processing
         :rtype: List[str]
         """
         return self.raster_tiles_from_wms_vector_processing_ids_str.split(",")
+
+    @property
+    def vector_db_generation_processing_ids(self) -> List[str]:
+        """Return list id possible for vector db generation processing.
+
+        :return: list of name for processing
+        :rtype: List[str]
+        """
+        return self.vector_db_generation_processing_ids_str.split(",")
+
+    @property
+    def vector_tile_generation_processing_ids(self) -> List[str]:
+        """Return list id possible for vector tile generation processing.
+
+        :return: list of name for processing
+        :rtype: List[str]
+        """
+        return self.vector_tile_generation_processing_ids_str.split(",")
 
     def create_auth_config(self) -> Optional[QgsAuthMethodConfig]:
         """Create QgsAuthMethodConfig for OAuth2 authentification.

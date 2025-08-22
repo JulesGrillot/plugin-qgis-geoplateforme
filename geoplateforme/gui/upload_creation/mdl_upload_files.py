@@ -127,7 +127,7 @@ class UploadFilesTreeModel(QStandardItemModel):
                         result = QIcon(QgsApplication.iconPath("mIconSuccess.svg"))
                     else:
                         result = QIcon(QgsApplication.iconPath("mIconWarning.svg"))
-        elif role == QtCore.Qt.ToolTipRole:
+        elif role == Qt.ItemDataRole.ToolTipRole:
             if index.column() == self.CSR_COL:
                 crs = self.data(index, Qt.ItemDataRole.DisplayRole)
                 if crs:

@@ -1,8 +1,8 @@
 import os
 
 from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
-from qgis.PyQt import QtCore, uic
-from qgis.PyQt.QtCore import QModelIndex
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QModelIndex, Qt
 from qgis.PyQt.QtWidgets import (
     QAbstractItemView,
     QDialog,
@@ -205,7 +205,7 @@ class StorageReportDialog(QDialog):
         # Get StoredData
         stored_data = proxy_model.data(
             proxy_model.index(index.row(), self.mdl_stored_data.NAME_COL),
-            QtCore.Qt.UserRole,
+            Qt.ItemDataRole.UserRole,
         )
         if stored_data:
             if index.column() == self.mdl_stored_data.DELETE_COL:
@@ -223,7 +223,7 @@ class StorageReportDialog(QDialog):
         # Get StoredData
         upload = self.mdl_upload.data(
             self.mdl_upload.index(index.row(), self.mdl_stored_data.NAME_COL),
-            QtCore.Qt.UserRole,
+            Qt.ItemDataRole.UserRole,
         )
         if upload:
             if index.column() == self.mdl_upload.DELETE_COL:

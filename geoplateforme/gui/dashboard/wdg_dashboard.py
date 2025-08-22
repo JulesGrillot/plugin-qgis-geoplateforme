@@ -656,7 +656,7 @@ class DashboardWidget(QWidget):
         self.remove_service_detail_zone()
         offering = self.mdl_offering.data(
             self.mdl_offering.index(index.row(), 0),
-            QtCore.Qt.UserRole,
+            Qt.ItemDataRole.UserRole,
         )
         if offering:
             self.service_detail_dialog = ServiceDetailsWidget(self)
@@ -781,7 +781,7 @@ class DashboardWidget(QWidget):
         # Get StoredData
         item = model.data(
             model.index(index.row(), 0),
-            QtCore.Qt.UserRole,
+            Qt.ItemDataRole.UserRole,
         )
         if item:
             if isinstance(model, StoredDataProxyModel):

@@ -4,6 +4,8 @@ from typing import Optional
 
 # PyQGIS
 from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QRegularExpression
+from qgis.PyQt.QtGui import QRegularExpressionValidator
 from qgis.PyQt.QtWidgets import QWidget
 
 # Project
@@ -28,6 +30,20 @@ class TableRelationWidget(QWidget):
         uic.loadUi(
             os.path.join(os.path.dirname(__file__), "wdg_table_relation.ui"), self
         )
+
+        # Issue when publishing with a public name with spaces. Using validator
+        # ASCII letters :  A-Za-z
+        # with accent : À-ÖØ-öø-ÿ
+        # numeric : 0-9
+        # underscore : _
+        # dash : \\- (need escape)
+        # point : \\. (need escape)
+        alphanum_with_accent_qreg = QRegularExpression("[A-Za-zÀ-ÖØ-öø-ÿ0-9_\\-\\.]+")
+        alphanum_with_accent_qval = QRegularExpressionValidator(
+            alphanum_with_accent_qreg
+        )
+
+        self.lne_public_name.setValidator(alphanum_with_accent_qval)
 
     def set_table_name(self, table_name: str) -> None:
         """Define table name

@@ -10,9 +10,6 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - "**.py"
-      - geoplateforme/metadata.txt
 
 env:
   PROJECT_FOLDER: "geoplateforme"

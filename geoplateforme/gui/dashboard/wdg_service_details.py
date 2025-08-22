@@ -129,8 +129,8 @@ class ServiceDetailsWidget(QWidget):
         # Remove all available action
         self.clear_layout(self.action_layout)
 
-        # Only published offering have actions
-        if status == OfferingStatus.PUBLISHED:
+        # Add delete action for PUBLISHED or UNSTABLE offering
+        if status == OfferingStatus.PUBLISHED or status == OfferingStatus.UNSTABLE:
             # Data delete
             delete_action = QAction(
                 QIcon(str(DIR_PLUGIN_ROOT / "resources/images/icons/Supprimer.svg")),
@@ -143,6 +143,8 @@ class ServiceDetailsWidget(QWidget):
             button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
             self.action_layout.addWidget(button)
 
+        # Add load action for published offering
+        if status == OfferingStatus.PUBLISHED:
             # Load service
             load_action = QAction(
                 self._load_icon(),
@@ -180,12 +182,12 @@ class ServiceDetailsWidget(QWidget):
                 button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
                 self.action_layout.addWidget(button)
 
-            # Add spacer to have button align left
-            self.action_layout.addItem(
-                QSpacerItem(
-                    40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
-                )
+        # Add spacer to have button align left
+        self.action_layout.addItem(
+            QSpacerItem(
+                40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
             )
+        )
 
     def _show_tile_raster_generation_wizard(self) -> None:
         """Show tile generation wizard for current offerring"""

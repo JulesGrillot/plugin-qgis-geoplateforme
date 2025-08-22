@@ -15,6 +15,22 @@ Unreleased
 ### Removed
 
 -->
+## 0.13.0 - 2025-08-22
+
+### Bugs fixes 🐛
+
+* fix(qt6): update enum use for qt6 compatibility by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/211>
+* fix(provider): display result info when selection is changed by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/215>
+* feat(processing): always use ids instead of names by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/217>
+* feat(sld from layer): disable checks to avoid error if proxy needed for schema download by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/219>
+
+### Features and enhancements 🎉
+
+* feat(offering): allow delete of UNSTABLE offerings by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/212>
+* feat(wfs): add validator for public name by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/213>
+* feat(theme): sort theme by value for display by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/216>
+* feat(dashboard): update min size by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/218>
+
 ## 0.12.0 - 2025-08-13
 
 ### Bugs fixes 🐛

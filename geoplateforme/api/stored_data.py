@@ -733,7 +733,7 @@ class StoredDataRequestManager:
         try:
             # encode data
             data = QByteArray()
-            data.append(json.dumps(tags))
+            data.append(json.dumps(tags).encode("utf-8"))
             self.request_manager.post_url(
                 url=QUrl(f"{self.get_base_url(datastore_id)}/{stored_data_id}/tags"),
                 config_id=self.plg_settings.qgis_auth_id,

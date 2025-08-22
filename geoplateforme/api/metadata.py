@@ -721,7 +721,7 @@ class MetadataRequestManager:
         try:
             # encode data
             data = QByteArray()
-            data.append(json.dumps(tags))
+            data.append(json.dumps(tags).encode("utf-8"))
             self.request_manager.post_url(
                 url=QUrl(f"{self.get_base_url(datastore_id)}/{metadata_id}/tags"),
                 config_id=self.plg_settings.qgis_auth_id,
@@ -1028,7 +1028,7 @@ class MetadataRequestManager:
                 "file_identifiers": [metadata_file_identifier],
                 "endpoint": endpoint_id,
             }
-            data.append(json.dumps(params))
+            data.append(json.dumps(params).encode("utf-8"))
             self.request_manager.post_url(
                 url=QUrl(f"{self.get_base_url(datastore_id)}/publication"),
                 config_id=self.plg_settings.qgis_auth_id,
@@ -1062,7 +1062,7 @@ class MetadataRequestManager:
                 "file_identifiers": [metadata_file_identifier],
                 "endpoint": endpoint_id,
             }
-            data.append(json.dumps(params))
+            data.append(json.dumps(params).encode("utf-8"))
             self.request_manager.post_url(
                 url=QUrl(f"{self.get_base_url(datastore_id)}/unpublication"),
                 config_id=self.plg_settings.qgis_auth_id,

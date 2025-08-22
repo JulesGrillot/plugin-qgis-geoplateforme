@@ -354,7 +354,7 @@ class OfferingsRequestManager:
         data = QByteArray()
         data_map = {"endpoint": endpoint, "open": is_open}
 
-        data.append(json.dumps(data_map))
+        data.append(json.dumps(data_map).encode("utf-8"))
 
         try:
             # send request

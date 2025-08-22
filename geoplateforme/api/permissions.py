@@ -319,7 +319,7 @@ class PermissionRequestManager:
             if only_oauth:
                 data_map["only_oauth"] = only_oauth
 
-            data.append(json.dumps(data_map))
+            data.append(json.dumps(data_map).encode("utf-8"))
             reply = self.request_manager.post_url(
                 url=QUrl(self.get_base_url(datastore_id)),
                 config_id=self.plg_settings.qgis_auth_id,
@@ -371,7 +371,7 @@ class PermissionRequestManager:
             if end_date:
                 data_map["end_date"] = f"{end_date.isoformat()}Z"
 
-            data.append(json.dumps(data_map))
+            data.append(json.dumps(data_map).encode("utf-8"))
             self.request_manager.patch_url(
                 url=QUrl(f"{self.get_base_url(datastore_id)}/{permission_id}"),
                 config_id=self.plg_settings.qgis_auth_id,

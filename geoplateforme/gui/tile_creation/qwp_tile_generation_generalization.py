@@ -2,8 +2,8 @@
 import os
 
 # PyQGIS
-from qgis.PyQt import QtCore, QtGui, uic
-from qgis.PyQt.QtCore import QSize
+from qgis.PyQt import QtGui, uic
+from qgis.PyQt.QtCore import QSize, Qt
 from qgis.PyQt.QtGui import QPixmap
 from qgis.PyQt.QtWidgets import QLabel, QRadioButton, QWidget, QWizardPage
 
@@ -49,7 +49,9 @@ class PixmapLabel(QLabel):
         ):
             size = self._pixmap.size()
         return self._pixmap.scaled(
-            size, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation
+            size,
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation,
         )
 
     def resizeEvent(self, a0: QtGui.QResizeEvent) -> None:

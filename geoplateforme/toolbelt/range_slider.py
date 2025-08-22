@@ -21,16 +21,16 @@ class RangeSlider(QtWidgets.QSlider):
         exception of valueChanged
     """
 
-    def __init__(self, *args):
-        super(RangeSlider, self).__init__(*args)
+    def __init__(self, parent):
+        super().__init__(parent)
 
         self._low = self.minimum()
         self._high = self.maximum()
 
-        self.pressed_control = QtWidgets.QStyle.SC_None
+        self.pressed_control = QtWidgets.QStyle.SubControl.SC_None
         self.tick_interval = 0
-        self.tick_position = QtWidgets.QSlider.NoTicks
-        self.hover_control = QtWidgets.QStyle.SC_None
+        self.tick_position = QtWidgets.QSlider.TickPosition.NoTicks
+        self.hover_control = QtWidgets.QStyle.SubControl.SC_None
         self.click_offset = 0
 
         # 0 for the low, 1 for the high, -1 for both
@@ -61,29 +61,40 @@ class RangeSlider(QtWidgets.QSlider):
         self.initStyleOption(opt)
         opt.siderValue = 0
         opt.sliderPosition = 0
-        opt.subControls = QtWidgets.QStyle.SC_SliderGroove
-        if self.tickPosition() != self.NoTicks:
-            opt.subControls |= QtWidgets.QStyle.SC_SliderTickmarks
-        style.drawComplexControl(QtWidgets.QStyle.CC_Slider, opt, painter, self)
+        opt.subControls = QtWidgets.QStyle.SubControl.SC_SliderGroove
+        if self.tickPosition() != self.TickPosition.NoTicks:
+            opt.subControls |= QtWidgets.QStyle.SubControl.SC_SliderTickmarks
+        style.drawComplexControl(
+            QtWidgets.QStyle.ComplexControl.CC_Slider, opt, painter, self
+        )
         groove = style.subControlRect(
-            QtWidgets.QStyle.CC_Slider, opt, QtWidgets.QStyle.SC_SliderGroove, self
+            QtWidgets.QStyle.ComplexControl.CC_Slider,
+            opt,
+            QtWidgets.QStyle.SubControl.SC_SliderGroove,
+            self,
         )
 
         # drawSpan
         # opt = QtWidgets.QStyleOptionSlider()
         self.initStyleOption(opt)
-        opt.subControls = QtWidgets.QStyle.SC_SliderGroove
-        # if self.tickPosition() != self.NoTicks:
-        #    opt.subControls |= QtWidgets.QStyle.SC_SliderTickmarks
+        opt.subControls = QtWidgets.QStyle.SubControl.SC_SliderGroove
+        # if self.tickPosition() != self.TickPosition.NoTicks:
+        #    opt.subControls |= QtWidgets.QStyle.SubControl.SC_SliderTickmarks
         opt.siderValue = 0
         # print(self._low)
         opt.sliderPosition = self._low
         low_rect = style.subControlRect(
-            QtWidgets.QStyle.CC_Slider, opt, QtWidgets.QStyle.SC_SliderHandle, self
+            QtWidgets.QStyle.ComplexControl.CC_Slider,
+            opt,
+            QtWidgets.QStyle.SubControl.SC_SliderHandle,
+            self,
         )
         opt.sliderPosition = self._high
         high_rect = style.subControlRect(
-            QtWidgets.QStyle.CC_Slider, opt, QtWidgets.QStyle.SC_SliderHandle, self
+            QtWidgets.QStyle.ComplexControl.CC_Slider,
+            opt,
+            QtWidgets.QStyle.SubControl.SC_SliderHandle,
+            self,
         )
 
         # print(low_rect, high_rect)
@@ -95,7 +106,7 @@ class RangeSlider(QtWidgets.QSlider):
 
         c = QtCore.QRect(low_rect.center(), high_rect.center()).center()
         # print(min_pos, max_pos, c)
-        if opt.orientation == QtCore.Qt.Horizontal:
+        if opt.orientation == QtCore.Qt.Orientation.Horizontal:
             span_rect = QtCore.QRect(
                 QtCore.QPoint(min_pos, c.y() - 2), QtCore.QPoint(max_pos, c.y() + 1)
             )
@@ -106,18 +117,18 @@ class RangeSlider(QtWidgets.QSlider):
 
         # self.initStyleOption(opt)
         # print(groove.x(), groove.y(), groove.width(), groove.height())
-        if opt.orientation == QtCore.Qt.Horizontal:
+        if opt.orientation == QtCore.Qt.Orientation.Horizontal:
             groove.adjust(0, 0, -1, 0)
         else:
             groove.adjust(0, 0, 0, -1)
 
         if True:  # self.isEnabled():
-            highlight = self.palette().color(QtGui.QPalette.Highlight)
+            highlight = self.palette().color(QtGui.QPalette.ColorRole.Highlight)
             painter.setBrush(QtGui.QBrush(highlight))
             painter.setPen(QtGui.QPen(highlight, 0))
             # painter.setPen(QtGui.QPen(self.palette().color(QtGui.QPalette.Dark), 0))
             """
-            if opt.orientation == QtCore.Qt.Horizontal:
+            if opt.orientation == QtCore.Qt.Orientation.Horizontal:
                 self.setupPainter(
                     painter,
                     opt.orientation,
@@ -148,13 +159,13 @@ class RangeSlider(QtWidgets.QSlider):
             # on top of the existing ones every time
             if i == 0:
                 opt.subControls = (
-                    QtWidgets.QStyle.SC_SliderHandle
-                )  # | QtWidgets.QStyle.SC_SliderGroove
+                    QtWidgets.QStyle.SubControl.SC_SliderHandle
+                )  # | QtWidgets.QStyle.SubControl.SC_SliderGroove
             else:
-                opt.subControls = QtWidgets.QStyle.SC_SliderHandle
+                opt.subControls = QtWidgets.QStyle.SubControl.SC_SliderHandle
 
-            if self.tickPosition() != self.NoTicks:
-                opt.subControls |= QtWidgets.QStyle.SC_SliderTickmarks
+            if self.tickPosition() != self.TickPosition.NoTicks:
+                opt.subControls |= QtWidgets.QStyle.SubControl.SC_SliderTickmarks
 
             if self.pressed_control:
                 opt.activeSubControls = self.pressed_control
@@ -163,7 +174,9 @@ class RangeSlider(QtWidgets.QSlider):
 
             opt.sliderPosition = value
             opt.sliderValue = value
-            style.drawComplexControl(QtWidgets.QStyle.CC_Slider, opt, painter, self)
+            style.drawComplexControl(
+                QtWidgets.QStyle.ComplexControl.CC_Slider, opt, painter, self
+            )
 
     def mousePressEvent(self, event):
         event.accept()
@@ -186,29 +199,29 @@ class RangeSlider(QtWidgets.QSlider):
             for i, value in enumerate([self._low, self._high]):
                 opt.sliderPosition = value
                 hit = style.hitTestComplexControl(
-                    style.CC_Slider, opt, event.pos(), self
+                    style.ComplexControl.CC_Slider, opt, event.pos(), self
                 )
-                if hit == style.SC_SliderHandle:
+                if hit == style.SubControl.SC_SliderHandle:
                     self.active_slider = i
                     self.pressed_control = hit
 
-                    self.triggerAction(self.SliderMove)
-                    self.setRepeatAction(self.SliderNoAction)
+                    self.triggerAction(self.SliderAction.SliderMove)
+                    self.setRepeatAction(self.SliderAction.SliderNoAction)
                     self.setSliderDown(True)
                     break
 
             if self.active_slider < 0:
-                self.pressed_control = QtWidgets.QStyle.SC_SliderHandle
+                self.pressed_control = QtWidgets.QStyle.SubControl.SC_SliderHandle
                 self.click_offset = self.__pixelPosToRangeValue(
                     self.__pick(event.pos())
                 )
-                self.triggerAction(self.SliderMove)
-                self.setRepeatAction(self.SliderNoAction)
+                self.triggerAction(self.SliderAction.SliderMove)
+                self.setRepeatAction(self.SliderAction.SliderNoAction)
         else:
             event.ignore()
 
     def mouseMoveEvent(self, event):
-        if self.pressed_control != QtWidgets.QStyle.SC_SliderHandle:
+        if self.pressed_control != QtWidgets.QStyle.SubControl.SC_SliderHandle:
             event.ignore()
             return
 
@@ -246,7 +259,7 @@ class RangeSlider(QtWidgets.QSlider):
         self.sliderMoved.emit(self._low, self._high)
 
     def __pick(self, pt):
-        if self.orientation() == QtCore.Qt.Horizontal:
+        if self.orientation() == QtCore.Qt.Orientation.Horizontal:
             return pt.x()
         else:
             return pt.y()
@@ -256,10 +269,14 @@ class RangeSlider(QtWidgets.QSlider):
         self.initStyleOption(opt)
         style = QtWidgets.QApplication.style()
 
-        gr = style.subControlRect(style.CC_Slider, opt, style.SC_SliderGroove, self)
-        sr = style.subControlRect(style.CC_Slider, opt, style.SC_SliderHandle, self)
+        gr = style.subControlRect(
+            style.ComplexControl.CC_Slider, opt, style.SubControl.SC_SliderGroove, self
+        )
+        sr = style.subControlRect(
+            style.ComplexControl.CC_Slider, opt, style.SubControl.SC_SliderHandle, self
+        )
 
-        if self.orientation() == QtCore.Qt.Horizontal:
+        if self.orientation() == QtCore.Qt.Orientation.Horizontal:
             slider_length = sr.width()
             slider_min = gr.x()
             slider_max = gr.right() - slider_length + 1

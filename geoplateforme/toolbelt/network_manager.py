@@ -112,7 +112,7 @@ class NetworkRequestsManager:
         """
         # create network object
         auth_manager = QgsApplication.authManager()
-        qreq = QNetworkRequest(url=url)
+        qreq = QNetworkRequest(url)
         auth_manager.updateNetworkRequest(qreq, config_id)
 
         # headers

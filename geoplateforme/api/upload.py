@@ -584,7 +584,7 @@ class UploadRequestManager:
         try:
             # encode data
             data = QByteArray()
-            data.append(json.dumps(tags))
+            data.append(json.dumps(tags).encode("utf-8"))
             self.request_manager.post_url(
                 url=QUrl(f"{self.get_base_url(datastore_id)}/{upload_id}/tags"),
                 config_id=self.plg_settings.qgis_auth_id,
@@ -705,7 +705,7 @@ class UploadRequestManager:
                 "type": "VECTOR",
                 "srs": srs,
             }
-            data.append(json.dumps(data_map))
+            data.append(json.dumps(data_map).encode("utf-8"))
             reply = self.request_manager.post_url(
                 url=QUrl(self.get_base_url(datastore_id)),
                 config_id=self.plg_settings.qgis_auth_id,

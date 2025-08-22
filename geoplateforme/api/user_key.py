@@ -384,7 +384,7 @@ class UserKeyRequestManager:
             if referer:
                 data_map["referer"] = referer
 
-            data.append(json.dumps(data_map))
+            data.append(json.dumps(data_map).encode("utf-8"))
             reply = self.request_manager.post_url(
                 url=QUrl(self.get_base_url()),
                 config_id=self.plg_settings.qgis_auth_id,
@@ -440,7 +440,7 @@ class UserKeyRequestManager:
             if referer:
                 data_map["referer"] = referer
 
-            data.append(json.dumps(data_map))
+            data.append(json.dumps(data_map).encode("utf-8"))
             self.request_manager.patch_url(
                 url=QUrl(f"{self.get_base_url()}/{user_key_id}"),
                 config_id=self.plg_settings.qgis_auth_id,
@@ -471,7 +471,7 @@ class UserKeyRequestManager:
             data = QByteArray()
             data_map = {"permission": permission_id, "offerings": offering_ids}
 
-            data.append(json.dumps(data_map))
+            data.append(json.dumps(data_map).encode("utf-8"))
             self.request_manager.post_url(
                 url=QUrl(f"{self.get_base_url()}/{user_key_id}/accesses"),
                 config_id=self.plg_settings.qgis_auth_id,

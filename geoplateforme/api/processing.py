@@ -160,7 +160,7 @@ class ProcessingRequestManager:
         try:
             # encode data
             data = QByteArray()
-            data.append(json.dumps(input_map))
+            data.append(json.dumps(input_map).encode("utf-8"))
 
             reply = self.request_manager.post_url(
                 url=QUrl(f"{self.get_base_url(datastore_id)}/executions"),

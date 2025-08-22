@@ -98,7 +98,7 @@ class SearchResultModel(QStandardItemModel):
         try:
             data = QByteArray()
             data_map = search_dict
-            data.append(json.dumps(data_map))
+            data.append(json.dumps(data_map).encode("utf-8"))
             reply = request_manager.post_url(
                 url=QUrl(
                     f"{self.plg_settings.base_url_api_search}/indexes/geoplateforme?page=1&size=50"

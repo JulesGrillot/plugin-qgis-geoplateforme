@@ -448,7 +448,7 @@ class ConfigurationRequestManager:
         }
         if configuration.attribution:
             data_map["attribution"] = configuration.attribution
-        data.append(json.dumps(data_map))
+        data.append(json.dumps(data_map).encode("utf-8"))
         try:
             # send request
             reply = self.request_manager.post_url(
@@ -705,7 +705,7 @@ class ConfigurationRequestManager:
         try:
             # encode data
             data = QByteArray()
-            data.append(json.dumps(tags))
+            data.append(json.dumps(tags).encode("utf-8"))
             self.request_manager.post_url(
                 url=QUrl(f"{self.get_base_url(datastore_id)}/{configuration_id}/tags"),
                 config_id=self.plg_settings.qgis_auth_id,
@@ -752,7 +752,7 @@ class ConfigurationRequestManager:
             if extra is not None:
                 data_map["extra"] = extra
 
-            data.append(json.dumps(data_map))
+            data.append(json.dumps(data_map).encode("utf-8"))
             self.request_manager.patch_url(
                 url=QUrl(
                     f"{self.get_base_url(datastore=datastore_id)}/{configuration_id}"
@@ -790,7 +790,7 @@ class ConfigurationRequestManager:
         }
         if configuration.attribution:
             data_map["attribution"] = configuration.attribution
-        data.append(json.dumps(data_map))
+        data.append(json.dumps(data_map).encode("utf-8"))
         try:
             # send request
             self.request_manager.put_url(

@@ -537,9 +537,11 @@ class NetworkRequestsManager:
         :param value: value
         :type value: str
         """
-        body.append(f"--{boundary}\r\n")
-        body.append(f'Content-Disposition: form-data; name="{name}"\r\n\r\n')
-        body.append(f"{value}\r\n")
+        body.append(f"--{boundary}\r\n".encode("utf-8"))
+        body.append(
+            f'Content-Disposition: form-data; name="{name}"\r\n\r\n'.encode("utf-8")
+        )
+        body.append(f"{value}\r\n".encode("utf-8"))
 
     @staticmethod
     def add_file_field(
@@ -564,11 +566,13 @@ class NetworkRequestsManager:
         """
         with open(filepath, "rb") as f:
             file_content = f.read()
-        body.append(f"--{boundary}\r\n")
+        body.append(f"--{boundary}\r\n".encode("utf-8"))
         body.append(
-            f'Content-Disposition: form-data; name="{field_name}"; filename="{filepath.name}"\r\n'
+            f'Content-Disposition: form-data; name="{field_name}"; filename="{filepath.name}"\r\n'.encode(
+                "utf-8"
+            )
         )
-        body.append(f"Content-Type: {content_type}\r\n\r\n")
+        body.append(f"Content-Type: {content_type}\r\n\r\n".encode("utf-8"))
         body.append(file_content)
         body.append(b"\r\n")
 
@@ -620,7 +624,7 @@ class NetworkRequestsManager:
         self.add_file_field(body, boundary, "file", file_path, file_type)
 
         # Close multipart
-        body.append(f"--{boundary}--\r\n")
+        body.append(f"--{boundary}--\r\n".encode("utf-8"))
 
         # Define content header with multipart/form-data and used boundary
         all_headers = {
@@ -682,7 +686,7 @@ class NetworkRequestsManager:
         self.add_file_field(body, boundary, "file", file_path, file_type)
 
         # Close multipart
-        body.append(f"--{boundary}--\r\n")
+        body.append(f"--{boundary}--\r\n".encode("utf-8"))
 
         # Define content header with multipart/form-data and used boundary
         all_headers = {

@@ -218,9 +218,9 @@ class TileCreationAlgorithm(QgsProcessingAlgorithm):
             )
 
             # Get processing for tile creation
-            processing = processing_manager.get_processing(
+            processing = processing_manager.get_processing_by_id(
                 datastore,
-                PlgOptionsManager.get_plg_settings().vector_tile_generation_processing_names,
+                PlgOptionsManager.get_plg_settings().vector_tile_generation_processing_ids,
             )
             # Execution parameters
             exec_params = {

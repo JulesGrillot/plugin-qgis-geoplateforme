@@ -141,9 +141,9 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
             processing_manager = ProcessingRequestManager()
 
             # Get processing for database integration
-            processing = processing_manager.get_processing(
+            processing = processing_manager.get_processing_by_id(
                 datastore,
-                PlgOptionsManager.get_plg_settings().vector_db_generation_processing_names,
+                PlgOptionsManager.get_plg_settings().vector_db_generation_processing_ids,
             )
 
             # Create execution

@@ -21,8 +21,8 @@ class RangeSlider(QtWidgets.QSlider):
         exception of valueChanged
     """
 
-    def __init__(self, *args):
-        super(RangeSlider, self).__init__(*args)
+    def __init__(self, parent):
+        super().__init__(parent)
 
         self._low = self.minimum()
         self._high = self.maximum()

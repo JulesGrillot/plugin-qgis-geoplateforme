@@ -84,7 +84,10 @@ class TagBarWidget(QWidget):
 class DictTagBarWidget(TagBarWidget):
     def __init__(self, items: dict):
         super(DictTagBarWidget, self).__init__()
-        self.items = items
+
+        # Sort items by value
+        self.items = dict(sorted(items.items(), key=lambda item: item[1]))
+
         self.combobox.addItems([v for v in self.items.values()])
         self.combobox.setCurrentIndex(-1)
         self.refresh()

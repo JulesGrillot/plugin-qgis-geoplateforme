@@ -204,6 +204,7 @@ class UploadDetailsWidget(QWidget):
         """
         if self._upload:
             QGuiApplication.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))
+            self.clear_layout(self.vlayout_execution)
             self._add_upload_log(self._upload)
             QGuiApplication.restoreOverrideCursor()
 

@@ -103,7 +103,8 @@ class CheckStateModel(QStandardItemModel):
         nb_unchecked = 0
 
         for i in range(0, self.rowCount(parent)):
-            check_state = self.data(parent.child(i, 0), Qt.ItemDataRole.CheckStateRole)
+            index = self.index(i, 0, parent)
+            check_state = self.data(index, Qt.ItemDataRole.CheckStateRole)
             if check_state == Qt.CheckState.Checked:
                 nb_checked = nb_checked + 1
             else:

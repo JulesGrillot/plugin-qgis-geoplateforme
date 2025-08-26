@@ -97,7 +97,7 @@ class PlgSettingsStructure:
         :return: list of sandbox datastore id
         :rtype: List[str]
         """
-        return self.sandbox_datastore_ids_str.split(",")
+        return self._str_to_id_list(self.sandbox_datastore_ids_str)
 
     @property
     def raster_tiles_from_wms_vector_processing_ids(self) -> List[str]:
@@ -106,7 +106,9 @@ class PlgSettingsStructure:
         :return: list of name for processing
         :rtype: List[str]
         """
-        return self.raster_tiles_from_wms_vector_processing_ids_str.split(",")
+        return self._str_to_id_list(
+            self.raster_tiles_from_wms_vector_processing_ids_str
+        )
 
     @property
     def vector_db_generation_processing_ids(self) -> List[str]:
@@ -115,7 +117,7 @@ class PlgSettingsStructure:
         :return: list of name for processing
         :rtype: List[str]
         """
-        return self.vector_db_generation_processing_ids_str.split(",")
+        return self._str_to_id_list(self.vector_db_generation_processing_ids_str)
 
     @property
     def vector_tile_generation_processing_ids(self) -> List[str]:
@@ -124,7 +126,21 @@ class PlgSettingsStructure:
         :return: list of name for processing
         :rtype: List[str]
         """
-        return self.vector_tile_generation_processing_ids_str.split(",")
+        return self._str_to_id_list(self.vector_tile_generation_processing_ids_str)
+
+    @staticmethod
+    def _str_to_id_list(list_str: str) -> List[str]:
+        """Convert a str of id list to a list of id
+
+        :param list_str: list as str
+        :type list_str: str
+        :return: list of id
+        :rtype: List[str]
+        """
+        result = []
+        for val in list_str.split(","):
+            result.append(val.strip())
+        return result
 
     def create_auth_config(self) -> Optional[QgsAuthMethodConfig]:
         """Create QgsAuthMethodConfig for OAuth2 authentification.

@@ -32,7 +32,7 @@ class FormattingTextEdit(QTextEdit):
             },
             {
                 "description": self.tr("Italic"),
-                "text": "_",
+                "text": "*",
                 "icon": str(DIR_PLUGIN_ROOT / "resources/images/italic.svg"),
                 "shortcut": QKeySequence(self.tr("Ctrl+I", "Italic")),
             },

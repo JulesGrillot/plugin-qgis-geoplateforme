@@ -17,6 +17,10 @@ from qgis.PyQt.QtGui import QRegularExpressionValidator
 alphanum_qreg = QRegularExpression("[a-z-A-Z-0-9-_]+")
 alphanum_qval = QRegularExpressionValidator(alphanum_qreg)
 
+# alphanumeric
+lower_case_num_qreg = QRegularExpression("[a-z0-9-_]+")
+lower_case_num_qval = QRegularExpressionValidator(lower_case_num_qreg)
+
 # alphanumeric extended
 alphanumx_qreg = QRegularExpression("[a-z-A-Z-0-9-_-.--]+")
 alphanumx_qval = QRegularExpressionValidator(alphanumx_qreg)

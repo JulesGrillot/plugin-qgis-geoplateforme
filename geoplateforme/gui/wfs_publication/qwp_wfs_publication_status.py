@@ -134,6 +134,7 @@ class PublicationStatut(AbstractPublishServicePage):
 
         result, success = alg.run(parameters=params, context=context, feedback=feedback)
         if success:
+            self.wizard().setOption(QWizard.WizardOption.NoBackButtonOnLastPage, True)
             self.lbl_result.setText(self.tr("Service WFS publié avec succès"))
             self.offering_id = result[WfsPublicationAlgorithm.OFFERING_ID]
             self._update_metadata()

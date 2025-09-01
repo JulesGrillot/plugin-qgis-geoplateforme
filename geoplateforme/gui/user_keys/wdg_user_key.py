@@ -27,7 +27,11 @@ from geoplateforme.gui.user_keys.proxy_model_user_permissions import (
     UserPermissionListProxyModel,
 )
 from geoplateforme.processing.provider import GeoplateformeProvider
+from geoplateforme.processing.user_key.create_accesses import CreateAccessesAlgorithm
 from geoplateforme.processing.user_key.delete_key import DeleteUserKeyAlgorithm
+from geoplateforme.processing.user_key.delete_user_key_accesses import (
+    DeleteUserKeyAccessesAlgorithm,
+)
 from geoplateforme.processing.user_key.update_key import UpdateKeyAlgorithm
 
 
@@ -128,6 +132,7 @@ class UserKeyWidget(QWidget):
                 QMessageBox.StandardButton.No,
             )
             if reply == QMessageBox.StandardButton.Yes:
+                # Update user key
                 whitelist = self.wdg_user_key_ip_filter.get_whitelist()
                 whitelist_str = ",".join(whitelist) if whitelist else ""
                 blacklist = self.wdg_user_key_ip_filter.get_blacklist()
@@ -151,10 +156,7 @@ class UserKeyWidget(QWidget):
                 _, success = alg.run(
                     parameters=params, context=context, feedback=feedback
                 )
-                if success:
-                    self._apply_update_mode(apply=False)
-                    self.user_key_updated.emit(self._user_key._id)
-                else:
+                if not success:
                     QMessageBox.critical(
                         self,
                         self.tr("Modification"),
@@ -162,6 +164,65 @@ class UserKeyWidget(QWidget):
                             feedback.textLog()
                         ),
                     )
+                    return
+
+                # Remove all key accesses
+                params = {
+                    DeleteUserKeyAccessesAlgorithm.KEY_ID: self._user_key._id,
+                }
+
+                algo_str = f"{GeoplateformeProvider().id()}:{DeleteUserKeyAccessesAlgorithm().name()}"
+                alg = QgsApplication.processingRegistry().algorithmById(algo_str)
+                context = QgsProcessingContext()
+                feedback = QgsProcessingFeedback()
+                _, success = alg.run(
+                    parameters=params, context=context, feedback=feedback
+                )
+                if not success:
+                    QMessageBox.critical(
+                        self,
+                        self.tr("Modification"),
+                        self.tr(
+                            "Les accès existants n'ont pas pu être supprimés :\n {}"
+                        ).format(feedback.textLog()),
+                    )
+                    return
+
+                selected_offering_and_permission = (
+                    self.get_selected_permission_and_offering()
+                )
+
+                # Add access to the selected offerings
+                for permission, offerings in selected_offering_and_permission:
+                    algo_str = f"{GeoplateformeProvider().id()}:{CreateAccessesAlgorithm().name()}"
+                    alg = QgsApplication.processingRegistry().algorithmById(algo_str)
+
+                    context = QgsProcessingContext()
+                    feedback = QgsProcessingFeedback()
+
+                    params = {
+                        CreateAccessesAlgorithm.KEY_ID: self._user_key._id,
+                        CreateAccessesAlgorithm.PERMISSION_ID: permission._id,
+                        CreateAccessesAlgorithm.OFFERING_IDS: ",".join(
+                            [offering._id for offering in offerings]
+                        ),
+                    }
+                    _, success = alg.run(params, context, feedback)
+
+                    if not success:
+                        QMessageBox.warning(
+                            self,
+                            self.tr("Erreur lors de l'ajout des accès sur la clé."),
+                            self.tr(
+                                "Les accès n'ont pas été correctement ajoutés. Veuillez vérifier la clé modifiée:\n {}".format(
+                                    feedback.textLog()
+                                )
+                            ),
+                        )
+
+                # Apply update
+                self._apply_update_mode(apply=False)
+                self.user_key_updated.emit(self._user_key._id)
 
     def delete_key(self) -> None:
         """Delete current key"""

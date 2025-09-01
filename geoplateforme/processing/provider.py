@@ -63,6 +63,9 @@ from geoplateforme.processing.user_key.create_basic_key import CreateBasicKeyAlg
 from geoplateforme.processing.user_key.create_hash_key import CreateHashKeyAlgorithm
 from geoplateforme.processing.user_key.create_oauth_key import CreateOAuthKeyAlgorithm
 from geoplateforme.processing.user_key.delete_key import DeleteUserKeyAlgorithm
+from geoplateforme.processing.user_key.delete_user_key_accesses import (
+    DeleteUserKeyAccessesAlgorithm,
+)
 from geoplateforme.processing.user_key.update_key import UpdateKeyAlgorithm
 
 # ############################################################################
@@ -106,6 +109,7 @@ class GeoplateformeProvider(QgsProcessingProvider):
         self.addAlgorithm(DeleteAnnexeAlgorithm())
         self.addAlgorithm(AddConfigurationStyleAlgorithm())
         self.addAlgorithm(DeleteConfigurationStyleAlgorithm())
+        self.addAlgorithm(DeleteUserKeyAccessesAlgorithm())
 
     def id(self) -> str:
         """Unique provider id, used for identifying it. This string should be unique, \

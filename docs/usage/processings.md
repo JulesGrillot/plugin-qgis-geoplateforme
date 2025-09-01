@@ -147,6 +147,13 @@ Pour afficher tous les traitements QGIS : `Traitements > Boîte à outils`
 ```{include} ../../geoplateforme/resources/help/update_key.md
 ```
 
+(delete-user-key-accesses)=
+
+### Suppression des accès associés à une clé utilisateur
+
+```{include} ../../geoplateforme/resources/help/delete_user_key_accesses.md
+```
+
 ## Outils géoplateforme
 
 (delete-stored-data)=

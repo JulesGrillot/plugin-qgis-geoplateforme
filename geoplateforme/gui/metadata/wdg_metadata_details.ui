@@ -32,9 +32,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-14</y>
+        <y>0</y>
         <width>565</width>
-        <height>876</height>
+        <height>779</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -112,14 +112,6 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QTextEdit" name="te_description">
-            <property name="toolTip">
-             <string>Brief narrative summary of the resource
-        content</string>
-            </property>
-           </widget>
-          </item>
           <item row="6" column="0">
            <widget class="QLabel" name="lbl_kw">
             <property name="text">
@@ -150,6 +142,9 @@
           </item>
           <item row="6" column="2">
            <widget class="QLineEdit" name="le_kw"/>
+          </item>
+          <item row="1" column="2">
+           <widget class="TextEditPreviewWidget" name="te_description" native="true"/>
           </item>
          </layout>
         </widget>
@@ -352,6 +347,12 @@
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TextEditPreviewWidget</class>
+   <extends>QWidget</extends>
+   <header>geoplateforme.gui.wdg_text_edit</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

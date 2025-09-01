@@ -57,6 +57,12 @@ class AbstractPublishServicePage(QWizardPage):
         self.metadata_published = False
         self.publish_error = False
 
+    def clear_errors(self) -> None:
+        """Clear displayed errors"""
+        self.publish_error = False
+        self.lbl_result.setText("")
+        self.tbw_errors.setVisible(False)
+
     def _add_step_in_label(self, step: str) -> None:
         """Add step in result label by getting current text and adding a new line
 

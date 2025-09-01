@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>839</width>
-    <height>493</height>
+    <width>892</width>
+    <height>411</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,32 +17,23 @@
    <locale language="English" country="UnitedStates"/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="7" column="0" colspan="2">
-    <layout class="QVBoxLayout" name="lyt_table_relation"/>
-   </item>
-   <item row="2" column="1">
-    <widget class="DatasetComboBox" name="cbx_dataset"/>
-   </item>
-   <item row="1" column="1">
-    <widget class="DatastoreComboBox" name="cbx_datastore"/>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="lbl_stored_data">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Vector DB</string>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Dataset</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="2">
+    <widget class="QLabel" name="label_2">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Sélectionnez les tables nécessaires au service</string>
      </property>
     </widget>
    </item>
@@ -62,31 +53,59 @@
    <item row="5" column="1">
     <widget class="StoredDataComboBox" name="cbx_stored_data"/>
    </item>
-   <item row="8" column="0" colspan="2">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>466</height>
-      </size>
-     </property>
-    </spacer>
+   <item row="1" column="1">
+    <widget class="DatastoreComboBox" name="cbx_datastore"/>
    </item>
-   <item row="6" column="0" colspan="2">
-    <widget class="QLabel" name="label_2">
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
+   <item row="5" column="0">
+    <widget class="QLabel" name="lbl_stored_data">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
      <property name="text">
-      <string>Sélectionnez les tables nécessaires au service</string>
+      <string>Vector DB</string>
      </property>
     </widget>
+   </item>
+   <item row="7" column="0" colspan="2">
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>872</width>
+        <height>275</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <layout class="QVBoxLayout" name="lyt_table_relation"/>
+       </item>
+       <item row="1" column="0">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="DatasetComboBox" name="cbx_dataset"/>
    </item>
   </layout>
  </widget>

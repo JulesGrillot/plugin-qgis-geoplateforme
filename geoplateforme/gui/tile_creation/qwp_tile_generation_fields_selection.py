@@ -3,7 +3,7 @@ import os
 from typing import Dict, List
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtWidgets import QWizardPage
+from qgis.PyQt.QtWidgets import QMessageBox, QWizardPage
 
 from geoplateforme.gui.mdl_table_relation import TableRelationTreeModel
 from geoplateforme.gui.tile_creation.qwp_tile_generation_edition import (
@@ -61,5 +61,37 @@ class TileGenerationFieldsSelectionPageWizard(QWizardPage):
         attributes = {}
         tables_attributes = self.mdl_table_relation.get_selected_table_attributes()
         for table, table_attributes in tables_attributes.items():
-            attributes[table] = table_attributes
+            if len(table_attributes) != 0:
+                attributes[table] = table_attributes
         return attributes
+
+    def validatePage(self) -> bool:
+        """
+        Validate current page content by checking files
+
+        Returns: True
+
+        """
+        valid = True
+        selected_attributes = self.get_selected_attributes()
+
+        if len(selected_attributes) == 0:
+            valid = False
+            QMessageBox.warning(
+                self,
+                self.tr("No table selected."),
+                self.tr("Please select one or more tables."),
+            )
+
+        for key, val in selected_attributes.items():
+            if len(val) == 0:
+                valid = False
+                QMessageBox.warning(
+                    self,
+                    self.tr("No attribute selected."),
+                    self.tr(
+                        "Please select one or more attributes for table {}.".format(key)
+                    ),
+                )
+
+        return valid

@@ -5,7 +5,7 @@ import os
 from qgis.PyQt import QtGui, uic
 from qgis.PyQt.QtCore import QSize, Qt
 from qgis.PyQt.QtGui import QPixmap
-from qgis.PyQt.QtWidgets import QLabel, QRadioButton, QWidget, QWizardPage
+from qgis.PyQt.QtWidgets import QLabel, QMessageBox, QRadioButton, QWidget, QWizardPage
 
 # Plugin
 from geoplateforme.__about__ import DIR_PLUGIN_ROOT
@@ -196,6 +196,27 @@ class TileGenerationGeneralizationPageWizard(QWizardPage):
         Returns: (str) selected tippecanoe value
 
         """
-        for name, option in self.tippecanoe_options.items():
+        for _, option in self.tippecanoe_options.items():
             if option["radiobutton"].isChecked():
                 return option["value"]
+
+        return ""
+
+    def validatePage(self) -> bool:
+        """
+        Validate current page content by checking files
+
+        Returns: True
+
+        """
+        valid = True
+
+        if len(self.get_tippecanoe_value()) == 0:
+            valid = False
+            QMessageBox.warning(
+                self,
+                self.tr("No generalization option."),
+                self.tr("Please select a generalization option."),
+            )
+
+        return valid

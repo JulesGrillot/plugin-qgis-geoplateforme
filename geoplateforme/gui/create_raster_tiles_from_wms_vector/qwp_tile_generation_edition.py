@@ -3,10 +3,10 @@ import os
 
 # PyQGIS
 from qgis.PyQt import QtCore, uic
-from qgis.PyQt.QtWidgets import QSlider, QWizardPage
+from qgis.PyQt.QtWidgets import QMessageBox, QSlider, QWizardPage
 
 # Plugin
-from geoplateforme.gui.lne_validators import alphanum_qval
+from geoplateforme.gui.lne_validators import lower_case_num_qval
 
 
 class TileGenerationEditionPageWizard(QWizardPage):
@@ -60,7 +60,7 @@ class TileGenerationEditionPageWizard(QWizardPage):
         self.offering_id = offering_id
 
         # To avoid some characters
-        self.lne_flux.setValidator(alphanum_qval)
+        self.lne_name.setValidator(lower_case_num_qval)
 
         # Define zoom levels range
         self.levels_range_slider.setMinimum(self.MIN_ZOOM_LEVEL)
@@ -81,7 +81,7 @@ class TileGenerationEditionPageWizard(QWizardPage):
         Initialize page before show.
 
         """
-        self.lne_flux.setText("")
+        self.lne_name.setText("")
 
     def validatePage(self) -> bool:
         """
@@ -90,7 +90,15 @@ class TileGenerationEditionPageWizard(QWizardPage):
         Returns: True
 
         """
-        valid = True
+        if len(self.lne_name.text()) == 0:
+            valid = False
+            QMessageBox.warning(
+                self,
+                self.tr("Missing informations."),
+                self.tr("Please define tile name."),
+            )
+        else:
+            valid = True
         return valid
 
     def get_bottom_level(self) -> int:

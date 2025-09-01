@@ -45,12 +45,12 @@
     </spacer>
    </item>
    <item row="2" column="0">
-    <widget class="QLabel" name="lbl_flux">
+    <widget class="QLabel" name="lbl_name">
      <property name="autoFillBackground">
       <bool>true</bool>
      </property>
      <property name="text">
-      <string>Pyramid name:</string>
+      <string>Tile name:</string>
      </property>
     </widget>
    </item>
@@ -75,7 +75,7 @@
     </widget>
    </item>
    <item row="2" column="1" colspan="3">
-    <widget class="QLineEdit" name="lne_flux">
+    <widget class="QLineEdit" name="lne_name">
      <property name="inputMethodHints">
       <set>Qt::ImhLatinOnly</set>
      </property>

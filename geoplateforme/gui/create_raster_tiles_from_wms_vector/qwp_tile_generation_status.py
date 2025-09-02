@@ -212,7 +212,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
             RasterTilesFromWmsVectorAlgorithm.DATASTORE: datastore_id,
             RasterTilesFromWmsVectorAlgorithm.HARVEST_LAYERS: layer_name,
             RasterTilesFromWmsVectorAlgorithm.HARVEST_URL: harvest_url,
-            RasterTilesFromWmsVectorAlgorithm.STORED_DATA_NAME: self.qwp_tile_generation_edition.lne_flux.text(),
+            RasterTilesFromWmsVectorAlgorithm.STORED_DATA_NAME: self.qwp_tile_generation_edition.lne_name.text(),
             RasterTilesFromWmsVectorAlgorithm.BOTTOM: bottom_level,
             RasterTilesFromWmsVectorAlgorithm.TOP: top_level,
             RasterTilesFromWmsVectorAlgorithm.HARVEST_LEVELS: harvest_levels_str,

@@ -154,7 +154,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
             TileCreationAlgorithm.DATASTORE: datastore_id,
             TileCreationAlgorithm.VECTOR_DB_STORED_DATA_ID: vector_db_stored_id,
             TileCreationAlgorithm.DATASET_NAME: dataset_name,
-            TileCreationAlgorithm.STORED_DATA_NAME: self.qwp_tile_generation_edition.lne_flux.text(),
+            TileCreationAlgorithm.STORED_DATA_NAME: self.qwp_tile_generation_edition.lne_name.text(),
             TileCreationAlgorithm.TIPPECANOE_OPTIONS: self.qwp_tile_generation_generalization.get_tippecanoe_value(),
             TileCreationAlgorithm.BOTTOM_LEVEL: self.qwp_tile_generation_edition.get_bottom_level(),
             TileCreationAlgorithm.TOP_LEVEL: self.qwp_tile_generation_edition.get_top_level(),

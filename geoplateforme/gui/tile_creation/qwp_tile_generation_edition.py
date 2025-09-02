@@ -14,7 +14,7 @@ from geoplateforme.api.stored_data import (
     StoredDataStep,
     StoredDataType,
 )
-from geoplateforme.gui.lne_validators import alphanum_qval
+from geoplateforme.gui.lne_validators import lower_case_num_qval
 
 
 class TileGenerationEditionPageWizard(QWizardPage):
@@ -75,7 +75,7 @@ class TileGenerationEditionPageWizard(QWizardPage):
         self.cbx_stored_data.currentIndexChanged.connect(self._stored_data_updated)
 
         # To avoid some characters
-        self.lne_flux.setValidator(alphanum_qval)
+        self.lne_name.setValidator(lower_case_num_qval)
 
         # Define zoom levels range
         self.levels_range_slider.setMinimum(self.MIN_ZOOM_LEVEL)
@@ -138,7 +138,7 @@ class TileGenerationEditionPageWizard(QWizardPage):
         Initialize page before show.
 
         """
-        self.lne_flux.setText("")
+        self.lne_name.setText("")
 
     def validatePage(self) -> bool:
         """
@@ -163,6 +163,14 @@ class TileGenerationEditionPageWizard(QWizardPage):
                 self,
                 self.tr("No stored data selected."),
                 self.tr("Please select a stored data"),
+            )
+
+        if valid and len(self.lne_name.text()) == 0:
+            valid = False
+            QMessageBox.warning(
+                self,
+                self.tr("Missing informations."),
+                self.tr("Please define tile name."),
             )
 
         return valid
@@ -218,7 +226,7 @@ class TileGenerationEditionPageWizard(QWizardPage):
 
         """
         if self.cbx_stored_data.current_stored_data_name():
-            self.lne_flux.setText(self.cbx_stored_data.current_stored_data_name())
+            self.lne_name.setText(self.cbx_stored_data.current_stored_data_name())
 
     def _levels_range_updated(self) -> None:
         """

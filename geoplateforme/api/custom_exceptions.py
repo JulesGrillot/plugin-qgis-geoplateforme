@@ -190,6 +190,10 @@ class CreateAccessesException(Exception):
     pass
 
 
+class DeleteUserKeyAccessesException(Exception):
+    pass
+
+
 class ReadPermissionException(Exception):
     pass
 

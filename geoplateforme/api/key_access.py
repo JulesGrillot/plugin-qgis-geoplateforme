@@ -9,6 +9,7 @@ from qgis.PyQt.QtCore import QUrl
 # plugin
 from geoplateforme.api.custom_exceptions import (
     DeleteKeyAccessException,
+    DeleteUserKeyAccessesException,
     ReadKeyAccessException,
 )
 from geoplateforme.api.offerings import Offering
@@ -173,4 +174,24 @@ class KeyAccessRequestManager:
         except ConnectionError as err:
             raise DeleteKeyAccessException(
                 f"Error while deleting user key access: {err}."
+            )
+
+    def delete_user_key_accesses(self, user_key_id: str) -> None:
+        """Delete accesses for a user key
+
+        :param user_key_id: user key id
+        :type user_key_id: str
+        :raises DeleteKeyAccessesException: Error when deleting user key accesses
+        """
+        self.log(f"{__name__}.delete_user_key_accesses({user_key_id=})")
+        try:
+            # Get all available accesses
+            accesses = self.get_key_access_list(user_key_id=user_key_id)
+
+            # Delete all available accesses
+            for access in accesses:
+                self.delete(user_key_id=user_key_id, access_id=access._id)
+        except (ReadKeyAccessException, DeleteKeyAccessException) as err:
+            raise DeleteUserKeyAccessesException(
+                f"Error user key access delete : {err}"
             )

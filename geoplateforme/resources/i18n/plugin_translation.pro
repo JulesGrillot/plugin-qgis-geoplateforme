@@ -226,5 +226,5 @@ SOURCES =	../../api/annexes.py \
 	../../toolbelt/preferences.py \
 	../../toolbelt/range_slider.py
 
-TRANSLATIONS =	geotuileur_en.ts \
-	geotuileur_fr.ts
+TRANSLATIONS =	geoplateforme_en.ts \
+	geoplateforme_fr.ts

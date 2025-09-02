@@ -1888,6 +1888,29 @@ The following elements will be deleted:</translation>
     </message>
 </context>
 <context>
+    <name>MetadataDetailsWidget</name>
+    <message>
+        <location filename="../../gui/metadata/wdg_metadata_details.py" line="151"/>
+        <source>Capabilities</source>
+        <translation>GetCapabilities</translation>
+    </message>
+    <message>
+        <location filename="../../gui/metadata/wdg_metadata_details.py" line="154"/>
+        <source>Access</source>
+        <translation>Access</translation>
+    </message>
+    <message>
+        <location filename="../../gui/metadata/wdg_metadata_details.py" line="157"/>
+        <source>Style files</source>
+        <translation>Style files</translation>
+    </message>
+    <message>
+        <location filename="../../gui/metadata/wdg_metadata_details.py" line="160"/>
+        <source>Document files</source>
+        <translation>Document files</translation>
+    </message>
+</context>
+<context>
     <name>MetadataFormPageWizard</name>
     <message>
         <location filename="../../gui/qwp_metadata_form.py" line="34"/>

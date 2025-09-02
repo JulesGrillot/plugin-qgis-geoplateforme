@@ -1888,6 +1888,29 @@ Les éléments suivants seront supprimés:</translation>
     </message>
 </context>
 <context>
+    <name>MetadataDetailsWidget</name>
+    <message>
+        <location filename="../../gui/metadata/wdg_metadata_details.py" line="151"/>
+        <source>Capabilities</source>
+        <translation>GetCapabilities</translation>
+    </message>
+    <message>
+        <location filename="../../gui/metadata/wdg_metadata_details.py" line="154"/>
+        <source>Access</source>
+        <translation>Accès à la ressource</translation>
+    </message>
+    <message>
+        <location filename="../../gui/metadata/wdg_metadata_details.py" line="157"/>
+        <source>Style files</source>
+        <translation>Fichiers de style</translation>
+    </message>
+    <message>
+        <location filename="../../gui/metadata/wdg_metadata_details.py" line="160"/>
+        <source>Document files</source>
+        <translation>Documents</translation>
+    </message>
+</context>
+<context>
     <name>MetadataFormPageWizard</name>
     <message>
         <location filename="../../gui/qwp_metadata_form.py" line="34"/>
@@ -3768,7 +3791,7 @@ Vous pouvez fermer la fenêtre pendant la génération.</translation>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="157"/>
         <source>VÃ©rification de la livraison en cours.</source>
-        <translation>VÃ©rification de la livraison en cours.</translation>
+        <translation type="unfinished">VÃ©rification de la livraison en cours.</translation>
     </message>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="336"/>

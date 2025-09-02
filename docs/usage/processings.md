@@ -6,14 +6,14 @@ Pour afficher tous les traitements QGIS : `Traitements > Boîte à outils`
 
 ## Livraison
 
-(upload_from_files)=
+(upload-from-files)=
 
 ### Création d'une livraison depuis une liste de fichier
 
 ```{include} ../../geoplateforme/resources/help/upload_from_files.md
 ```
 
-(upload_from_layers)=
+(upload-from-layers)=
 
 ### Création d'une livraison depuis une liste de couches vectorielles
 
@@ -22,21 +22,21 @@ Pour afficher tous les traitements QGIS : `Traitements > Boîte à outils`
 
 ## Génération données
 
-(upload_database_integration)=
+(upload-database-integration)=
 
 ### Intégration d'une livraison en base de données vectorielle
 
 ```{include} ../../geoplateforme/resources/help/upload_database_integration.md
 ```
 
-(tile_vector_creation)=
+(tile-creation)=
 
 ### Création de tuiles vectorielles depuis une base de données vectorielles
 
 ```{include} ../../geoplateforme/resources/help/tile_creation.md
 ```
 
-(raster_tiles_from_wms_vector)=
+(raster-tiles-from-wms-vector)=
 
 ### Création de tuiles raster depuis une service WMS-VECTOR
 
@@ -45,35 +45,35 @@ Pour afficher tous les traitements QGIS : `Traitements > Boîte à outils`
 
 ## Publication
 
-(tile_vector_publish)=
+(vector-tile-publish)=
 
 ### Publication de tuiles vectorielles
 
 ```{include} ../../geoplateforme/resources/help/vector_tile_publish.md
 ```
 
-(wms_vector_publish)=
+(wms-publish)=
 
 ### Publication WMS-VECTOR
 
 ```{include} ../../geoplateforme/resources/help/wms_publish.md
 ```
 
-(wfs_publish)=
+(wfs-publish)=
 
 ### Publication WFS
 
 ```{include} ../../geoplateforme/resources/help/wfs_publish.md
 ```
 
-(wms_raster_publish)=
+(wms-raster-publish)=
 
 ### Publication WMS-RASTER
 
 ```{include} ../../geoplateforme/resources/help/wms_raster_publish.md
 ```
 
-(wmts_publish)=
+(wmts-publish)=
 
 ### Publication WMTS-TMS
 
@@ -82,21 +82,21 @@ Pour afficher tous les traitements QGIS : `Traitements > Boîte à outils`
 
 ## Permissions
 
-(create_permission)=
+(create-permission)=
 
 ### Création d'une permission
 
 ```{include} ../../geoplateforme/resources/help/create_permission.md
 ```
 
-(delete_permission)=
+(delete-permission)=
 
 ### Suppression d'une permission
 
 ```{include} ../../geoplateforme/resources/help/delete_permission.md
 ```
 
-(update_permission)=
+(update-permission)=
 
 ### Mise à jour d'une permission
 
@@ -105,42 +105,42 @@ Pour afficher tous les traitements QGIS : `Traitements > Boîte à outils`
 
 ## Clé
 
-(create_basic_key)=
+(create-basic-key)=
 
 ### Création d'une clé basique
 
 ```{include} ../../geoplateforme/resources/help/create_basic_key.md
 ```
 
-(create_hash_key)=
+(create-hash-key)=
 
 ### Création d'une clé hash
 
 ```{include} ../../geoplateforme/resources/help/create_hash_key.md
 ```
 
-(create_oauth_key)=
+(create-oauth-key)=
 
 ### Création d'une clé OAuth2
 
 ```{include} ../../geoplateforme/resources/help/create_oauth_key.md
 ```
 
-(create_accesses)=
+(create-accesses)=
 
 ### Création d'acces à une ou des offres d'une permission
 
 ```{include} ../../geoplateforme/resources/help/create_accesses.md
 ```
 
-(delete_key)=
+(delete-key)=
 
 ### Suppression d'une clé
 
 ```{include} ../../geoplateforme/resources/help/delete_key.md
 ```
 
-(update_key)=
+(update-key)=
 
 ### Mise à jour d'une clé
 
@@ -149,28 +149,28 @@ Pour afficher tous les traitements QGIS : `Traitements > Boîte à outils`
 
 ## Outils géoplateforme
 
-(delete_stored_data)=
+(delete-stored-data)=
 
 ### Suppression donnée stockée
 
 ```{include} ../../geoplateforme/resources/help/delete_stored_data.md
 ```
 
-(delete_upload)=
+(delete-upload)=
 
 ### Suppression livraison
 
 ```{include} ../../geoplateforme/resources/help/delete_upload.md
 ```
 
-(create_geoserver_style)=
+(create-geoserver-style)=
 
 ### Ajout style Geoserver dans l'entrepôt
 
 ```{include} ../../geoplateforme/resources/help/create_geoserver_style.md
 ```
 
-(sld_downgrade)=
+(sld-downgrade)=
 
 ### Mise à jour fichier .sld pour passer d'une version 1.1.0 à 1.0.0
 
@@ -179,14 +179,14 @@ Pour afficher tous les traitements QGIS : `Traitements > Boîte à outils`
 
 ## Annexes
 
-(create_annexe)=
+(create-annexe)=
 
 ### Création d'une annexe
 
 ```{include} ../../geoplateforme/resources/help/create_annexe.md
 ```
 
-(delete_annexe)=
+(delete-annexe)=
 
 ### Supression d'une annexe
 
@@ -195,7 +195,7 @@ Pour afficher tous les traitements QGIS : `Traitements > Boîte à outils`
 
 ## Styles
 
-(add_configuration_style)=
+(add-configuration-style)=
 
 ### Ajout d'un fichier de style pour une configuration
 

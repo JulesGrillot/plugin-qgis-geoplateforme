@@ -39,7 +39,9 @@ def get_user_manual_url(processing_name: str) -> str:
     :return: user manual url
     :rtype: str
     """
-    return f"{__uri_homepage__}/user_manual/processings.html#{processing_name}"
+    # Need to avoid use of _ in labels for Myst. Replacing with -
+    fixed_processing_name = processing_name.replace("_", "-")
+    return f"{__uri_homepage__}/usage/processings.html#{fixed_processing_name}"
 
 
 def get_short_string(processing_name: str, default_help_str: str) -> str:

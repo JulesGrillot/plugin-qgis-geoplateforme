@@ -22,7 +22,6 @@ class VisibilityPageWizard(QWizardPage):
         self.setTitle(self.tr("Restrictions d'accès"))
 
         uic.loadUi(os.path.join(os.path.dirname(__file__), "qwp_visibility.ui"), self)
-        self.setCommitPage(True)
 
     def is_open(self) -> bool:
         """Define if publication is open

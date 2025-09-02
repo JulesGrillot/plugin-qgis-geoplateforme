@@ -4,6 +4,7 @@ from typing import Optional
 
 # PyQGIS
 from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
+from qgis.PyQt.QtWidgets import QWizard
 
 # Plugin
 from geoplateforme.gui.publication.qwp_abstract_publish_service import (
@@ -72,6 +73,7 @@ class PublicationStatut(AbstractPublishServicePage):
         Initialize page before show.
 
         """
+        self.clear_errors()
         self.create_publication()
 
     def create_publication(self) -> None:
@@ -123,10 +125,12 @@ class PublicationStatut(AbstractPublishServicePage):
 
         result, success = alg.run(parameters=params, context=context, feedback=feedback)
         if success:
+            self.wizard().setOption(QWizard.WizardOption.NoBackButtonOnLastPage, True)
             self.lbl_result.setText(self.tr("Service WMS-Vecteur publié avec succès"))
             self.offering_id = result[WmsPublicationAlgorithm.OFFERING_ID]
             self._update_metadata()
         else:
+            self.wizard().setOption(QWizard.WizardOption.NoBackButtonOnLastPage, False)
             self.publish_error = True
             self.lbl_result.setText(
                 self.tr("Erreur lors de la publication du service WMS-Vecteur")

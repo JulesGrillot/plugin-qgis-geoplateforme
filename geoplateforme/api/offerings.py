@@ -73,7 +73,7 @@ class Offering:
         :return: offering is open
         :rtype: bool
         """
-        if not self._open and not self.is_detailed:
+        if self._open is None and not self.is_detailed:
             self.update_from_api()
         return self._open
 
@@ -84,7 +84,7 @@ class Offering:
         :return: offering is available
         :rtype: bool
         """
-        if not self._available and not self.is_detailed:
+        if self._available is None and not self.is_detailed:
             self.update_from_api()
         return self._available
 

@@ -169,7 +169,7 @@ class PermissionCreationWidget(QWidget):
         """
         self.datastore_id = datastore_id
 
-        self.mdl_offering.set_datastore(datastore_id)
+        self.mdl_offering.set_datastore(datastore_id, open_filter=False)
         self.mdl_community.refresh()
 
     def _permission_type_updated(self) -> None:

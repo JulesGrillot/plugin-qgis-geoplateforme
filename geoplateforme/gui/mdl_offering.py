@@ -91,20 +91,31 @@ class OfferingListModel(QStandardItemModel):
         """
         self.removeRows(0, self.rowCount())
 
-        manager = ConfigurationRequestManager()
         try:
             if dataset_name:
                 tags = {"datasheet_name": dataset_name}
+                manager = ConfigurationRequestManager()
                 configurations = manager.get_configuration_list(
                     datastore_id=datastore_id,
                     tags=tags,
                 )
+                for config in configurations:
+                    self.insert_configuration(config)
             else:
-                configurations = manager.get_configuration_list(
+                manager = OfferingsRequestManager()
+                offering_list = manager.get_offering_list(
                     datastore_id=datastore_id,
+                    with_fields=[
+                        OfferingField.LAYER_NAME,
+                        OfferingField.TYPE,
+                        OfferingField.OPEN,
+                        OfferingField.STATUS,
+                        OfferingField.AVAILABLE,
+                    ],
                 )
-            for config in configurations:
-                self.insert_configuration(config)
+                for offering in offering_list:
+                    self.insert_offering(offering)
+
         except ReadConfigurationException as exc:
             self.log(
                 f"Error while getting configuration informations: {exc}",

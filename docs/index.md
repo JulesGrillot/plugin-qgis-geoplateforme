@@ -16,6 +16,7 @@ caption: Usage
 maxdepth: 1
 ---
 Installation <usage/installation>
+Utilisation <usage/how_to_use>
 Traitements <usage/processings>
 ```
 

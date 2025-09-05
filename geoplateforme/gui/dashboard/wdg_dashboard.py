@@ -1,4 +1,5 @@
 import os
+from time import sleep
 from typing import List, Optional
 
 # PyQGIS
@@ -9,13 +10,7 @@ from qgis.core import (
     QgsTask,
 )
 from qgis.PyQt import QtCore, uic
-from qgis.PyQt.QtCore import (
-    QAbstractItemModel,
-    QCoreApplication,
-    QItemSelectionModel,
-    QModelIndex,
-    Qt,
-)
+from qgis.PyQt.QtCore import QAbstractItemModel, QItemSelectionModel, QModelIndex, Qt
 from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon
 from qgis.PyQt.QtWidgets import (
     QAbstractItemView,
@@ -79,7 +74,12 @@ class DashboardWidget(QWidget):
             self,
         )
 
+        # Task for API call in background
         self.update_metadata_task = None
+        self.refresh_task = None
+
+        # Flag to define if a refresh is in progress
+        self.refresh_in_progress = False
 
         # Add metadata widget
         self.wdg_metadata = None
@@ -150,8 +150,8 @@ class DashboardWidget(QWidget):
 
         self.import_wizard = None
 
-        self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
-        self.cbx_dataset.activated.connect(self._dataset_updated)
+        self.cbx_datastore.currentIndexChanged.connect(self._on_datastore_updated)
+        self.cbx_dataset.activated.connect(self._on_dataset_updated)
 
         self.btn_refresh.clicked.connect(self.refresh)
         self.btn_refresh.setIcon(QIcon(":/images/themes/default/mActionRefresh.svg"))
@@ -643,44 +643,131 @@ class DashboardWidget(QWidget):
                 return False
         return True
 
-    def refresh(
-        self, datastore_id: Optional[str] = None, dataset_name: Optional[str] = None
+    def _refresh_task(
+        self,
+        task: QgsTask,
+        datastore_id: Optional[str] = None,
+        dataset_name: Optional[str] = None,
+        force_refresh: bool = False,
     ) -> None:
         """
-        Force refresh of stored data model
+        Function run as QgsTask to refresh dashboard.
+        Warning : No change of QWidget parent can't be done inside this function.
+        Only table and combobox models can be updated with Geoplateforme API result
 
+        :param task: task used for function (unused but mandatory for QGIS)
+        :type task: QgsTask
+        :param datastore_id: datastore id to use, defaults to None (use current datastore id)
+        :type datastore_id: Optional[str], optional
+        :param dataset_name: dataset name to use, defaults to None (use current dataset name)
+        :type dataset_name: Optional[str], optional
+        :param force_refresh: force refresh of datastore and dataset models, defaults to False
+        :type force_refresh: bool, optional
         """
-        # Disable refresh and delete buttons : must processEvents so user can't click while updating
-        self.btn_refresh.setEnabled(False)
-        self.btn_delete_dataset.setEnabled(False)
         if not datastore_id:
             datastore_id = self.cbx_datastore.current_datastore_id()
         if not dataset_name:
             dataset_name = self.cbx_dataset.current_dataset_name()
 
-        QCoreApplication.processEvents()
-
         # Try to disconnect signals
         try:
-            self.cbx_datastore.currentIndexChanged.disconnect(self._datastore_updated)
-            self.cbx_dataset.activated.disconnect(self._dataset_updated)
+            self.cbx_datastore.currentIndexChanged.disconnect(
+                self._on_datastore_updated
+            )
+            self.cbx_dataset.activated.disconnect(self._on_dataset_updated)
         except (TypeError, RuntimeError):
             pass
 
         # Update datastore content
-        self.cbx_datastore.refresh()
+        if force_refresh:
+            self.cbx_datastore.refresh()
         self.cbx_datastore.set_datastore_id(datastore_id)
-        self._datastore_updated(force_refresh=True)
+
+        # Update dataset
+        self.cbx_dataset.set_datastore_id(datastore_id, force_refresh)
         self.cbx_dataset.set_dataset_name(dataset_name)
-        self._dataset_updated()
 
         # Connect signals
-        self.cbx_datastore.currentIndexChanged.connect(self._datastore_updated)
-        self.cbx_dataset.activated.connect(self._dataset_updated)
+        self.cbx_datastore.currentIndexChanged.connect(self._on_datastore_updated)
+        self.cbx_dataset.activated.connect(self._on_dataset_updated)
 
-        # Enable new refresh and delete
-        self.btn_refresh.setEnabled(True)
-        self.btn_delete_dataset.setEnabled(True)
+        # Update dataset table
+        self._update_dataset_table()
+
+    def refresh(
+        self,
+        datastore_id: Optional[str] = None,
+        dataset_name: Optional[str] = None,
+        force_refresh: bool = True,
+        wait_refresh: bool = False,
+    ) -> None:
+        """Run dashboard refresh in a QgsTask.
+
+        All action related to QWidget insertion or delete are not done in task.
+        This is done in the _on_data_refreshed function which will be called from main thread.
+
+        Dashboard is disabled during refresh.
+
+        :param datastore_id: datastore id to use, defaults to None (use current datastore id)
+        :type datastore_id: Optional[str], optional
+        :param dataset_name: dataset name to use, defaults to None (use current dataset name)
+        :type dataset_name: Optional[str], optional
+        :param force_refresh: force refresh of datastore and dataset models, defaults to True
+        :type force_refresh: bool, optional
+        :param wait_refresh: wait for refresh before return, defaults to False
+        :type wait_refresh: bool, optional
+        """
+        # Disable widget and define refresh in progress flag
+        self.setEnabled(False)
+        self.refresh_in_progress = True
+
+        # Create task for refresh
+        self.refresh_task = QgsTask.fromFunction(
+            "Update data",
+            self._refresh_task,
+            datastore_id=datastore_id,
+            dataset_name=dataset_name,
+            force_refresh=force_refresh,
+            on_finished=self._on_data_refreshed,
+        )
+
+        # Launch task
+        QgsApplication.taskManager().addTask(self.refresh_task)
+
+        # Wait for refresh if asked
+        while wait_refresh and self.refresh_in_progress:
+            sleep(0.1)
+            QgsApplication.processEvents()
+
+    def _on_data_refreshed(self, exception, value=None) -> None:
+        """
+        - Display any raised exception.
+        - Update widget for displayed datastore and dataset.
+        - Enable widget and update flag for refresh progress.
+
+        :param exception: _description_
+        :type exception: _type_
+        :param value: _description_, defaults to None
+        :type value: _type_, optional
+        """
+        if exception:
+            QMessageBox.warning(
+                self,
+                self.tr("Erreur mise à jour des données."),
+                self.tr(f"Erreur lors de la mise à jour des données. : {exception}"),
+            )
+
+        # Update permission content
+        self.wdg_permission.refresh(
+            datastore_id=self.cbx_datastore.current_datastore_id()
+        )
+
+        # Update dataset widget
+        self._update_dataset_widget()
+
+        # Enable widget
+        self.setEnabled(True)
+        self.refresh_in_progress = False
 
     def _service_clicked(self, index: QModelIndex) -> None:
         """Display service details when clicked
@@ -716,7 +803,7 @@ class DashboardWidget(QWidget):
         :type refresh: bool, optional
         """
         if refresh:
-            self.refresh()
+            self.refresh(wait_refresh=True, force_refresh=False)
 
         self.tabWidget.setCurrentWidget(self.tab_dataset)
 
@@ -744,7 +831,7 @@ class DashboardWidget(QWidget):
         :type refresh: bool, optional
         """
         if refresh:
-            self.refresh()
+            self.refresh(wait_refresh=True, force_refresh=False)
         row = self.mdl_stored_data.get_stored_data_row(stored_data_id=stored_data_id)
 
         self.tabWidget.setCurrentWidget(self.tab_dataset)
@@ -778,7 +865,7 @@ class DashboardWidget(QWidget):
         :type refresh: bool, optional
         """
         if refresh:
-            self.refresh()
+            self.refresh(wait_refresh=True, force_refresh=False)
 
         self.tabWidget.setCurrentWidget(self.tab_service)
 
@@ -844,7 +931,7 @@ class DashboardWidget(QWidget):
         :param stored_data_id: deleted stored data id
         :type stored_data_id: str
         """
-        self._dataset_updated()
+        self._on_dataset_updated()
 
     def _upload_deleted(self, upload_id: str) -> None:
         """Refresh dataset after upload delete
@@ -852,7 +939,7 @@ class DashboardWidget(QWidget):
         :param upload_id: deleted upload id
         :type upload_id: str
         """
-        self._dataset_updated()
+        self._on_dataset_updated()
 
     def _offering_deleted(self, offering_id: str) -> None:
         """Refresh dataset after offering delete
@@ -860,7 +947,7 @@ class DashboardWidget(QWidget):
         :param offering_id: deleted offering id
         :type offering_id: str
         """
-        self._dataset_updated()
+        self._on_dataset_updated()
 
     def remove_detail_zone(self) -> None:
         """Hide detail zone and remove attached widgets"""
@@ -912,6 +999,8 @@ class DashboardWidget(QWidget):
             self.refresh(
                 datastore_id=self.import_wizard.get_datastore_id(),
                 dataset_name=self.import_wizard.get_dataset_name(),
+                wait_refresh=True,
+                force_refresh=False,
             )
             created_upload_id = self.import_wizard.get_created_upload_id()
             created_stored_data_id = self.import_wizard.get_created_stored_data_id()
@@ -948,32 +1037,35 @@ class DashboardWidget(QWidget):
 
         return proxy_mdl
 
-    def _datastore_updated(self, index: int = 0, force_refresh: bool = False) -> None:
+    def _on_datastore_updated(self, index: int = 0) -> None:
         """
         Update stored data combobox when datastore is updated
 
         """
-        self.cbx_dataset.set_datastore_id(
-            self.cbx_datastore.current_datastore_id(), force_refresh
+        self.refresh(
+            datastore_id=self.cbx_datastore.current_datastore_id(), force_refresh=False
         )
 
-        # Update permission content
-        self.wdg_permission.refresh(
-            datastore_id=self.cbx_datastore.current_datastore_id()
+    def _on_dataset_updated(self) -> None:
+        self.refresh(
+            datastore_id=self.cbx_datastore.current_datastore_id(),
+            dataset_name=self.cbx_dataset.current_dataset_name(),
+            force_refresh=False,
         )
 
-    def _dataset_updated(self) -> None:
-        """
-        Update stored data combobox when dataset is updated
-
-        """
-        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
-
+    def _update_dataset_widget(self) -> None:
         # remove detail zone
         self.remove_detail_zone()
         self.remove_service_detail_zone()
 
         self._set_metadata_view()
+
+    def _update_dataset_table(self) -> None:
+        """
+        Update stored data combobox when dataset is updated
+
+        """
+        QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
 
         self.mdl_upload.set_datastore(
             self.cbx_datastore.current_datastore_id(),

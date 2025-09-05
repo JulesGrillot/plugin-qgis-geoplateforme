@@ -13,10 +13,21 @@
 ```{toctree}
 ---
 caption: Usage
-maxdepth: 1
+maxdepth: 2
 ---
 Installation <usage/installation>
+Utilisation <usage/how_to_use>
 Traitements <usage/processings>
+```
+
+----
+
+```{toctree}
+---
+caption: Extension tierces
+maxdepth: 1
+---
+Intégration <external_plugins/integration>
 ```
 
 ----

@@ -2,7 +2,12 @@ import os
 from typing import List, Optional
 
 # PyQGIS
-from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
+from qgis.core import (
+    QgsApplication,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
+    QgsTask,
+)
 from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtCore import (
     QAbstractItemModel,
@@ -73,6 +78,8 @@ class DashboardWidget(QWidget):
             os.path.join(os.path.dirname(__file__), "wdg_dashboard.ui"),
             self,
         )
+
+        self.update_metadata_task = None
 
         # Add metadata widget
         self.wdg_metadata = None
@@ -192,7 +199,7 @@ class DashboardWidget(QWidget):
         """
         if self.wdg_metadata is not None:
             if isinstance(self.wdg_metadata, MetadataDetailsWidget):
-                self.btn_update_metadata.clicked.disconnect(self._update_metadata)
+                self.btn_update_metadata.clicked.disconnect(self._run_metadata_update)
             self.metadata_layout.removeWidget(self.wdg_metadata)
             self.wdg_metadata = None
 
@@ -211,7 +218,7 @@ class DashboardWidget(QWidget):
                 self.wdg_metadata = MetadataDetailsWidget(
                     metadata=metadata, datastore_id=datastore_id
                 )
-                self.btn_update_metadata.clicked.connect(self._update_metadata)
+                self.btn_update_metadata.clicked.connect(self._run_metadata_update)
                 self.btn_update_metadata.show()
             except UnavailableMetadataFileException as exc:
                 self.log(
@@ -231,10 +238,39 @@ class DashboardWidget(QWidget):
             self.btn_update_metadata.hide()
         self.metadata_layout.addWidget(self.wdg_metadata)
 
-    def _update_metadata(self):
+    def _update_metadata(self, task: QgsTask):
         """Update metadata"""
         if self.wdg_metadata is not None:
             self.wdg_metadata.update_metadata()
+
+    def _run_metadata_update(self) -> None:
+        """Run metadata update in a QgsTask
+        Widget is disabled during update
+        """
+        self.setEnabled(False)
+        self.update_metadata_task = QgsTask.fromFunction(
+            "Update metadata",
+            self._update_metadata,
+            on_finished=self._on_metadata_updated,
+        )
+        QgsApplication.taskManager().addTask(self.update_metadata_task)
+
+    def _on_metadata_updated(self, exception, value=None) -> None:
+        """Enable widget after a metadata update.
+        Display any raised exception.
+
+        :param exception: _description_
+        :type exception: _type_
+        :param value: _description_, defaults to None
+        :type value: _type_, optional
+        """
+        if exception:
+            QMessageBox.warning(
+                self,
+                self.tr("Erreur mise à jour métadonnée."),
+                self.tr(f"Erreur lors de la mise à jour des métadonnée. : {exception}"),
+            )
+        self.setEnabled(True)
 
     def delete_dataset(
         self, datastore_id: Optional[str] = None, dataset_name: Optional[str] = None

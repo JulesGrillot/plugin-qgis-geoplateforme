@@ -252,6 +252,7 @@ class DashboardWidget(QWidget):
             "Update metadata",
             self._update_metadata,
             on_finished=self._on_metadata_updated,
+            flags=QgsTask.Flag.Hidden | QgsTask.Flag.Silent,
         )
         QgsApplication.taskManager().addTask(self.update_metadata_task)
 
@@ -729,6 +730,7 @@ class DashboardWidget(QWidget):
             dataset_name=dataset_name,
             force_refresh=force_refresh,
             on_finished=self._on_data_refreshed,
+            flags=QgsTask.Flag.Hidden | QgsTask.Flag.Silent,
         )
 
         # Launch task

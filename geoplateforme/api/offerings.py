@@ -73,7 +73,7 @@ class Offering:
         :return: offering is open
         :rtype: bool
         """
-        if not self._open and not self.is_detailed:
+        if self._open is None and not self.is_detailed:
             self.update_from_api()
         return self._open
 
@@ -84,7 +84,7 @@ class Offering:
         :return: offering is available
         :rtype: bool
         """
-        if not self._available and not self.is_detailed:
+        if self._available is None and not self.is_detailed:
             self.update_from_api()
         return self._available
 
@@ -378,6 +378,7 @@ class OfferingsRequestManager:
         datastore_id: str,
         with_fields: Optional[List[OfferingField]] = None,
         configuration_id: Optional[str] = None,
+        open_filter: Optional[str] = None,
     ) -> List[Offering]:
         """Get list of offering
 
@@ -387,6 +388,8 @@ class OfferingsRequestManager:
         :type with_fields: List[ConfigurationField], optional
         :param configuration_id: configuration id
         :type configuration_id: str, optional
+        :param open_filter: filter on open field, Default None
+        :type open_filter: bool, optional
 
         :raises ReadOfferingException: when error occur during requesting the API
 
@@ -394,15 +397,22 @@ class OfferingsRequestManager:
         :rtype: List[Offering]
         """
         self.log(
-            f"{__name__}.get_offering_list(datastore:{datastore_id},configuration_id:{configuration_id})"
+            f"{__name__}.get_offering_list(datastore:{datastore_id},configuration_id:{configuration_id},{open_filter=})"
         )
 
-        nb_value = self._get_nb_available_offering(datastore_id, configuration_id)
+        nb_value = self._get_nb_available_offering(
+            datastore_id, configuration_id, open_filter
+        )
         nb_request = math.ceil(nb_value / self.MAX_LIMIT)
         result = []
         for page in range(0, nb_request):
             result += self._get_offering_list(
-                datastore_id, page + 1, self.MAX_LIMIT, with_fields, configuration_id
+                datastore_id,
+                page + 1,
+                self.MAX_LIMIT,
+                with_fields,
+                configuration_id,
+                open_filter,
             )
         return result
 
@@ -413,6 +423,7 @@ class OfferingsRequestManager:
         limit: int = MAX_LIMIT,
         with_fields: Optional[List[OfferingField]] = None,
         configuration_id: Optional[str] = None,
+        open_filter: Optional[str] = None,
     ) -> List[Offering]:
         """Get list of offering
 
@@ -426,6 +437,8 @@ class OfferingsRequestManager:
         :type with_fields: List[ConfigurationField], optional
         :param configuration_id: configuration id
         :type configuration_id: str, optional
+        :param open_filter: filter on open field, Default None
+        :type open_filter: bool, optional
 
         :raises ReadOfferingException: when error occur during requesting the API
 
@@ -443,10 +456,15 @@ class OfferingsRequestManager:
         if configuration_id:
             configuration_url = f"&configuration={configuration_id}"
 
+        # Add filter on open
+        open_filter_url = ""
+        if open_filter is not None:
+            open_filter_url = f"&is_open={open_filter}"
+
         try:
             reply = self.request_manager.get_url(
                 url=QUrl(
-                    f"{self.get_base_url(datastore_id)}?page={page}&limit={limit}{add_fields}{configuration_url}"
+                    f"{self.get_base_url(datastore_id)}?page={page}&limit={limit}{add_fields}{configuration_url}{open_filter_url}"
                 ),
                 config_id=self.plg_settings.qgis_auth_id,
             )
@@ -457,7 +475,10 @@ class OfferingsRequestManager:
         return [Offering.from_dict(datastore_id, offering) for offering in data]
 
     def _get_nb_available_offering(
-        self, datastore_id: str, configuration_id: Optional[str] = None
+        self,
+        datastore_id: str,
+        configuration_id: Optional[str] = None,
+        open_filter: Optional[str] = None,
     ) -> int:
         """Get number of available offering
 
@@ -465,6 +486,8 @@ class OfferingsRequestManager:
         :type datastore_id: str
         :param configuration_id: configuration id
         :type configuration_id: str, optional
+        :param open_filter: filter on open field, Default None
+        :type open_filter: bool, optional
 
         :raises ReadOfferingException: when error occur during requesting the API
 
@@ -477,10 +500,16 @@ class OfferingsRequestManager:
         configuration_url = ""
         if configuration_id:
             configuration_url = f"&configuration={configuration_id}"
+
+        # Add filter on open
+        open_filter_url = ""
+        if open_filter is not None:
+            open_filter_url = f"&is_open={open_filter}"
+
         try:
             req_reply = self.request_manager.get_url(
                 url=QUrl(
-                    f"{self.get_base_url(datastore_id)}?limit=1{configuration_url}"
+                    f"{self.get_base_url(datastore_id)}?limit=1{configuration_url}{open_filter_url}"
                 ),
                 config_id=self.plg_settings.qgis_auth_id,
                 return_req_reply=True,

@@ -203,7 +203,7 @@ class PermissionWidget(QWidget):
         :type permission: Permission
         """
         self._permission = permission
-        self.mdl_offering.set_datastore(permission.datastore_id)
+        self.mdl_offering.set_datastore(permission.datastore_id, open_filter=False)
         self.lne_licence.setText(permission.licence)
         if permission.end_date:
             self.datetime_end_date.setDateTime(permission.local_end_date)

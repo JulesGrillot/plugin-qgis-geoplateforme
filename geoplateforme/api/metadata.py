@@ -124,7 +124,7 @@ class Metadata:
         :return: metadata open_data propertie
         :rtype: bool
         """
-        if not self._open_data and not self.is_detailed:
+        if self._open_data is None and not self.is_detailed:
             self.update_from_api()
         return self._open_data
 

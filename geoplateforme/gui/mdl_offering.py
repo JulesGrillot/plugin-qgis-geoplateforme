@@ -80,7 +80,10 @@ class OfferingListModel(QStandardItemModel):
         return flags
 
     def set_datastore(
-        self, datastore_id: str, dataset_name: Optional[str] = None
+        self,
+        datastore_id: str,
+        dataset_name: Optional[str] = None,
+        open_filter: Optional[str] = None,
     ) -> None:
         """Refresh QStandardItemModel data with current datastore stored data
 
@@ -88,23 +91,37 @@ class OfferingListModel(QStandardItemModel):
         :type datastore_id: str
         :param dataset_name: dataset name
         :type dataset_name: str, optional
+        :param open_filter: filter on open field, Default None
+        :type open_filter: bool, optional
         """
         self.removeRows(0, self.rowCount())
 
-        manager = ConfigurationRequestManager()
         try:
             if dataset_name:
                 tags = {"datasheet_name": dataset_name}
+                manager = ConfigurationRequestManager()
                 configurations = manager.get_configuration_list(
                     datastore_id=datastore_id,
                     tags=tags,
                 )
+                for config in configurations:
+                    self.insert_configuration(config, open_filter=open_filter)
             else:
-                configurations = manager.get_configuration_list(
+                manager = OfferingsRequestManager()
+                offering_list = manager.get_offering_list(
                     datastore_id=datastore_id,
+                    with_fields=[
+                        OfferingField.LAYER_NAME,
+                        OfferingField.TYPE,
+                        OfferingField.OPEN,
+                        OfferingField.STATUS,
+                        OfferingField.AVAILABLE,
+                    ],
+                    open_filter=open_filter,
                 )
-            for config in configurations:
-                self.insert_configuration(config)
+                for offering in offering_list:
+                    self.insert_offering(offering)
+
         except ReadConfigurationException as exc:
             self.log(
                 f"Error while getting configuration informations: {exc}",
@@ -118,11 +135,17 @@ class OfferingListModel(QStandardItemModel):
                 push=False,
             )
 
-    def insert_configuration(self, config: Configuration) -> None:
+    def insert_configuration(
+        self,
+        config: Configuration,
+        open_filter: Optional[str] = None,
+    ) -> None:
         """Insert stored data in model
 
         :param stored_data: stored data to insert
         :type stored_data: StoredData
+        :param open_filter: filter on open field, Default None
+        :type open_filter: bool, optional
         """
 
         manager = OfferingsRequestManager()
@@ -136,6 +159,7 @@ class OfferingListModel(QStandardItemModel):
                 OfferingField.AVAILABLE,
             ],
             configuration_id=config._id,
+            open_filter=open_filter,
         )
 
         for offering in offering_list:

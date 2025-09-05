@@ -28,11 +28,11 @@ Si vous n'êtes pas encore connecté, seule l'action de connection est disponibl
 
 ----
 
-## Connection
+## Connexion
 
-L'interface de connection à la Géoplateforme est disponible via le bouton suivant :
+Pour certaines fonctionnalités, il est nécessaire de s'authentifier à la Géoplateforme via le bouton suivant :
 
-![Bouton connection](../static/images/connect_button.png "Bouton connection")
+![Bouton connexion](../static/images/connect_button.png "Bouton connexion")
 
 Si vous n'êtes pas déjà connecté vous pouvez demander une connection sur cartes.gouv.fr via le bouton correspondant.
 

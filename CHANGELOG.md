@@ -18,7 +18,6 @@ Unreleased
 
 ## 0.14.0 - 2025-09-08
 
-### Bugs fixes 🐛
 
 * fix(processing): be more robust for processing search from id by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/237>
 * fix(qt6): remove use of child function (replaced by index) by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/238>
@@ -30,8 +29,6 @@ Unreleased
 * fix(offering model): use /datastore/{datastore]/offerings to get list of offering if no dataset defined by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/261>
 * fix(dashboard): dataset not selected after creation and set upload wizard min height by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/265>
 
-### Features and enhancements 🎉
-
 * feat(ui): add check for pyr vector and pyr raster generation parameters by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/251>
 * feat(pyr_vector): remove sample option by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/252>
 * feat(metadata): edit metadata description with markdown by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/254>
@@ -40,23 +37,7 @@ Unreleased
 * feat(dashboard): run metadata update in QgsTask by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/263>
 * feat(dashboard): disable widget during refresh and update model in a QgsTask by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/264>
 
-### Tooling 🔧
-
-* build(deps): bump actions/checkout from 4 to 5 by @dependabot[bot] in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/258>
-* build(deps): bump dawidd6/action-download-artifact from 9 to 10 by @dependabot[bot] in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/96>
-* build(deps): bump actions/upload-pages-artifact from 3 to 4 by @dependabot[bot] in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/257>
-* build(deps): bump actions/download-artifact from 4 to 5 by @dependabot[bot] in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/256>
-* [pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/154>
-* build(deps-dev): update ruff requirement from <0.12.0,>=0.11.5 to >=0.11.5,<0.13.0 in /requirements by @dependabot[bot] in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/150>
-
-### Documentation 📖
-
-* Doc/init doc for widget by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/260>
-
-## New Contributors
-
-* @dependabot[bot] made their first contribution in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/258>
-* @pre-commit-ci[bot] made their first contribution in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/154>
+* add doc for widget by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/260>
 
 ## 0.13.0 - 2025-08-22
 

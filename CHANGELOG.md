@@ -15,6 +15,30 @@ Unreleased
 ### Removed
 
 -->
+
+## 0.14.0 - 2025-09-08
+
+
+* fix(processing): be more robust for processing search from id by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/237>
+* fix(qt6): remove use of child function (replaced by index) by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/238>
+* fix(markdown): in Qt6 standard markdown is used, italic which _ is not supported by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/240>
+* fix(report): avoid duplicate of generation report by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/239>
+* fix(doc): invalid links for processings by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/247>
+* Fix/update user key accesses by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/250>
+* feat(wfs): use QScrollArea to use collapsible group box by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/253>
+* fix(offering model): use /datastore/{datastore]/offerings to get list of offering if no dataset defined by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/261>
+* fix(dashboard): dataset not selected after creation and set upload wizard min height by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/265>
+
+* feat(ui): add check for pyr vector and pyr raster generation parameters by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/251>
+* feat(pyr_vector): remove sample option by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/252>
+* feat(metadata): edit metadata description with markdown by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/254>
+* feat(publish): enable back button in case of publish error by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/255>
+* Feat/init translation by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/259>
+* feat(dashboard): run metadata update in QgsTask by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/263>
+* feat(dashboard): disable widget during refresh and update model in a QgsTask by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/264>
+
+* add doc for widget by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/260>
+
 ## 0.13.0 - 2025-08-22
 
 ### Bugs fixes 🐛

@@ -806,105 +806,125 @@
         <translation>Delete</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="602"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="639"/>
         <source>Suppression impossible</source>
         <translation>Deletion impossible</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="259"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="296"/>
         <source>L&apos;entrepôt ou le dataset ne sont pas définis</source>
         <translation>Warehouse or dataset are not defined</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="286"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="323"/>
         <source>Impossible de récupérer les configurations et offres associées au dataset : {}</source>
         <translation>Impossible to recover the configurations and offers associated with the dataset: {}</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="297"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="334"/>
         <source>Impossible de récupérer les données stockées associées au dataset : {}</source>
         <translation>Impossible to recover the stored data associated with the dataset: {}</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="308"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="345"/>
         <source>Impossible de récupérer les livraisons associées au dataset : {}</source>
         <translation>Impossible to recover the deliveries associated with the dataset: {}</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="319"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="356"/>
         <source>Impossible de récupérer les métadatas associées au dataset : {}</source>
         <translation>Impossible to recover the metadatas associated with the dataset: {}</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="331"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="368"/>
         <source>Êtes-vous sûr de vouloir supprimer le dataset ?</source>
         <translation>Are you sure you want to delete the dataset?</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="332"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="369"/>
         <source>
 Les éléments suivants seront supprimés:</source>
         <translation>
 The following elements will be deleted:</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="336"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="373"/>
         <source>
 {} Offre(s)</source>
         <translation>
 {} Offering(s)</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="340"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="377"/>
         <source>
 {} Données stockées(s)</source>
         <translation>
 {} Stored data (s)</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="344"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="381"/>
         <source>
 {} Livraison(s)</source>
         <translation>
 {} Upload (s)</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="348"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="385"/>
         <source>
  La métadonnée associée ({})</source>
         <translation>
  The associated metadata ({})</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="354"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="391"/>
         <source>Suppression dataset {}</source>
         <translation>Suppression dataset {}</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="441"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="478"/>
         <source>Un service n&apos;a pas pu être dépublié :
  {}</source>
         <translation>A service could not be unpublished:
  {}</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="498"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="535"/>
         <source>Une données stockées n&apos;a pas pu être supprimée :
  {}</source>
         <translation>A stored data could not be deleted:
  {}</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="552"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="589"/>
         <source>Une livraison n&apos;a pas pu être supprimée :
  {}</source>
         <translation>An upload could not be deleted:
  {}</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="602"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="639"/>
         <source>Une metadata n&apos;a pas pu être supprimée : {}</source>
         <translation>A metadata could not be deleted: {}</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="269"/>
+        <source>Erreur mise à jour métadonnée.</source>
+        <translation>Error during metadata update.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="269"/>
+        <source>Erreur lors de la mise à jour des métadonnée. : {exception}</source>
+        <translation>Error during metadata update. : {exception}</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="756"/>
+        <source>Erreur mise à jour des données.</source>
+        <translation>Error during data update.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="756"/>
+        <source>Erreur lors de la mise à jour des données. : {exception}</source>
+        <translation>Error during data update . : {exception}</translation>
     </message>
 </context>
 <context>
@@ -2269,84 +2289,94 @@ This type is suitable for use in GIS software or any tool requiring strong authe
         <translation>Layers</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="26"/>
-        <source>Metadata :</source>
-        <translation>Metadata :</translation>
-    </message>
-    <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="49"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="20"/>
         <source>Search on Geoplateforme</source>
         <translation>Search on Geoplateforme</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="65"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="36"/>
         <source>Simple search</source>
         <translation>Simple search</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="197"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="214"/>
         <source>Search</source>
         <translation>Search</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="79"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="96"/>
         <source>Advanced search</source>
         <translation>Advanced search</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="88"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="105"/>
         <source>2100</source>
         <translation>2100</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="95"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="112"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="112"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="129"/>
         <source>Production year :</source>
         <translation>Production year :</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="119"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="136"/>
         <source>1900</source>
         <translation>1900</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="136"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="153"/>
         <source>Title</source>
         <translation>Title</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="146"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="163"/>
         <source>Producer</source>
         <translation>Producer</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="153"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="170"/>
         <source>Keywords</source>
         <translation>Keywords</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="170"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="187"/>
         <source>Theme</source>
         <translation>Theme</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="177"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="194"/>
         <source>Layer name</source>
         <translation>Layer name</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="187"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="204"/>
         <source>Visibility</source>
         <translation>Visibility</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="204"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="221"/>
         <source>Clear search</source>
         <translation>Clear search</translation>
+    </message>
+    <message>
+        <location filename="../../gui/provider/provider_dialog.ui" line="57"/>
+        <source>Max results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/provider/provider_dialog.ui" line="275"/>
+        <source>&lt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/provider/provider_dialog.ui" line="294"/>
+        <source>&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2690,24 +2720,129 @@ This type is suitable for use in GIS software or any tool requiring strong authe
 <context>
     <name>ResultCode</name>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="55"/>
+        <location filename="../../processing/tools/check_layer.py" line="58"/>
         <source>Check layers for IGN Geoplateforme</source>
         <translation>Check layers for IGN Geoplateforme</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="58"/>
+        <location filename="../../processing/tools/check_layer.py" line="61"/>
         <source>Outils géoplateforme</source>
         <translation>GeoplateForm Tools</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="70"/>
+        <location filename="../../processing/tools/check_layer.py" line="73"/>
         <source>Couches vectorielles à vérifier</source>
         <translation>Vector layers to check</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="79"/>
+        <location filename="../../processing/tools/check_layer.py" line="82"/>
         <source>Code de résultat. 0 si aucun problème</source>
         <translation>Code de résultat. 0 si aucun problème</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/check_layer.py" line="111"/>
+        <source>No input layers defined.</source>
+        <translation>No input layers defined.</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/check_layer.py" line="141"/>
+        <source>Checking layers :</source>
+        <translation>Checking layers :</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/check_layer.py" line="159"/>
+        <source>Checking layers CRS :</source>
+        <translation>Checking layers CRS :</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/check_layer.py" line="167"/>
+        <source>Reference CRS is {}</source>
+        <translation>Reference CRS is {}</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/check_layer.py" line="202"/>
+        <source>- [KO] invalid layer name for {}. Please remove any special character ({})</source>
+        <translation>- [KO] invalid layer name for {}. Please remove any special character ({})</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/check_layer.py" line="208"/>
+        <source>[OK] valid layer name for all input layers</source>
+        <translation>[OK] valid layer name for all input layers</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/check_layer.py" line="226"/>
+        <source>Checking file names :</source>
+        <translation>Checking file names :</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/check_layer.py" line="233"/>
+        <source>- [KO] invalid file name for {}. Please remove any special character ({})</source>
+        <translation>- [KO] invalid file name for {}. Please remove any special character ({})</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/check_layer.py" line="239"/>
+        <source>[OK] valid file name for all input layers</source>
+        <translation>[OK] valid file name for all input layers</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/check_layer.py" line="257"/>
+        <source>Checking layers fields name :</source>
+        <translation>Checking layers fields name :</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/check_layer.py" line="263"/>
+        <source>[OK] valid layer fields name for all input layers</source>
+        <translation>[OK] valid layer fields name for all input layers</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/check_layer.py" line="288"/>
+        <source>- [KO] invalid layer field name {} for {}. Please remove any special character ({})</source>
+        <translation>- [KO] invalid layer field name {} for {}. Please remove any special character ({})</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/check_layer.py" line="313"/>
+        <source>- [KO] invalid layer type for {}. Only QgsVectorLayer are supported.</source>
+        <translation>- [KO] invalid layer type for {}. Only QgsVectorLayer are supported.</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/check_layer.py" line="320"/>
+        <source>[OK] valid layer type for all input layers</source>
+        <translation>[OK] valid layer type for all input layers</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/check_layer.py" line="339"/>
+        <source>Checking layers geometry :</source>
+        <translation>Checking layers geometry :</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/check_layer.py" line="353"/>
+        <source>- [KO] geometries with errors for {}.</source>
+        <translation>- [KO] geometries with errors for {}.</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/check_layer.py" line="361"/>
+        <source>- [KO] invalid geometries for {}.</source>
+        <translation>- [KO] invalid geometries for {}.</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/check_layer.py" line="365"/>
+        <source>[OK] valid layer geometry for all input layers</source>
+        <translation>[OK] valid layer geometry for all input layers</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/check_layer.py" line="383"/>
+        <source>Checking layers bbox :</source>
+        <translation>Checking layers bbox :</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/check_layer.py" line="387"/>
+        <source>- [KO] empty bbox for {}. At least one feature must be available.</source>
+        <translation>- [KO] empty bbox for {}. At least one feature must be available.</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/check_layer.py" line="394"/>
+        <source>[OK] not null bbox for all input layers</source>
+        <translation>[OK] not null bbox for all input layers</translation>
     </message>
 </context>
 <context>
@@ -3804,61 +3939,61 @@ You can close the window during generation.</translation>
         <translation>Error when during upload creation</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="208"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="213"/>
         <source>Génération de la base de données vectorielle en cours.
 Vous pouvez fermer la fenêtre pendant la génération.</source>
         <translation>Generation of the vector database in progress.
 You can close the window during generation.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="217"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="222"/>
         <source>Vector database creation</source>
         <translation>Vector database creation</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="277"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="282"/>
         <source>Vérification statut livraison</source>
         <translation>Upload status verification</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="271"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="276"/>
         <source>Erreur lors de la vérification de la livraison</source>
         <translation>Error when checking the upload</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="314"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="319"/>
         <source>La base de données vectorielle a été générée dans l&apos;entrepôt.</source>
         <translation>The vector database has been generated in the warehouse.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="336"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="341"/>
         <source>Stored database integration check</source>
         <translation>Stored database integration check</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="353"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="358"/>
         <source>Livraison non terminée</source>
         <translation>Upload not closed</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="353"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="358"/>
         <source>La livraison des données est toujours en cours. Veuillez attendre que les données soient disponibles sur l&apos;entrepôt.</source>
         <translation>Upload is not closed. Please wait for the data to be available on the warehouse.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="364"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="369"/>
         <source>Vérification non terminée</source>
         <translation>Check in progress</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="364"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="369"/>
         <source>Les données sont en cours de vérification. Vous devrez lancer ultérieurement l&apos;intégration en base de données.
  Voulez vous fermer la fenêtre ? </source>
         <translation>The data is being checked. You will need to later start integration into a database.
  Do you want to close the window? </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="417"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="422"/>
         <source>{0} failed. Check report for more details.</source>
         <translation>{0} failed. Check report for more details.</translation>
     </message>
@@ -3871,101 +4006,119 @@ You can close the window during generation.</translation>
         <translation>Dashboard</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="32"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="35"/>
         <source>Name your data</source>
         <translation>Name your data</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="42"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="49"/>
         <source>Name your dataset:</source>
         <translation>Name your dataset:</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="49"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="42"/>
         <source>Select the SRS to use:</source>
         <translation>Select the SRS to use:</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="115"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="126"/>
         <source>No dataset name defined.</source>
         <translation>No dataset name defined.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="115"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="126"/>
         <source>Please define dataset name</source>
         <translation>Please define dataset name</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="123"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="134"/>
         <source>No name defined.</source>
         <translation>No name defined.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="123"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="134"/>
         <source>Please define data name</source>
         <translation>Please define data name</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="129"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="140"/>
         <source>No SRS defined.</source>
         <translation>No SRS defined.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="129"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="140"/>
         <source>Please define SRS</source>
         <translation>Please define SRS</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="150"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="188"/>
         <source>Invalid layers:
 </source>
         <translation>Invalid layers:
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="152"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="190"/>
         <source>- CRS mismatch
 </source>
         <translation>- CRS mismatch
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="154"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="192"/>
         <source>- invalid layer name
 </source>
         <translation>- invalid layer name
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="156"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="194"/>
         <source>- invalid file name
 </source>
         <translation>- invalid file name
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="158"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="196"/>
         <source>- invalid field name
 </source>
         <translation>- invalid field name
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="160"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="198"/>
         <source>- invalid layer type
 </source>
         <translation>- invalid layer type
 </translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="162"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="204"/>
         <source>Invalid layers list are available in details.</source>
         <translation>Invalid layers list are available in details.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="164"/>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="206"/>
         <source>Invalid layers</source>
         <translation>Invalid layers</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="75"/>
+        <source>Table(s) with multi geometry
+Values separated by ,</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="200"/>
+        <source>- invalid geometry
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="202"/>
+        <source>- empty bounding box
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3979,69 +4132,74 @@ You can close the window during generation.</translation>
 <context>
     <name>UploadDatabaseIntegrationAlgorithm</name>
     <message>
-        <location filename="../../processing/generation/upload_database_integration.py" line="60"/>
+        <location filename="../../processing/generation/upload_database_integration.py" line="61"/>
         <source>Intégration d&apos;une livraison en base de données vectorielle</source>
         <translation>Integration of upload in vector database</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/upload_database_integration.py" line="63"/>
+        <location filename="../../processing/generation/upload_database_integration.py" line="64"/>
         <source>Génération données</source>
         <translation>Data generation</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/upload_database_integration.py" line="75"/>
+        <location filename="../../processing/generation/upload_database_integration.py" line="76"/>
         <source>Identifiant de l&apos;entrepôt</source>
         <translation>Warehouse identifier</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/upload_database_integration.py" line="82"/>
+        <location filename="../../processing/generation/upload_database_integration.py" line="83"/>
         <source>Identifiant de la livraison</source>
         <translation>Upload identifier</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/upload_database_integration.py" line="89"/>
+        <location filename="../../processing/generation/upload_database_integration.py" line="90"/>
         <source>Nom de la base de données vectorielle</source>
         <translation>Vector database name</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/upload_database_integration.py" line="96"/>
+        <location filename="../../processing/generation/upload_database_integration.py" line="97"/>
         <source>Tags</source>
         <translation>Tags</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/upload_database_integration.py" line="96"/>
+        <location filename="../../processing/generation/upload_database_integration.py" line="97"/>
         <source>Tag</source>
         <translation>Tag</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/upload_database_integration.py" line="96"/>
+        <location filename="../../processing/generation/upload_database_integration.py" line="97"/>
         <source>Valeur</source>
         <translation>Value</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/upload_database_integration.py" line="104"/>
+        <location filename="../../processing/generation/upload_database_integration.py" line="105"/>
         <source>Attendre la fin de l&apos;intégration ?</source>
         <translation>Wait for the end of integration?</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/upload_database_integration.py" line="112"/>
+        <location filename="../../processing/generation/upload_database_integration.py" line="121"/>
         <source>Identifiant de la base de données créée.</source>
         <translation>Database identifier created.</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/upload_database_integration.py" line="118"/>
+        <location filename="../../processing/generation/upload_database_integration.py" line="127"/>
         <source>Identifiant de l&apos;exécution du traitement.</source>
         <translation>Identifier of the execution of the treatment.</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/upload_database_integration.py" line="244"/>
+        <location filename="../../processing/generation/upload_database_integration.py" line="263"/>
         <source>Upload tag add failed : {0}</source>
         <translation>Upload tag add failed : {0}</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/upload_database_integration.py" line="282"/>
+        <location filename="../../processing/generation/upload_database_integration.py" line="301"/>
         <source>Database integration failed. Check report in dashboard for more details.</source>
         <translation>Database integration failed. Check report in dashboard for more details.</translation>
+    </message>
+    <message>
+        <location filename="../../processing/generation/upload_database_integration.py" line="113"/>
+        <source>Table(s) contenant des géométries multi</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4062,29 +4220,29 @@ You can close the window during generation.</translation>
         <translation>Generation of the vector database in progress.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_database_integration/qwp_upload_database_integration.py" line="142"/>
+        <location filename="../../gui/upload_database_integration/qwp_upload_database_integration.py" line="147"/>
         <source>Génération de la base de données vectorielle en cours.
 Vous pouvez fermer la fenêtre pendant la génération.</source>
         <translation>Generation of the vector database in progress.
 You can close the window during generation.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_database_integration/qwp_upload_database_integration.py" line="151"/>
+        <location filename="../../gui/upload_database_integration/qwp_upload_database_integration.py" line="156"/>
         <source>Vector database creation</source>
         <translation>Vector database creation</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_database_integration/qwp_upload_database_integration.py" line="197"/>
+        <location filename="../../gui/upload_database_integration/qwp_upload_database_integration.py" line="202"/>
         <source>La base de données vectorielle a été générée dans l&apos;entrepôt.</source>
         <translation>The vector database has been generated in the warehouse.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_database_integration/qwp_upload_database_integration.py" line="219"/>
+        <location filename="../../gui/upload_database_integration/qwp_upload_database_integration.py" line="224"/>
         <source>Stored database integration check</source>
         <translation>Stored database integration check</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_database_integration/qwp_upload_database_integration.py" line="272"/>
+        <location filename="../../gui/upload_database_integration/qwp_upload_database_integration.py" line="277"/>
         <source>{0} failed. Check report for more details.</source>
         <translation>{0} failed. Check report for more details.</translation>
     </message>
@@ -4782,9 +4940,15 @@ You must manually add the configuration.</translation>
         <translation>Uploading form</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_database_integration/qwp_vector_db_edition.ui" line="26"/>
+        <location filename="../../gui/upload_database_integration/qwp_vector_db_edition.ui" line="23"/>
         <source>Name</source>
         <translation>Name</translation>
+    </message>
+    <message>
+        <location filename="../../gui/upload_database_integration/qwp_vector_db_edition.ui" line="49"/>
+        <source>Table(s) with multi geometry
+Values separated by ,</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

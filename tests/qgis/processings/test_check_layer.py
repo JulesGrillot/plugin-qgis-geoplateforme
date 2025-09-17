@@ -384,3 +384,26 @@ def test_invalid_layer_type(alg: QgsProcessingAlgorithm, tmpdir):
         "- [KO] invalid layer type for raster. Only QgsVectorLayer are supported."
     ]
     assert expected_warnings == feedback.warnings
+
+
+def test_empty_layers(alg: QgsProcessingAlgorithm, tmpdir):
+    """
+    Check return code in case of empty layers
+
+    Args:
+        alg: pytest fixture to get QgsProcessingAlgorithm
+        tmpdir: pytest fixture to get temporary directory
+    """
+
+    params = {
+        CheckLayerAlgorithm.INPUT_LAYERS: [
+            create_shape_file(tmpdir, "vect_1.shp", "vect_1", add_feature=False),
+        ]
+    }
+    context = QgsProcessingContext()
+    feedback = QgsProcessingFeedBackTest()
+    result, success = alg.run(params, context, feedback)
+    assert success
+
+    result_code = result[CheckLayerAlgorithm.RESULT_CODE]
+    assert result_code == CheckLayerAlgorithm.ResultCode.NO_FEATURES

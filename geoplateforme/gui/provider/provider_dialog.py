@@ -1,12 +1,21 @@
-import json
 import logging
 import os
+import webbrowser
+from typing import Optional
 
 from qgis.core import QgsProject, QgsRasterLayer, QgsVectorLayer, QgsVectorTileLayer
 from qgis.gui import QgsAbstractDataSourceWidget
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QModelIndex
-from qgis.PyQt.QtWidgets import QAbstractItemView, QDialogButtonBox
+from qgis.PyQt.QtWidgets import (
+    QAbstractItemView,
+    QDialogButtonBox,
+    QHeaderView,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QTextEdit,
+)
 
 from geoplateforme.constants import metadata_topic_categories
 from geoplateforme.gui.metadata.wdg_tagbar import DictTagBarWidget
@@ -73,6 +82,13 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
         self.mdl_search_result = SearchResultModel()
         self.tbv_results.setModel(self.mdl_search_result)
         self.tbv_results.verticalHeader().setVisible(False)
+        self.tbv_results.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        self.tbv_results.horizontalHeader().setSectionResizeMode(
+            3, QHeaderView.ResizeToContents
+        )
+        self.tbv_results.horizontalHeader().setSectionResizeMode(
+            4, QHeaderView.ResizeToContents
+        )
         self.tbv_results.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.tbv_results.selectionModel().selectionChanged.connect(
             self._item_selection_changed
@@ -82,7 +98,15 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
         self.buttonBox.button(QDialogButtonBox.StandardButton.Apply).setText("Ajouter")
         self.buttonBox.button(QDialogButtonBox.StandardButton.Apply).setEnabled(False)
 
-        self.tw_search.currentChanged.connect(self._clear_search)
+        self._show_pagination(False)
+        self._advanced_page = 1
+        self.btn_next.clicked.connect(
+            lambda: self._advanced_search(self._advanced_page + 1)
+        )
+        self.btn_previous.clicked.connect(
+            lambda: self._advanced_search(self._advanced_page - 1)
+        )
+        self.tw_search.currentChanged.connect(self._swith_tab)
 
         self.le_search.textChanged.connect(self._simple_search)
         self.btn_search.clicked.connect(self._advanced_search)
@@ -103,9 +127,29 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
         self.rs_production_year.set_left_thumb_value(1900)
         self.rs_production_year.set_right_thumb_value(2100)
 
-        self.metaTextBrowser.clear()
+        self.btn_next.setEnabled(False)
+        self.btn_previous.setEnabled(False)
+
+        self._clear_metadata()
         self.mdl_search_result.clear()
         self.buttonBox.button(QDialogButtonBox.StandardButton.Apply).setEnabled(False)
+
+    def _swith_tab(self):
+        """Switch search type (simple or advanced)"""
+        self._clear_search()
+        if self.tw_search.currentWidget().objectName() == "tab_simple_search":
+            self._show_pagination(False)
+        else:
+            self._show_pagination(True)
+
+    def _show_pagination(self, val: bool = True):
+        """Show pagination buttons"""
+        if val:
+            self.btn_next.show()
+            self.btn_previous.show()
+        else:
+            self.btn_next.hide()
+            self.btn_previous.hide()
 
     def _simple_search(self, text: str):
         """launch simple search using suggest API
@@ -114,10 +158,17 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
         :type text: str
         """
         if len(text) > 2:
+            self._clear_metadata()
             self.mdl_search_result.simple_search_text(text)
 
-    def _advanced_search(self):
+    def _advanced_search(self, page: Optional[int]):
         """launch advanced search using search API"""
+        if not page:
+            page = 1
+        self._advanced_page = page
+
+        self._clear_metadata()
+
         search_dict = {}
         if len(self.le_title.text()) > 0:
             search_dict["title"] = self.le_title.text()
@@ -142,7 +193,17 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
                 "max": self.rs_production_year.get_right_thumb_value(),
             }
         if len(search_dict.keys()) > 0:
-            self.mdl_search_result.advanced_search_text(search_dict)
+            nb_result = self.mdl_search_result.advanced_search_text(
+                search_dict, self._advanced_page
+            )
+            if nb_result == 50:
+                self.btn_next.setEnabled(True)
+            else:
+                self.btn_next.setEnabled(False)
+            if self._advanced_page == 1:
+                self.btn_previous.setEnabled(False)
+            else:
+                self.btn_previous.setEnabled(True)
 
     def _item_selection_changed(self) -> None:
         """Display metadata when a result is selected"""
@@ -152,10 +213,10 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
             self.buttonBox.button(QDialogButtonBox.StandardButton.Apply).setEnabled(
                 True
             )
-            self.metaTextBrowser.clear()
+            self._clear_metadata()
             result = self.mdl_search_result.get_result(index)
             if result:
-                self.metaTextBrowser.setText(json.dumps(result, indent=2))
+                self._display_metadata(result)
 
     def _add_layer(self, index: QModelIndex):
         """Add selected layer to QGIS project
@@ -232,6 +293,58 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
                     log_level=2,
                     push=False,
                 )
+
+    def _display_metadata(self, metadata: dict):
+        """Display metadata informations
+
+        :param metadata: metadata informations
+        :type metadata: dict
+        """
+        display_items = [
+            "title",
+            "layer_name",
+            "description",
+            "type",
+            "open",
+            "publication_date",
+            "srs",
+            "keywords",
+        ]
+        item_number = 0
+
+        if "metadata_urls" in metadata and len(metadata["metadata_urls"]) > 0:
+            link = QPushButton()
+            link.setText("Open in cartes.gouv.fr")
+            link.clicked.connect(lambda: webbrowser.open(metadata["metadata_urls"][0]))
+            self.metadataLayout.addWidget(link, item_number, 0, 1, 2)
+            item_number += 1
+
+        for item in display_items:
+            if item in metadata:
+                label = QLabel()
+                label.setText(f"<b>{item} :</b>")
+                if item == "description":
+                    text = QTextEdit()
+                else:
+                    text = QLineEdit()
+                text.setReadOnly(True)
+                if isinstance(metadata[item], list):
+                    text.setText(str(",".join(metadata[item])))
+                else:
+                    text.setText(str(metadata[item]))
+                self.metadataLayout.addWidget(label, item_number, 0)
+                self.metadataLayout.addWidget(text, item_number, 1)
+                item_number += 1
+
+    def _clear_metadata(self):
+        """clear metadata informations"""
+        while self.metadataLayout.count():
+            item = self.metadataLayout.takeAt(0)
+            widget = item.widget()
+            if widget is not None:
+                widget.deleteLater()
+            else:
+                self.clearLayout(item.layout())
 
     def onAccept(self, button):
         """

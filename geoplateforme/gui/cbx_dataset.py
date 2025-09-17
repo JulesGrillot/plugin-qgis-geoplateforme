@@ -20,6 +20,9 @@ class DatasetComboBox(QComboBox):
         self.mdl_dataset = DatasetListModel(self)
 
         self.proxy_model_dataset = QSortFilterProxyModel(self)
+        self.proxy_model_dataset.setSortCaseSensitivity(
+            Qt.CaseSensitivity.CaseInsensitive
+        )
         self.proxy_model_dataset.setSourceModel(self.mdl_dataset)
         self.proxy_model_dataset.sort(
             DatasetListModel.NAME_COL, Qt.SortOrder.AscendingOrder

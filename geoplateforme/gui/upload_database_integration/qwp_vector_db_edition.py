@@ -39,7 +39,21 @@ class VectorDbEditionPageWizard(QWizardPage):
         self.setCommitPage(True)
 
     def get_name(self) -> str:
+        """
+        Get defined name
+
+        Returns: (str) defined name
+
+        """
         return self.lne_name.text()
+
+    def get_multi_geom_layers_str(self) -> str:
+        """Return string for multi geom layers
+
+        :return: multi geom layers string
+        :rtype: str
+        """
+        return self.lne_multi_geom_table.text()
 
     def validatePage(self) -> bool:
         """

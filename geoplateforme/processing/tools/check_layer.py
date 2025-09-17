@@ -3,6 +3,7 @@ from enum import IntFlag
 from typing import List
 
 from osgeo import ogr
+from qgis import processing
 from qgis.core import (
     QgsMapLayer,
     QgsProcessing,
@@ -33,6 +34,8 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
         INVALID_FILE_NAME = 4
         INVALID_FIELD_NAME = 8
         INVALID_LAYER_TYPE = 16
+        INVALID_GEOMETRY = 32
+        EMPTY_BBOX = 64
 
     def tr(self, message: str) -> str:
         """Get the translation for a string using Qt translation API.
@@ -105,7 +108,7 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
         result_code = self.ResultCode.VALID
 
         if len(layers) == 0:
-            feedback.pushInfo("No input layers defined.")
+            feedback.pushInfo(self.tr("No input layers defined."))
         else:
             self.add_layers_info_feedback(feedback, layers)
             if not self.check_layers_crs(feedback, layers):
@@ -118,12 +121,15 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
                 result_code = result_code | self.ResultCode.INVALID_FIELD_NAME
             if not self.check_layers_type(feedback, layers):
                 result_code = result_code | self.ResultCode.INVALID_LAYER_TYPE
+            if not self.check_layers_geometry(feedback, layers):
+                result_code = result_code | self.ResultCode.INVALID_GEOMETRY
+            if not self.check_layers_bbox(feedback, layers):
+                result_code = result_code | self.ResultCode.EMPTY_BBOX
 
         return {self.RESULT_CODE: result_code}
 
-    @staticmethod
     def add_layers_info_feedback(
-        feedback: QgsProcessingFeedback, layers: List[QgsMapLayer]
+        self, feedback: QgsProcessingFeedback, layers: List[QgsMapLayer]
     ) -> None:
         """
         Add layers information in feedback
@@ -132,13 +138,12 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
             feedback: QgsProcessingFeedback
             layers: List[QgsMapLayer])
         """
-        feedback.pushInfo("Checking layers :")
+        feedback.pushInfo(self.tr("Checking layers :"))
         for layer in layers:
             feedback.pushInfo(f"- {layer.name()} ({layer.crs().authid()})")
 
-    @staticmethod
     def check_layers_crs(
-        feedback: QgsProcessingFeedback, layers: List[QgsMapLayer]
+        self, feedback: QgsProcessingFeedback, layers: List[QgsMapLayer]
     ) -> bool:
         """
         Check that layers have the same CRS
@@ -151,7 +156,7 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
 
         """
         res = True
-        feedback.pushInfo("Checking layers CRS :")
+        feedback.pushInfo(self.tr("Checking layers CRS :"))
         ref_crs = None
 
         for layer in layers:
@@ -159,7 +164,7 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
                 layer_crs = layer.crs().authid()
                 if not ref_crs:
                     ref_crs = layer.crs().authid()
-                    feedback.pushInfo(f"Reference CRS is {ref_crs}")
+                    feedback.pushInfo(self.tr("Reference CRS is {}".format(ref_crs)))
             else:
                 feedback.pushInfo("Layer is not spatial, CRS is not checked.")
                 continue
@@ -195,11 +200,12 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
             if self.has_invalid_character(layer_name):
                 res = False
                 feedback.pushWarning(
-                    f"- [KO] invalid layer name for {layer_name}. "
-                    f"Please remove any special character ({self.get_invalid_characters()})"
+                    self.tr(
+                        "- [KO] invalid layer name for {}. Please remove any special character ({})"
+                    ).format(layer_name, self.get_invalid_characters())
                 )
         if res:
-            feedback.pushInfo("[OK] valid layer name for all input layers")
+            feedback.pushInfo(self.tr("[OK] valid layer name for all input layers"))
 
         return res
 
@@ -217,17 +223,20 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
 
         """
         res = True
-        feedback.pushInfo("Checking file names :")
+        feedback.pushInfo(self.tr("Checking file names :"))
         for layer in layers:
+            if layer.providerType() == "memory":
+                continue
             file_name = layer.dataProvider().dataSourceUri()
             if self.has_invalid_character(file_name):
                 res = False
                 feedback.pushWarning(
-                    f"- [KO] invalid file name for {file_name}. "
-                    f"Please remove any special character ({self.get_invalid_characters()})"
+                    self.tr(
+                        "- [KO] invalid file name for {}. Please remove any special character ({})"
+                    ).format(file_name, self.get_invalid_characters())
                 )
         if res:
-            feedback.pushInfo("[OK] valid file name for all input layers")
+            feedback.pushInfo(self.tr("[OK] valid file name for all input layers"))
 
         return res
 
@@ -245,13 +254,15 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
 
         """
         res = True
-        feedback.pushInfo("Checking layers fields name :")
+        feedback.pushInfo(self.tr("Checking layers fields name :"))
         for layer in layers:
             if isinstance(layer, QgsVectorLayer):
                 if not self.check_layer_fields(feedback, layer):
                     res = False
         if res:
-            feedback.pushInfo("[OK] valid layer fields name for all input layers")
+            feedback.pushInfo(
+                self.tr("[OK] valid layer fields name for all input layers")
+            )
 
         return res
 
@@ -275,36 +286,112 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
             if self.has_invalid_character(field_name):
                 res = False
                 feedback.pushWarning(
-                    f"- [KO] invalid layer field name {field_name} for {layer_name}. "
-                    f"Please remove any special character ({self.get_invalid_characters()})"
+                    self.tr(
+                        "- [KO] invalid layer field name {} for {}. Please remove any special character ({})"
+                    ).format(field_name, layer_name, self.get_invalid_characters())
                 )
         return res
 
-    @staticmethod
     def check_layers_type(
-        feedback: QgsProcessingFeedback, layers: List[QgsMapLayer]
+        self, feedback: QgsProcessingFeedback, layers: List[QgsMapLayer]
     ) -> bool:
         """
-        Check that layers have valid fields name
+        Check that layers have valid type
 
         Args:
             feedback: QgsProcessingFeedback
             layers: List[QgsMapLayer])
 
-        Returns: True if all layers have valid name, False otherwise
+        Returns: True if all layers have valid type, False otherwise
 
         """
         res = True
-        feedback.pushInfo("Checking layers fields name :")
+        feedback.pushInfo("Checking layers type :")
         for layer in layers:
             if not isinstance(layer, QgsVectorLayer):
                 res = False
                 feedback.pushWarning(
-                    f"- [KO] invalid layer type for {layer.name()}. Only QgsVectorLayer are supported."
+                    self.tr(
+                        "- [KO] invalid layer type for {}. Only QgsVectorLayer are supported."
+                    ).format(layer.name())
                 )
 
         if res:
-            feedback.pushInfo("[OK] valid layer fields name for all input layers")
+            feedback.pushInfo(self.tr("[OK] valid layer type for all input layers"))
+
+        return res
+
+    def check_layers_geometry(
+        self, feedback: QgsProcessingFeedback, layers: List[QgsMapLayer]
+    ) -> bool:
+        """
+        Check that layers have valid geometry
+
+        Args:
+            feedback: QgsProcessingFeedback
+            layers: List[QgsMapLayer])
+
+        Returns: True if all layers have valid geometry, False otherwise
+
+        """
+
+        res = True
+        feedback.pushInfo(self.tr("Checking layers geometry :"))
+        for layer in layers:
+            parameters = {
+                "INPUT_LAYER": layer,
+                "METHOD": 1,
+                "IGNORE_RING_SELF_INTERSECTION": False,
+                "VALID_OUTPUT": "TEMPORARY_OUTPUT",
+                "INVALID_OUTPUT": "TEMPORARY_OUTPUT",
+                "ERROR_OUTPUT": "TEMPORARY_OUTPUT",
+            }
+            result = processing.run("qgis:checkvalidity", parameters)
+            error_count = result["ERROR_COUNT"]
+            if error_count != 0:
+                res = False
+                feedback.pushWarning(
+                    self.tr("- [KO] geometries with errors for {}.").format(
+                        layer.name()
+                    )
+                )
+            invalid_count = result["INVALID_COUNT"]
+            if invalid_count != 0:
+                res = False
+                feedback.pushWarning(
+                    self.tr("- [KO] invalid geometries for {}.").format(layer.name())
+                )
+        if res:
+            feedback.pushInfo(self.tr("[OK] valid layer geometry for all input layers"))
+
+        return res
+
+    def check_layers_bbox(
+        self, feedback: QgsProcessingFeedback, layers: List[QgsMapLayer]
+    ) -> bool:
+        """
+        Check that layers have valid bbox
+
+        Args:
+            feedback: QgsProcessingFeedback
+            layers: List[QgsMapLayer])
+
+        Returns: True if all layers have bbox, False otherwise
+
+        """
+        res = True
+        feedback.pushInfo(self.tr("Checking layers bbox :"))
+        for layer in layers:
+            if layer.extent().isEmpty():
+                res = False
+                feedback.pushWarning(
+                    self.tr(
+                        "- [KO] empty bbox for {}. At least one feature must be available."
+                    ).format(layer.name())
+                )
+
+        if res:
+            feedback.pushInfo(self.tr("[OK] not null bbox for all input layers"))
 
         return res
 

@@ -29,7 +29,7 @@ class ResultCode(IntFlag):
     INVALID_FIELD_NAME = 8
     INVALID_LAYER_TYPE = 16
     INVALID_GEOMETRY = 32
-    EMPTY_BBOX = 64
+    NO_FEATURES = 64
 ```
 
 La présence d'un type d'erreur peut être vérifié via python :

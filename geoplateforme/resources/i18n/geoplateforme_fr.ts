@@ -2366,17 +2366,17 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
     <message>
         <location filename="../../gui/provider/provider_dialog.ui" line="57"/>
         <source>Max results</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de résultats maximum</translation>
     </message>
     <message>
         <location filename="../../gui/provider/provider_dialog.ui" line="275"/>
         <source>&lt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../gui/provider/provider_dialog.ui" line="294"/>
         <source>&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2745,104 +2745,104 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
         <translation>Aucune couche en entrée.</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="141"/>
+        <location filename="../../processing/tools/check_layer.py" line="148"/>
         <source>Checking layers :</source>
         <translation>Vérification des couches :</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="159"/>
+        <location filename="../../processing/tools/check_layer.py" line="166"/>
         <source>Checking layers CRS :</source>
         <translation>Vérification système de coordonnées des couches :</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="167"/>
+        <location filename="../../processing/tools/check_layer.py" line="174"/>
         <source>Reference CRS is {}</source>
         <translation>Système de coordonnées de référence {}</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="202"/>
+        <location filename="../../processing/tools/check_layer.py" line="209"/>
         <source>- [KO] invalid layer name for {}. Please remove any special character ({})</source>
         <translation>- [KO] nom de couche invalide pour {}.Veuillez supprimer les caractères spéciaux ({})</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="208"/>
+        <location filename="../../processing/tools/check_layer.py" line="215"/>
         <source>[OK] valid layer name for all input layers</source>
         <translation>[OK] nom de couche valide pour toutes les couches en entrée</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="226"/>
+        <location filename="../../processing/tools/check_layer.py" line="233"/>
         <source>Checking file names :</source>
         <translation>Vérification des noms de fichier :</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="233"/>
+        <location filename="../../processing/tools/check_layer.py" line="240"/>
         <source>- [KO] invalid file name for {}. Please remove any special character ({})</source>
         <translation>- [KO] nom de fichier invalide pour {}.Veuillez supprimer les caractères spéciaux ({})</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="239"/>
+        <location filename="../../processing/tools/check_layer.py" line="246"/>
         <source>[OK] valid file name for all input layers</source>
         <translation>[OK]  nom de fichier valide pour toutes les couches en entrée</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="257"/>
+        <location filename="../../processing/tools/check_layer.py" line="264"/>
         <source>Checking layers fields name :</source>
         <translation>Vérification des nom de champs :</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="263"/>
+        <location filename="../../processing/tools/check_layer.py" line="270"/>
         <source>[OK] valid layer fields name for all input layers</source>
         <translation>[OK] nom de champs valide pour toutes les couches en entrée</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="288"/>
+        <location filename="../../processing/tools/check_layer.py" line="295"/>
         <source>- [KO] invalid layer field name {} for {}. Please remove any special character ({})</source>
         <translation>- [KO] nom de champ invalide {} pour {}. Veuillez supprimer les caractères spéciaux ({})</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="313"/>
+        <location filename="../../processing/tools/check_layer.py" line="320"/>
         <source>- [KO] invalid layer type for {}. Only QgsVectorLayer are supported.</source>
         <translation>- [KO] type de couche invalide pour {}. Seule les couches Only QgsVectorLayer sont supportées.</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="320"/>
+        <location filename="../../processing/tools/check_layer.py" line="327"/>
         <source>[OK] valid layer type for all input layers</source>
         <translation>[OK] type de couche valide pour toutes les couches en entrée</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="339"/>
+        <location filename="../../processing/tools/check_layer.py" line="346"/>
         <source>Checking layers geometry :</source>
         <translation>Vérification géométrie des couches :</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="353"/>
+        <location filename="../../processing/tools/check_layer.py" line="362"/>
         <source>- [KO] geometries with errors for {}.</source>
         <translation>- [KO] erreur de géométrie pour {}.</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="361"/>
+        <location filename="../../processing/tools/check_layer.py" line="370"/>
         <source>- [KO] invalid geometries for {}.</source>
         <translation>- [KO] géométrie invalide pour {}.</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="365"/>
+        <location filename="../../processing/tools/check_layer.py" line="374"/>
         <source>[OK] valid layer geometry for all input layers</source>
         <translation>[OK] géométrie valide pour toutes les couches en entrée</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="383"/>
-        <source>Checking layers bbox :</source>
-        <translation>Vérification étendue des couches :</translation>
+        <location filename="../../processing/tools/check_layer.py" line="392"/>
+        <source>Checking layers number of features :</source>
+        <translation>Vérification du nombre de géométrie :</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="387"/>
-        <source>- [KO] empty bbox for {}. At least one feature must be available.</source>
-        <translation>- [KO] étendue vide for {}. Au moins une géométrie doit être disponible.</translation>
+        <location filename="../../processing/tools/check_layer.py" line="398"/>
+        <source>- [KO] no feature for {}. At least one feature must be available.</source>
+        <translation>- [KO] aucune géométrie pour {}. Au moins une géométrie doit être disponible.</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="394"/>
-        <source>[OK] not null bbox for all input layers</source>
-        <translation>[OK] étendue non vide pour toutes les couches en entrée</translation>
+        <location filename="../../processing/tools/check_layer.py" line="405"/>
+        <source>[OK] features availables for all input layers</source>
+        <translation>[OK] géométries disponibles pour toutes les couches en entrée</translation>
     </message>
 </context>
 <context>
@@ -4106,19 +4106,22 @@ Vous pouvez fermer la fenêtre pendant la génération.</translation>
         <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="75"/>
         <source>Table(s) with multi geometry
 Values separated by ,</source>
-        <translation type="unfinished"></translation>
+        <translation>Table(s) avec géométrie multi
+Valeurs séparées par ,</translation>
     </message>
     <message>
         <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="200"/>
         <source>- invalid geometry
 </source>
-        <translation type="unfinished"></translation>
+        <translation>- géométrie invalide
+</translation>
     </message>
     <message>
         <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="202"/>
-        <source>- empty bounding box
+        <source>- no feature available
 </source>
-        <translation type="unfinished"></translation>
+        <translation>- aucune géométrie de disponible
+</translation>
     </message>
 </context>
 <context>
@@ -4199,7 +4202,7 @@ Values separated by ,</source>
     <message>
         <location filename="../../processing/generation/upload_database_integration.py" line="113"/>
         <source>Table(s) contenant des géométries multi</source>
-        <translation type="unfinished"></translation>
+        <translation>Table(s) contenant des géométries multi</translation>
     </message>
 </context>
 <context>
@@ -4948,7 +4951,8 @@ Vous devez ajouter manuellement la configuration.</translation>
         <location filename="../../gui/upload_database_integration/qwp_vector_db_edition.ui" line="49"/>
         <source>Table(s) with multi geometry
 Values separated by ,</source>
-        <translation type="unfinished"></translation>
+        <translation>Table(s) avec géométrie multi
+Valeurs séparées par ,</translation>
     </message>
 </context>
 <context>

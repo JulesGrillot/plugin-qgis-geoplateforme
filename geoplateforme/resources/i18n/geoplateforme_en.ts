@@ -2366,17 +2366,17 @@ This type is suitable for use in GIS software or any tool requiring strong authe
     <message>
         <location filename="../../gui/provider/provider_dialog.ui" line="57"/>
         <source>Max results</source>
-        <translation type="unfinished"></translation>
+        <translation>Max results</translation>
     </message>
     <message>
         <location filename="../../gui/provider/provider_dialog.ui" line="275"/>
         <source>&lt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../gui/provider/provider_dialog.ui" line="294"/>
         <source>&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2745,104 +2745,104 @@ This type is suitable for use in GIS software or any tool requiring strong authe
         <translation>No input layers defined.</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="141"/>
+        <location filename="../../processing/tools/check_layer.py" line="148"/>
         <source>Checking layers :</source>
         <translation>Checking layers :</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="159"/>
+        <location filename="../../processing/tools/check_layer.py" line="166"/>
         <source>Checking layers CRS :</source>
         <translation>Checking layers CRS :</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="167"/>
+        <location filename="../../processing/tools/check_layer.py" line="174"/>
         <source>Reference CRS is {}</source>
         <translation>Reference CRS is {}</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="202"/>
+        <location filename="../../processing/tools/check_layer.py" line="209"/>
         <source>- [KO] invalid layer name for {}. Please remove any special character ({})</source>
         <translation>- [KO] invalid layer name for {}. Please remove any special character ({})</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="208"/>
+        <location filename="../../processing/tools/check_layer.py" line="215"/>
         <source>[OK] valid layer name for all input layers</source>
         <translation>[OK] valid layer name for all input layers</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="226"/>
+        <location filename="../../processing/tools/check_layer.py" line="233"/>
         <source>Checking file names :</source>
         <translation>Checking file names :</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="233"/>
+        <location filename="../../processing/tools/check_layer.py" line="240"/>
         <source>- [KO] invalid file name for {}. Please remove any special character ({})</source>
         <translation>- [KO] invalid file name for {}. Please remove any special character ({})</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="239"/>
+        <location filename="../../processing/tools/check_layer.py" line="246"/>
         <source>[OK] valid file name for all input layers</source>
         <translation>[OK] valid file name for all input layers</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="257"/>
+        <location filename="../../processing/tools/check_layer.py" line="264"/>
         <source>Checking layers fields name :</source>
         <translation>Checking layers fields name :</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="263"/>
+        <location filename="../../processing/tools/check_layer.py" line="270"/>
         <source>[OK] valid layer fields name for all input layers</source>
         <translation>[OK] valid layer fields name for all input layers</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="288"/>
+        <location filename="../../processing/tools/check_layer.py" line="295"/>
         <source>- [KO] invalid layer field name {} for {}. Please remove any special character ({})</source>
         <translation>- [KO] invalid layer field name {} for {}. Please remove any special character ({})</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="313"/>
+        <location filename="../../processing/tools/check_layer.py" line="320"/>
         <source>- [KO] invalid layer type for {}. Only QgsVectorLayer are supported.</source>
         <translation>- [KO] invalid layer type for {}. Only QgsVectorLayer are supported.</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="320"/>
+        <location filename="../../processing/tools/check_layer.py" line="327"/>
         <source>[OK] valid layer type for all input layers</source>
         <translation>[OK] valid layer type for all input layers</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="339"/>
+        <location filename="../../processing/tools/check_layer.py" line="346"/>
         <source>Checking layers geometry :</source>
         <translation>Checking layers geometry :</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="353"/>
+        <location filename="../../processing/tools/check_layer.py" line="362"/>
         <source>- [KO] geometries with errors for {}.</source>
         <translation>- [KO] geometries with errors for {}.</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="361"/>
+        <location filename="../../processing/tools/check_layer.py" line="370"/>
         <source>- [KO] invalid geometries for {}.</source>
         <translation>- [KO] invalid geometries for {}.</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="365"/>
+        <location filename="../../processing/tools/check_layer.py" line="374"/>
         <source>[OK] valid layer geometry for all input layers</source>
         <translation>[OK] valid layer geometry for all input layers</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="383"/>
-        <source>Checking layers bbox :</source>
-        <translation>Checking layers bbox :</translation>
+        <location filename="../../processing/tools/check_layer.py" line="392"/>
+        <source>Checking layers number of features :</source>
+        <translation>Checking layers number of features :</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="387"/>
-        <source>- [KO] empty bbox for {}. At least one feature must be available.</source>
-        <translation>- [KO] empty bbox for {}. At least one feature must be available.</translation>
+        <location filename="../../processing/tools/check_layer.py" line="398"/>
+        <source>- [KO] no feature for {}. At least one feature must be available.</source>
+        <translation>- [KO] no feature for {}. At least one feature must be available.</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="394"/>
-        <source>[OK] not null bbox for all input layers</source>
-        <translation>[OK] not null bbox for all input layers</translation>
+        <location filename="../../processing/tools/check_layer.py" line="405"/>
+        <source>[OK] features availables for all input layers</source>
+        <translation>[OK] features availables for all input layers</translation>
     </message>
 </context>
 <context>
@@ -4106,19 +4106,22 @@ You can close the window during generation.</translation>
         <location filename="../../gui/upload_creation/wdg_upload_creation.ui" line="75"/>
         <source>Table(s) with multi geometry
 Values separated by ,</source>
-        <translation type="unfinished"></translation>
+        <translation>Table(s) with multi geometry
+Values separated by ,</translation>
     </message>
     <message>
         <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="200"/>
         <source>- invalid geometry
 </source>
-        <translation type="unfinished"></translation>
+        <translation>- invalid geometry
+</translation>
     </message>
     <message>
         <location filename="../../gui/upload_creation/wdg_upload_creation.py" line="202"/>
-        <source>- empty bounding box
+        <source>- no feature available
 </source>
-        <translation type="unfinished"></translation>
+        <translation>- no feature available
+</translation>
     </message>
 </context>
 <context>
@@ -4199,7 +4202,7 @@ Values separated by ,</source>
     <message>
         <location filename="../../processing/generation/upload_database_integration.py" line="113"/>
         <source>Table(s) contenant des géométries multi</source>
-        <translation type="unfinished"></translation>
+        <translation>Table(s) with multi geometry</translation>
     </message>
 </context>
 <context>
@@ -4948,7 +4951,8 @@ You must manually add the configuration.</translation>
         <location filename="../../gui/upload_database_integration/qwp_vector_db_edition.ui" line="49"/>
         <source>Table(s) with multi geometry
 Values separated by ,</source>
-        <translation type="unfinished"></translation>
+        <translation>Table(s) with multi geometry
+Values separated by ,</translation>
     </message>
 </context>
 <context>

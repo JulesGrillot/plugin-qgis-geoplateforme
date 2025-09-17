@@ -198,8 +198,8 @@ class UploadCreationWidget(QWidget):
                 error_string += self.tr("- invalid layer type\n")
             if CheckLayerAlgorithm.ResultCode.INVALID_GEOMETRY in result_code:
                 error_string += self.tr("- invalid geometry\n")
-            if CheckLayerAlgorithm.ResultCode.EMPTY_BBOX in result_code:
-                error_string += self.tr("- empty bounding box\n")
+            if CheckLayerAlgorithm.ResultCode.NO_FEATURES in result_code:
+                error_string += self.tr("- no feature available\n")
 
             error_string += self.tr("Invalid layers list are available in details.")
 

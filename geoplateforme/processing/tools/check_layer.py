@@ -35,7 +35,7 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
         INVALID_FIELD_NAME = 8
         INVALID_LAYER_TYPE = 16
         INVALID_GEOMETRY = 32
-        EMPTY_BBOX = 64
+        NO_FEATURES = 64
 
     def tr(self, message: str) -> str:
         """Get the translation for a string using Qt translation API.
@@ -123,8 +123,8 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
                 result_code = result_code | self.ResultCode.INVALID_LAYER_TYPE
             if not self.check_layers_geometry(feedback, layers):
                 result_code = result_code | self.ResultCode.INVALID_GEOMETRY
-            if not self.check_layers_bbox(feedback, layers):
-                result_code = result_code | self.ResultCode.EMPTY_BBOX
+            if not self.check_layers_nb_features(feedback, layers):
+                result_code = result_code | self.ResultCode.NO_FEATURES
 
         return {self.RESULT_CODE: result_code}
 
@@ -338,6 +338,8 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
         res = True
         feedback.pushInfo(self.tr("Checking layers geometry :"))
         for layer in layers:
+            if not isinstance(layer, QgsVectorLayer):
+                continue
             parameters = {
                 "INPUT_LAYER": layer,
                 "METHOD": 1,
@@ -366,7 +368,7 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
 
         return res
 
-    def check_layers_bbox(
+    def check_layers_nb_features(
         self, feedback: QgsProcessingFeedback, layers: List[QgsMapLayer]
     ) -> bool:
         """
@@ -380,18 +382,20 @@ class CheckLayerAlgorithm(QgsProcessingAlgorithm):
 
         """
         res = True
-        feedback.pushInfo(self.tr("Checking layers bbox :"))
+        feedback.pushInfo(self.tr("Checking layers number of features :"))
         for layer in layers:
-            if layer.extent().isEmpty():
+            if not isinstance(layer, QgsVectorLayer):
+                continue
+            if layer.featureCount() == 0:
                 res = False
                 feedback.pushWarning(
                     self.tr(
-                        "- [KO] empty bbox for {}. At least one feature must be available."
+                        "- [KO] no feature for {}. At least one feature must be available."
                     ).format(layer.name())
                 )
 
         if res:
-            feedback.pushInfo(self.tr("[OK] not null bbox for all input layers"))
+            feedback.pushInfo(self.tr("[OK] features availables for all input layers"))
 
         return res
 

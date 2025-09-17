@@ -57,7 +57,7 @@ class SearchResultModel(QStandardItemModel):
             )
         return result
 
-    def simple_search_text(self, text: str, page: int = 0) -> None:
+    def simple_search_text(self, text: str) -> None:
         """Refresh QStandardItemModel data with result on text search
 
         :param text: seach text

@@ -195,6 +195,23 @@ class Metadata:
             self.update_metadata_fields()
         return self._fields
 
+    @property
+    def url(self) -> str:
+        """Returns metadata url based on endpoint url
+
+        :return: metadata url
+        :rtype: str
+        """
+        url = ""
+        datastore_manager = DatastoreRequestManager()
+        datastore = datastore_manager.get_datastore(self.datastore_id)
+        if len(self.endpoints) > 0:
+            endpoint = datastore.get_endpoint_dict(self.endpoints[0]["_id"])
+            for ep_url in endpoint["urls"]:
+                if ep_url["type"] == "METADATA":
+                    url = f"{ep_url['url']}?REQUEST=GetRecordById&SERVICE=CSW&VERSION=2.0.2&OUTPUTSCHEMA=http://www.isotc211.org/2005/gmd&elementSetName=full&ID={self.fields.identifier}"
+        return url
+
     def update_metadata_fields(self):
         """Update the metadata fields."""
         manager = MetadataRequestManager()

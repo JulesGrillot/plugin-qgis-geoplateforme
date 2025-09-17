@@ -128,8 +128,16 @@ class MetadataDetailsWidget(QWidget):
         ):
             self.cb_encoding.setCurrentText(self.metadata.fields.encoding)
 
-        if not self.creation_mode:
+        if self.creation_mode:
+            self.lbl_link.hide()
+            self.le_link.hide()
+        else:
             self.le_unique_id.setReadOnly(True)
+
+            self.lbl_link.show()
+            self.le_link.show()
+            self.le_link.setReadOnly(True)
+            self.le_link.setText(self.metadata.url)
 
             self.gbp_bbox = QgsExtentGroupBox()
             self.gbp_bbox.setTitle("Bounding Box")

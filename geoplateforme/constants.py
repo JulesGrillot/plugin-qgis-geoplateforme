@@ -13,7 +13,7 @@ metadata_topic_categories = {
     "biota": "Biologie, faune et flore",
     "boundaries": "Limites politiques et administratives",
     "climatologyMeteorologyAtmosphere": "Climatologie, météorologie, atmosphère",
-    "economy": "Économie",
+    "economy": "Economie",
     "elevation": "Altimétrie",
     "environment": "Environnement",
     "farming": "Agriculture",

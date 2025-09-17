@@ -57,7 +57,7 @@ class SearchResultModel(QStandardItemModel):
             )
         return result
 
-    def simple_search_text(self, text: str) -> None:
+    def simple_search_text(self, text: str, nb_results: int = 50) -> None:
         """Refresh QStandardItemModel data with result on text search
 
         :param text: seach text
@@ -70,7 +70,7 @@ class SearchResultModel(QStandardItemModel):
         try:
             reply = request_manager.get_url(
                 url=QUrl(
-                    f"{self.plg_settings.base_url_api_search}/indexes/geoplateforme/suggest?size=50&text={text}&fields=title&fields=layer_name&fields=description&fields=type"
+                    f"{self.plg_settings.base_url_api_search}/indexes/geoplateforme/suggest?size={nb_results}&text={text}&fields=title&fields=layer_name&fields=description&fields=type"
                 ),
             )
         except ConnectionError as err:
@@ -85,15 +85,17 @@ class SearchResultModel(QStandardItemModel):
             if result["source"]["type"] in self.authorized_type:
                 self.insert_result(result["source"])
 
-    def advanced_search_text(self, search_dict: str) -> None:
+    def advanced_search_text(self, search_dict: str, page: int = 1) -> int:
         """Refresh QStandardItemModel data with result on text search
 
         :param search_dict: search dict
         :type search_dict: dict
+
+        :return: nb result
+        :rtype: int
         """
         self.removeRows(0, self.rowCount())
         request_manager = NetworkRequestsManager()
-        # plg_settings = PlgOptionsManager.get_plg_settings()
 
         try:
             data = QByteArray()
@@ -101,7 +103,7 @@ class SearchResultModel(QStandardItemModel):
             data.append(json.dumps(data_map).encode("utf-8"))
             reply = request_manager.post_url(
                 url=QUrl(
-                    f"{self.plg_settings.base_url_api_search}/indexes/geoplateforme?page=1&size=50"
+                    f"{self.plg_settings.base_url_api_search}/indexes/geoplateforme?page={page}&size=50"
                 ),
                 data=data,
                 headers={b"Content-Type": bytes("application/json", "utf8")},
@@ -117,6 +119,8 @@ class SearchResultModel(QStandardItemModel):
         for document in search_results["documents"]:
             if document["type"] in self.authorized_type:
                 self.insert_result(document)
+
+        return len(search_results["documents"])
 
     def insert_result(self, result: dict) -> None:
         """Insert result in model

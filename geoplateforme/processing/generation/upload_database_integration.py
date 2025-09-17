@@ -35,6 +35,7 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
     STORED_DATA_NAME = "STORED_DATA_NAME"
     TAGS = "TAGS"
     WAIT_FOR_INTEGRATION = "WAIT_FOR_INTEGRATION"
+    MULTIGEOM_LAYERS = "MULTIGEOM_LAYERS"
 
     PROCESSING_EXEC_ID = "PROCESSING_EXEC_ID"
     CREATED_STORED_DATA_ID = "CREATED_STORED_DATA_ID"
@@ -109,6 +110,14 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
             )
         )
 
+        self.addParameter(
+            QgsProcessingParameterString(
+                self.MULTIGEOM_LAYERS,
+                self.tr("Table(s) contenant des géométries multi"),
+                defaultValue=False,
+            )
+        )
+
         self.addOutput(
             QgsProcessingOutputString(
                 name=self.CREATED_STORED_DATA_ID,
@@ -136,6 +145,11 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
             parameters, self.WAIT_FOR_INTEGRATION, context
         )
 
+        multigeom_layers_str = self.parameterAsString(
+            parameters, self.MULTIGEOM_LAYERS, context
+        )
+        multigeom_layers = multigeom_layers_str.split(",")
+
         try:
             stored_data_manager = StoredDataRequestManager()
             processing_manager = ProcessingRequestManager()
@@ -146,12 +160,17 @@ class UploadDatabaseIntegrationAlgorithm(QgsProcessingAlgorithm):
                 PlgOptionsManager.get_plg_settings().vector_db_generation_processing_ids,
             )
 
+            parameters = {}
+
+            if len(multigeom_layers) != 0:
+                parameters["multigeom_layers"] = multigeom_layers
+
             # Create execution
             data_map = {
                 "processing": processing._id,
                 "inputs": {"upload": [upload]},
                 "output": {"stored_data": {"name": stored_data_name}},
-                "parameters": {},
+                "parameters": parameters,
             }
             res = processing_manager.create_processing_execution(
                 datastore_id=datastore, input_map=data_map

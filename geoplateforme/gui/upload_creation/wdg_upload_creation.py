@@ -236,25 +236,7 @@ class UploadCreationWidget(QWidget):
         :return: multigeom layer names
         :rtype: list[str]
         """
-        input_file = self.get_filenames()
-        input_layers = self.get_layers()
-        for file in input_file:
-            layer = QgsVectorLayer(file)
-            if layer.isValid():
-                filename = layer.dataProvider().dataSourceUri()
-                fileinfo = QtCore.QFileInfo(filename)
-                if fileinfo.exists() and fileinfo.suffix() == "gpkg":
-                    gpkg_layers = [
-                        gpkg_layer.GetName() for gpkg_layer in ogr.Open(filename)
-                    ]
-                    for layer_name in gpkg_layers:
-                        input_layers.append(
-                            QgsVectorLayer(
-                                f"{filename}|layername={layer_name}", layer_name
-                            )
-                        )
-                else:
-                    input_layers.append(layer)
+        input_layers = self._get_input_layers_for_check()
 
         multi_geom_layer = []
         for layer in input_layers:

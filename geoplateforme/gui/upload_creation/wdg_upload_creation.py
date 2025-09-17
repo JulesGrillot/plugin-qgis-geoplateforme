@@ -2,6 +2,8 @@
 import os
 from typing import List
 
+from osgeo import ogr
+
 # PyQGIS
 from qgis.core import (
     QgsApplication,
@@ -9,8 +11,9 @@ from qgis.core import (
     QgsProcessingContext,
     QgsProcessingFeedback,
     QgsVectorLayer,
+    QgsWkbTypes,
 )
-from qgis.PyQt import uic
+from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtWidgets import QMessageBox, QWidget
 
 # Plugin
@@ -101,6 +104,14 @@ class UploadCreationWidget(QWidget):
         """
         return self.wdg_layer_selection.get_layers()
 
+    def get_multi_geom_layers_str(self) -> str:
+        """Return string for multi geom layers
+
+        :return: multi geom layers string
+        :rtype: str
+        """
+        return self.lne_multi_geom_table.text()
+
     def validateWidget(self) -> bool:
         """
         Validate current content by checking files
@@ -183,3 +194,39 @@ class UploadCreationWidget(QWidget):
                 QgsCoordinateReferenceSystem(self.wdg_layer_selection.get_first_crs())
             )
             self.psw_projection.update()
+
+        # Define automatic multigeom layer names
+        multi_geom_layer_names = self._get_multigeom_layer_names()
+        self.lne_multi_geom_table.setText(",".join(multi_geom_layer_names))
+
+    def _get_multigeom_layer_names(self) -> list[str]:
+        """Get multigeom layer names from selected files and layers
+
+        :return: multigeom layer names
+        :rtype: list[str]
+        """
+        input_file = self.get_filenames()
+        input_layers = self.get_layers()
+        for file in input_file:
+            layer = QgsVectorLayer(file)
+            if layer.isValid():
+                filename = layer.dataProvider().dataSourceUri()
+                fileinfo = QtCore.QFileInfo(filename)
+                if fileinfo.exists() and fileinfo.suffix() == "gpkg":
+                    gpkg_layers = [
+                        gpkg_layer.GetName() for gpkg_layer in ogr.Open(filename)
+                    ]
+                    for layer_name in gpkg_layers:
+                        input_layers.append(
+                            QgsVectorLayer(
+                                f"{filename}|layername={layer_name}", layer_name
+                            )
+                        )
+                else:
+                    input_layers.append(layer)
+
+        multi_geom_layer = []
+        for layer in input_layers:
+            if QgsWkbTypes.isMultiType(layer.wkbType()):
+                multi_geom_layer.append(layer.name())
+        return multi_geom_layer

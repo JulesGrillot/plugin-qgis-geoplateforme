@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>496</width>
-    <height>341</height>
+    <width>920</width>
+    <height>402</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,6 +26,9 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
+   <item row="3" column="1">
+    <widget class="QLineEdit" name="lne_data"/>
+   </item>
    <item row="3" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
@@ -33,20 +36,17 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
-    <widget class="QgsProjectionSelectionWidget" name="psw_projection"/>
+   <item row="5" column="0">
+    <widget class="QLabel" name="lne_projection">
+     <property name="text">
+      <string>Select the SRS to use:</string>
+     </property>
+    </widget>
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="lbl_data">
      <property name="text">
       <string>Name your dataset:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="lne_projection">
-     <property name="text">
-      <string>Select the SRS to use:</string>
      </property>
     </widget>
    </item>
@@ -63,11 +63,22 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
-    <widget class="QLineEdit" name="lne_data"/>
-   </item>
    <item row="4" column="0" colspan="2">
     <widget class="LayerSelectionStackPanel" name="wdg_layer_selection" native="true"/>
+   </item>
+   <item row="5" column="1">
+    <widget class="QgsProjectionSelectionWidget" name="psw_projection"/>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="lbl_multi_geom_table">
+     <property name="text">
+      <string>Table(s) with multi geometry
+Values separated by ,</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QLineEdit" name="lne_multi_geom_table"/>
    </item>
   </layout>
  </widget>

@@ -182,6 +182,11 @@ class UploadCreationPageWizard(QWizardPage):
             ),
             UploadDatabaseIntegrationAlgorithm.WAIT_FOR_INTEGRATION: False,
         }
+
+        if self.qwp_upload_edition.wdg_upload_creation.get_multi_geom_layers_str():
+            params[UploadDatabaseIntegrationAlgorithm.MULTIGEOM_LAYERS] = (
+                self.qwp_upload_edition.wdg_upload_creation.get_multi_geom_layers_str()
+            )
         self.lbl_step_icon.setMovie(self.loading_movie)
         self.loading_movie.start()
 

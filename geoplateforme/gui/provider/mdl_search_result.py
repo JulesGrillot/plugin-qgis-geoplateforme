@@ -57,7 +57,7 @@ class SearchResultModel(QStandardItemModel):
             )
         return result
 
-    def simple_search_text(self, text: str) -> None:
+    def simple_search_text(self, text: str, nb_results: int = 50) -> None:
         """Refresh QStandardItemModel data with result on text search
 
         :param text: seach text
@@ -70,7 +70,7 @@ class SearchResultModel(QStandardItemModel):
         try:
             reply = request_manager.get_url(
                 url=QUrl(
-                    f"{self.plg_settings.base_url_api_search}/indexes/geoplateforme/suggest?size=50&text={text}&fields=title&fields=layer_name&fields=description&fields=type"
+                    f"{self.plg_settings.base_url_api_search}/indexes/geoplateforme/suggest?size={nb_results}&text={text}&fields=title&fields=layer_name&fields=description&fields=type"
                 ),
             )
         except ConnectionError as err:

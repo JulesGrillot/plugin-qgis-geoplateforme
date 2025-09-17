@@ -111,6 +111,7 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
         self.tw_search.currentChanged.connect(self._swith_tab)
 
         self.le_search.textChanged.connect(self._simple_search)
+        self.sb_max_results.valueChanged.connect(self._simple_search)
         self.btn_search.clicked.connect(self._advanced_search)
         self.btn_clear_search.clicked.connect(self._clear_search)
         self.buttonBox.clicked.connect(self.onAccept)
@@ -153,15 +154,17 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
             self.btn_next.hide()
             self.btn_previous.hide()
 
-    def _simple_search(self, text: str):
+    def _simple_search(self):
         """launch simple search using suggest API
 
         :param text: text to search
         :type text: str
         """
+        text = self.le_search.text()
+        nb_results = self.sb_max_results.value()
         if len(text) > 2:
             self._clear_metadata()
-            self.mdl_search_result.simple_search_text(text)
+            self.mdl_search_result.simple_search_text(text, nb_results)
 
     def _advanced_search(self, page: Optional[int]):
         """launch advanced search using search API"""

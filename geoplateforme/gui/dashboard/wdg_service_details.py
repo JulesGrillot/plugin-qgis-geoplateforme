@@ -161,9 +161,24 @@ class ServiceDetailsWidget(QWidget):
             if not offering.open:
                 self.wdg_permissions.refresh(offering.datastore_id, offering._id)
 
+            style_enable = offering.type in [
+                ConfigurationType.WFS,
+                ConfigurationType.VECTOR_TMS,
+            ]
+
+            if offering.type == ConfigurationType.WMTS_TMS:
+                urls = offering.urls
+                for val in urls:
+                    if val["type"] == "TMS":
+                        params = read_tms_layer_capabilities(val["url"])
+                        if params["format"] == "pbf":
+                            style_enable = True
+                            break
+
             # Styles
-            self.gpb_styles.setVisible(True)
-            self.wdg_styles.set_configuration(offering.configuration)
+            if style_enable:
+                self.gpb_styles.setVisible(True)
+                self.wdg_styles.set_configuration(offering.configuration)
 
             # WMS_VECTOR :
             # - raster tile generation

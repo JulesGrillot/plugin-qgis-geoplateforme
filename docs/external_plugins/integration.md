@@ -23,7 +23,7 @@ Si vous acceptez leur installation, des menus complémentaires seront disponible
 
 Les demandes d'ajout d'une extension comme recommendation par l'extension Géoplateforme doivent être traité via l'ouverture d'un ticket dans GitHub.
 
-```{button-link} https://github.com/Geoplateforme/plugin-qgis-geoplateforme/new?template=20_integration_request.yml
+```{button-link} https://github.com/Geoplateforme/plugin-qgis-geoplateforme/issues/new?template=20_integration_request.yml
 :color: primary
 :shadow:
 :expand:

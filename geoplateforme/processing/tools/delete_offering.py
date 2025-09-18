@@ -6,6 +6,7 @@ from time import sleep
 from typing import Optional
 
 from qgis.core import (
+    QgsApplication,
     QgsProcessingAlgorithm,
     QgsProcessingException,
     QgsProcessingParameterString,
@@ -15,16 +16,23 @@ from qgis.PyQt.QtCore import QCoreApplication
 # Plugin
 from geoplateforme.api.configuration import ConfigurationRequestManager
 from geoplateforme.api.custom_exceptions import (
+    MetadataPublishException,
     MetadataUnpublishException,
+    MetadataUpdateException,
     ReadConfigurationException,
     ReadMetadataException,
     ReadOfferingException,
     UnavailableConfigurationException,
+    UnavailableEndpointException,
+    UnavailableMetadataFileException,
     UnavailableOfferingsException,
 )
 from geoplateforme.api.datastore import DatastoreRequestManager
 from geoplateforme.api.metadata import MetadataRequestManager
 from geoplateforme.api.offerings import OfferingsRequestManager, OfferingStatus
+from geoplateforme.processing.style.delete_configuration_style import (
+    DeleteConfigurationStyleAlgorithm,
+)
 from geoplateforme.processing.utils import get_short_string, get_user_manual_url
 
 
@@ -146,6 +154,36 @@ class DeleteOfferingAlgorithm(QgsProcessingAlgorithm):
             feedback.pushInfo(
                 self.tr("Suppression de la configuration associée à l'offre")
             )
+
+            # Suppression des styles associés
+            config_style = None
+            extra = offering.configuration.extra
+            if extra is not None:
+                config_style = extra.get("styles", None)
+                if config_style:
+                    feedback.pushInfo(
+                        self.tr("Suppression des styles associés à la configuration")
+                    )
+                    algo_str = (
+                        f"geoplateforme:{DeleteConfigurationStyleAlgorithm().name()}"
+                    )
+                    alg = QgsApplication.processingRegistry().algorithmById(algo_str)
+
+                    # Delete each style
+                    for style in config_style:
+                        params = {
+                            DeleteConfigurationStyleAlgorithm.DATASTORE_ID: offering.configuration.datastore_id,
+                            DeleteConfigurationStyleAlgorithm.CONFIGURATION_ID: offering.configuration._id,
+                            DeleteConfigurationStyleAlgorithm.STYLE_NAME: style["name"],
+                        }
+                        _, successful = alg.run(params, context, feedback)
+                        if not successful:
+                            raise QgsProcessingException(
+                                self.tr(
+                                    "Erreur lors de la suppression du style {}"
+                                ).format(style["name"])
+                            )
+
             manager_config = ConfigurationRequestManager()
             try:
                 manager_config.delete_configuration(
@@ -178,37 +216,61 @@ class DeleteOfferingAlgorithm(QgsProcessingAlgorithm):
                         ).format(exc)
                     ) from exc
 
-                if len(remaining_configurations) == 0:
-                    feedback.pushInfo(
-                        self.tr(
-                            "Aucune configuration disponible dans le dataset, dépublication de la métadata"
-                        )
+                # Récupération des métadatas
+                manager = MetadataRequestManager()
+                try:
+                    metadatas = manager._get_metadata_list(
+                        datastore_id=datastore_id, tags=tags
                     )
-                    manager = MetadataRequestManager()
-                    tags = {"datasheet_name": dataset_name}
+                except ReadMetadataException as exc:
+                    raise QgsProcessingException(
+                        self.tr(
+                            "Erreur lors de la récupération des metadatas associées au dataset : {}"
+                        ).format(exc)
+                    ) from exc
 
+                if len(metadatas) != 0:
                     try:
-                        metadatas = manager._get_metadata_list(
-                            datastore_id=datastore_id, tags=tags
-                        )
-                    except ReadMetadataException as exc:
+                        metadata = metadatas[0]
+                        metadata.update_metadata_fields()
+
+                    except (
+                        ReadMetadataException,
+                        UnavailableMetadataFileException,
+                    ) as exc:
                         raise QgsProcessingException(
                             self.tr(
-                                "Erreur lors de la récupération des metadatas associées au dataset : {}"
+                                "Erreur lors de la lecture de la metadata associée au dataset : {}"
+                            ).format(exc)
+                        ) from exc
+                else:
+                    metadata = None
+                    feedback.pushWarning(
+                        self.tr("Aucune métadata disponible pour le dataset")
+                    )
+
+                if metadata is not None:
+                    try:
+                        # get the endpoint for the publication
+                        datastore_manager = DatastoreRequestManager()
+                        datastore = datastore_manager.get_datastore(datastore_id)
+                        metadata_endpoint_id = datastore.get_endpoint(
+                            data_type="METADATA"
+                        )
+                    except (UnavailableEndpointException,) as exc:
+                        raise QgsProcessingException(
+                            self.tr(
+                                "Erreur lors de la récupération du endpoint pour la publication de la métadata : {}"
                             ).format(exc)
                         ) from exc
 
-                    if len(metadatas) == 1:
-                        try:
-                            metadata = metadatas[0]
-
-                            # get the endpoint for the publication
-                            datastore_manager = DatastoreRequestManager()
-                            datastore = datastore_manager.get_datastore(datastore_id)
-                            metadata_endpoint_id = datastore.get_endpoint(
-                                data_type="METADATA"
+                    if len(remaining_configurations) == 0:
+                        feedback.pushInfo(
+                            self.tr(
+                                "Aucune configuration disponible dans le dataset, dépublication de la métadata"
                             )
-
+                        )
+                        try:
                             # Unpublish metadata
                             manager.unpublish(
                                 datastore_id=datastore_id,
@@ -223,8 +285,38 @@ class DeleteOfferingAlgorithm(QgsProcessingAlgorithm):
                                 ).format(exc)
                             ) from exc
                     else:
-                        feedback.pushWarning(
-                            self.tr("Aucune métadata disponible pour le dataset")
+                        feedback.pushInfo(
+                            self.tr("Mise à jour de la metadata associée au dataset")
                         )
+                        try:
+                            # update metadata
+                            manager.update_metadata(
+                                datastore_id=datastore_id, metadata=metadata
+                            )
+
+                        except MetadataUpdateException as exc:
+                            raise QgsProcessingException(
+                                self.tr(
+                                    "Erreur lors de la mise à jour de la metadata associée au dataset : {}"
+                                ).format(exc)
+                            ) from exc
+
+                        feedback.pushInfo(
+                            self.tr("Publication de la metadata associée au dataset")
+                        )
+                        try:
+                            # Publish metadata
+                            manager.publish(
+                                datastore_id=datastore_id,
+                                endpoint_id=metadata_endpoint_id,
+                                metadata_file_identifier=metadata.file_identifier,
+                            )
+
+                        except MetadataPublishException as exc:
+                            raise QgsProcessingException(
+                                self.tr(
+                                    "Erreur lors de la publication de la metadata associée au dataset : {}"
+                                ).format(exc)
+                            ) from exc
 
         return {}

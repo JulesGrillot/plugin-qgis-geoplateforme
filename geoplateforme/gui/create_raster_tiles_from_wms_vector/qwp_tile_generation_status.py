@@ -205,7 +205,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
         top_level: int = self.qwp_tile_generation_edition.get_top_level()
 
         harvest_levels_str = ",".join(
-            [str(val) for val in range(top_level, bottom_level)]
+            [str(val) for val in reversed(range(top_level, bottom_level))]
         )
 
         params = {
@@ -222,6 +222,11 @@ class TileGenerationStatusPageWizard(QWizardPage):
                 {"datasheet_name": dataset_name}
             ),
         }
+
+        if self.qwp_tile_generation_edition.use_api_key:
+            params[RasterTilesFromWmsVectorAlgorithm.HARVEST_EXTRA] = (
+                f"apikey={self.qwp_tile_generation_edition.get_api_key()}"
+            )
 
         self.lbl_step_icon.setMovie(self.loading_movie)
         self.loading_movie.start()

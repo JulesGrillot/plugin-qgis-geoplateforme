@@ -223,6 +223,16 @@ class RasterTilesFromWmsVectorAlgorithm(QgsProcessingAlgorithm):
         )
 
         self.addParameter(
+            QgsProcessingParameterNumber(
+                name=self.PARALLELIZATION,
+                description=self.tr("Nombre de thread pour la génération."),
+                minValue=1,
+                maxValue=8,
+                defaultValue=4,
+            )
+        )
+
+        self.addParameter(
             QgsProcessingParameterMatrix(
                 name=self.TAGS,
                 description=self.tr("Tags"),
@@ -238,7 +248,6 @@ class RasterTilesFromWmsVectorAlgorithm(QgsProcessingAlgorithm):
         )
 
         # TODO : gestion dimension : HARVEST_DIMENSION = "HARVEST_DIMENSION"
-        # TODO : gestion parallélisation PARALLELIZATION = "PARALLELIZATION"
         # TODO : gestion nodata NODATA = "NODATA"
 
         self.addOutput(
@@ -266,11 +275,18 @@ class RasterTilesFromWmsVectorAlgorithm(QgsProcessingAlgorithm):
         harvest_level = harvest_level_str.split(",")
 
         bottom = self.parameterAsInt(parameters, self.BOTTOM, context)
+        top = self.parameterAsInt(parameters, self.TOP, context)
+        parallelization = self.parameterAsInt(parameters, self.PARALLELIZATION, context)
+
         harvest_layers_str = self.parameterAsString(
             parameters, self.HARVEST_LAYERS, context
         )
         width = self.parameterAsInt(parameters, self.WIDTH, context)
         height = self.parameterAsInt(parameters, self.HEIGHT, context)
+
+        harvest_extra_str = self.parameterAsString(
+            parameters, self.HARVEST_EXTRA, context
+        )
 
         harvest_url = self.parameterAsString(
             parameters,
@@ -312,11 +328,12 @@ class RasterTilesFromWmsVectorAlgorithm(QgsProcessingAlgorithm):
             parameters = {
                 "harvest_levels": harvest_level,
                 "bottom": str(bottom),
+                "top": str(top),
                 "harvest_layers": harvest_layers_str,
-                "parallelization": 1,
+                "parallelization": parallelization,
                 "harvest_area": harvest_area.asWkt(),
                 "width": width,
-                "harvest_format": "image/jpeg",
+                "harvest_format": "image/png",
                 "harvest_url": harvest_url,
                 "tms": "PM",
                 "compression": compression,
@@ -324,6 +341,12 @@ class RasterTilesFromWmsVectorAlgorithm(QgsProcessingAlgorithm):
                 "samplesperpixel": samples_per_pixel,
                 "height": height,
             }
+
+            # Add option for transparent
+            if harvest_extra_str:
+                parameters["harvest_extras"] = f"{harvest_extra_str}&transparent=true"
+            else:
+                parameters["harvest_extras"] = "transparent=true"
 
             # Create execution
             data_map = {

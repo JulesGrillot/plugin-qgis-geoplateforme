@@ -130,7 +130,7 @@ class GeoplateformePlugin:
         # User keys
         self.action_user_keys = QAction(
             QIcon(":images/themes/default/locked.svg"),
-            self.tr("Clés d'accès"),
+            self.tr("Access keys"),
             self.iface.mainWindow(),
         )
         self.action_user_keys.triggered.connect(self.user_keys)
@@ -248,7 +248,7 @@ class GeoplateformePlugin:
                         )
                         if not separator_added:
                             sep_action = QAction(self.iface.mainWindow())
-                            sep_action.setText(self.tr("Extensions tierces"))
+                            sep_action.setText(self.tr("3rd party extensions"))
                             sep_action.setSeparator(True)
                             self.external_plugin_actions.append(sep_action)
                             self.iface.addPluginToMenu(__title__, sep_action)

@@ -154,7 +154,7 @@ class UploadCreationPageWizard(QWizardPage):
             self.created_upload_id = results[
                 GpfUploadFromLayersAlgorithm.CREATED_UPLOAD_ID
             ]
-            self.setTitle(self.tr("Vérification de la livraison en cours."))
+            self.setTitle(self.tr("Checking upload creation in progress..."))
             self.check_upload_status()
             # Emit completeChanged to update finish button
             self.completeChanged.emit()

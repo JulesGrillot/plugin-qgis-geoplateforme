@@ -174,7 +174,6 @@ SOURCES =	../../api/annexes.py \
 	../../gui/wms_raster_publication/wzd_publication_creation.py \
 	../../gui/wms_vector_publication/qwp_publication_form.py \
 	../../gui/wms_vector_publication/qwp_table_style_selection.py \
-	../../gui/wms_vector_publication/qwp_wms_vector_publication_status copy.py \
 	../../gui/wms_vector_publication/qwp_wms_vector_publication_status.py \
 	../../gui/wms_vector_publication/wdg_table_style_selection.py \
 	../../gui/wms_vector_publication/wzd_publication_creation.py \
@@ -184,7 +183,6 @@ SOURCES =	../../api/annexes.py \
 	../../plugin_main.py \
 	../../processing/annexes/create_annexe.py \
 	../../processing/annexes/delete_annexe.py \
-	../../processing/bck_multi_gpkg_upload_from_layers.py \
 	../../processing/generation/create_raster_tiles_from_wms_vector.py \
 	../../processing/generation/tile_creation.py \
 	../../processing/generation/upload_database_integration.py \

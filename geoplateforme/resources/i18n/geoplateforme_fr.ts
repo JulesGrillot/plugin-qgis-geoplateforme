@@ -1507,7 +1507,7 @@ Les éléments suivants seront supprimés:</translation>
     <message>
         <location filename="../../plugin_main.py" line="107"/>
         <source>Login</source>
-        <translation>Login</translation>
+        <translation>S&apos;authentifier</translation>
     </message>
     <message>
         <location filename="../../plugin_main.py" line="115"/>
@@ -1521,13 +1521,18 @@ Les éléments suivants seront supprimés:</translation>
     </message>
     <message>
         <location filename="../../plugin_main.py" line="131"/>
-        <source>Clés d&apos;accès</source>
+        <source>Access keys</source>
         <translation>Clés d&apos;accès</translation>
     </message>
     <message>
         <location filename="../../plugin_main.py" line="169"/>
         <source>Report issue</source>
         <translation>Rapporter un problème</translation>
+    </message>
+    <message>
+        <location filename="../../plugin_main.py" line="251"/>
+        <source>3rd party extensions</source>
+        <translation>Extensions tierces</translation>
     </message>
 </context>
 <context>
@@ -1772,21 +1777,6 @@ Les éléments suivants seront supprimés:</translation>
         <translation>Les fichiers de type {} ne sont pas supportées (format supportés {}). Un export en GPKG est effectué.</translation>
     </message>
     <message>
-        <location filename="../../processing/bck_multi_gpkg_upload_from_layers.py" line="237"/>
-        <source>Les fichiers GPKG peuvent contenir plusieurs couches. Un export dans un GPKG temporaire est effectué pour ne livrer que les données de la couches.</source>
-        <translation>Les fichiers GPKG peuvent contenir plusieurs couches. Un export dans un GPKG temporaire est effectué pour ne livrer que les données de la couches.</translation>
-    </message>
-    <message>
-        <location filename="../../processing/bck_multi_gpkg_upload_from_layers.py" line="274"/>
-        <source>Toutes les couches du GPKG {} ne sont pas présentes dans la livraison. Un export en GPKG est effectué pour chaque couche à importer</source>
-        <translation>Toutes les couches du GPKG {} ne sont pas présentes dans la livraison. Un export en GPKG est effectué pour chaque couche à importer</translation>
-    </message>
-    <message>
-        <location filename="../../processing/bck_multi_gpkg_upload_from_layers.py" line="282"/>
-        <source>Toutes les couches du GPKG {} sont présentes dans la livraison. Utilisation directe du fichier.</source>
-        <translation>Toutes les couches du GPKG {} sont présentes dans la livraison. Utilisation directe du fichier.</translation>
-    </message>
-    <message>
         <location filename="../../processing/upload/upload_from_layers.py" line="281"/>
         <source>Upload creation failed</source>
         <translation>La création de téléchargement a échoué</translation>
@@ -1910,22 +1900,22 @@ Les éléments suivants seront supprimés:</translation>
 <context>
     <name>MetadataDetailsWidget</name>
     <message>
-        <location filename="../../gui/metadata/wdg_metadata_details.py" line="151"/>
+        <location filename="../../gui/metadata/wdg_metadata_details.py" line="159"/>
         <source>Capabilities</source>
         <translation>GetCapabilities</translation>
     </message>
     <message>
-        <location filename="../../gui/metadata/wdg_metadata_details.py" line="154"/>
+        <location filename="../../gui/metadata/wdg_metadata_details.py" line="162"/>
         <source>Access</source>
         <translation>Accès à la ressource</translation>
     </message>
     <message>
-        <location filename="../../gui/metadata/wdg_metadata_details.py" line="157"/>
+        <location filename="../../gui/metadata/wdg_metadata_details.py" line="165"/>
         <source>Style files</source>
         <translation>Fichiers de style</translation>
     </message>
     <message>
-        <location filename="../../gui/metadata/wdg_metadata_details.py" line="160"/>
+        <location filename="../../gui/metadata/wdg_metadata_details.py" line="168"/>
         <source>Document files</source>
         <translation>Documents</translation>
     </message>
@@ -2745,102 +2735,102 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
         <translation>Aucune couche en entrée.</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="148"/>
+        <location filename="../../processing/tools/check_layer.py" line="141"/>
         <source>Checking layers :</source>
         <translation>Vérification des couches :</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="166"/>
+        <location filename="../../processing/tools/check_layer.py" line="159"/>
         <source>Checking layers CRS :</source>
         <translation>Vérification système de coordonnées des couches :</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="174"/>
+        <location filename="../../processing/tools/check_layer.py" line="167"/>
         <source>Reference CRS is {}</source>
         <translation>Système de coordonnées de référence {}</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="209"/>
+        <location filename="../../processing/tools/check_layer.py" line="202"/>
         <source>- [KO] invalid layer name for {}. Please remove any special character ({})</source>
         <translation>- [KO] nom de couche invalide pour {}.Veuillez supprimer les caractères spéciaux ({})</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="215"/>
+        <location filename="../../processing/tools/check_layer.py" line="208"/>
         <source>[OK] valid layer name for all input layers</source>
         <translation>[OK] nom de couche valide pour toutes les couches en entrée</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="233"/>
+        <location filename="../../processing/tools/check_layer.py" line="226"/>
         <source>Checking file names :</source>
         <translation>Vérification des noms de fichier :</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="240"/>
+        <location filename="../../processing/tools/check_layer.py" line="233"/>
         <source>- [KO] invalid file name for {}. Please remove any special character ({})</source>
         <translation>- [KO] nom de fichier invalide pour {}.Veuillez supprimer les caractères spéciaux ({})</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="246"/>
+        <location filename="../../processing/tools/check_layer.py" line="239"/>
         <source>[OK] valid file name for all input layers</source>
         <translation>[OK]  nom de fichier valide pour toutes les couches en entrée</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="264"/>
+        <location filename="../../processing/tools/check_layer.py" line="257"/>
         <source>Checking layers fields name :</source>
         <translation>Vérification des nom de champs :</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="270"/>
+        <location filename="../../processing/tools/check_layer.py" line="263"/>
         <source>[OK] valid layer fields name for all input layers</source>
         <translation>[OK] nom de champs valide pour toutes les couches en entrée</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="295"/>
+        <location filename="../../processing/tools/check_layer.py" line="288"/>
         <source>- [KO] invalid layer field name {} for {}. Please remove any special character ({})</source>
         <translation>- [KO] nom de champ invalide {} pour {}. Veuillez supprimer les caractères spéciaux ({})</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="320"/>
+        <location filename="../../processing/tools/check_layer.py" line="313"/>
         <source>- [KO] invalid layer type for {}. Only QgsVectorLayer are supported.</source>
         <translation>- [KO] type de couche invalide pour {}. Seule les couches Only QgsVectorLayer sont supportées.</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="327"/>
+        <location filename="../../processing/tools/check_layer.py" line="320"/>
         <source>[OK] valid layer type for all input layers</source>
         <translation>[OK] type de couche valide pour toutes les couches en entrée</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="346"/>
+        <location filename="../../processing/tools/check_layer.py" line="339"/>
         <source>Checking layers geometry :</source>
         <translation>Vérification géométrie des couches :</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="362"/>
+        <location filename="../../processing/tools/check_layer.py" line="355"/>
         <source>- [KO] geometries with errors for {}.</source>
         <translation>- [KO] erreur de géométrie pour {}.</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="370"/>
+        <location filename="../../processing/tools/check_layer.py" line="363"/>
         <source>- [KO] invalid geometries for {}.</source>
         <translation>- [KO] géométrie invalide pour {}.</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="374"/>
+        <location filename="../../processing/tools/check_layer.py" line="367"/>
         <source>[OK] valid layer geometry for all input layers</source>
         <translation>[OK] géométrie valide pour toutes les couches en entrée</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="392"/>
+        <location filename="../../processing/tools/check_layer.py" line="385"/>
         <source>Checking layers number of features :</source>
         <translation>Vérification du nombre de géométrie :</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="398"/>
+        <location filename="../../processing/tools/check_layer.py" line="391"/>
         <source>- [KO] no feature for {}. At least one feature must be available.</source>
         <translation>- [KO] aucune géométrie pour {}. Au moins une géométrie doit être disponible.</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/check_layer.py" line="405"/>
+        <location filename="../../processing/tools/check_layer.py" line="398"/>
         <source>[OK] features availables for all input layers</source>
         <translation>[OK] géométries disponibles pour toutes les couches en entrée</translation>
     </message>
@@ -3925,8 +3915,8 @@ Vous pouvez fermer la fenêtre pendant la génération.</translation>
     </message>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="157"/>
-        <source>VÃ©rification de la livraison en cours.</source>
-        <translation type="unfinished">VÃ©rification de la livraison en cours.</translation>
+        <source>Checking upload creation in progress...</source>
+        <translation>Vérification de la livraison en cours...</translation>
     </message>
     <message>
         <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="341"/>

@@ -18,7 +18,7 @@ tracker=https://github.com/Geoplateforme/plugin-qgis-geoplateforme//issues/
 deprecated=False
 experimental=True
 qgisMinimumVersion=3.40.4
-qgisMaximumVersion=3.99
+qgisMaximumVersion=4.10.20
 supportsQt6=True
 
 # versionnement

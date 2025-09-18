@@ -3,8 +3,11 @@ from osgeo import gdal, osr
 from qgis.core import (
     QgsApplication,
     QgsCoordinateReferenceSystem,
+    QgsFeature,
     QgsField,
     QgsFields,
+    QgsGeometry,
+    QgsPointXY,
     QgsProcessingAlgorithm,
     QgsProcessingContext,
     QgsProcessingFeedback,
@@ -41,6 +44,7 @@ def create_shape_file(
     layer_name: str,
     crs_auth_id: str = None,
     fields: QgsFields = None,
+    add_feature: bool = True,
 ) -> QgsVectorLayer:
     layer_path = tmpdir / filename
 
@@ -53,11 +57,20 @@ def create_shape_file(
         str(layer_path),
         "UTF-8",
         fields,
-        QgsWkbTypes.Type.Polygon,
+        QgsWkbTypes.Type.Point,
         QgsCoordinateReferenceSystem(crs_auth_id),
         "ESRI Shapefile",
     )
     layer = QgsVectorLayer(str(layer_path), layer_name, "ogr")
+
+    if add_feature:
+        layer.startEditing()
+        feat = QgsFeature()
+        feat.setFields(fields)
+        feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(0, 0)))
+        layer.addFeature(feat)
+
+        assert layer.commitChanges()
 
     assert layer.crs().authid() == crs_auth_id
     return layer
@@ -371,3 +384,26 @@ def test_invalid_layer_type(alg: QgsProcessingAlgorithm, tmpdir):
         "- [KO] invalid layer type for raster. Only QgsVectorLayer are supported."
     ]
     assert expected_warnings == feedback.warnings
+
+
+def test_empty_layers(alg: QgsProcessingAlgorithm, tmpdir):
+    """
+    Check return code in case of empty layers
+
+    Args:
+        alg: pytest fixture to get QgsProcessingAlgorithm
+        tmpdir: pytest fixture to get temporary directory
+    """
+
+    params = {
+        CheckLayerAlgorithm.INPUT_LAYERS: [
+            create_shape_file(tmpdir, "vect_1.shp", "vect_1", add_feature=False),
+        ]
+    }
+    context = QgsProcessingContext()
+    feedback = QgsProcessingFeedBackTest()
+    result, success = alg.run(params, context, feedback)
+    assert success
+
+    result_code = result[CheckLayerAlgorithm.RESULT_CODE]
+    assert result_code == CheckLayerAlgorithm.ResultCode.NO_FEATURES

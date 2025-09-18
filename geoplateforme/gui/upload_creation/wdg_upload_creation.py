@@ -143,13 +143,40 @@ class UploadCreationWidget(QWidget):
 
         return valid
 
+    def _get_input_layers_for_check(self) -> list[QgsVectorLayer]:
+        """Get list of layer for check from selected files and QGIS layer
+
+        :return: input layers for check
+        :rtype: list[QgsVectorLayer]
+        """
+        input_file = self.get_filenames()
+        input_layers = self.get_layers()
+        for file in input_file:
+            layer = QgsVectorLayer(file)
+            if layer.isValid():
+                filename = layer.dataProvider().dataSourceUri()
+                fileinfo = QtCore.QFileInfo(filename)
+                if fileinfo.exists() and fileinfo.suffix() == "gpkg":
+                    gpkg_layers = [
+                        gpkg_layer.GetName() for gpkg_layer in ogr.Open(filename)
+                    ]
+                    for layer_name in gpkg_layers:
+                        input_layers.append(
+                            QgsVectorLayer(
+                                f"{filename}|layername={layer_name}", layer_name
+                            )
+                        )
+                else:
+                    input_layers.append(layer)
+        return input_layers
+
     def _check_input_layers(self) -> bool:
         valid = True
 
         algo_str = f"{GeoplateformeProvider().id()}:{CheckLayerAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
-        params = {CheckLayerAlgorithm.INPUT_LAYERS: self.get_filenames()}
+        params = {CheckLayerAlgorithm.INPUT_LAYERS: self._get_input_layers_for_check()}
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
         result, success = alg.run(params, context, feedback)
@@ -169,6 +196,10 @@ class UploadCreationWidget(QWidget):
                 error_string += self.tr("- invalid field name\n")
             if CheckLayerAlgorithm.ResultCode.INVALID_LAYER_TYPE in result_code:
                 error_string += self.tr("- invalid layer type\n")
+            if CheckLayerAlgorithm.ResultCode.INVALID_GEOMETRY in result_code:
+                error_string += self.tr("- invalid geometry\n")
+            if CheckLayerAlgorithm.ResultCode.NO_FEATURES in result_code:
+                error_string += self.tr("- no feature available\n")
 
             error_string += self.tr("Invalid layers list are available in details.")
 
@@ -205,25 +236,7 @@ class UploadCreationWidget(QWidget):
         :return: multigeom layer names
         :rtype: list[str]
         """
-        input_file = self.get_filenames()
-        input_layers = self.get_layers()
-        for file in input_file:
-            layer = QgsVectorLayer(file)
-            if layer.isValid():
-                filename = layer.dataProvider().dataSourceUri()
-                fileinfo = QtCore.QFileInfo(filename)
-                if fileinfo.exists() and fileinfo.suffix() == "gpkg":
-                    gpkg_layers = [
-                        gpkg_layer.GetName() for gpkg_layer in ogr.Open(filename)
-                    ]
-                    for layer_name in gpkg_layers:
-                        input_layers.append(
-                            QgsVectorLayer(
-                                f"{filename}|layername={layer_name}", layer_name
-                            )
-                        )
-                else:
-                    input_layers.append(layer)
+        input_layers = self._get_input_layers_for_check()
 
         multi_geom_layer = []
         for layer in input_layers:

@@ -216,6 +216,8 @@ class GeoplateformePlugin:
     def add_gpf_plugins_actions(self) -> None:
         """Add action for gpf plugin"""
 
+        separator_added = False
+
         # Get plugin instance
         for plugin in GPF_PLUGIN_LIST:
             if plugin not in plugins:
@@ -244,6 +246,13 @@ class GeoplateformePlugin:
                         actions_list = plugin_instance.create_gpf_plugins_actions(
                             self.iface.mainWindow()
                         )
+                        if not separator_added:
+                            sep_action = QAction(self.iface.mainWindow())
+                            sep_action.setText(self.tr("Extensions tierces"))
+                            sep_action.setSeparator(True)
+                            self.external_plugin_actions.append(sep_action)
+                            self.iface.addPluginToMenu(__title__, sep_action)
+                            separator_added = True
                         for action in actions_list:
                             if isinstance(action, QAction):
                                 self.external_plugin_actions.append(action)

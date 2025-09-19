@@ -160,5 +160,17 @@ def read_tms_layer_capabilities(url: str) -> Optional[dict]:
             zmin = z
         if zmax is None or z > zmax:
             zmax = z
+    styles = []
+    for metadata in capabilities.getElementsByTagName("Metadata"):
+        type = metadata.getAttribute("type")
+        mime = metadata.getAttribute("mime-type")
+        if type == "Other" and mime == "application/json":
+            styles.append(metadata.getAttribute("href"))
 
-    return {"format": format_ext, "zmin": zmin, "zmax": zmax, "srs": srs}
+    return {
+        "format": format_ext,
+        "zmin": zmin,
+        "zmax": zmax,
+        "srs": srs,
+        "styles": styles,
+    }

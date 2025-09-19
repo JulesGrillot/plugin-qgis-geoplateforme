@@ -1,12 +1,19 @@
+import json
 import logging
 import os
 import webbrowser
 from typing import Optional
 
-from qgis.core import QgsProject, QgsRasterLayer, QgsVectorLayer, QgsVectorTileLayer
+from qgis.core import (
+    QgsMapBoxGlStyleConverter,
+    QgsProject,
+    QgsRasterLayer,
+    QgsVectorLayer,
+    QgsVectorTileLayer,
+)
 from qgis.gui import QgsAbstractDataSourceWidget
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QModelIndex
+from qgis.PyQt.QtCore import QModelIndex, QUrl
 from qgis.PyQt.QtWidgets import (
     QAbstractItemView,
     QDialogButtonBox,
@@ -27,8 +34,9 @@ from geoplateforme.gui.provider.choose_authentication_dialog import (
     ChooseAuthenticationDialog,
 )
 from geoplateforme.gui.provider.mdl_search_result import SearchResultModel
+from geoplateforme.gui.provider.select_style_dialog import SelectStyleDialog
 from geoplateforme.gui.provider.wdg_range_slider import QtRangeSlider
-from geoplateforme.toolbelt import PlgLogger
+from geoplateforme.toolbelt import NetworkRequestsManager, PlgLogger
 
 logger = logging.getLogger(__name__)
 
@@ -268,6 +276,20 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
                     if authid is not None:
                         url = f"authcfg={authid}&" + url
                     layer = QgsVectorTileLayer(url, result["title"])
+                    style = None
+                    if len(params["styles"]) > 0:
+                        style_dlg = SelectStyleDialog(params["styles"])
+                        if style_dlg.exec():
+                            style = style_dlg.style_combo.currentText()
+                    if style is not None:
+                        network_manager = NetworkRequestsManager()
+                        reply = network_manager.get_url(url=QUrl(style))
+                        style_json = json.loads(reply.data())
+                        converter = QgsMapBoxGlStyleConverter()
+                        status = converter.convert(style_json)
+                        if status == QgsMapBoxGlStyleConverter.Result.Success:
+                            layer.setRenderer(converter.renderer().clone())
+                            layer.setLabeling(converter.labeling().clone())
                 elif params["format"] is not None:
                     url = (
                         "type=xyz&crs="

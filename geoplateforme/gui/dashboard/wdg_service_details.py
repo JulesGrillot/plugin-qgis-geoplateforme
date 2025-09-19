@@ -1,8 +1,10 @@
+import json
 import os
 from typing import Optional
 
 from qgis.core import (
     QgsApplication,
+    QgsMapBoxGlStyleConverter,
     QgsMapLayer,
     QgsProcessingContext,
     QgsProcessingFeedback,
@@ -12,7 +14,7 @@ from qgis.core import (
     QgsVectorTileLayer,
 )
 from qgis.PyQt import QtCore, uic
-from qgis.PyQt.QtCore import QSize, Qt, pyqtSignal
+from qgis.PyQt.QtCore import QSize, Qt, QUrl, pyqtSignal
 from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon, QPixmap
 from qgis.PyQt.QtWidgets import (
     QAction,
@@ -34,9 +36,10 @@ from geoplateforme.gui.provider.capabilities_reader import read_tms_layer_capabi
 from geoplateforme.gui.provider.choose_authentication_dialog import (
     ChooseAuthenticationDialog,
 )
+from geoplateforme.gui.provider.select_style_dialog import SelectStyleDialog
 from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.tools.delete_offering import DeleteOfferingAlgorithm
-from geoplateforme.toolbelt import PlgLogger
+from geoplateforme.toolbelt import NetworkRequestsManager, PlgLogger
 
 
 class ServiceDetailsWidget(QWidget):
@@ -365,8 +368,6 @@ class ServiceDetailsWidget(QWidget):
             for val in urls:
                 if val["type"] == "TMS":
                     params = read_tms_layer_capabilities(val["url"])
-                    print(params)
-                    print(val["url"])
                     if params["format"] == "pbf":
                         url = (
                             "type=xyz&crs="
@@ -379,7 +380,22 @@ class ServiceDetailsWidget(QWidget):
                         )
                         if authid is not None:
                             url = f"authcfg={authid}&" + url
-                        return QgsVectorTileLayer(url, self._offering.layer_name)
+                        layer = QgsVectorTileLayer(url, self._offering.layer_name)
+                        style = None
+                        if len(params["styles"]) > 0:
+                            style_dlg = SelectStyleDialog(params["styles"])
+                            if style_dlg.exec():
+                                style = style_dlg.style_combo.currentText()
+                        if style is not None:
+                            network_manager = NetworkRequestsManager()
+                            reply = network_manager.get_url(url=QUrl(style))
+                            style_json = json.loads(reply.data())
+                            converter = QgsMapBoxGlStyleConverter()
+                            status = converter.convert(style_json)
+                            if status == QgsMapBoxGlStyleConverter.Result.Success:
+                                layer.setRenderer(converter.renderer().clone())
+                                layer.setLabeling(converter.labeling().clone())
+                        return layer
                     elif params["format"] is not None:
                         url = (
                             "type=xyz&crs="

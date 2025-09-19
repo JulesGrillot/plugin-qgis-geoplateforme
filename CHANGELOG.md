@@ -16,6 +16,37 @@ Unreleased
 
 -->
 
+## 0.15.0 - 2025-09-19
+
+### Bugs fixes 🐛
+
+* fix(wait processing): invalid exception used for error during stored data read by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/285>
+* fix(dashboard): Insensitive sort for dataset by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/286>
+* fix(metadata): fix metadata url generation and display by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/288>
+* fix(docs): hyperlink to issue form to submit a third-party plugin was wrong by @Guts in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/300>
+* fix(docs): typo in 3rd party criterias by @vpicavet in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/301>
+* fix(style): must check offering type to display styles by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/302>
+* Fix/no UI freeze during unpublish by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/304>
+* fix/(metadata): add /1.0.0 to TMS url by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/305>
+* fix(search): remove thematics field in advanced search by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/306>
+* fix(tranlations): fix some translations by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/307>
+* fix(dashboard): fix column size in dashboard tables by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/309>
+
+### Features and enhancements 🎉
+
+* feat(provider): add better metadata UI and add pagination for advanced search by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/283>
+* Feat/add api key param for private wms vector by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/284>
+* Feat/add option to define multigeom layers by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/287>
+* feat(check): use all layers for check before upload and add some checks by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/289>
+* feat(menu): add separator before external plugin actions by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/292>
+* feat(offering): delete style associated with configuration by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/295>
+* update(packaging): declare plugin ready for QGIS 4 by @Guts in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/296>
+* improve(i18n): minor translation harmonization by @Guts in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/297>
+* feat(provider): add link on metadata for secured services by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/298>
+* update(docs): complete integration criteria and a dedicated issue form by @Guts in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/299>
+* feat(TMS): add available style selector when loading TMS by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/303>
+* feat(provider): add SubsetStringEditor before loading WFS by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/308>
+
 ## 0.14.0 - 2025-09-08
 
 

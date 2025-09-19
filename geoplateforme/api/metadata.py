@@ -948,7 +948,8 @@ class MetadataRequestManager:
                     if endpoint["type"] == "WMTS-TMS":
                         for url in endpoint["urls"]:
                             if url["type"] == "TMS":
-                                layer_url = url["url"]
+                                # Warning, add /1.0.0 to patch url stored in Entrepot (see : https://github.com/Geoplateforme/plugin-qgis-geoplateforme/issues/179)
+                                layer_url = url["url"] + "/1.0.0"
                                 break
                     # For WFS we need to add one access for each relation
                     layer_name = offering.layer_name

@@ -14,6 +14,7 @@ from qgis.PyQt.QtCore import QAbstractItemModel, QItemSelectionModel, QModelInde
 from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon
 from qgis.PyQt.QtWidgets import (
     QAbstractItemView,
+    QHeaderView,
     QLabel,
     QMessageBox,
     QTableView,
@@ -100,6 +101,9 @@ class DashboardWidget(QWidget):
         # Initialize upload table view
         self.tbv_upload.setModel(self.mdl_upload)
         self.tbv_upload.verticalHeader().setVisible(False)
+        self.tbv_upload.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.ResizeMode.Stretch
+        )
         self.tbv_upload.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.tbv_list.append(self.tbv_upload)
         self.tbv_upload.pressed.connect(
@@ -137,6 +141,9 @@ class DashboardWidget(QWidget):
         # Initialize service table view
         self.tbv_service.setModel(self.mdl_offering)
         self.tbv_service.verticalHeader().setVisible(False)
+        self.tbv_service.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.ResizeMode.Stretch
+        )
         self.tbv_service.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
 
         self.tbv_service.pressed.connect(self._service_clicked)
@@ -190,6 +197,7 @@ class DashboardWidget(QWidget):
         )
         tbv.setModel(proxy_mdl)
         tbv.verticalHeader().setVisible(False)
+        tbv.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         tbv.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         tbv.pressed.connect(lambda index: self._item_clicked(index, proxy_mdl, tbv))
 

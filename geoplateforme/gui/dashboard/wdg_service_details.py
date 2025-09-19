@@ -392,7 +392,7 @@ class ServiceDetailsWidget(QWidget):
                             style_json = json.loads(reply.data())
                             converter = QgsMapBoxGlStyleConverter()
                             status = converter.convert(style_json)
-                            if status == QgsMapBoxGlStyleConverter.Success:
+                            if status == QgsMapBoxGlStyleConverter.Result.Success:
                                 layer.setRenderer(converter.renderer().clone())
                                 layer.setLabeling(converter.labeling().clone())
                         return layer

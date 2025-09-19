@@ -29,7 +29,7 @@
          </sizepolicy>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tab_simple_search">
          <attribute name="title">
@@ -96,16 +96,6 @@
           <string>Advanced search</string>
          </attribute>
          <layout class="QGridLayout" name="layout_advanced_search">
-          <item row="3" column="5" colspan="3">
-           <widget class="QLineEdit" name="le_producer"/>
-          </item>
-          <item row="6" column="7">
-           <widget class="QLabel" name="lb_py_max">
-            <property name="text">
-             <string>2100</string>
-            </property>
-           </widget>
-          </item>
           <item row="6" column="0">
            <widget class="QLabel" name="lb_type">
             <property name="text">
@@ -122,20 +112,6 @@
           </item>
           <item row="6" column="1" colspan="2">
            <widget class="QComboBox" name="cb_type"/>
-          </item>
-          <item row="6" column="4">
-           <widget class="QLabel" name="lb_production_year">
-            <property name="text">
-             <string>Production year :</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="5">
-           <widget class="QLabel" name="lb_py_min">
-            <property name="text">
-             <string>1900</string>
-            </property>
-           </widget>
           </item>
           <item row="3" column="1" colspan="2">
            <widget class="QLineEdit" name="le_layername">
@@ -154,23 +130,6 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="5" colspan="3">
-           <widget class="QLineEdit" name="le_keywords"/>
-          </item>
-          <item row="3" column="4">
-           <widget class="QLabel" name="lb_producer">
-            <property name="text">
-             <string>Producer</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="4">
-           <widget class="QLabel" name="lb_keywords">
-            <property name="text">
-             <string>Keywords</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1" colspan="2">
            <widget class="QLineEdit" name="le_title">
             <property name="minimumSize">
@@ -178,13 +137,6 @@
               <width>280</width>
               <height>0</height>
              </size>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="4">
-           <widget class="QLabel" name="lb_theme">
-            <property name="text">
-             <string>Theme</string>
             </property>
            </widget>
           </item>
@@ -205,9 +157,6 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="6">
-           <widget class="QWidget" name="widget" native="true"/>
-          </item>
           <item row="8" column="0" colspan="6">
            <widget class="QPushButton" name="btn_search">
             <property name="text">
@@ -219,6 +168,57 @@
            <widget class="QPushButton" name="btn_clear_search">
             <property name="text">
              <string>Clear search</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4">
+           <widget class="QLabel" name="lb_producer">
+            <property name="text">
+             <string>Producer</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5" colspan="3">
+           <widget class="QLineEdit" name="le_producer"/>
+          </item>
+          <item row="3" column="5" colspan="3">
+           <widget class="QLineEdit" name="le_keywords"/>
+          </item>
+          <item row="3" column="4">
+           <widget class="QLabel" name="lb_keywords">
+            <property name="text">
+             <string>Keywords</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="4">
+           <widget class="QLabel" name="lb_production_year">
+            <property name="text">
+             <string>Production year :</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="5">
+           <widget class="QLabel" name="lb_py_min">
+            <property name="text">
+             <string>1900</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="6">
+           <widget class="QWidget" name="widget" native="true"/>
+          </item>
+          <item row="4" column="7">
+           <widget class="QLabel" name="lb_py_max">
+            <property name="text">
+             <string>2100</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="4">
+           <widget class="QLabel" name="lb_theme">
+            <property name="text">
+             <string>Theme</string>
             </property>
            </widget>
           </item>

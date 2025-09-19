@@ -64,7 +64,10 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
         self.log = PlgLogger().log
 
         self.tb_thematics = DictTagBarWidget(metadata_topic_categories)
-        self.layout_advanced_search.addWidget(self.tb_thematics, 0, 5, 1, 3)
+        self.layout_advanced_search.addWidget(self.tb_thematics, 6, 5, 1, 3)
+        # Warning, thematics was hidden temporarly, waiting an upgrade from search API (see: https://github.com/Geoplateforme/plugin-qgis-geoplateforme/issues/209)
+        self.lb_theme.hide()
+        self.tb_thematics.hide()
 
         self.rs_production_year = QtRangeSlider(self, 1800, 2200, 1900, 2100)
         self.rs_production_year.left_thumb_value_changed.connect(
@@ -73,7 +76,7 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
         self.rs_production_year.right_thumb_value_changed.connect(
             lambda x: self.lb_py_max.setText(str(x))
         )
-        self.layout_advanced_search.addWidget(self.rs_production_year, 6, 6)
+        self.layout_advanced_search.addWidget(self.rs_production_year, 4, 6)
 
         self.cb_open.addItems(["True", "False"])
         self.cb_open.setCurrentIndex(-1)

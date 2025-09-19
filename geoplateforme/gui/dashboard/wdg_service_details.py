@@ -6,8 +6,6 @@ from qgis.core import (
     QgsApplication,
     QgsMapBoxGlStyleConverter,
     QgsMapLayer,
-    QgsProcessingContext,
-    QgsProcessingFeedback,
     QgsProject,
     QgsRasterLayer,
     QgsVectorLayer,
@@ -40,6 +38,7 @@ from geoplateforme.gui.provider.select_style_dialog import SelectStyleDialog
 from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.tools.delete_offering import DeleteOfferingAlgorithm
 from geoplateforme.toolbelt import NetworkRequestsManager, PlgLogger
+from geoplateforme.toolbelt.dlg_processing_run import ProcessingRunDialog
 
 
 class ServiceDetailsWidget(QWidget):
@@ -261,14 +260,17 @@ class ServiceDetailsWidget(QWidget):
                 DeleteOfferingAlgorithm.DATASTORE: self._offering.datastore_id,
                 DeleteOfferingAlgorithm.OFFERING: self._offering._id,
             }
-
             algo_str = (
                 f"{GeoplateformeProvider().id()}:{DeleteOfferingAlgorithm().name()}"
             )
-            alg = QgsApplication.processingRegistry().algorithmById(algo_str)
-            context = QgsProcessingContext()
-            feedback = QgsProcessingFeedback()
-            _, success = alg.run(parameters=params, context=context, feedback=feedback)
+            run_dialog = ProcessingRunDialog(
+                alg_name=algo_str,
+                params=params,
+                title=self.tr("Unpublish service {}").format(self._offering.layer_name),
+                parent=self,
+            )
+            run_dialog.exec()
+            success, _ = run_dialog.processing_results()
             if success:
                 self.offering_deleted.emit(self._offering._id)
             else:
@@ -276,7 +278,7 @@ class ServiceDetailsWidget(QWidget):
                     self,
                     self.tr("Dépublication service"),
                     self.tr("Le service n'a pas pu être dépublié :\n {}").format(
-                        feedback.textLog()
+                        run_dialog.get_feedback().textLog()
                     ),
                 )
 

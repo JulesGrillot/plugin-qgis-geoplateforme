@@ -11,7 +11,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorTileLayer,
 )
-from qgis.gui import QgsAbstractDataSourceWidget
+from qgis.gui import QgsAbstractDataSourceWidget, QgsGui
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QModelIndex, QUrl
 from qgis.PyQt.QtWidgets import (
@@ -321,6 +321,11 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
                 if authid is not None:
                     url += f"&authcfg={authid}"
                 layer = QgsVectorLayer(url, result["title"], "WFS")
+                dlg_sub_wfs = QgsGui.subsetStringEditorProviderRegistry().createDialog(
+                    layer
+                )
+                if not dlg_sub_wfs.exec():
+                    layer = None
 
         if layer is not None:
             if layer.isValid():

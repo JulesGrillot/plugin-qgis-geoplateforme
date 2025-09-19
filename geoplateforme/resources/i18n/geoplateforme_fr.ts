@@ -1990,7 +1990,7 @@ Les éléments suivants seront supprimés:</translation>
     </message>
     <message>
         <location filename="../../gui/mdl_offering.py" line="32"/>
-        <source>Visibilité</source>
+        <source>Visibility</source>
         <translation>Visibilité</translation>
     </message>
     <message>
@@ -2000,13 +2000,13 @@ Les éléments suivants seront supprimés:</translation>
     </message>
     <message>
         <location filename="../../gui/mdl_offering.py" line="32"/>
-        <source>Ouvert</source>
-        <translation>Ouvert</translation>
+        <source>Open</source>
+        <translation>Accès ouvert</translation>
     </message>
     <message>
         <location filename="../../gui/mdl_offering.py" line="32"/>
-        <source>Disponibilité</source>
-        <translation>Disponibilité</translation>
+        <source>Available</source>
+        <translation>Disponible</translation>
     </message>
 </context>
 <context>
@@ -2855,7 +2855,7 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
     <message>
         <location filename="../../gui/provider/mdl_search_result.py" line="30"/>
         <source>Open</source>
-        <translation>Ouvert</translation>
+        <translation>Accès ouvert</translation>
     </message>
     <message>
         <location filename="../../gui/provider/mdl_search_result.py" line="30"/>

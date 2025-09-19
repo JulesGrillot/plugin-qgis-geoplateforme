@@ -34,10 +34,10 @@ class OfferingListModel(QStandardItemModel):
                 self.tr("Nom"),
                 self.tr("ID"),
                 self.tr("Type"),
-                self.tr("Visibilité"),
+                self.tr("Visibility"),
                 self.tr("Status"),
-                self.tr("Ouvert"),
-                self.tr("Disponibilité"),
+                self.tr("Open"),
+                self.tr("Available"),
             ]
         )
         self._checkable = checkable

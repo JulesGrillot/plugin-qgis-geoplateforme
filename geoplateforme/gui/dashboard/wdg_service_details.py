@@ -174,7 +174,7 @@ class ServiceDetailsWidget(QWidget):
                 for val in urls:
                     if val["type"] == "TMS":
                         params = read_tms_layer_capabilities(val["url"])
-                        if params["format"] == "pbf":
+                        if params and params["format"] == "pbf":
                             style_enable = True
                             break
 

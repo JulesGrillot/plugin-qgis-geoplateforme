@@ -6,7 +6,7 @@ from typing import Optional
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QModelIndex, Qt
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAbstractItemView, QDialog, QWidget
+from qgis.PyQt.QtWidgets import QAbstractItemView, QDialog, QHeaderView, QWidget
 from qgis.utils import OverrideCursor
 
 # plugin
@@ -34,6 +34,18 @@ class PermissionsWidget(QWidget):
             QAbstractItemView.EditTrigger.NoEditTriggers
         )
         self.tbv_permissions.verticalHeader().setVisible(False)
+        self.tbv_permissions.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.ResizeMode.Stretch
+        )
+        self.tbv_permissions.horizontalHeader().setSectionResizeMode(
+            1, QHeaderView.ResizeMode.ResizeToContents
+        )
+        self.tbv_permissions.horizontalHeader().setSectionResizeMode(
+            2, QHeaderView.ResizeMode.ResizeToContents
+        )
+        self.tbv_permissions.horizontalHeader().setSectionResizeMode(
+            3, QHeaderView.ResizeMode.ResizeToContents
+        )
         self.tbv_permissions.pressed.connect(self._permission_clicked)
 
         self.detail_dialog = None

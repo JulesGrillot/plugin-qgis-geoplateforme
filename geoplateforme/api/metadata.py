@@ -219,6 +219,8 @@ class Metadata:
             datastore_id=self.datastore_id, metadata_id=self._id
         )
         try:
+            if self._fields is None:
+                self._fields = MetadataFields()
             root = ElementTree.fromstring(meta_xml)
             if root is not None:
                 identifier_field = root.find("./{*}fileIdentifier/{*}CharacterString")

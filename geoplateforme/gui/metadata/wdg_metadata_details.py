@@ -240,11 +240,6 @@ class MetadataDetailsWidget(QWidget):
                         label_name = QLabel()
                         label_name.setText(f"<b>{link['name']}</b>")
                         doc_vbox.addWidget(label_name)
-                        label_description = QLabel()
-                        label_description.setText(
-                            f"<b>Description :</b> {link['description']}"
-                        )
-                        doc_vbox.addWidget(label_description)
                         label_url = QLabel()
                         label_url.setText(f"<b>URL :</b> {link['url']}")
                         doc_vbox.addWidget(label_url)

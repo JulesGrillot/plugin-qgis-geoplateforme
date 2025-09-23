@@ -10,7 +10,7 @@ body:
     attributes:
       value: |
         Merci de prendre le temps de remplir ce formulaire et contribuer à l'écosystème de la Géoplateforme !
-        Si besoin, ne pas hésiter à consulter [la documentation liée](https://geoplateforme.github.io/plugin-qgis-geoplateforme/external_plugins/integration.html/).
+        Si besoin, ne pas hésiter à consulter [la documentation liée](https://geoplateforme.github.io/plugin-qgis-geoplateforme/external_plugins/integration.html).
 
 
   - type: markdown

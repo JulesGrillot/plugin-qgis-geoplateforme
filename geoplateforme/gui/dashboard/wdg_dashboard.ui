@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
-    <height>500</height>
+    <width>685</width>
+    <height>597</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -99,8 +99,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>159</width>
-             <height>523</height>
+             <width>157</width>
+             <height>533</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -224,7 +224,7 @@
              <x>0</x>
              <y>0</y>
              <width>498</width>
-             <height>387</height>
+             <height>478</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_8">
@@ -257,8 +257,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>88</width>
-             <height>373</height>
+             <width>157</width>
+             <height>478</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_6">
@@ -284,7 +284,7 @@
              <x>0</x>
              <y>0</y>
              <width>498</width>
-             <height>387</height>
+             <height>478</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_7">
@@ -302,6 +302,22 @@
       <attribute name="title">
        <string>Documents</string>
       </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QPushButton" name="btn_document">
+         <property name="text">
+          <string>Open in carte.gouv</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTableView" name="tbv_document">
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="tab_permission">
       <attribute name="title">

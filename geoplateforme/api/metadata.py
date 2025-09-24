@@ -19,6 +19,7 @@ from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QUrl
 
 # plugin
 from geoplateforme.__about__ import DIR_PLUGIN_ROOT
+from geoplateforme.api.annexes import AnnexeRequestManager
 from geoplateforme.api.configuration import (
     ConfigurationMetadata,
     ConfigurationMetadataType,
@@ -900,6 +901,7 @@ class MetadataRequestManager:
         datastore_manager = DatastoreRequestManager()
         config_manager = ConfigurationRequestManager()
         offering_manager = OfferingsRequestManager()
+        annexe_manager = AnnexeRequestManager()
         try:
             datastore = datastore_manager.get_datastore(metadata.datastore_id)
             dataset = metadata.dataset_name
@@ -1016,7 +1018,31 @@ class MetadataRequestManager:
                     ]
                     config_manager.update_configuration(conf)
 
-            metadata.fields.links = access_links + style_links + capabilities_links
+            document_link = []
+            labels = [f"datasheet_name={dataset}", "type=document-list"]
+            annexes = annexe_manager.get_annexe_list(
+                datastore_id=metadata.datastore_id,
+                labels=labels,
+            )
+            if len(annexes) > 0:
+                annexe_id = annexes[0]._id
+                annexe_file = annexe_manager.get_annexe_file(
+                    datastore_id=metadata.datastore_id, annexe_id=annexe_id
+                )
+                document_list = json.loads(annexe_file)
+                for document in document_list:
+                    document_link.append(
+                        {
+                            "type": "document",
+                            "name": document["name"],
+                            "description": document["description"],
+                            "url": document["url"],
+                        }
+                    )
+
+            metadata.fields.links = (
+                access_links + style_links + capabilities_links + document_link
+            )
 
         except ConnectionError as err:
             raise MetadataUpdateLinksException(

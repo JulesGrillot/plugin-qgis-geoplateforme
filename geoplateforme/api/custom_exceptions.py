@@ -222,7 +222,19 @@ class ReadCommunityException(Exception):
     pass
 
 
+class ReadDocumentListException(Exception):
+    pass
+
+
+class ReadAnnexeException(Exception):
+    pass
+
+
 class AnnexeFileUploadException(Exception):
+    pass
+
+
+class UnavailableAnnexeFileException(Exception):
     pass
 
 

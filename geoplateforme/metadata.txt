@@ -5,11 +5,11 @@ category=None
 hasProcessingProvider=True
 description=Connectez-vous avec votre compte cartes.gouv.fr, accédez à votre communauté, publiez vos données sous forme de services hébergés sur la Géoplateforme de l'IGN.
 icon=resources/images/logo.svg
-tags=IGN,Géoplateforme,geoplateforme,téléversement,publication,Entrepôt
+tags=Géoplateforme,geoplateforme,téléversement,publication,Entrepôt,IGN
 
 # credits and contact
 author=Oslandia, IGN France
-email=qgis@oslandia.com
+email=geoplateforme@ign.fr
 homepage=https://geoplateforme.github.io/plugin-qgis-geoplateforme/
 repository=https://github.com/Geoplateforme/plugin-qgis-geoplateforme/
 tracker=https://github.com/Geoplateforme/plugin-qgis-geoplateforme//issues/

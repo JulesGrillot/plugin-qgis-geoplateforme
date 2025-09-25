@@ -1,5 +1,7 @@
 import json
 import os
+import re
+from tempfile import NamedTemporaryFile
 from typing import Optional
 
 from qgis.core import (
@@ -29,6 +31,9 @@ from geoplateforme.api.configuration import ConfigurationType
 from geoplateforme.api.offerings import Offering, OfferingStatus
 from geoplateforme.gui.create_raster_tiles_from_wms_vector.wzd_raster_tiles_from_wms_vector import (
     TileRasterCreationWizard,
+)
+from geoplateforme.gui.dashboard.dlg_select_layer_and_style import (
+    SelectLayerAndStyleDialog,
 )
 from geoplateforme.gui.provider.capabilities_reader import read_tms_layer_capabilities
 from geoplateforme.gui.provider.choose_authentication_dialog import (
@@ -347,14 +352,67 @@ class ServiceDetailsWidget(QWidget):
         return result
 
     def _offering_map_layer(self, authid: str | None = None) -> Optional[QgsMapLayer]:
-        urls = self._offering.urls
+        urls = [val["url"] for val in self._offering.urls if val["type"] == "WFS"]
         if self._offering.type == ConfigurationType.WFS:
-            for val in urls:
-                if val["type"] == "WFS":
-                    url = val["url"].replace("typeNames", "typename")
+            if len(urls) > 0:
+                layers = []
+                styles = []
+                for val in urls:
+                    match = re.findall(r"typeNames=(.*)", val)
+                    if len(match) == 1:
+                        layers.append({"name": match[0].split("&")[0], "url": val})
+                extra = self._offering.configuration.extra
+                if extra is not None:
+                    config_style = extra.get("styles", None)
+                    if config_style is not None:
+                        for style in config_style:
+                            styles.append(style)
+                choose_dlg = SelectLayerAndStyleDialog(layers, styles)
+                if choose_dlg.exec():
+                    layer_name = choose_dlg.layer_combo.currentText()
+                    style_name = choose_dlg.style_combo.currentText()
+                    # get layer and style dict from selection
+                    layer = [lay for lay in layers if lay["name"] == layer_name][0]
+                    style = None
+                    style_url = None
+                    if style_name is not None and len(style_name) > 0:
+                        style = [st for st in styles if st["name"] == style_name][0]
+                        style_layer = [
+                            layst
+                            for layst in style["layers"]
+                            if layst["name"] == layer["name"]
+                        ]
+                        if len(style_layer) == 1:
+                            style_url = style_layer[0]["url"]
+                    # load layer
+                    layer_name_parts = layer["name"].split(":")
+                    if len(layer_name_parts) == 2 and (
+                        not layer_name_parts[1][0] == "_"
+                        and not layer_name_parts[1][0].isalpha()
+                    ):
+                        QMessageBox.warning(
+                            self,
+                            "Incompatible layer",
+                            f"""
+                            The layer {layer["name"]} is imcompatible with QGIS.
+                            Layername must start with a letter or underscore.
+                            """,
+                        )
+                        return None
+
+                    url = layer["url"].replace("typeNames", "typename")
                     if authid is not None:
                         url += f"&authcfg={authid}"
-                    return QgsVectorLayer(url, self._offering.layer_name, "WFS")
+                    wfs_layer = QgsVectorLayer(url, layer["name"], "WFS")
+                    if style_url is not None:
+                        network_manager = NetworkRequestsManager()
+                        temp_file_name = NamedTemporaryFile(suffix=".xml").name
+                        network_manager.download_file_to(
+                            remote_url=QUrl(style_url),
+                            local_path=temp_file_name,
+                        )
+                        wfs_layer.loadSldStyle(temp_file_name)
+                    return wfs_layer
         if (
             self._offering.type == ConfigurationType.WMS_RASTER
             or self._offering.type == ConfigurationType.WMS_VECTOR
@@ -388,7 +446,7 @@ class ServiceDetailsWidget(QWidget):
                             style_dlg = SelectStyleDialog(params["styles"])
                             if style_dlg.exec():
                                 style = style_dlg.style_combo.currentText()
-                        if style is not None:
+                        if style is not None and len(style) > 0:
                             network_manager = NetworkRequestsManager()
                             reply = network_manager.get_url(url=QUrl(style))
                             style_json = json.loads(reply.data())
@@ -425,5 +483,5 @@ class ServiceDetailsWidget(QWidget):
             else:
                 return
         layer = self._offering_map_layer(authid)
-        if layer:
+        if layer is not None and layer.isValid():
             QgsProject.instance().addMapLayer(layer)

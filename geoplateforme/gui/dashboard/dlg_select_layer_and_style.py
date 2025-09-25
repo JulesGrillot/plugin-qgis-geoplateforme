@@ -9,11 +9,11 @@ from qgis.PyQt.QtWidgets import (
 )
 
 
-class SelectStyleDialog(QDialog):
-    def __init__(self, styles: List[str]):
+class SelectLayerAndStyleDialog(QDialog):
+    def __init__(self, layers: List[dict], styles: List[dict]):
         super().__init__()
 
-        self.setWindowTitle("Choose TMS style")
+        self.setWindowTitle("Choose Layer")
 
         QBtn = (
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
@@ -24,14 +24,24 @@ class SelectStyleDialog(QDialog):
         self.buttonBox.rejected.connect(self.reject)
 
         layout = QVBoxLayout()
-        message = QLabel("""
+        message_layer = QLabel("""
+            <b>Please choose between available layers.</b>
+        """)
+        self.layer_combo = QComboBox()
+        for layer in layers:
+            self.layer_combo.addItem(layer["name"])
+
+        message_style = QLabel("""
             <b>Please choose between available styles.</b>
         """)
         self.style_combo = QComboBox()
         self.style_combo.addItem(None)
         for style in styles:
-            self.style_combo.addItem(style)
-        layout.addWidget(message)
+            self.style_combo.addItem(style["name"])
+
+        layout.addWidget(message_layer)
+        layout.addWidget(self.layer_combo)
+        layout.addWidget(message_style)
         layout.addWidget(self.style_combo)
         layout.addWidget(self.buttonBox)
         self.setLayout(layout)

@@ -1,4 +1,5 @@
 import os
+import webbrowser
 from time import sleep
 from typing import List, Optional
 
@@ -46,6 +47,7 @@ from geoplateforme.api.upload import Upload, UploadRequestManager
 from geoplateforme.gui.dashboard.dlg_stored_data_details import StoredDataDetailsDialog
 from geoplateforme.gui.dashboard.wdg_service_details import ServiceDetailsWidget
 from geoplateforme.gui.dashboard.wdg_upload_details import UploadDetailsWidget
+from geoplateforme.gui.mdl_document import DocumentListModel
 from geoplateforme.gui.mdl_offering import OfferingListModel
 from geoplateforme.gui.mdl_stored_data import StoredDataListModel
 from geoplateforme.gui.mdl_upload import UploadListModel
@@ -94,6 +96,9 @@ class DashboardWidget(QWidget):
 
         # Create model for offering display
         self.mdl_offering = OfferingListModel(self)
+
+        # Create model for document display
+        self.mdl_document = DocumentListModel(self)
 
         # List of table view
         self.tbv_list = []
@@ -148,6 +153,19 @@ class DashboardWidget(QWidget):
 
         self.tbv_service.pressed.connect(self._service_clicked)
 
+        # Initialize document table view
+        self.tbv_document.setModel(self.mdl_document)
+        self.tbv_document.verticalHeader().setVisible(False)
+        self.tbv_document.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.ResizeMode.ResizeToContents
+        )
+        self.tbv_document.horizontalHeader().setSectionResizeMode(
+            1, QHeaderView.ResizeMode.Stretch
+        )
+        self.tbv_document.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+
+        self.btn_document.clicked.connect(self._open_document_url)
+
         # remove detail zone
         self.detail_dialog = None
         self.remove_detail_zone()
@@ -173,6 +191,13 @@ class DashboardWidget(QWidget):
 
         self.btn_add_data.clicked.connect(self._add_data_to_dataset)
         self.btn_add_data.setIcon(QIcon(":/images/themes/default/mActionAdd.svg"))
+
+    def _open_document_url(self) -> None:
+        """Open document URL on webbrowser"""
+        datastore_id = self.cbx_datastore.current_datastore_id()
+        dataset_name = self.cbx_dataset.current_dataset_name()
+        documents_url = f"https://cartes.gouv.fr/entrepot/{datastore_id}/donnees/{dataset_name}?activeTab=documents"
+        webbrowser.open(documents_url)
 
     def _init_table_view(
         self,
@@ -1097,6 +1122,11 @@ class DashboardWidget(QWidget):
             self.cbx_dataset.current_dataset_name(),
         )
 
+        self.mdl_document.set_datastore(
+            self.cbx_datastore.current_datastore_id(),
+            self.cbx_dataset.current_dataset_name(),
+        )
+
         self.tbv_upload.resizeRowsToContents()
         # self.tbv_upload.resizeColumnsToContents()
 
@@ -1111,5 +1141,7 @@ class DashboardWidget(QWidget):
 
         # For now only do a simple resize of columns
         self.tbv_service.resizeColumnsToContents()
+
+        self.tbv_document.resizeColumnsToContents()
 
         QGuiApplication.restoreOverrideCursor()

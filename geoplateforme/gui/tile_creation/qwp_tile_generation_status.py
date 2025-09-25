@@ -35,6 +35,9 @@ from geoplateforme.gui.tile_creation.qwp_tile_generation_fields_selection import
 from geoplateforme.gui.tile_creation.qwp_tile_generation_generalization import (
     TileGenerationGeneralizationPageWizard,
 )
+from geoplateforme.gui.tile_creation.qwp_tile_generation_zoom_selection import (
+    TileGenerationZoomSelectionPageWizard,
+)
 from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.generation.tile_creation import TileCreationAlgorithm
 from geoplateforme.processing.utils import tags_to_qgs_parameter_matrix_string
@@ -46,6 +49,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
         self,
         qwp_tile_generation_edition: TileGenerationEditionPageWizard,
         qwp_tile_generation_fields_selection: TileGenerationFieldsSelectionPageWizard,
+        qwp_tile_generation_zooms_selection: TileGenerationZoomSelectionPageWizard,
         qwp_tile_generation_generalization: TileGenerationGeneralizationPageWizard,
         parent=None,
     ):
@@ -60,6 +64,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
         self.setTitle(self.tr("Génération des tuiles vectorielle en cours."))
         self.qwp_tile_generation_edition = qwp_tile_generation_edition
         self.qwp_tile_generation_fields_selection = qwp_tile_generation_fields_selection
+        self.qwp_tile_generation_zooms_selection = qwp_tile_generation_zooms_selection
         self.qwp_tile_generation_generalization = qwp_tile_generation_generalization
 
         uic.loadUi(
@@ -161,6 +166,9 @@ class TileGenerationStatusPageWizard(QWizardPage):
         selected_attributes = (
             self.qwp_tile_generation_fields_selection.get_selected_attributes()
         )
+        selected_zoom_levels = (
+            self.qwp_tile_generation_zooms_selection.get_selected_zoom_levels()
+        )
 
         composition = []
 
@@ -171,10 +179,10 @@ class TileGenerationStatusPageWizard(QWizardPage):
                     TileCreationAlgorithm.TABLE: table,
                     TileCreationAlgorithm.ATTRIBUTES: attributes,
                     TileCreationAlgorithm.COMPOSITION_BOTTOM_LEVEL: str(
-                        self.qwp_tile_generation_edition.get_bottom_level()
+                        selected_zoom_levels[table][0]
                     ),
                     TileCreationAlgorithm.COMPOSITION_TOP_LEVEL: str(
-                        self.qwp_tile_generation_edition.get_top_level()
+                        selected_zoom_levels[table][1]
                     ),
                 }
             )

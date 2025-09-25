@@ -17,6 +17,9 @@ from geoplateforme.gui.tile_creation.qwp_tile_generation_generalization import (
 from geoplateforme.gui.tile_creation.qwp_tile_generation_status import (
     TileGenerationStatusPageWizard,
 )
+from geoplateforme.gui.tile_creation.qwp_tile_generation_zoom_selection import (
+    TileGenerationZoomSelectionPageWizard,
+)
 
 
 class TileCreationWizard(QWizard):
@@ -48,6 +51,11 @@ class TileCreationWizard(QWizard):
                 self.qwp_tile_generation_edition, self
             )
         )
+        self.qwp_tile_generation_zooms_selection = (
+            TileGenerationZoomSelectionPageWizard(
+                self.qwp_tile_generation_fields_selection, self
+            )
+        )
         self.qwp_tile_generation_generalization = (
             TileGenerationGeneralizationPageWizard(
                 self.qwp_tile_generation_edition, parent=self
@@ -56,11 +64,13 @@ class TileCreationWizard(QWizard):
         self.qwp_tile_generation_status = TileGenerationStatusPageWizard(
             self.qwp_tile_generation_edition,
             self.qwp_tile_generation_fields_selection,
+            self.qwp_tile_generation_zooms_selection,
             self.qwp_tile_generation_generalization,
             self,
         )
         self.addPage(self.qwp_tile_generation_edition)
         self.addPage(self.qwp_tile_generation_fields_selection)
+        self.addPage(self.qwp_tile_generation_zooms_selection)
         self.addPage(self.qwp_tile_generation_generalization)
         self.addPage(self.qwp_tile_generation_status)
         self.setOption(QWizard.WizardOption.NoBackButtonOnStartPage, True)

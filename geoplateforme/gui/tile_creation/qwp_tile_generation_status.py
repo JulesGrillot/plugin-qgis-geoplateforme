@@ -156,8 +156,6 @@ class TileGenerationStatusPageWizard(QWizardPage):
             TileCreationAlgorithm.DATASET_NAME: dataset_name,
             TileCreationAlgorithm.STORED_DATA_NAME: self.qwp_tile_generation_edition.lne_name.text(),
             TileCreationAlgorithm.TIPPECANOE_OPTIONS: self.qwp_tile_generation_generalization.get_tippecanoe_value(),
-            TileCreationAlgorithm.BOTTOM_LEVEL: self.qwp_tile_generation_edition.get_bottom_level(),
-            TileCreationAlgorithm.TOP_LEVEL: self.qwp_tile_generation_edition.get_top_level(),
             TileCreationAlgorithm.TAGS: tags_to_qgs_parameter_matrix_string(
                 {"datasheet_name": dataset_name}
             ),
@@ -172,21 +170,33 @@ class TileGenerationStatusPageWizard(QWizardPage):
 
         composition = []
 
+        min_top_level = None
+        max_bottom_level = None
+
         # Define composition for each table. For now using zoom levels from tile vector
         for table, attributes in selected_attributes.items():
+            bottom_level, top_level = selected_zoom_levels[table]
+            min_top_level = (
+                top_level if min_top_level is None else min(min_top_level, top_level)
+            )
+            max_bottom_level = (
+                bottom_level
+                if max_bottom_level is None
+                else max(max_bottom_level, bottom_level)
+            )
+
             composition.append(
                 {
                     TileCreationAlgorithm.TABLE: table,
                     TileCreationAlgorithm.ATTRIBUTES: attributes,
-                    TileCreationAlgorithm.COMPOSITION_BOTTOM_LEVEL: str(
-                        selected_zoom_levels[table][0]
-                    ),
-                    TileCreationAlgorithm.COMPOSITION_TOP_LEVEL: str(
-                        selected_zoom_levels[table][1]
-                    ),
+                    TileCreationAlgorithm.COMPOSITION_BOTTOM_LEVEL: str(top_level),
+                    TileCreationAlgorithm.COMPOSITION_TOP_LEVEL: str(top_level),
                 }
             )
         params[TileCreationAlgorithm.COMPOSITION] = json.dumps(composition)
+
+        params[TileCreationAlgorithm.BOTTOM_LEVEL] = max_bottom_level
+        params[TileCreationAlgorithm.TOP_LEVEL] = min_top_level
 
         self.lbl_step_icon.setMovie(self.loading_movie)
         self.loading_movie.start()

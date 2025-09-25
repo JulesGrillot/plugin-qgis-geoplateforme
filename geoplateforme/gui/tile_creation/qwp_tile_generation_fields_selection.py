@@ -42,12 +42,8 @@ class TileGenerationFieldsSelectionPageWizard(QWizardPage):
         Initialize page before show.
 
         """
-        datastore_id = (
-            self.qwp_tile_generation_edition.cbx_datastore.current_datastore_id()
-        )
-        stored_data_id = (
-            self.qwp_tile_generation_edition.cbx_stored_data.current_stored_data_id()
-        )
+        datastore_id = self.qwp_tile_generation_edition.datastore_id
+        stored_data_id = self.qwp_tile_generation_edition.stored_data_id
 
         self.mdl_table_relation.set_stored_data(datastore_id, stored_data_id)
 

@@ -17,7 +17,7 @@
    <locale language="English" country="UnitedStates"/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="5" column="0">
+   <item row="2" column="0">
     <widget class="QLabel" name="lbl_name">
      <property name="autoFillBackground">
       <bool>true</bool>
@@ -27,34 +27,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Dataset:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1" colspan="3">
-    <widget class="StoredDataComboBox" name="cbx_stored_data"/>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="lbl_stored_data">
-     <property name="text">
-      <string>Vector DB</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1" colspan="3">
-    <widget class="DatastoreComboBox" name="cbx_datastore"/>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="lbl_datastore">
-     <property name="text">
-      <string>Datastore:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="2">
+   <item row="4" column="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -67,7 +40,7 @@
      </property>
     </spacer>
    </item>
-   <item row="5" column="1" colspan="3">
+   <item row="2" column="1" colspan="3">
     <widget class="QLineEdit" name="lne_name">
      <property name="inputMethodHints">
       <set>Qt::ImhLatinOnly</set>
@@ -80,28 +53,8 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1" colspan="3">
-    <widget class="DatasetComboBox" name="cbx_dataset"/>
-   </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>DatastoreComboBox</class>
-   <extends>QComboBox</extends>
-   <header>geoplateforme.gui.cbx_datastore</header>
-  </customwidget>
-  <customwidget>
-   <class>StoredDataComboBox</class>
-   <extends>QComboBox</extends>
-   <header>geoplateforme.gui.cbx_stored_data</header>
-  </customwidget>
-  <customwidget>
-   <class>DatasetComboBox</class>
-   <extends>QComboBox</extends>
-   <header>geoplateforme.gui.cbx_dataset</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

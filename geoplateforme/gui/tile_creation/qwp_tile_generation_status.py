@@ -140,15 +140,9 @@ class TileGenerationStatusPageWizard(QWizardPage):
         algo_str = f"{GeoplateformeProvider().id()}:{TileCreationAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
-        datastore_id = (
-            self.qwp_tile_generation_edition.cbx_datastore.current_datastore_id()
-        )
-        vector_db_stored_id = (
-            self.qwp_tile_generation_edition.cbx_stored_data.current_stored_data_id()
-        )
-        dataset_name = (
-            self.qwp_tile_generation_edition.cbx_dataset.current_dataset_name()
-        )
+        datastore_id = self.qwp_tile_generation_edition.datastore_id
+        vector_db_stored_id = self.qwp_tile_generation_edition.stored_data_id
+        dataset_name = self.qwp_tile_generation_edition.dataset_name
 
         params = {
             TileCreationAlgorithm.DATASTORE: datastore_id,
@@ -248,7 +242,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
             try:
                 processing_manager = ProcessingRequestManager()
                 stored_data_manager = StoredDataRequestManager()
-                datastore_id = self.qwp_tile_generation_edition.cbx_datastore.current_datastore_id()
+                datastore_id = self.qwp_tile_generation_edition.datastore_id
 
                 stored_data = stored_data_manager.get_stored_data(
                     datastore_id=datastore_id,

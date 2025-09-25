@@ -1,7 +1,6 @@
 # standard
 
 # PyQGIS
-from typing import Optional
 
 from qgis.PyQt.QtWidgets import QWizard
 
@@ -25,10 +24,10 @@ from geoplateforme.gui.tile_creation.qwp_tile_generation_zoom_selection import (
 class TileCreationWizard(QWizard):
     def __init__(
         self,
+        datastore_id: str,
+        dataset_name: str,
+        stored_data_id: str,
         parent=None,
-        datastore_id: Optional[str] = None,
-        dataset_name: Optional[str] = None,
-        stored_data_id: Optional[str] = None,
     ):
         """
         QWizard to create tile vector in geoplateforme platform
@@ -44,7 +43,7 @@ class TileCreationWizard(QWizard):
         self.setWindowTitle(self.tr("Tile creation"))
 
         self.qwp_tile_generation_edition = TileGenerationEditionPageWizard(
-            self, datastore_id, dataset_name, stored_data_id
+            datastore_id, dataset_name, stored_data_id, self
         )
         self.qwp_tile_generation_fields_selection = (
             TileGenerationFieldsSelectionPageWizard(

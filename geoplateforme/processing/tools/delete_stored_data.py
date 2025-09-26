@@ -11,8 +11,10 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication
 
 # Plugin
+from geoplateforme.api.configuration import ConfigurationRequestManager
 from geoplateforme.api.custom_exceptions import (
     DeleteStoredDataException,
+    UnavailableConfigurationException,
     UnavailableOfferingsException,
 )
 from geoplateforme.api.offerings import OfferingsRequestManager
@@ -100,6 +102,26 @@ class DeleteStoredDataAlgorithm(QgsProcessingAlgorithm):
             _, successful = alg.run(params, context, feedback)
             if not successful:
                 raise QgsProcessingException(self.tr("Offering delete failed"))
+
+        try:
+            feedback.pushInfo(self.tr("Récupération des configuration"))
+            config_manager = ConfigurationRequestManager()
+
+            config_ids = config_manager.get_configurations_id(
+                datastore_id, stored_data_id
+            )
+            for config_id in config_ids:
+                feedback.pushInfo(
+                    self.tr("Suppression configuration : {}".format(config_id))
+                )
+                config_manager.delete_configuration(datastore_id, config_id)
+
+        except UnavailableConfigurationException as exc:
+            raise QgsProcessingException(
+                self.tr(
+                    "Erreur lors de la récupération ou suppression des configurations : {}"
+                ).format(exc)
+            ) from exc
 
         try:
             feedback.pushInfo(self.tr("Suppression de la donnée stockée"))

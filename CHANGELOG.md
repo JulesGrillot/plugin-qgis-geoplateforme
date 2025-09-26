@@ -16,9 +16,24 @@ Unreleased
 
 -->
 
-## 0.15.0 - 2025-09-19
+## 0.16.0 - 2025-09-19
 
-### Bugs fixes 🐛
+* fix(metadata): avoid ui block if dataset has a document by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/329>
+* fix(wfs): load wfs abd select available style by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/340>
+* feat(user): close dashboard after disconnection or settings reset by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/343>
+* fix(dashboard): fix loading regression for WMS and TMS by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/346>
+* fix(tms): fix reading zoom level in capabilities by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/347>
+* fix(metadata): fix autorized characters in metadata unique_id by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/348>
+* feat(document): display documents in dashboard and add logic for metadata by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/339>
+* Feat/add zoom selection for table by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/341>
+* feat(tiles_generation): desactivate incompatibles tables on tiles creation by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/344>
+* feat(refacto): add constant dict for cartes.gouv url by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/349>
+* feat(styles): add link to cartes.gouv for visualise or create style by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/351>
+* feat(style): avoid freeze for style creation by using processing dialog by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/352>
+* typo(form): remove trailing slash by @Guts in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/333>
+* Update metadata.txt by @IGNF-Xavier in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/337>
+
+## 0.15.0 - 2025-09-19
 
 * fix(wait processing): invalid exception used for error during stored data read by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/285>
 * fix(dashboard): Insensitive sort for dataset by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/286>
@@ -31,9 +46,6 @@ Unreleased
 * fix(search): remove thematics field in advanced search by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/306>
 * fix(tranlations): fix some translations by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/307>
 * fix(dashboard): fix column size in dashboard tables by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/309>
-
-### Features and enhancements 🎉
-
 * feat(provider): add better metadata UI and add pagination for advanced search by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/283>
 * Feat/add api key param for private wms vector by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/284>
 * Feat/add option to define multigeom layers by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/287>
@@ -48,7 +60,6 @@ Unreleased
 * feat(provider): add SubsetStringEditor before loading WFS by @Ducarouge in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/308>
 
 ## 0.14.0 - 2025-09-08
-
 
 * fix(processing): be more robust for processing search from id by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/237>
 * fix(qt6): remove use of child function (replaced by index) by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/238>
@@ -72,14 +83,10 @@ Unreleased
 
 ## 0.13.0 - 2025-08-22
 
-### Bugs fixes 🐛
-
 * fix(qt6): update enum use for qt6 compatibility by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/211>
 * fix(provider): display result info when selection is changed by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/215>
 * feat(processing): always use ids instead of names by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/217>
 * feat(sld from layer): disable checks to avoid error if proxy needed for schema download by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/219>
-
-### Features and enhancements 🎉
 
 * feat(offering): allow delete of UNSTABLE offerings by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/212>
 * feat(wfs): add validator for public name by @jmkerloch in <https://github.com/Geoplateforme/plugin-qgis-geoplateforme/pull/213>

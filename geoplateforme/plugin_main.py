@@ -203,6 +203,10 @@ class GeoplateformePlugin:
         self.provider_gpf = ProviderGPF(self.iface)
         QgsGui.sourceSelectProviderRegistry().addProvider(self.provider_gpf)
 
+        # Connect to settings change in case of reset
+        instance_gui = QgsGui.instance()
+        instance_gui.optionsChanged.connect(self._update_actions_availability)
+
         # -- Processings
         self.initProcessing()
 
@@ -360,11 +364,19 @@ class GeoplateformePlugin:
 
         """
         plg_settings = self.plg_settings.get_plg_settings()
-        enabled = plg_settings.qgis_auth_id is not None
-
+        enabled = (
+            plg_settings.qgis_auth_id is not None and plg_settings.qgis_auth_id != ""
+        )
         self.action_dashboard.setEnabled(enabled)
         self.action_user_keys.setEnabled(enabled)
         self.action_storage_report.setEnabled(False)
+
+        # Close dashboard if connection is not available
+        if not enabled:
+            if self.dlg_dashboard is not None:
+                self.dlg_dashboard.close()
+                del self.dlg_dashboard
+                self.dlg_dashboard = None
 
     def user_keys(self) -> None:
         if self.dlg_user_keys is None:

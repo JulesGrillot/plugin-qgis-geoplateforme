@@ -721,7 +721,7 @@
 <context>
     <name>DashboardWidget</name>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="372"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="388"/>
         <source>Datastore</source>
         <translation>Entrepôt</translation>
     </message>
@@ -731,7 +731,7 @@
         <translation>Tableau de bord</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="334"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="350"/>
         <source>Refresh</source>
         <translation>Rafraîchir</translation>
     </message>
@@ -786,145 +786,150 @@
         <translation>Documents</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="308"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="324"/>
         <source>Permissions</source>
         <translation>Permissions</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="327"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="343"/>
         <source>Create dataset</source>
         <translation>Nouvelle fiche</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="353"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="369"/>
         <source>Dataset</source>
         <translation>Fiche de données</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="379"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="395"/>
         <source>Delete</source>
         <translation>Supprimer</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="639"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="672"/>
         <source>Suppression impossible</source>
         <translation>Suppression impossible</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="296"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="329"/>
         <source>L&apos;entrepôt ou le dataset ne sont pas définis</source>
         <translation>L&apos;entrepôt ou le dataset ne sont pas définis</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="323"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="356"/>
         <source>Impossible de récupérer les configurations et offres associées au dataset : {}</source>
         <translation>Impossible de récupérer les configurations et offres associées au dataset : {}</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="334"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="367"/>
         <source>Impossible de récupérer les données stockées associées au dataset : {}</source>
         <translation>Impossible de récupérer les données stockées associées au dataset : {}</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="345"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="378"/>
         <source>Impossible de récupérer les livraisons associées au dataset : {}</source>
         <translation>Impossible de récupérer les livraisons associées au dataset : {}</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="356"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="389"/>
         <source>Impossible de récupérer les métadatas associées au dataset : {}</source>
         <translation>Impossible de récupérer les métadatas associées au dataset : {}</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="368"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="401"/>
         <source>Êtes-vous sûr de vouloir supprimer le dataset ?</source>
         <translation>Êtes-vous sûr de vouloir supprimer la fiche de données ?</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="369"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="402"/>
         <source>
 Les éléments suivants seront supprimés:</source>
         <translation>
 Les éléments suivants seront supprimés:</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="373"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="406"/>
         <source>
 {} Offre(s)</source>
         <translation>
 {} Offre(s)</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="377"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="410"/>
         <source>
 {} Données stockées(s)</source>
         <translation>
 {} Données stockées(s)</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="381"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="414"/>
         <source>
 {} Livraison(s)</source>
         <translation>
 {} Livraison(s)</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="385"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="418"/>
         <source>
  La métadonnée associée ({})</source>
         <translation>
  La métadonnée associée ({})</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="391"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="424"/>
         <source>Suppression dataset {}</source>
         <translation>Suppression fiche de données {}</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="478"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="511"/>
         <source>Un service n&apos;a pas pu être dépublié :
  {}</source>
         <translation>Un service n&apos;a pas pu être dépublié :
  {}</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="535"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="568"/>
         <source>Une données stockées n&apos;a pas pu être supprimée :
  {}</source>
         <translation>Une données stockées n&apos;a pas pu être supprimée :
  {}</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="589"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="622"/>
         <source>Une livraison n&apos;a pas pu être supprimée :
  {}</source>
         <translation>Une livraison n&apos;a pas pu être supprimée :
  {}</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="639"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="672"/>
         <source>Une metadata n&apos;a pas pu être supprimée : {}</source>
         <translation>Une metadata n&apos;a pas pu être supprimée : {}</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="269"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="302"/>
         <source>Erreur mise à jour métadonnée.</source>
         <translation>Erreur mise à jour métadonnée.</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="269"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="302"/>
         <source>Erreur lors de la mise à jour des métadonnée. : {exception}</source>
         <translation>Erreur lors de la mise à jour des métadonnée. : {exception}</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="756"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="789"/>
         <source>Erreur mise à jour des données.</source>
         <translation>Erreur mise à jour des données.</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_dashboard.py" line="756"/>
+        <location filename="../../gui/dashboard/wdg_dashboard.py" line="789"/>
         <source>Erreur lors de la mise à jour des données. : {exception}</source>
         <translation>Erreur lors de la mise à jour des données. : {exception}</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dashboard/wdg_dashboard.ui" line="309"/>
+        <source>Open in carte.gouv</source>
+        <translation type="unfinished">Ouvrir dans cartes.gouv</translation>
     </message>
 </context>
 <context>
@@ -1047,104 +1052,144 @@ Les éléments suivants seront supprimés:</translation>
 <context>
     <name>DeleteOfferingAlgorithm</name>
     <message>
-        <location filename="../../processing/tools/delete_offering.py" line="53"/>
+        <location filename="../../processing/tools/delete_offering.py" line="61"/>
         <source>Suppression d&apos;une offre</source>
         <translation>Suppression d&apos;une offre</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/delete_offering.py" line="56"/>
+        <location filename="../../processing/tools/delete_offering.py" line="64"/>
         <source>Outils géoplateforme</source>
         <translation>Outils géoplateforme</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/delete_offering.py" line="68"/>
+        <location filename="../../processing/tools/delete_offering.py" line="76"/>
         <source>Identifiant de l&apos;entrepôt</source>
         <translation>Identifiant de l&apos;entrepôt</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/delete_offering.py" line="75"/>
+        <location filename="../../processing/tools/delete_offering.py" line="83"/>
         <source>Identifiant de l&apos;offre</source>
         <translation>Identifiant de l&apos;offre</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/delete_offering.py" line="88"/>
+        <location filename="../../processing/tools/delete_offering.py" line="96"/>
         <source>Récupération de l&apos;offre</source>
         <translation>Récupération de l&apos;offre</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/delete_offering.py" line="92"/>
+        <location filename="../../processing/tools/delete_offering.py" line="100"/>
         <source>Erreur lors de la récupération de l&apos;offre : {}</source>
         <translation>Erreur lors de la récupération de l&apos;offre : {}</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/delete_offering.py" line="101"/>
+        <location filename="../../processing/tools/delete_offering.py" line="109"/>
         <source>Suppression de l&apos;offre</source>
         <translation>Suppression de l&apos;offre</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/delete_offering.py" line="106"/>
+        <location filename="../../processing/tools/delete_offering.py" line="114"/>
         <source>Erreur lors de la suppression de l&apos;offre : {}</source>
         <translation>Erreur lors de la suppression de l&apos;offre : {}</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/delete_offering.py" line="110"/>
+        <location filename="../../processing/tools/delete_offering.py" line="118"/>
         <source>Attente dépublication de l&apos;offre</source>
         <translation>Attente dépublication de l&apos;offre</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/delete_offering.py" line="118"/>
+        <location filename="../../processing/tools/delete_offering.py" line="126"/>
         <source>L&apos;offre {} n&apos;est pas en cours de dépublication. La suppression de la configuration associée est annulée.</source>
         <translation>L&apos;offre {} n&apos;est pas en cours de dépublication. La suppression de la configuration associée est annulée.</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/delete_offering.py" line="130"/>
+        <location filename="../../processing/tools/delete_offering.py" line="138"/>
         <source>Récupération des offres associés à la même configuration</source>
         <translation>Récupération des offres associés à la même configuration</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/delete_offering.py" line="139"/>
+        <location filename="../../processing/tools/delete_offering.py" line="147"/>
         <source>Erreur lors de la récupération des offres de la configuration : {}</source>
         <translation>Erreur lors de la récupération des offres de la configuration : {}</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/delete_offering.py" line="146"/>
+        <location filename="../../processing/tools/delete_offering.py" line="154"/>
         <source>Suppression de la configuration associée à l&apos;offre</source>
         <translation>Suppression de la configuration associée à l&apos;offre</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/delete_offering.py" line="157"/>
+        <location filename="../../processing/tools/delete_offering.py" line="195"/>
         <source>Erreur lors de la suppression de la configuration associée à l&apos;offre : {}</source>
         <translation>Erreur lors de la suppression de la configuration associée à l&apos;offre : {}</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/delete_offering.py" line="166"/>
+        <location filename="../../processing/tools/delete_offering.py" line="204"/>
         <source>Récupération des configuration associées au dataset</source>
         <translation>Récupération des configuration associées au dataset</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/delete_offering.py" line="175"/>
+        <location filename="../../processing/tools/delete_offering.py" line="213"/>
         <source>Erreur lors de la récupération des autres configuration associées au dataset : {}</source>
         <translation>Erreur lors de la récupération des autres configuration associées au dataset : {}</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/delete_offering.py" line="182"/>
+        <location filename="../../processing/tools/delete_offering.py" line="268"/>
         <source>Aucune configuration disponible dans le dataset, dépublication de la métadata</source>
         <translation>Aucune configuration disponible dans le dataset, dépublication de la métadata</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/delete_offering.py" line="195"/>
+        <location filename="../../processing/tools/delete_offering.py" line="226"/>
         <source>Erreur lors de la récupération des metadatas associées au dataset : {}</source>
         <translation>Erreur lors de la récupération des metadatas associées au dataset : {}</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/delete_offering.py" line="220"/>
+        <location filename="../../processing/tools/delete_offering.py" line="282"/>
         <source>Erreur lors de la dépublication de la metadata associée au dataset : {}</source>
         <translation>Erreur lors de la dépublication de la metadata associée au dataset : {}</translation>
     </message>
     <message>
-        <location filename="../../processing/tools/delete_offering.py" line="226"/>
+        <location filename="../../processing/tools/delete_offering.py" line="248"/>
         <source>Aucune métadata disponible pour le dataset</source>
         <translation>Aucune métadata disponible pour le dataset</translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/delete_offering.py" line="164"/>
+        <source>Suppression des styles associés à la configuration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/delete_offering.py" line="181"/>
+        <source>Erreur lors de la suppression du style {}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/delete_offering.py" line="241"/>
+        <source>Erreur lors de la lecture de la metadata associée au dataset : {}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/delete_offering.py" line="261"/>
+        <source>Erreur lors de la récupération du endpoint pour la publication de la métadata : {}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/delete_offering.py" line="288"/>
+        <source>Mise à jour de la metadata associée au dataset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/delete_offering.py" line="298"/>
+        <source>Erreur lors de la mise à jour de la metadata associée au dataset : {}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/delete_offering.py" line="304"/>
+        <source>Publication de la metadata associée au dataset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../processing/tools/delete_offering.py" line="316"/>
+        <source>Erreur lors de la publication de la metadata associée au dataset : {}</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1530,7 +1575,7 @@ Les éléments suivants seront supprimés:</translation>
         <translation>Rapporter un problème</translation>
     </message>
     <message>
-        <location filename="../../plugin_main.py" line="251"/>
+        <location filename="../../plugin_main.py" line="255"/>
         <source>3rd party extensions</source>
         <translation>Extensions tierces</translation>
     </message>
@@ -2289,7 +2334,7 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
         <translation>Recherche simple</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="214"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="163"/>
         <source>Search</source>
         <translation>Recherche</translation>
     </message>
@@ -2299,57 +2344,57 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
         <translation>Recherche avancée</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="105"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="214"/>
         <source>2100</source>
         <translation>2100</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="112"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="102"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="129"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="197"/>
         <source>Production year :</source>
         <translation>Année de production:</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="136"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="204"/>
         <source>1900</source>
         <translation>1900</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="153"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="129"/>
         <source>Title</source>
         <translation>Title</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="163"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="177"/>
         <source>Producer</source>
         <translation>Producer</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="170"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="190"/>
         <source>Keywords</source>
         <translation>Mots clé</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="187"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="221"/>
         <source>Theme</source>
         <translation>Thème</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="194"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="146"/>
         <source>Layer name</source>
         <translation>Nom de couche</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="204"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="156"/>
         <source>Visibility</source>
         <translation>Visibilité</translation>
     </message>
     <message>
-        <location filename="../../gui/provider/provider_dialog.ui" line="221"/>
+        <location filename="../../gui/provider/provider_dialog.ui" line="170"/>
         <source>Clear search</source>
         <translation>Réinitialiser</translation>
     </message>
@@ -2579,44 +2624,49 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
         <translation>Nombre de canaux dans les dalles en sortie.</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/create_raster_tiles_from_wms_vector.py" line="225"/>
+        <location filename="../../processing/generation/create_raster_tiles_from_wms_vector.py" line="235"/>
         <source>Tags</source>
         <translation>Tags</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/create_raster_tiles_from_wms_vector.py" line="225"/>
+        <location filename="../../processing/generation/create_raster_tiles_from_wms_vector.py" line="235"/>
         <source>Tag</source>
         <translation>Tag</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/create_raster_tiles_from_wms_vector.py" line="225"/>
+        <location filename="../../processing/generation/create_raster_tiles_from_wms_vector.py" line="235"/>
         <source>Valeur</source>
         <translation>Valeur</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/create_raster_tiles_from_wms_vector.py" line="232"/>
+        <location filename="../../processing/generation/create_raster_tiles_from_wms_vector.py" line="242"/>
         <source>Attendre la fin de la génération ?</source>
         <translation>Attendre la fin de la génération ?</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/create_raster_tiles_from_wms_vector.py" line="244"/>
+        <location filename="../../processing/generation/create_raster_tiles_from_wms_vector.py" line="253"/>
         <source>Identifiant de la tuile raster créée.</source>
         <translation>Identifiant de la tuile raster créée.</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/create_raster_tiles_from_wms_vector.py" line="250"/>
+        <location filename="../../processing/generation/create_raster_tiles_from_wms_vector.py" line="259"/>
         <source>Identifiant de l&apos;exécution du traitement.</source>
         <translation>Identifiant de l&apos;exécution du traitement.</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/create_raster_tiles_from_wms_vector.py" line="408"/>
+        <location filename="../../processing/generation/create_raster_tiles_from_wms_vector.py" line="431"/>
         <source>Upload tag add failed : {0}</source>
         <translation>Upload tag add failed : {0}</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/create_raster_tiles_from_wms_vector.py" line="446"/>
+        <location filename="../../processing/generation/create_raster_tiles_from_wms_vector.py" line="469"/>
         <source>Database integration failed. Check report in dashboard for more details.</source>
         <translation>L&apos;intégration de la base de données a échoué. Vérifiez le rapport dans le tableau de bord pour plus de détails.</translation>
+    </message>
+    <message>
+        <location filename="../../processing/generation/create_raster_tiles_from_wms_vector.py" line="225"/>
+        <source>Nombre de thread pour la génération.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2866,71 +2916,76 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
 <context>
     <name>ServiceDetailsWidget</name>
     <message>
-        <location filename="../../gui/dashboard/wdg_service_details.py" line="61"/>
+        <location filename="../../gui/dashboard/wdg_service_details.py" line="68"/>
         <source>Details</source>
         <translation>Détails</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_service_details.py" line="234"/>
+        <location filename="../../gui/dashboard/wdg_service_details.py" line="256"/>
         <source>Dépublication</source>
         <translation>Dépublication</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_service_details.py" line="149"/>
+        <location filename="../../gui/dashboard/wdg_service_details.py" line="156"/>
         <source>Charger</source>
         <translation>Charger</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_service_details.py" line="172"/>
+        <location filename="../../gui/dashboard/wdg_service_details.py" line="194"/>
         <source>Génération tuile</source>
         <translation>Génération tuile</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_service_details.py" line="234"/>
+        <location filename="../../gui/dashboard/wdg_service_details.py" line="256"/>
         <source>Êtes-vous sûr de vouloir dépublier le service ?</source>
         <translation>Êtes-vous sûr de vouloir dépublier le service ?</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_service_details.py" line="257"/>
+        <location filename="../../gui/dashboard/wdg_service_details.py" line="282"/>
         <source>Dépublication service</source>
         <translation>Dépublication service</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_service_details.py" line="257"/>
+        <location filename="../../gui/dashboard/wdg_service_details.py" line="282"/>
         <source>Le service n&apos;a pas pu être dépublié :
  {}</source>
         <translation>Le service n&apos;a pas pu être dépublié :
  {}</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_service_details.py" line="277"/>
+        <location filename="../../gui/dashboard/wdg_service_details.py" line="302"/>
         <source>Publication en cours.</source>
         <translation>Publication en cours.</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_service_details.py" line="279"/>
+        <location filename="../../gui/dashboard/wdg_service_details.py" line="304"/>
         <source>Publication en cours de modification.</source>
         <translation>Publication en cours de modification.</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_service_details.py" line="281"/>
+        <location filename="../../gui/dashboard/wdg_service_details.py" line="306"/>
         <source>Publication réussie.</source>
         <translation>Publication réussie.</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_service_details.py" line="283"/>
+        <location filename="../../gui/dashboard/wdg_service_details.py" line="308"/>
         <source>Dépublication en cours.</source>
         <translation>Dépublication en cours.</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_service_details.py" line="284"/>
+        <location filename="../../gui/dashboard/wdg_service_details.py" line="309"/>
         <source> You will find above technical information about processing executed and encountered problem.</source>
         <translation> Vous trouverez des informations techniques ci-dessus sur le traitement exécuté et rencontré un problème.</translation>
     </message>
     <message>
-        <location filename="../../gui/dashboard/wdg_service_details.py" line="289"/>
+        <location filename="../../gui/dashboard/wdg_service_details.py" line="314"/>
         <source>Publication instable.</source>
         <translation>Publication instable.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/dashboard/wdg_service_details.py" line="271"/>
+        <source>Unpublish service {}</source>
+        <translation type="unfinished">Dépublication du service</translation>
     </message>
 </context>
 <context>
@@ -3373,7 +3428,7 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
         <translation>Type d&apos;attribut</translation>
     </message>
     <message>
-        <location filename="../../gui/mdl_table_relation.py" line="42"/>
+        <location filename="../../gui/mdl_table_relation.py" line="69"/>
         <source>Error while getting stored data informations: {0}</source>
         <translation>Erreur lors de l&apos;obtention d&apos;informations de données stockées: {0}</translation>
     </message>
@@ -3432,87 +3487,87 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
 <context>
     <name>TileCreationAlgorithm</name>
     <message>
-        <location filename="../../processing/generation/tile_creation.py" line="378"/>
+        <location filename="../../processing/generation/tile_creation.py" line="377"/>
         <source>Tile creation failed. Check report in dashboard for more details.</source>
         <translation>La création de carreaux a échoué. Vérifiez le rapport dans le tableau de bord pour plus de détails.</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/tile_creation.py" line="77"/>
+        <location filename="../../processing/generation/tile_creation.py" line="76"/>
         <source>Génération de tuiles vectorielles</source>
         <translation>Génération de tuiles vectorielles</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/tile_creation.py" line="80"/>
+        <location filename="../../processing/generation/tile_creation.py" line="79"/>
         <source>Génération données</source>
         <translation>Génération données</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/tile_creation.py" line="92"/>
+        <location filename="../../processing/generation/tile_creation.py" line="91"/>
         <source>Identifiant de l&apos;entrepôt</source>
         <translation>Identifiant de l&apos;entrepôt</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/tile_creation.py" line="98"/>
+        <location filename="../../processing/generation/tile_creation.py" line="97"/>
         <source>Identifiant de la base de données vectorielles</source>
         <translation>Identifiant de la base de données vectorielles</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/tile_creation.py" line="105"/>
+        <location filename="../../processing/generation/tile_creation.py" line="104"/>
         <source>Nom des tuiles en sortie</source>
         <translation>Nom des tuiles en sortie</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/tile_creation.py" line="112"/>
+        <location filename="../../processing/generation/tile_creation.py" line="111"/>
         <source>Options tippecanoe</source>
         <translation>Options Tippecanoe</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/tile_creation.py" line="120"/>
+        <location filename="../../processing/generation/tile_creation.py" line="119"/>
         <source>JSON pour la composition</source>
         <translation>JSON pour la composition</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/tile_creation.py" line="128"/>
+        <location filename="../../processing/generation/tile_creation.py" line="127"/>
         <source>Niveau bas de la pyramide</source>
         <translation>Niveau bas de la pyramide</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/tile_creation.py" line="137"/>
+        <location filename="../../processing/generation/tile_creation.py" line="136"/>
         <source>Niveau haut de la pyramide</source>
         <translation>Niveau haut de la pyramide</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/tile_creation.py" line="145"/>
+        <location filename="../../processing/generation/tile_creation.py" line="144"/>
         <source>Zone de moissonnage</source>
         <translation>Zone de moissonnage</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/tile_creation.py" line="153"/>
+        <location filename="../../processing/generation/tile_creation.py" line="152"/>
         <source>Tags</source>
         <translation>Tags</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/tile_creation.py" line="153"/>
+        <location filename="../../processing/generation/tile_creation.py" line="152"/>
         <source>Tag</source>
         <translation>Tag</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/tile_creation.py" line="153"/>
+        <location filename="../../processing/generation/tile_creation.py" line="152"/>
         <source>Valeur</source>
         <translation>Valeur</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/tile_creation.py" line="161"/>
+        <location filename="../../processing/generation/tile_creation.py" line="160"/>
         <source>Attendre la fin de la génération ?</source>
         <translation>Attendre la fin de la génération ?</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/tile_creation.py" line="169"/>
+        <location filename="../../processing/generation/tile_creation.py" line="168"/>
         <source>Identifiant des tuiles vectorielles créés.</source>
         <translation>Identifiant des tuiles vectorielles créés.</translation>
     </message>
     <message>
-        <location filename="../../processing/generation/tile_creation.py" line="175"/>
+        <location filename="../../processing/generation/tile_creation.py" line="174"/>
         <source>Identifiant de l&apos;exécution du traitement.</source>
         <translation>Identifiant de l&apos;exécution du traitement.</translation>
     </message>
@@ -3520,7 +3575,7 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
 <context>
     <name>TileCreationWizard</name>
     <message>
-        <location filename="../../gui/tile_creation/wzd_tile_creation.py" line="41"/>
+        <location filename="../../gui/tile_creation/wzd_tile_creation.py" line="43"/>
         <source>Tile creation</source>
         <translation>Création de tuiles vectorielles</translation>
     </message>
@@ -3528,39 +3583,24 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
 <context>
     <name>TileGenerationEditionPageWizard</name>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="154"/>
-        <source>No datastore selected.</source>
-        <translation>Aucun entrepôt sélectionné.</translation>
-    </message>
-    <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="154"/>
-        <source>Please select a datastore</source>
-        <translation>Veuillez sélectionner un entrepôt</translation>
-    </message>
-    <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="162"/>
-        <source>No stored data selected.</source>
-        <translation>Aucune donnée stockée sélectionnée.</translation>
-    </message>
-    <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="162"/>
-        <source>Please select a stored data</source>
-        <translation>Veuillez sélectionner une donnée stockée</translation>
-    </message>
-    <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="59"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="36"/>
         <source>Define tile parameters</source>
         <translation>Définition des paramètres de tuiles</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="170"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="64"/>
         <source>Missing informations.</source>
         <translation>Informations manquantes.</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="170"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.py" line="64"/>
         <source>Please define tile name.</source>
         <translation>Nom de tuile obligatoire.</translation>
+    </message>
+    <message>
+        <location filename="../../gui/create_raster_tiles_from_wms_vector/qwp_tile_generation_edition.py" line="110"/>
+        <source>Please define api key for private service use.`n You can get an api key with a HASH key.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3571,22 +3611,22 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
         <translation>Personnalisez vos tuiles vectorielles</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.py" line="80"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.py" line="76"/>
         <source>No table selected.</source>
         <translation>Aucune table sélectionnée.</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.py" line="80"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.py" line="76"/>
         <source>Please select one or more tables.</source>
         <translation>Veuillez sélectionner une ou plusieurs tables.</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.py" line="89"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.py" line="85"/>
         <source>No attribute selected.</source>
         <translation>Aucun attribut sélectionné.</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.py" line="89"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.py" line="85"/>
         <source>Please select one or more attributes for table {}.</source>
         <translation>Veuillez sélectionner un ou plusieurs attributs pour la table {}.</translation>
     </message>
@@ -3682,32 +3722,32 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
 <context>
     <name>TileGenerationStatusPageWizard</name>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="245"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="257"/>
         <source>Your tiles are ready.</source>
         <translation>Vos tuiles sont prêtes.</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="258"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="270"/>
         <source>Stored data creation failed. Check report in dashboard for more details.</source>
         <translation>La création de données stockée a échoué. Vérifiez le rapport dans le tableau de bord pour plus de détails.</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="279"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="291"/>
         <source>Stored data check status</source>
         <translation>Erreur statut donnée stockée</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="303"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="315"/>
         <source>{0} failed. Check report for more details.</source>
         <translation>{0} a échoué. Vérifiez le rapport pour plus de détails.</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="117"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="122"/>
         <source>Tile creation not launched.</source>
         <translation>La création des tuiles n&apos;est pas lancée.</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="117"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="122"/>
         <source>Tile creation is not launched. You must wait for launch before closing this dialog.</source>
         <translation>La création des tuiles n&apos;est pas lancée. Vous devez attendre le lancement avant de fermer cette boîte de dialogue.</translation>
     </message>
@@ -3757,24 +3797,24 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
         <translation>Récupération configuration</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="209"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="221"/>
         <source>Génération des tuiles vectorielle en cours.
 Vous pouvez fermer la fenêtre pendant la génération.</source>
         <translation>Génération des tuiles vectorielle en cours.
 Vous pouvez fermer la fenêtre pendant la génération.</translation>
     </message>
     <message>
-        <location filename="../../gui/create_raster_tiles_from_wms_vector/qwp_tile_generation_status.py" line="260"/>
+        <location filename="../../gui/create_raster_tiles_from_wms_vector/qwp_tile_generation_status.py" line="265"/>
         <source>Génération des tuiles raster</source>
         <translation>Génération des tuiles raster</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="60"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="64"/>
         <source>Génération des tuiles vectorielle en cours.</source>
         <translation>Génération des tuiles vectorielle en cours.</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="217"/>
+        <location filename="../../gui/tile_creation/qwp_tile_generation_status.py" line="229"/>
         <source>Génération des tuiles vectorielle</source>
         <translation>Génération des tuiles vectorielle</translation>
     </message>
@@ -3919,12 +3959,12 @@ Vous pouvez fermer la fenêtre pendant la génération.</translation>
         <translation>Vérification de la livraison en cours...</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="341"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="338"/>
         <source>Stored database integration check</source>
         <translation>Vérification de l&apos;intégration de la base de données stockée</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="422"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="419"/>
         <source>{0} failed. Check report for more details.</source>
         <translation>{0} a échoué. Vérifiez le rapport pour plus de détails.</translation>
     </message>
@@ -3966,22 +4006,22 @@ Vous pouvez fermer la fenêtre pendant la génération.</translation>
         <translation>La base de données vectorielle a été générée dans l&apos;entrepôt.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="358"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="355"/>
         <source>Livraison non terminée</source>
         <translation>Livraison non terminée</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="358"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="355"/>
         <source>La livraison des données est toujours en cours. Veuillez attendre que les données soient disponibles sur l&apos;entrepôt.</source>
         <translation>La livraison des données est toujours en cours. Veuillez attendre que les données soient disponibles sur l&apos;entrepôt.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="369"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="366"/>
         <source>Vérification non terminée</source>
         <translation>Vérification non terminée</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="369"/>
+        <location filename="../../gui/upload_creation/qwp_upload_creation.py" line="366"/>
         <source>Les données sont en cours de vérification. Vous devrez lancer ultérieurement l&apos;intégration en base de données.
  Voulez vous fermer la fenêtre ? </source>
         <translation>Les données sont en cours de vérification. Vous devrez lancer ultérieurement l&apos;intégration en base de données.
@@ -4208,34 +4248,34 @@ Valeurs séparées par ,</translation>
         <translation>IconLabel</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_database_integration/qwp_upload_database_integration.py" line="49"/>
+        <location filename="../../gui/upload_database_integration/qwp_upload_database_integration.py" line="50"/>
         <source>Génération de la base de données vectorielle en cours.</source>
         <translation>Génération de la base de données vectorielle en cours.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_database_integration/qwp_upload_database_integration.py" line="147"/>
+        <location filename="../../gui/upload_database_integration/qwp_upload_database_integration.py" line="153"/>
         <source>Génération de la base de données vectorielle en cours.
 Vous pouvez fermer la fenêtre pendant la génération.</source>
         <translation>Génération de la base de données vectorielle en cours.
 Vous pouvez fermer la fenêtre pendant la génération.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_database_integration/qwp_upload_database_integration.py" line="156"/>
+        <location filename="../../gui/upload_database_integration/qwp_upload_database_integration.py" line="162"/>
         <source>Vector database creation</source>
         <translation>Création de la base de données vectorielle</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_database_integration/qwp_upload_database_integration.py" line="202"/>
+        <location filename="../../gui/upload_database_integration/qwp_upload_database_integration.py" line="208"/>
         <source>La base de données vectorielle a été générée dans l&apos;entrepôt.</source>
         <translation>La base de données vectorielle a été générée dans l&apos;entrepôt.</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_database_integration/qwp_upload_database_integration.py" line="224"/>
+        <location filename="../../gui/upload_database_integration/qwp_upload_database_integration.py" line="230"/>
         <source>Stored database integration check</source>
         <translation>Vérification de l&apos;intégration de la base de données stockée</translation>
     </message>
     <message>
-        <location filename="../../gui/upload_database_integration/qwp_upload_database_integration.py" line="277"/>
+        <location filename="../../gui/upload_database_integration/qwp_upload_database_integration.py" line="283"/>
         <source>{0} failed. Check report for more details.</source>
         <translation>{0} a échoué. Vérifiez le rapport pour plus de détails.</translation>
     </message>
@@ -4369,12 +4409,7 @@ Vous pouvez fermer la fenêtre pendant la génération.</translation>
         <translation>Forme de génération</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.ui" line="126"/>
-        <source>Dataset:</source>
-        <translation>Jeu de données :</translation>
-    </message>
-    <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.ui" line="53"/>
+        <location filename="../../gui/create_raster_tiles_from_wms_vector/qwp_tile_generation_edition.ui" line="29"/>
         <source>Max and min zoom levels:</source>
         <translation>Niveaux de zoom :</translation>
     </message>
@@ -4385,8 +4420,8 @@ Vous pouvez fermer la fenêtre pendant la génération.</translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="47"/>
-        <source>Check the attributes you want to keep in your vector tile flow. These attributes will be accessible to your users when they click on a map. By limiting the number of attributes, you can lighten the volume of the tiles and improve the fluidity of the display. Keep only the attributes that are useful to your users. If you don&apos;t keep any attributes, your vector tiles will only contain geometry and symbolization possibilities will be limited.</source>
-        <translation>Vérifiez les attributs que vous souhaitez conserver dans le flux de tuiles vectoriel. Ces attributs seront accessibles à vos utilisateurs lorsqu&apos;ils cliqueront sur une carte. En limitant le nombre d&apos;attributs, vous pouvez alléger le volume des carreaux et améliorer la fluidité de l&apos;affichage. Gardez uniquement les attributs utiles à vos utilisateurs. Si vous ne gardez aucun attribution, vos carreaux vectoriels ne contiendront que des possibilités de géométrie et de symbolisation seront limitées.</translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Check the attributes you want to keep in your vector tile flow. These attributes will be accessible to your users when they click on a map. By limiting the number of attributes, you can lighten the volume of the tiles and improve the fluidity of the display. Keep only the attributes that are useful to your users. If you don&apos;t keep any attributes, your vector tiles will only contain geometry and symbolization possibilities will be limited.&lt;span style=&quot; font-weight:600;&quot;&gt;&lt;br/&gt;Warning only table name who start with &apos;_&apos; or letter are compatible with tile generation&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Vérifiez les attributs que vous souhaitez conserver dans le flux de tuiles vectoriel. Ces attributs seront accessibles à vos utilisateurs lorsqu&apos;ils cliqueront sur une carte. En limitant le nombre d&apos;attributs, vous pouvez alléger le volume des carreaux et améliorer la fluidité de l&apos;affichage. Gardez uniquement les attributs utiles à vos utilisateurs. Si vous ne gardez aucun attribution, vos carreaux vectoriels ne contiendront que des possibilités de géométrie et de symbolisation seront limitées.&lt;span style=&quot; font-weight:600;&quot;&gt;&lt;br/&gt;Attention seules les tables dont le nom commence par &apos;_&apos; ou par une lettre sont compatibles avec la génération de tuiles&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="26"/>
@@ -4399,7 +4434,7 @@ Vous pouvez fermer la fenêtre pendant la génération.</translation>
         <translation>Génération - Options de généralisation</translation>
     </message>
     <message>
-        <location filename="../../gui/create_raster_tiles_from_wms_vector/qwp_tile_generation_edition.ui" line="53"/>
+        <location filename="../../gui/create_raster_tiles_from_wms_vector/qwp_tile_generation_edition.ui" line="85"/>
         <source>Tile name:</source>
         <translation>Nom tuile :</translation>
     </message>
@@ -4409,9 +4444,9 @@ Vous pouvez fermer la fenêtre pendant la génération.</translation>
         <translation>Nom tuile</translation>
     </message>
     <message>
-        <location filename="../../gui/tile_creation/qwp_tile_generation_edition.ui" line="60"/>
-        <source>Vector DB</source>
-        <translation>Base de données vectorielle</translation>
+        <location filename="../../gui/create_raster_tiles_from_wms_vector/qwp_tile_generation_edition.ui" line="111"/>
+        <source>Api key</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

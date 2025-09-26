@@ -38,13 +38,13 @@
      <property name="font">
       <font>
        <pointsize>10</pointsize>
-       <weight>9</weight>
+       <weight>50</weight>
        <italic>true</italic>
        <bold>false</bold>
       </font>
      </property>
      <property name="text">
-      <string>Check the attributes you want to keep in your vector tile flow. These attributes will be accessible to your users when they click on a map. By limiting the number of attributes, you can lighten the volume of the tiles and improve the fluidity of the display. Keep only the attributes that are useful to your users. If you don't keep any attributes, your vector tiles will only contain geometry and symbolization possibilities will be limited.</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Check the attributes you want to keep in your vector tile flow. These attributes will be accessible to your users when they click on a map. By limiting the number of attributes, you can lighten the volume of the tiles and improve the fluidity of the display. Keep only the attributes that are useful to your users. If you don't keep any attributes, your vector tiles will only contain geometry and symbolization possibilities will be limited.&lt;span style=&quot; font-weight:600;&quot;&gt;&lt;br/&gt;Warning only table name who start with '_' or letter are compatible with tile generation&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>

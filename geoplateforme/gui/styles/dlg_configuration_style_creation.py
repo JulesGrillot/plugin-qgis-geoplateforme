@@ -1,6 +1,5 @@
 import os
 
-from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QWidget
 
@@ -11,6 +10,7 @@ from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.style.add_configuration_style import (
     AddConfigurationStyleAlgorithm,
 )
+from geoplateforme.toolbelt.dlg_processing_run import ProcessingRunDialog
 
 
 class ConfigurationStyleCreationDialog(QDialog):
@@ -47,11 +47,6 @@ class ConfigurationStyleCreationDialog(QDialog):
         algo_str = (
             f"{GeoplateformeProvider().id()}:{AddConfigurationStyleAlgorithm().name()}"
         )
-        alg = QgsApplication.processingRegistry().algorithmById(algo_str)
-
-        context = QgsProcessingContext()
-        feedback = QgsProcessingFeedback()
-
         params = {
             AddConfigurationStyleAlgorithm.DATASTORE_ID: self._configuration.datastore_id,
             AddConfigurationStyleAlgorithm.CONFIGURATION_ID: self._configuration._id,
@@ -69,13 +64,19 @@ class ConfigurationStyleCreationDialog(QDialog):
                 layer_style_names
             )
 
-        _, success = alg.run(params, context, feedback)
-
+        run_dialog = ProcessingRunDialog(
+            alg_name=algo_str,
+            params=params,
+            title=self.tr("Adding configuration style"),
+            parent=self,
+        )
+        run_dialog.exec()
+        success, _ = run_dialog.processing_results()
         if not success:
             QMessageBox.warning(
                 self,
                 self.tr("Erreur lors de la création des styles."),
-                feedback.textLog(),
+                run_dialog.get_feedback().textLog(),
             )
             return None
 

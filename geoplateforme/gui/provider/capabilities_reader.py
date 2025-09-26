@@ -156,9 +156,9 @@ def read_tms_layer_capabilities(url: str) -> Optional[dict]:
     for tile_set in capabilities.getElementsByTagName("TileSet"):
         href = tile_set.getAttribute("href")
         z = href.split("/")[-1]
-        if zmin is None or z < zmin:
+        if zmin is None or int(z) < int(zmin):
             zmin = z
-        if zmax is None or z > zmax:
+        if zmax is None or int(z) > int(zmax):
             zmax = z
     styles = []
     for metadata in capabilities.getElementsByTagName("Metadata"):

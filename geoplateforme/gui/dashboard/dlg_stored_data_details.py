@@ -447,10 +447,10 @@ class StoredDataDetailsDialog(QDialog):
         """
         QGuiApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
         self.tile_generation_wizard = TileCreationWizard(
-            self,
             stored_data.datastore_id,
             stored_data.tags["datasheet_name"],
             stored_data._id,
+            self,
         )
         QGuiApplication.restoreOverrideCursor()
         self.tile_generation_wizard.finished.connect(self._del_tile_generation_wizard)

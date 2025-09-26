@@ -35,6 +35,9 @@ from geoplateforme.gui.tile_creation.qwp_tile_generation_fields_selection import
 from geoplateforme.gui.tile_creation.qwp_tile_generation_generalization import (
     TileGenerationGeneralizationPageWizard,
 )
+from geoplateforme.gui.tile_creation.qwp_tile_generation_zoom_selection import (
+    TileGenerationZoomSelectionPageWizard,
+)
 from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.generation.tile_creation import TileCreationAlgorithm
 from geoplateforme.processing.utils import tags_to_qgs_parameter_matrix_string
@@ -46,6 +49,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
         self,
         qwp_tile_generation_edition: TileGenerationEditionPageWizard,
         qwp_tile_generation_fields_selection: TileGenerationFieldsSelectionPageWizard,
+        qwp_tile_generation_zooms_selection: TileGenerationZoomSelectionPageWizard,
         qwp_tile_generation_generalization: TileGenerationGeneralizationPageWizard,
         parent=None,
     ):
@@ -60,6 +64,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
         self.setTitle(self.tr("Génération des tuiles vectorielle en cours."))
         self.qwp_tile_generation_edition = qwp_tile_generation_edition
         self.qwp_tile_generation_fields_selection = qwp_tile_generation_fields_selection
+        self.qwp_tile_generation_zooms_selection = qwp_tile_generation_zooms_selection
         self.qwp_tile_generation_generalization = qwp_tile_generation_generalization
 
         uic.loadUi(
@@ -135,15 +140,9 @@ class TileGenerationStatusPageWizard(QWizardPage):
         algo_str = f"{GeoplateformeProvider().id()}:{TileCreationAlgorithm().name()}"
         alg = QgsApplication.processingRegistry().algorithmById(algo_str)
 
-        datastore_id = (
-            self.qwp_tile_generation_edition.cbx_datastore.current_datastore_id()
-        )
-        vector_db_stored_id = (
-            self.qwp_tile_generation_edition.cbx_stored_data.current_stored_data_id()
-        )
-        dataset_name = (
-            self.qwp_tile_generation_edition.cbx_dataset.current_dataset_name()
-        )
+        datastore_id = self.qwp_tile_generation_edition.datastore_id
+        vector_db_stored_id = self.qwp_tile_generation_edition.stored_data_id
+        dataset_name = self.qwp_tile_generation_edition.dataset_name
 
         params = {
             TileCreationAlgorithm.DATASTORE: datastore_id,
@@ -151,8 +150,6 @@ class TileGenerationStatusPageWizard(QWizardPage):
             TileCreationAlgorithm.DATASET_NAME: dataset_name,
             TileCreationAlgorithm.STORED_DATA_NAME: self.qwp_tile_generation_edition.lne_name.text(),
             TileCreationAlgorithm.TIPPECANOE_OPTIONS: self.qwp_tile_generation_generalization.get_tippecanoe_value(),
-            TileCreationAlgorithm.BOTTOM_LEVEL: self.qwp_tile_generation_edition.get_bottom_level(),
-            TileCreationAlgorithm.TOP_LEVEL: self.qwp_tile_generation_edition.get_top_level(),
             TileCreationAlgorithm.TAGS: tags_to_qgs_parameter_matrix_string(
                 {"datasheet_name": dataset_name}
             ),
@@ -161,24 +158,39 @@ class TileGenerationStatusPageWizard(QWizardPage):
         selected_attributes = (
             self.qwp_tile_generation_fields_selection.get_selected_attributes()
         )
+        selected_zoom_levels = (
+            self.qwp_tile_generation_zooms_selection.get_selected_zoom_levels()
+        )
 
         composition = []
 
+        min_top_level = None
+        max_bottom_level = None
+
         # Define composition for each table. For now using zoom levels from tile vector
         for table, attributes in selected_attributes.items():
+            bottom_level, top_level = selected_zoom_levels[table]
+            min_top_level = (
+                top_level if min_top_level is None else min(min_top_level, top_level)
+            )
+            max_bottom_level = (
+                bottom_level
+                if max_bottom_level is None
+                else max(max_bottom_level, bottom_level)
+            )
+
             composition.append(
                 {
                     TileCreationAlgorithm.TABLE: table,
                     TileCreationAlgorithm.ATTRIBUTES: attributes,
-                    TileCreationAlgorithm.COMPOSITION_BOTTOM_LEVEL: str(
-                        self.qwp_tile_generation_edition.get_bottom_level()
-                    ),
-                    TileCreationAlgorithm.COMPOSITION_TOP_LEVEL: str(
-                        self.qwp_tile_generation_edition.get_top_level()
-                    ),
+                    TileCreationAlgorithm.COMPOSITION_BOTTOM_LEVEL: str(top_level),
+                    TileCreationAlgorithm.COMPOSITION_TOP_LEVEL: str(top_level),
                 }
             )
         params[TileCreationAlgorithm.COMPOSITION] = json.dumps(composition)
+
+        params[TileCreationAlgorithm.BOTTOM_LEVEL] = max_bottom_level
+        params[TileCreationAlgorithm.TOP_LEVEL] = min_top_level
 
         self.lbl_step_icon.setMovie(self.loading_movie)
         self.loading_movie.start()
@@ -230,7 +242,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
             try:
                 processing_manager = ProcessingRequestManager()
                 stored_data_manager = StoredDataRequestManager()
-                datastore_id = self.qwp_tile_generation_edition.cbx_datastore.current_datastore_id()
+                datastore_id = self.qwp_tile_generation_edition.datastore_id
 
                 stored_data = stored_data_manager.get_stored_data(
                     datastore_id=datastore_id,

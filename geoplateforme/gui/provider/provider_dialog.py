@@ -284,7 +284,7 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
                         style_dlg = SelectStyleDialog(params["styles"])
                         if style_dlg.exec():
                             style = style_dlg.style_combo.currentText()
-                    if style is not None:
+                    if style is not None and len(style) > 0:
                         network_manager = NetworkRequestsManager()
                         reply = network_manager.get_url(url=QUrl(style))
                         style_json = json.loads(reply.data())

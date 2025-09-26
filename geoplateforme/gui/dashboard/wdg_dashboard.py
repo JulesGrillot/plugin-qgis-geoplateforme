@@ -573,7 +573,7 @@ class DashboardWidget(QWidget):
             run_dialog = ProcessingRunDialog(
                 alg_name=algo_str,
                 params=params,
-                title=self.tr("Delete stored data"),
+                title=self.tr("Delete stored data {}").format(stored_data.name),
                 parent=self,
             )
             run_dialog.exec()
@@ -631,7 +631,7 @@ class DashboardWidget(QWidget):
             run_dialog = ProcessingRunDialog(
                 alg_name=algo_str,
                 params=params,
-                title=self.tr("Delete upload"),
+                title=self.tr("Delete upload {}").format(upload.name),
                 parent=self,
             )
             run_dialog.exec()

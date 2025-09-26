@@ -2,13 +2,7 @@
 import os
 import tempfile
 
-from qgis.core import (
-    Qgis,
-    QgsApplication,
-    QgsProcessingContext,
-    QgsProcessingFeedback,
-    QgsSldExportContext,
-)
+from qgis.core import Qgis, QgsSldExportContext
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QWidget
@@ -20,6 +14,7 @@ from qgis.utils import OverrideCursor
 # Project
 from geoplateforme.processing.provider import GeoplateformeProvider
 from geoplateforme.processing.tools.sld_downgrade import SldDowngradeAlgorithm
+from geoplateforme.toolbelt.dlg_processing_run import ProcessingRunDialog
 
 
 class SldSelectionWidget(QWidget):
@@ -142,19 +137,21 @@ class SldSelectionWidget(QWidget):
             algo_str = (
                 f"{GeoplateformeProvider().id()}:{SldDowngradeAlgorithm().name()}"
             )
-            alg = QgsApplication.processingRegistry().algorithmById(algo_str)
-            context = QgsProcessingContext()
-            feedback = QgsProcessingFeedback()
-            result, success = alg.run(
-                parameters=params, context=context, feedback=feedback
+            run_dialog = ProcessingRunDialog(
+                alg_name=algo_str,
+                params=params,
+                title=self.tr("Downgrade .sld for layer {}").format(layer.name()),
+                parent=self,
             )
+            run_dialog.exec()
+            success, result = run_dialog.processing_results()
             if not success:
                 QMessageBox.critical(
                     self,
                     self.tr("Conversion .sld"),
                     self.tr(
                         "Le fichier .sld n'a pas pu être converti au format 1.0.0:\n {}"
-                    ).format(feedback.textLog()),
+                    ).format(run_dialog.get_feedback().textLog()),
                 )
             else:
                 return result[SldDowngradeAlgorithm.OUTPUT]

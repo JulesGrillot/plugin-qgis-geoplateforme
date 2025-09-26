@@ -9,6 +9,10 @@ GPF_PLUGIN_LIST: list[str] = [
     "gpf_isochrone_isodistance_itineraire",
 ]
 
+cartes_gouv_template_url = {
+    "document": "https://cartes.gouv.fr/entrepot/{datastore_id}/donnees/{dataset_name}?activeTab=documents"
+}
+
 metadata_topic_categories = {
     "biota": "Biologie, faune et flore",
     "boundaries": "Limites politiques et administratives",

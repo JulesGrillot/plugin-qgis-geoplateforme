@@ -44,6 +44,7 @@ from geoplateforme.api.stored_data import (
     StoredDataType,
 )
 from geoplateforme.api.upload import Upload, UploadRequestManager
+from geoplateforme.constants import cartes_gouv_template_url
 from geoplateforme.gui.dashboard.dlg_stored_data_details import StoredDataDetailsDialog
 from geoplateforme.gui.dashboard.wdg_service_details import ServiceDetailsWidget
 from geoplateforme.gui.dashboard.wdg_upload_details import UploadDetailsWidget
@@ -196,7 +197,9 @@ class DashboardWidget(QWidget):
         """Open document URL on webbrowser"""
         datastore_id = self.cbx_datastore.current_datastore_id()
         dataset_name = self.cbx_dataset.current_dataset_name()
-        documents_url = f"https://cartes.gouv.fr/entrepot/{datastore_id}/donnees/{dataset_name}?activeTab=documents"
+        documents_url = cartes_gouv_template_url["document"]
+        documents_url = documents_url.replace("{datastore_id}", datastore_id)
+        documents_url = documents_url.replace("{dataset_name}", dataset_name)
         webbrowser.open(documents_url)
 
     def _init_table_view(

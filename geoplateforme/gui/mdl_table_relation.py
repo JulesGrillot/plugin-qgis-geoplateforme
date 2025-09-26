@@ -1,4 +1,4 @@
-from qgis.PyQt.QtCore import QObject, Qt
+from qgis.PyQt.QtCore import QModelIndex, QObject, Qt
 
 # plugin
 from geoplateforme.api.custom_exceptions import ReadStoredDataException
@@ -26,6 +26,33 @@ class TableRelationTreeModel(CheckStateModel):
         self.log = PlgLogger().log
         self.setHorizontalHeaderLabels([self.tr("Name"), self.tr("Attribute type")])
         self.check_state_enabled = True
+
+    def flags(self, index: QModelIndex) -> Qt.ItemFlags:
+        """
+        Override QStandardItemModel flags.
+
+        Args:
+            index: QModelIndex
+
+        Returns: index flags
+
+        """
+        # All item should be checkable
+        flags = super().flags(index)
+        parent = index.parent()
+        if not parent.isValid():
+            name_value = self.data(
+                self.index(index.row(), self.NAME_COL),
+                Qt.ItemDataRole.DisplayRole,
+            )
+            if name_value:
+                if not name_value[0] == "_" and not name_value[0].isalpha():
+                    flags = flags & ~Qt.ItemFlag.ItemIsEnabled
+        else:
+            if not self.flags(parent) & Qt.ItemFlag.ItemIsEnabled:
+                flags = flags & ~Qt.ItemFlag.ItemIsEnabled
+
+        return flags
 
     def set_stored_data(self, datastore: str, stored_data: str) -> None:
         """

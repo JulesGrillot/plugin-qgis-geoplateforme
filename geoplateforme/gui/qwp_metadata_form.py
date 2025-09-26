@@ -1,5 +1,6 @@
 # standard
 import os
+import re
 
 # PyQGIS
 from qgis.PyQt import uic
@@ -105,7 +106,14 @@ class MetadataFormPageWizard(QWizardPage):
             },
             {
                 "field": self.wdg_metadata.le_unique_id,
-                "not_valid": len(self.wdg_metadata.le_unique_id.text()) == 0,
+                "not_valid": len(
+                    re.findall(
+                        r"^[A-Za-z_][A-Za-z0-9_.-]*$",
+                        self.wdg_metadata.le_unique_id.text(),
+                    )
+                )
+                == 0
+                and not self.wdg_metadata.le_unique_id.isReadOnly(),
             },
             {
                 "field": self.wdg_metadata.le_org_name,

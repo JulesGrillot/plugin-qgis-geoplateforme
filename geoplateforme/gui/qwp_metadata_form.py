@@ -112,7 +112,8 @@ class MetadataFormPageWizard(QWizardPage):
                         self.wdg_metadata.le_unique_id.text(),
                     )
                 )
-                == 0,
+                == 0
+                and not self.wdg_metadata.le_unique_id.isReadOnly(),
             },
             {
                 "field": self.wdg_metadata.le_org_name,

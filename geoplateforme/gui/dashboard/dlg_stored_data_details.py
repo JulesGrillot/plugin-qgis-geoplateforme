@@ -1,11 +1,6 @@
 import os
 
-from qgis.core import (
-    QgsApplication,
-    QgsProcessingContext,
-    QgsProcessingFeedback,
-    QgsProject,
-)
+from qgis.core import QgsApplication, QgsProject
 from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtCore import QSize, Qt, pyqtSignal
 from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon, QPixmap
@@ -59,6 +54,7 @@ from geoplateforme.gui.wmts_publication.wzd_publication_creation import (
 from geoplateforme.processing import GeoplateformeProvider
 from geoplateforme.processing.tools.delete_stored_data import DeleteStoredDataAlgorithm
 from geoplateforme.toolbelt import PlgLogger
+from geoplateforme.toolbelt.dlg_processing_run import ProcessingRunDialog
 
 
 class StoredDataDetailsDialog(QDialog):
@@ -300,7 +296,9 @@ class StoredDataDetailsDialog(QDialog):
         reply = QMessageBox.question(
             self,
             self.tr("Suppression donnée stockée"),
-            self.tr("Êtes-vous sûr de vouloir supprimer la donnée stockée ?"),
+            self.tr(
+                "Êtes-vous sûr de vouloir supprimer la donnée stockée ?\nLes services associés seront dépubliés."
+            ),
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
             QMessageBox.StandardButton.No,
         )
@@ -313,10 +311,14 @@ class StoredDataDetailsDialog(QDialog):
             algo_str = (
                 f"{GeoplateformeProvider().id()}:{DeleteStoredDataAlgorithm().name()}"
             )
-            alg = QgsApplication.processingRegistry().algorithmById(algo_str)
-            context = QgsProcessingContext()
-            feedback = QgsProcessingFeedback()
-            _, success = alg.run(parameters=params, context=context, feedback=feedback)
+            run_dialog = ProcessingRunDialog(
+                alg_name=algo_str,
+                params=params,
+                title=self.tr("Delete stored data {}").format(self._stored_data.name),
+                parent=self,
+            )
+            run_dialog.exec()
+            success, _ = run_dialog.processing_results()
             if success:
                 self.stored_data_deleted.emit(self._stored_data._id)
             else:
@@ -324,7 +326,7 @@ class StoredDataDetailsDialog(QDialog):
                     self,
                     self.tr("Suppression donnée stockée"),
                     self.tr("La donnée stockée n'a pas pu être supprimée:\n {}").format(
-                        feedback.textLog()
+                        run_dialog.get_feedback().textLog()
                     ),
                 )
 

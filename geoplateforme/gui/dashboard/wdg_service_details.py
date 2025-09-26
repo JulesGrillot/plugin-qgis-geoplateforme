@@ -352,8 +352,9 @@ class ServiceDetailsWidget(QWidget):
         return result
 
     def _offering_map_layer(self, authid: str | None = None) -> Optional[QgsMapLayer]:
-        urls = [val["url"] for val in self._offering.urls if val["type"] == "WFS"]
+        urls = self._offering.urls
         if self._offering.type == ConfigurationType.WFS:
+            urls = [val["url"] for val in self._offering.urls if val["type"] == "WFS"]
             if len(urls) > 0:
                 layers = []
                 styles = []

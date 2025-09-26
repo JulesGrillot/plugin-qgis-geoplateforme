@@ -1,15 +1,10 @@
 import os
 import webbrowser
 from time import sleep
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 # PyQGIS
-from qgis.core import (
-    QgsApplication,
-    QgsProcessingContext,
-    QgsProcessingFeedback,
-    QgsTask,
-)
+from qgis.core import QgsApplication, QgsTask
 from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtCore import QAbstractItemModel, QItemSelectionModel, QModelIndex, Qt
 from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon
@@ -60,6 +55,7 @@ from geoplateforme.processing.tools.delete_offering import DeleteOfferingAlgorit
 from geoplateforme.processing.tools.delete_stored_data import DeleteStoredDataAlgorithm
 from geoplateforme.processing.tools.delete_upload import DeleteUploadAlgorithm
 from geoplateforme.toolbelt import PlgLogger
+from geoplateforme.toolbelt.dlg_processing_run import ProcessingRunDialog
 
 
 class DashboardWidget(QWidget):
@@ -497,25 +493,36 @@ class DashboardWidget(QWidget):
         :rtype: bool
         """
         # Delete offering
+        offering_list_by_datastore: Dict[str, List[str]] = {}
         for offering in offering_list:
+            if offering.datastore_id in offering_list_by_datastore:
+                offering_list_by_datastore[offering.datastore_id].append(offering._id)
+            else:
+                offering_list_by_datastore[offering.datastore_id] = [offering._id]
+
+        for datastore_id, offerring_ids in offering_list_by_datastore.items():
             params = {
-                DeleteOfferingAlgorithm.DATASTORE: offering.datastore_id,
-                DeleteOfferingAlgorithm.OFFERING: offering._id,
+                DeleteOfferingAlgorithm.DATASTORE: datastore_id,
+                DeleteOfferingAlgorithm.OFFERING: ",".join(offerring_ids),
             }
 
             algo_str = (
                 f"{GeoplateformeProvider().id()}:{DeleteOfferingAlgorithm().name()}"
             )
-            alg = QgsApplication.processingRegistry().algorithmById(algo_str)
-            context = QgsProcessingContext()
-            feedback = QgsProcessingFeedback()
-            _, success = alg.run(parameters=params, context=context, feedback=feedback)
+            run_dialog = ProcessingRunDialog(
+                alg_name=algo_str,
+                params=params,
+                title=self.tr("Unpublish services"),
+                parent=self,
+            )
+            run_dialog.exec()
+            success, _ = run_dialog.processing_results()
             if not success:
                 QMessageBox.critical(
                     self,
                     self.tr("Suppression impossible"),
                     self.tr("Un service n'a pas pu être dépublié :\n {}").format(
-                        feedback.textLog()
+                        run_dialog.get_feedback().textLog()
                     ),
                 )
                 return False
@@ -563,17 +570,21 @@ class DashboardWidget(QWidget):
             algo_str = (
                 f"{GeoplateformeProvider().id()}:{DeleteStoredDataAlgorithm().name()}"
             )
-            alg = QgsApplication.processingRegistry().algorithmById(algo_str)
-            context = QgsProcessingContext()
-            feedback = QgsProcessingFeedback()
-            _, success = alg.run(parameters=params, context=context, feedback=feedback)
+            run_dialog = ProcessingRunDialog(
+                alg_name=algo_str,
+                params=params,
+                title=self.tr("Delete stored data"),
+                parent=self,
+            )
+            run_dialog.exec()
+            success, _ = run_dialog.processing_results()
             if not success:
                 QMessageBox.critical(
                     self,
                     self.tr("Suppression impossible"),
                     self.tr(
                         "Une données stockées n'a pas pu être supprimée :\n {}"
-                    ).format(feedback.textLog()),
+                    ).format(run_dialog.get_feedback().textLog()),
                 )
                 return False
         return True
@@ -617,16 +628,20 @@ class DashboardWidget(QWidget):
             algo_str = (
                 f"{GeoplateformeProvider().id()}:{DeleteUploadAlgorithm().name()}"
             )
-            alg = QgsApplication.processingRegistry().algorithmById(algo_str)
-            context = QgsProcessingContext()
-            feedback = QgsProcessingFeedback()
-            _, success = alg.run(parameters=params, context=context, feedback=feedback)
+            run_dialog = ProcessingRunDialog(
+                alg_name=algo_str,
+                params=params,
+                title=self.tr("Delete upload"),
+                parent=self,
+            )
+            run_dialog.exec()
+            success, _ = run_dialog.processing_results()
             if not success:
                 QMessageBox.critical(
                     self,
                     self.tr("Suppression impossible"),
                     self.tr("Une livraison n'a pas pu être supprimée :\n {}").format(
-                        feedback.textLog()
+                        run_dialog.get_feedback().textLog()
                     ),
                 )
                 return False

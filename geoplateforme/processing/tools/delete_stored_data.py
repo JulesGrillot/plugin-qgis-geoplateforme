@@ -1,9 +1,9 @@
 # standard
 
 # PyQGIS
-from time import sleep
 
 from qgis.core import (
+    QgsApplication,
     QgsProcessingAlgorithm,
     QgsProcessingException,
     QgsProcessingParameterString,
@@ -11,15 +11,13 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication
 
 # Plugin
-from geoplateforme.api.configuration import ConfigurationRequestManager
 from geoplateforme.api.custom_exceptions import (
     DeleteStoredDataException,
-    ReadOfferingException,
-    UnavailableConfigurationException,
     UnavailableOfferingsException,
 )
-from geoplateforme.api.offerings import OfferingsRequestManager, OfferingStatus
+from geoplateforme.api.offerings import OfferingsRequestManager
 from geoplateforme.api.stored_data import StoredDataRequestManager
+from geoplateforme.processing.tools.delete_offering import DeleteOfferingAlgorithm
 from geoplateforme.processing.utils import get_short_string, get_user_manual_url
 
 
@@ -90,69 +88,18 @@ class DeleteStoredDataAlgorithm(QgsProcessingAlgorithm):
             raise QgsProcessingException(
                 self.tr("Erreur lors de la récupération des offerings : {}").format(exc)
             ) from exc
-        try:
-            feedback.pushInfo(self.tr("Récupération des configurations"))
-            configuration_id_manager = ConfigurationRequestManager()
-            configuration_ids = configuration_id_manager.get_configurations_id(
-                datastore_id, stored_data_id
-            )
-        except UnavailableConfigurationException as exc:
-            raise QgsProcessingException(
-                self.tr(
-                    "Erreur lors de la récupération des configurations : {}"
-                ).format(exc)
-            ) from exc
 
-        if len(offering_ids) != 0:
-            try:
-                feedback.pushInfo(self.tr("Suppression des offerings"))
-                for offering_id in offering_ids:
-                    offering_id_manager.delete_offering(datastore_id, offering_id)
+        feedback.pushInfo(self.tr("Delete offerings"))
+        algo_str = f"geoplateforme:{DeleteOfferingAlgorithm().name()}"
+        alg = QgsApplication.processingRegistry().algorithmById(algo_str)
+        params = {
+            DeleteOfferingAlgorithm.DATASTORE: datastore_id,
+            DeleteOfferingAlgorithm.OFFERING: ",".join(offering_ids),
+        }
+        _, successful = alg.run(params, context, feedback)
+        if not successful:
+            raise QgsProcessingException(self.tr("Offering delete failed"))
 
-            except UnavailableOfferingsException as exc:
-                raise QgsProcessingException(
-                    self.tr("Erreur lors de la suppression des offerings : {}").format(
-                        exc
-                    )
-                ) from exc
-
-            feedback.pushInfo(self.tr("Attente déplublication des offerings"))
-
-            nb_unpublished_offering = 0
-            while nb_unpublished_offering != len(offering_ids):
-                nb_unpublished_offering = 0
-                for offering_id in offering_ids:
-                    try:
-                        offering = offering_id_manager.get_offering(
-                            datastore=datastore_id, offering=offering_id
-                        )
-                    except ReadOfferingException:
-                        nb_unpublished_offering += 1
-                        continue
-
-                    if offering.status != OfferingStatus.UNPUBLISHING:
-                        raise QgsProcessingException(
-                            self.tr(
-                                "L'offering {} n'est pas en cours de dépublication. La suppression de la donnée stockée est annulée."
-                            ).format(offering_id)
-                        )
-                if nb_unpublished_offering != len(offering_ids):
-                    sleep(1)
-
-        if len(configuration_ids) != 0:
-            try:
-                feedback.pushInfo(self.tr("Suppression des configurations"))
-                for configuration_id in configuration_ids:
-                    configuration_id_manager.delete_configuration(
-                        datastore_id, configuration_id
-                    )
-
-            except UnavailableConfigurationException as exc:
-                raise QgsProcessingException(
-                    self.tr(
-                        "Erreur lors de la suppression des configurations : {}"
-                    ).format(exc)
-                ) from exc
         try:
             feedback.pushInfo(self.tr("Suppression de la donnée stockée"))
             manager_stored = StoredDataRequestManager()

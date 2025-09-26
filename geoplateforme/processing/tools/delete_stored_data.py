@@ -89,16 +89,17 @@ class DeleteStoredDataAlgorithm(QgsProcessingAlgorithm):
                 self.tr("Erreur lors de la récupération des offerings : {}").format(exc)
             ) from exc
 
-        feedback.pushInfo(self.tr("Delete offerings"))
-        algo_str = f"geoplateforme:{DeleteOfferingAlgorithm().name()}"
-        alg = QgsApplication.processingRegistry().algorithmById(algo_str)
-        params = {
-            DeleteOfferingAlgorithm.DATASTORE: datastore_id,
-            DeleteOfferingAlgorithm.OFFERING: ",".join(offering_ids),
-        }
-        _, successful = alg.run(params, context, feedback)
-        if not successful:
-            raise QgsProcessingException(self.tr("Offering delete failed"))
+        if len(offering_ids) != 0:
+            feedback.pushInfo(self.tr("Delete offerings"))
+            algo_str = f"geoplateforme:{DeleteOfferingAlgorithm().name()}"
+            alg = QgsApplication.processingRegistry().algorithmById(algo_str)
+            params = {
+                DeleteOfferingAlgorithm.DATASTORE: datastore_id,
+                DeleteOfferingAlgorithm.OFFERING: ",".join(offering_ids),
+            }
+            _, successful = alg.run(params, context, feedback)
+            if not successful:
+                raise QgsProcessingException(self.tr("Offering delete failed"))
 
         try:
             feedback.pushInfo(self.tr("Suppression de la donnée stockée"))

@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import webbrowser
 from tempfile import NamedTemporaryFile
 from typing import Optional
 
@@ -29,6 +30,7 @@ from qgis.PyQt.QtWidgets import (
 from geoplateforme.__about__ import DIR_PLUGIN_ROOT
 from geoplateforme.api.configuration import ConfigurationType
 from geoplateforme.api.offerings import Offering, OfferingStatus
+from geoplateforme.constants import cartes_gouv_template_url
 from geoplateforme.gui.create_raster_tiles_from_wms_vector.wzd_raster_tiles_from_wms_vector import (
     TileRasterCreationWizard,
 )
@@ -72,7 +74,28 @@ class ServiceDetailsWidget(QWidget):
 
         self.gpb_permissions.setVisible(False)
 
+        self.btn_view_style.clicked.connect(self._open_view_style_url)
+        self.btn_add_style.clicked.connect(self._open_create_style_url)
+
         self.tile_raster_generation_wizard = None
+
+    def _open_view_style_url(self) -> None:
+        """Open view style URL on webbrowser"""
+        self._open_style_url(cartes_gouv_template_url["view_style"])
+
+    def _open_create_style_url(self) -> None:
+        """Open create style URL on webbrowser"""
+        self._open_style_url(cartes_gouv_template_url["create_style"])
+
+    def _open_style_url(self, template_url: str) -> None:
+        """Open document URL on webbrowser"""
+        datastore_id = self._offering.datastore_id
+        dataset_name = self._dataset_name
+        offering_id = self._offering._id
+        url = template_url.replace("{datastore_id}", datastore_id)
+        url = url.replace("{dataset_name}", dataset_name)
+        url = url.replace("{offering_id}", offering_id)
+        webbrowser.open(url)
 
     def set_offering(self, offering: Offering, dataset_name: str) -> None:
         """

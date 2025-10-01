@@ -16,7 +16,7 @@
     <message>
         <location filename="../../gui/publication/qwp_abstract_publish_service.py" line="133"/>
         <source>Métadonnée créé avec succès</source>
-        <translation>Métadonnée créé avec succès</translation>
+        <translation>Métadonnée créée avec succès</translation>
     </message>
     <message>
         <location filename="../../gui/publication/qwp_abstract_publish_service.py" line="189"/>
@@ -928,7 +928,7 @@ Les éléments suivants seront supprimés:</translation>
     </message>
     <message>
         <location filename="../../gui/dashboard/wdg_dashboard.ui" line="309"/>
-        <source>Open in carte.gouv</source>
+        <source>Open in cartes.gouv</source>
         <translation type="unfinished">Ouvrir dans cartes.gouv</translation>
     </message>
 </context>
@@ -2709,12 +2709,12 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
     <message>
         <location filename="../../gui/report/dlg_report.py" line="186"/>
         <source>Waiting for data creation. You will find above technical information about executing processing.</source>
-        <translation>En attente de la création de données. Vous trouverez des informations techniques ci-dessus sur l&apos;exécution du traitement.</translation>
+        <translation>En attente de la création de données. Vous trouverez des informations techniques ci-dessous sur l&apos;exécution du traitement.</translation>
     </message>
     <message>
         <location filename="../../gui/report/dlg_report.py" line="204"/>
         <source>Data is generating. You will find above technical information about executing processing.</source>
-        <translation>Les données sont en cours de génération. Vous trouverez des informations techniques ci-dessus sur l&apos;exécution du traitement.</translation>
+        <translation>Les données sont en cours de génération. Vous trouverez des informations techniques ci-dessous sur l&apos;exécution du traitement.</translation>
     </message>
     <message>
         <location filename="../../gui/report/dlg_report.py" line="210"/>
@@ -2729,7 +2729,7 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
     <message>
         <location filename="../../gui/report/dlg_report.py" line="213"/>
         <source> You will find above technical information about executed processing.</source>
-        <translation> Vous trouverez des informations techniques ci-dessus sur le traitement exécuté.</translation>
+        <translation> Vous trouverez des informations techniques ci-dessous sur le traitement exécuté.</translation>
     </message>
     <message>
         <location filename="../../gui/report/dlg_report.py" line="196"/>
@@ -2744,7 +2744,7 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
     <message>
         <location filename="../../gui/report/dlg_report.py" line="199"/>
         <source> You will find above technical information about processing executed and encountered problem.</source>
-        <translation> Vous trouverez des informations techniques ci-dessus sur le traitement exécuté et les problèmes rencontrés.</translation>
+        <translation> Vous trouverez des informations techniques ci-dessous sur le traitement exécuté et les problèmes rencontrés.</translation>
     </message>
     <message>
         <location filename="../../gui/report/dlg_report.ui" line="128"/>
@@ -2975,7 +2975,7 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
     <message>
         <location filename="../../gui/dashboard/wdg_service_details.py" line="309"/>
         <source> You will find above technical information about processing executed and encountered problem.</source>
-        <translation> Vous trouverez des informations techniques ci-dessus sur le traitement exécuté et rencontré un problème.</translation>
+        <translation> Vous trouverez des informations techniques ci-dessous sur le traitement exécuté et le problème rencontré.</translation>
     </message>
     <message>
         <location filename="../../gui/dashboard/wdg_service_details.py" line="314"/>
@@ -3158,7 +3158,7 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
     <message>
         <location filename="../../gui/storage/dlg_storage_report.ui" line="143"/>
         <source>This space is used by Geoplateforme for vector tiles pyramid file storage.</source>
-        <translation>Cet espace est utilisé par GeoPlateForse pour le stockage de fichiers pyramides de carreaux vectoriels.</translation>
+        <translation>Cet espace est utilisé par GeoPlateForse pour le stockage de fichiers pyramides de tuiles vectorielles.</translation>
     </message>
     <message>
         <location filename="../../gui/storage/dlg_storage_report.ui" line="206"/>
@@ -3288,12 +3288,12 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
     <message>
         <location filename="../../gui/dashboard/dlg_stored_data_details.py" line="658"/>
         <source>Waiting for data creation. You will find above technical information about executing processing.</source>
-        <translation>En attente de la création de données. Vous trouverez des informations techniques ci-dessus sur l&apos;exécution du traitement.</translation>
+        <translation>En attente de la création de données. Vous trouverez des informations techniques ci-dessous sur l&apos;exécution du traitement.</translation>
     </message>
     <message>
         <location filename="../../gui/dashboard/dlg_stored_data_details.py" line="676"/>
         <source>Data is generating. You will find above technical information about executing processing.</source>
-        <translation>Les données sont en cours de génération. Vous trouverez des informations techniques ci-dessus sur l&apos;exécution du traitement.</translation>
+        <translation>Les données sont en cours de génération. Vous trouverez des informations techniques ci-dessous sur l&apos;exécution du traitement.</translation>
     </message>
     <message>
         <location filename="../../gui/dashboard/dlg_stored_data_details.py" line="668"/>
@@ -3303,12 +3303,12 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
     <message>
         <location filename="../../gui/dashboard/dlg_stored_data_details.py" line="670"/>
         <source>Tile creation failed.</source>
-        <translation>La création de tuiles a échoué.</translation>
+        <translation>La création de la base de données a échoué.</translation>
     </message>
     <message>
         <location filename="../../gui/dashboard/dlg_stored_data_details.py" line="671"/>
         <source> You will find above technical information about processing executed and encountered problem.</source>
-        <translation> Vous trouverez des informations techniques ci-dessus sur le traitement exécuté et le problème rencontré.</translation>
+        <translation> Vous trouverez des informations techniques ci-dessous sur le traitement exécuté et le problème rencontré.</translation>
     </message>
     <message>
         <location filename="../../gui/dashboard/dlg_stored_data_details.py" line="682"/>
@@ -3323,7 +3323,7 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
     <message>
         <location filename="../../gui/dashboard/dlg_stored_data_details.py" line="685"/>
         <source> You will find above technical information about executed processing.</source>
-        <translation> Vous trouverez des informations techniques ci-dessus sur le traitement exécuté.</translation>
+        <translation> Vous trouverez des informations techniques ci-dessous sur le traitement exécuté.</translation>
     </message>
 </context>
 <context>
@@ -3489,7 +3489,7 @@ Ce type est adapté pour une utilisation dans un logiciel SIG ou tout outil néc
     <message>
         <location filename="../../processing/generation/tile_creation.py" line="377"/>
         <source>Tile creation failed. Check report in dashboard for more details.</source>
-        <translation>La création de carreaux a échoué. Vérifiez le rapport dans le tableau de bord pour plus de détails.</translation>
+        <translation>La création de tuiles a échoué. Vérifiez le rapport dans le tableau de bord pour plus de détails.</translation>
     </message>
     <message>
         <location filename="../../processing/generation/tile_creation.py" line="76"/>
@@ -4363,12 +4363,12 @@ Vous pouvez fermer la fenêtre pendant la génération.</translation>
     <message>
         <location filename="../../gui/dashboard/wdg_upload_details.py" line="262"/>
         <source>Waiting for data creation. You will find above technical information about executing processing.</source>
-        <translation>En attente de la création de données. Vous trouverez des informations techniques ci-dessus sur l&apos;exécution du traitement.</translation>
+        <translation>En attente de la création de données. Vous trouverez des informations techniques ci-dessous sur l&apos;exécution du traitement.</translation>
     </message>
     <message>
         <location filename="../../gui/dashboard/wdg_upload_details.py" line="277"/>
         <source>Data is generating. You will find above technical information about executing processing.</source>
-        <translation>Les données sont en cours de génération. Vous trouverez des informations techniques ci-dessus sur l&apos;exécution du traitement.</translation>
+        <translation>Les données sont en cours de génération. Vous trouverez des informations techniques ci-dessous sur l&apos;exécution du traitement.</translation>
     </message>
     <message>
         <location filename="../../gui/dashboard/wdg_upload_details.py" line="271"/>
@@ -4378,7 +4378,7 @@ Vous pouvez fermer la fenêtre pendant la génération.</translation>
     <message>
         <location filename="../../gui/dashboard/wdg_upload_details.py" line="272"/>
         <source> You will find above technical information about processing executed and encountered problem.</source>
-        <translation> Vous trouverez des informations techniques ci-dessus sur le traitement exécuté et rencontré un problème.</translation>
+        <translation> Vous trouverez des informations techniques ci-dessous sur le traitement exécuté et rencontré un problème.</translation>
     </message>
     <message>
         <location filename="../../gui/dashboard/wdg_upload_details.py" line="281"/>
@@ -4388,7 +4388,7 @@ Vous pouvez fermer la fenêtre pendant la génération.</translation>
     <message>
         <location filename="../../gui/dashboard/wdg_upload_details.py" line="282"/>
         <source> You will find above technical information about executed processing.</source>
-        <translation> Vous trouverez des informations techniques ci-dessus sur le traitement exécuté.</translation>
+        <translation> Vous trouverez des informations techniques ci-dessous sur le traitement exécuté.</translation>
     </message>
 </context>
 <context>
@@ -4421,7 +4421,7 @@ Vous pouvez fermer la fenêtre pendant la génération.</translation>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="47"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Check the attributes you want to keep in your vector tile flow. These attributes will be accessible to your users when they click on a map. By limiting the number of attributes, you can lighten the volume of the tiles and improve the fluidity of the display. Keep only the attributes that are useful to your users. If you don&apos;t keep any attributes, your vector tiles will only contain geometry and symbolization possibilities will be limited.&lt;span style=&quot; font-weight:600;&quot;&gt;&lt;br/&gt;Warning only table name who start with &apos;_&apos; or letter are compatible with tile generation&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Vérifiez les attributs que vous souhaitez conserver dans le flux de tuiles vectoriel. Ces attributs seront accessibles à vos utilisateurs lorsqu&apos;ils cliqueront sur une carte. En limitant le nombre d&apos;attributs, vous pouvez alléger le volume des carreaux et améliorer la fluidité de l&apos;affichage. Gardez uniquement les attributs utiles à vos utilisateurs. Si vous ne gardez aucun attribution, vos carreaux vectoriels ne contiendront que des possibilités de géométrie et de symbolisation seront limitées.&lt;span style=&quot; font-weight:600;&quot;&gt;&lt;br/&gt;Attention seules les tables dont le nom commence par &apos;_&apos; ou par une lettre sont compatibles avec la génération de tuiles&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Vérifiez les attributs que vous souhaitez conserver dans le flux de tuiles vectorielles. Ces attributs seront accessibles à vos utilisateurs lorsqu&apos;ils cliqueront sur une carte. En limitant le nombre d&apos;attributs, vous pouvez alléger le volume des tuiles et améliorer la fluidité de l&apos;affichage. Gardez uniquement les attributs utiles à vos utilisateurs.  Sans attributs conservés, les tuiles vectorielles ne contiendront que des géométries et les possibilités de symbolisation seront limitées ne contiendront que des possibilités de géométrie et de symbolisation seront limitées.&lt;span style=&quot; font-weight:600;&quot;&gt;&lt;br/&gt;Attention seules les tables dont le nom commence par &apos;_&apos; ou par une lettre sont compatibles avec la génération de tuiles&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../../gui/tile_creation/qwp_tile_generation_fields_selection.ui" line="26"/>
@@ -5487,7 +5487,7 @@ Valeurs séparées par ,</translation>
     <message>
         <location filename="../../gui/metadata/wdg_metadata_details.ui" line="71"/>
         <source>Thematics</source>
-        <translation>Thémes</translation>
+        <translation>Thèmes</translation>
     </message>
     <message>
         <location filename="../../gui/metadata/wdg_metadata_details.ui" line="78"/>

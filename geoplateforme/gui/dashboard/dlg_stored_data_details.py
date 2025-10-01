@@ -297,7 +297,7 @@ class StoredDataDetailsDialog(QDialog):
             self,
             self.tr("Suppression donnée stockée"),
             self.tr(
-                "Êtes-vous sûr de vouloir supprimer la donnée stockée ?\nLes services associés seront dépubliés."
+                "Êtes-vous sûr de vouloir supprimer la donnée stockée ?\nLes services et styles associés seront dépubliés."
             ),
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
             QMessageBox.StandardButton.No,

@@ -48,7 +48,8 @@ Vous devez décrire votre extension, son utilisation de la Géoplateforme et ind
 
 Une fois votre demande validée, voici les étapes nécessaires pour finaliser l'intégration dans l'extension Géoplateforme.
 
-#### Modifications dans le plugin Géoplateforme
+#### Modifications dans le plugin Géoplateforme 
+Les modifications décrites ci-dessous doivent faire l'objet de pull-requests proposées par vos soins
 
 1. Ajouter le plugin à la liste `plugin_dependencies` dans `geoplateforme/metadata.txt`
 
@@ -75,6 +76,7 @@ Une fois votre demande validée, voici les étapes nécessaires pour finaliser l
 #### Modifications à faire dans le plugin tiers
 
 Si vous souhaitez ajouter des actions de votre extension dans l'extension Géoplateforme, il est nécessaire d'ajouter la fonction `create_gpf_plugins_actions` dans la classe de votre extension.
+Cette fonction n'empêche pas une installation de votre plugin indépendamment du plugin Qgis Geoplateforme.
 
 Voici un exemple :
 

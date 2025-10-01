@@ -4616,7 +4616,7 @@ Vous pouvez fermer la fenêtre pendant la génération.</translation>
     <message>
         <location filename="../../gui/user/dlg_user.ui" line="54"/>
         <source>Disconnect</source>
-        <translation>Déconnection</translation>
+        <translation>Déconnexion</translation>
     </message>
     <message>
         <location filename="../../gui/user/dlg_user.py" line="38"/>

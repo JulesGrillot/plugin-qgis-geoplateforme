@@ -208,6 +208,9 @@ class TileGenerationStatusPageWizard(QWizardPage):
             [str(val) for val in reversed(range(top_level, bottom_level))]
         )
 
+        spp = self.qwp_tile_generation_edition.get_sample_per_pixel()
+        nodata = self.qwp_tile_generation_edition.get_no_data_value()
+
         params = {
             RasterTilesFromWmsVectorAlgorithm.DATASTORE: datastore_id,
             RasterTilesFromWmsVectorAlgorithm.HARVEST_LAYERS: layer_name,
@@ -217,6 +220,8 @@ class TileGenerationStatusPageWizard(QWizardPage):
             RasterTilesFromWmsVectorAlgorithm.TOP: top_level,
             RasterTilesFromWmsVectorAlgorithm.HARVEST_LEVELS: harvest_levels_str,
             RasterTilesFromWmsVectorAlgorithm.HARVEST_AREA: harvest_area,
+            RasterTilesFromWmsVectorAlgorithm.SAMPLES_PER_PIXEL: spp,
+            RasterTilesFromWmsVectorAlgorithm.NODATA: nodata,
             RasterTilesFromWmsVectorAlgorithm.WAIT_FOR_GENERATION: False,
             RasterTilesFromWmsVectorAlgorithm.TAGS: tags_to_qgs_parameter_matrix_string(
                 {"datasheet_name": dataset_name}

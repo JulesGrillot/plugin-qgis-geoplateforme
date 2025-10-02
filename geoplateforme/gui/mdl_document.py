@@ -1,7 +1,7 @@
 import json
 from typing import Optional
 
-from qgis.PyQt.QtCore import QObject
+from qgis.PyQt.QtCore import QObject, Qt
 from qgis.PyQt.QtGui import QStandardItemModel
 
 from geoplateforme.api.annexes import (
@@ -78,6 +78,7 @@ class DocumentListModel(QStandardItemModel):
         row = self.rowCount()
         self.insertRow(row)
 
+        self.setData(self.index(row, self.NAME_COL), document, Qt.ItemDataRole.UserRole)
         self.setData(self.index(row, self.NAME_COL), document["name"])
         self.setData(self.index(row, self.DESCRIPTION_COL), document["description"])
         self.setData(self.index(row, self.TYPE_COL), document["type"])

@@ -257,8 +257,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>157</width>
-             <height>478</height>
+             <width>98</width>
+             <height>88</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_6">
@@ -284,7 +284,7 @@
              <x>0</x>
              <y>0</y>
              <width>498</width>
-             <height>478</height>
+             <height>28</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_7">
@@ -314,6 +314,13 @@
         <widget class="QTableView" name="tbv_document">
          <property name="selectionBehavior">
           <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Double click to open document in browser</string>
          </property>
         </widget>
        </item>

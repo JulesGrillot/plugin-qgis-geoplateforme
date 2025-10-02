@@ -174,7 +174,7 @@ class RasterTilesFromWmsVectorAlgorithm(QgsProcessingAlgorithm):
                 name=self.COMPRESSION,
                 description=self.tr("Compression des données en sortie."),
                 options=self.COMPRESSION_ENUM,
-                defaultValue="jpg",
+                defaultValue="png",
             )
         )
 
@@ -223,6 +223,14 @@ class RasterTilesFromWmsVectorAlgorithm(QgsProcessingAlgorithm):
         )
 
         self.addParameter(
+            QgsProcessingParameterString(
+                self.NODATA,
+                self.tr("Valeur d'un pixel sans données. Exemple : '255, 255, 255'"),
+                optional=True,
+            )
+        )
+
+        self.addParameter(
             QgsProcessingParameterNumber(
                 name=self.PARALLELIZATION,
                 description=self.tr("Nombre de thread pour la génération."),
@@ -248,7 +256,6 @@ class RasterTilesFromWmsVectorAlgorithm(QgsProcessingAlgorithm):
         )
 
         # TODO : gestion dimension : HARVEST_DIMENSION = "HARVEST_DIMENSION"
-        # TODO : gestion nodata NODATA = "NODATA"
 
         self.addOutput(
             QgsProcessingOutputString(
@@ -347,6 +354,12 @@ class RasterTilesFromWmsVectorAlgorithm(QgsProcessingAlgorithm):
                 parameters["harvest_extras"] = f"{harvest_extra_str}&transparent=true"
             else:
                 parameters["harvest_extras"] = "transparent=true"
+
+            # Add nodata value
+            nodata_str = self.parameterAsString(parameters, self.NODATA, context)
+            if nodata_str:
+                nodata = [val.strip() for val in nodata_str.split(",")]
+                parameters["nodata"] = nodata
 
             # Create execution
             data_map = {

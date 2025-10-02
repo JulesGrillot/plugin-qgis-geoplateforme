@@ -119,7 +119,10 @@ class UploadCreationWidget(QWidget):
         Returns: True if content is valid, False otherwise
 
         """
-        valid = self._check_input_layers()
+        if self.cb_check_data.isChecked():
+            valid = self._check_input_layers()
+        else:
+            valid = True
 
         if valid and len(self.lne_dataset.text()) == 0:
             valid = False

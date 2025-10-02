@@ -321,11 +321,12 @@ class ProviderDialog(QgsAbstractDataSourceWidget):
                 if authid is not None:
                     url += f"&authcfg={authid}"
                 layer = QgsVectorLayer(url, result["title"], "WFS")
-                dlg_sub_wfs = QgsGui.subsetStringEditorProviderRegistry().createDialog(
-                    layer
-                )
-                if not dlg_sub_wfs.exec():
-                    layer = None
+                if layer.isValid():
+                    dlg_sub_wfs = (
+                        QgsGui.subsetStringEditorProviderRegistry().createDialog(layer)
+                    )
+                    if not dlg_sub_wfs.exec():
+                        layer = None
 
         if layer is not None:
             if layer.isValid():

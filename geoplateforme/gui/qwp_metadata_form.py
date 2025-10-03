@@ -108,7 +108,7 @@ class MetadataFormPageWizard(QWizardPage):
                 "field": self.wdg_metadata.le_unique_id,
                 "not_valid": len(
                     re.findall(
-                        r"^[A-Za-z_][A-Za-z0-9_.-]*$",
+                        r"^[\w.-]+$",
                         self.wdg_metadata.le_unique_id.text(),
                     )
                 )

@@ -49,15 +49,18 @@ Vous devez décrire votre extension, son utilisation de la Géoplateforme et ind
 Une fois votre demande validée, voici les étapes nécessaires pour finaliser l'intégration dans l'extension Géoplateforme.
 
 #### Modifications dans le plugin Géoplateforme
+
 Les modifications décrites ci-dessous doivent faire l'objet de pull-requests proposées par vos soins
 
 1. Ajouter le plugin à la liste `plugin_dependencies` dans `geoplateforme/metadata.txt`
 
     ```ini
-    plugin_dependencies=French Locator Filter,GPF - Isochrone Isodistance Itinéraire, Mon extension géoplateforme
+    plugin_dependencies=French Locator Filter>=1.4.1,GPF - Isochrone Isodistance Itinéraire>=0.5.0, Mon extension géoplateforme>=x.y.z
     ```
 
     Cela correspond au nom affiché dans la recherche des extensions QGIS, défini dans la balise `name` de votre `metadata.txt`.
+
+    Il est préférable d'indiquer le numéro de version minimale pour l'intégration dans le plugin Géoplateforme.
 
 1. Ajout du nom technique de votre plugin dans la constante `GPF_PLUGIN_LIST` dans `geoplateforme/constants.py`
 

@@ -17,39 +17,6 @@
    <locale language="English" country="UnitedStates"/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="4" column="0" rowspan="2">
-    <widget class="QLabel" name="lbl_zoom">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Max and min zoom levels:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1" colspan="3">
-    <widget class="QgsScaleRangeWidget" name="srw_zoom">
-     <property name="cursor">
-      <cursorShape>ArrowCursor</cursorShape>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QLabel" name="lbl_min_zoom">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string notr="true">&lt;min_zoom&gt;</string>
-     </property>
-    </widget>
-   </item>
    <item row="4" column="3">
     <widget class="QLabel" name="lbl_max_zoom">
      <property name="sizePolicy">
@@ -63,12 +30,54 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="2">
-    <widget class="RangeSlider" name="levels_range_slider" native="true">
+   <item row="5" column="1" colspan="3">
+    <widget class="QgsScaleRangeWidget" name="srw_zoom">
      <property name="cursor">
-      <cursorShape>ClosedHandCursor</cursorShape>
+      <cursorShape>ArrowCursor</cursorShape>
      </property>
     </widget>
+   </item>
+   <item row="2" column="1" colspan="3">
+    <widget class="QLineEdit" name="lne_name">
+     <property name="inputMethodHints">
+      <set>Qt::ImhLatinOnly</set>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="dragEnabled">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0" colspan="3">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="4" column="0" rowspan="2">
+    <widget class="QLabel" name="lbl_zoom">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Max and min zoom levels:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1" colspan="3">
+    <widget class="QLineEdit" name="lne_api_key"/>
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="lbl_name">
@@ -86,16 +95,23 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1" colspan="3">
-    <widget class="QLineEdit" name="lne_name">
-     <property name="inputMethodHints">
-      <set>Qt::ImhLatinOnly</set>
+   <item row="4" column="1">
+    <widget class="QLabel" name="lbl_min_zoom">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
      <property name="text">
-      <string/>
+      <string notr="true">&lt;min_zoom&gt;</string>
      </property>
-     <property name="dragEnabled">
-      <bool>true</bool>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="RangeSlider" name="levels_range_slider" native="true">
+     <property name="cursor">
+      <cursorShape>ClosedHandCursor</cursorShape>
      </property>
     </widget>
    </item>
@@ -112,25 +128,61 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="1" colspan="3">
-    <widget class="QLineEdit" name="lne_api_key"/>
-   </item>
-   <item row="7" column="0" colspan="3">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+   <item row="7" column="0" colspan="4">
+    <widget class="QgsCollapsibleGroupBox" name="mGroupBox">
+     <property name="title">
+      <string>Advanced parameters</string>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
+     <property name="collapsed">
+      <bool>true</bool>
      </property>
-    </spacer>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="lb_spp">
+        <property name="text">
+         <string>samplesperpixel</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lb_nodata">
+        <property name="text">
+         <string>nodata</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="sp_spp">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>4</number>
+        </property>
+        <property name="value">
+         <number>4</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="le_nodata">
+        <property name="text">
+         <string>255, 255, 255, 0</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsScaleRangeWidget</class>
    <extends>QWidget</extends>

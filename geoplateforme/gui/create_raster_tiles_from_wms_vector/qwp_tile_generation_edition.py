@@ -155,3 +155,19 @@ class TileGenerationEditionPageWizard(QWizardPage):
         :rtype: str
         """
         return self.lne_api_key.text()
+
+    def get_sample_per_pixel(self) -> int:
+        """Get advanced parameter sample_per_pixel value
+
+        :return: sample per pixel
+        :rtype: int
+        """
+        return self.sp_spp.value()
+
+    def get_no_data_value(self) -> str:
+        """Get advanced parameter nodata value
+
+        :return: nodata value
+        :rtype: str
+        """
+        return self.le_nodata.text()

@@ -97,19 +97,19 @@ class UploadDetailsWidget(QWidget):
 
         status = upload.status
 
-        if status == UploadStatus.CLOSED:
-            # Data delete
-            delete_action = QAction(
-                QIcon(str(DIR_PLUGIN_ROOT / "resources/images/icons/Supprimer.svg")),
-                self.tr("Suppression"),
-                self,
-            )
-            delete_action.triggered.connect(self.delete_upload)
-            button = QToolButton(self)
-            button.setDefaultAction(delete_action)
-            button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-            self.action_layout.addWidget(button)
+        # Data delete
+        delete_action = QAction(
+            QIcon(str(DIR_PLUGIN_ROOT / "resources/images/icons/Supprimer.svg")),
+            self.tr("Suppression"),
+            self,
+        )
+        delete_action.triggered.connect(self.delete_upload)
+        button = QToolButton(self)
+        button.setDefaultAction(delete_action)
+        button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+        self.action_layout.addWidget(button)
 
+        if status == UploadStatus.CLOSED:
             generate_vector_db_action = QAction(
                 QIcon(str(DIR_PLUGIN_ROOT / "resources/images/dashboard/db.png")),
                 self.tr("Génération base de données vectorielle"),
@@ -123,12 +123,12 @@ class UploadDetailsWidget(QWidget):
             button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
             self.action_layout.addWidget(button)
 
-            # Add spacer to have button align left
-            self.action_layout.addItem(
-                QSpacerItem(
-                    40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
-                )
+        # Add spacer to have button align left
+        self.action_layout.addItem(
+            QSpacerItem(
+                40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
             )
+        )
 
     def _show_generate_vector_db_wizard(self) -> None:
         """Show generate vector db wizard for current upload"""

@@ -55,12 +55,12 @@ Les modifications décrites ci-dessous doivent faire l'objet de pull-requests pr
 1. Ajouter le plugin à la liste `plugin_dependencies` dans `geoplateforme/metadata.txt`
 
     ```ini
-    plugin_dependencies=French Locator Filter>=1.4.1,GPF - Isochrone Isodistance Itinéraire>=0.5.0, Mon extension géoplateforme>=x.y.z
+    plugin_dependencies=French Locator Filter==1.4.1,GPF - Isochrone Isodistance Itinéraire==0.5.0, Mon extension géoplateforme==x.y.z
     ```
 
     Cela correspond au nom affiché dans la recherche des extensions QGIS, défini dans la balise `name` de votre `metadata.txt`.
 
-    Il est préférable d'indiquer le numéro de version minimale pour l'intégration dans le plugin Géoplateforme.
+    Il est préférable d'indiquer le numéro de version minimale pour l'intégration dans le plugin Géoplateforme. La version minimale doit être indiquée avec `==`.
 
 1. Ajout du nom technique de votre plugin dans la constante `GPF_PLUGIN_LIST` dans `geoplateforme/constants.py`
 

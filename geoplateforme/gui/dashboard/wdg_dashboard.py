@@ -160,6 +160,7 @@ class DashboardWidget(QWidget):
             1, QHeaderView.ResizeMode.Stretch
         )
         self.tbv_document.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.tbv_document.doubleClicked.connect(self._document_clicked)
 
         self.btn_document.clicked.connect(self._open_document_url)
 
@@ -197,6 +198,13 @@ class DashboardWidget(QWidget):
         documents_url = documents_url.replace("{datastore_id}", datastore_id)
         documents_url = documents_url.replace("{dataset_name}", dataset_name)
         webbrowser.open(documents_url)
+
+    def _document_clicked(self, index: QModelIndex) -> None:
+        document = self.mdl_document.data(
+            self.mdl_document.index(index.row(), 0), Qt.ItemDataRole.UserRole
+        )
+        if document:
+            webbrowser.open(document["url"])
 
     def _init_table_view(
         self,

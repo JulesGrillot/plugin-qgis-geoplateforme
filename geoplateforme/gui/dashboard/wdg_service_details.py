@@ -14,6 +14,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorTileLayer,
 )
+from qgis.gui import QgsGui
 from qgis.PyQt import QtCore, uic
 from qgis.PyQt.QtCore import QSize, Qt, QUrl, pyqtSignal
 from qgis.PyQt.QtGui import QCursor, QGuiApplication, QIcon, QPixmap
@@ -436,6 +437,14 @@ class ServiceDetailsWidget(QWidget):
                             local_path=temp_file_name,
                         )
                         wfs_layer.loadSldStyle(temp_file_name)
+                    if wfs_layer.isValid():
+                        dlg_sub_wfs = (
+                            QgsGui.subsetStringEditorProviderRegistry().createDialog(
+                                wfs_layer
+                            )
+                        )
+                        if not dlg_sub_wfs.exec():
+                            wfs_layer = None
                     return wfs_layer
         if (
             self._offering.type == ConfigurationType.WMS_RASTER

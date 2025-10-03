@@ -183,7 +183,7 @@ class TileGenerationStatusPageWizard(QWizardPage):
                 {
                     TileCreationAlgorithm.TABLE: table,
                     TileCreationAlgorithm.ATTRIBUTES: attributes,
-                    TileCreationAlgorithm.COMPOSITION_BOTTOM_LEVEL: str(top_level),
+                    TileCreationAlgorithm.COMPOSITION_BOTTOM_LEVEL: str(bottom_level),
                     TileCreationAlgorithm.COMPOSITION_TOP_LEVEL: str(top_level),
                 }
             )
